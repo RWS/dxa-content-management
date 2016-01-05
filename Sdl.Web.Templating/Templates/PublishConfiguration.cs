@@ -32,7 +32,11 @@ namespace Sdl.Web.Tridion.Templates
 
         private const string LocalizationConfigComponentTitle = "Localization Configuration";
         private const string EnvironmentConfigComponentTitle = "Environment Configuration";
+        private const string SearchConfigComponentTitle = "Search Configuration";
         private const string CmsUrlKey = "cmsurl";
+        private const string SearchQueryUrlKey = "queryURL";
+        private const string StagingSearchIndexKey = "stagingIndexConfig";
+        private const string LiveSearchIndexKey = "liveIndexConfig";
 
         private string _moduleRoot = String.Empty;
         private Component _localizationConfigurationComponent;
@@ -125,6 +129,28 @@ namespace Sdl.Web.Tridion.Templates
                             data[CmsUrlKey] = cmWebsiteUrl;
                         }
                         break;
+
+                    case SearchConfigComponentTitle:
+                        string cdEnvironmentPurpose = Utility.GetCdEnvironmentPurpose(Engine.PublishingContext);
+                        if (!string.IsNullOrEmpty(cdEnvironmentPurpose))
+                        {
+                            string searchQueryUrl = TopologyManager.GetSearchQueryUrl((Publication)configComp.ContextRepository, cdEnvironmentPurpose);
+                            if (!string.IsNullOrEmpty(searchQueryUrl))
+                            {
+                                string legacyConfigKey = Utility.IsXpmEnabled(Engine.PublishingContext) ? StagingSearchIndexKey : LiveSearchIndexKey;
+                                Logger.Info(string.Format("Setting '{0}' and '{1}' to Search Query URL obtained from Topology Manager: '{2}'", 
+                                    SearchQueryUrlKey, legacyConfigKey, searchQueryUrl));
+                                data[legacyConfigKey] = searchQueryUrl;
+                                data[SearchQueryUrlKey] = searchQueryUrl;
+                            }
+                            else
+                            {
+                                Logger.Warning(string.Format("No Search Query URL defined in Topology Manager for Publication '{0}' and CD Environment Purpose '{1}'.", 
+                                    configComp.ContextRepository.Id, cdEnvironmentPurpose));
+                            }
+                        }
+                        break;
+
                 }
             }
             return PublishJsonData(data, module, moduleName, "config", sg);
