@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.Templating;
 using Tridion.TopologyManager.Client;
 
@@ -30,6 +28,24 @@ namespace Sdl.Web.Tridion
             }
 
             return _cmEnvironment.WebsiteRootUrl;
+        }
+
+        internal static string GetSearchQueryUrl(Publication publication, string environmentPurpose)
+        {
+            string publicationId = publication.Id.ToString();
+            MappingData mapping = TopologyManagerClient.Mappings.Expand("CdEnvironment")
+                .Where(m => m.PublicationId == publicationId && m.EnvironmentPurpose == environmentPurpose).FirstOrDefault();
+            if (mapping == null || mapping.CdEnvironment == null)
+            {
+                return null;
+            }
+
+            string dxaSearchQueryUrl =  mapping.CdEnvironment.ExtensionProperties
+                .Where(ep => ep.Name == "DXA.Search.QueryURL")
+                .Select(ep => ep.Value)
+                .FirstOrDefault();
+
+            return dxaSearchQueryUrl;
         }
 
         private static TopologyManagerClient TopologyManagerClient
