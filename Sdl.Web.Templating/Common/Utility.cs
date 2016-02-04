@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Tridion;
@@ -7,7 +6,6 @@ using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Templating;
-//using Tridion.TopologyManager.Client;
 
 namespace Sdl.Web.Tridion.Common
 {
@@ -40,87 +38,73 @@ namespace Sdl.Web.Tridion.Common
             return key.Substring(0, 1).ToLower() + key.Substring(1);
         }
 
-        public static TargetType GetTargetType(PublishingContext publishingContext)
+
+        public static bool IsXpmEnabled(PublishingContext publishingContext)
         {
-            PublicationTarget publicationTarget = publishingContext.PublicationTarget;
-            // Fixme (when API is fixed): remove this function and instead use: "TargetType targetType = publishingContext.TargetType";
-            TargetType targetType = (publicationTarget != null) ? publicationTarget.TargetTypes.FirstOrDefault() : null;
-            return targetType;
+            if (publishingContext == null || publishingContext.PublicationTarget == null)
+            {
+                return false;
+            }
+
+            if (Session.ApiVersion.StartsWith("8."))
+            {
+                // We're going to use new properties which are only available in CM 8.1 and higher.
+                // To avoid having to reference CM 8.1 APIs (which won't bind on CM 7.1), we use dynamic types here.
+                dynamic pubContext = publishingContext;
+                dynamic targetType = pubContext.TargetType;
+                if (targetType != null && targetType.BusinessProcessType != null)
+                {
+                    // New-style publishing
+                    Publication contextPublication = (Publication) ((RepositoryLocalObject) publishingContext.ResolvedItem.Item).ContextRepository;
+                    return targetType.IsPreviewCapable(contextPublication);
+                }
+            }
+
+            return IsPublicationTargetXpmEnabled(publishingContext.PublicationTarget);
         }
-
-        #region 8.0 API
-        //public static bool IsPublishTargetXpmEnabled(PublishingContext publishingContext)
-        //{
-        //    bool enabled = false;
-        //    if (IsUsingTopologyManager(publishingContext))
-        //    {
-        //        enabled = IsTargetTypeXpmEnabled(publishingContext);
-        //    }
-        //    else
-        //    {
-        //        enabled = IsPublicationTargetXpmEnabled(publishingContext.PublicationTarget);
-        //    }
-        //    return enabled;
-        //}
-
-        //public static bool IsUsingTopologyManager(PublishingContext publishingContext)
-        //{
-        //    bool isUsingTopologyManager = false;
-        //    TargetType targetType = GetTargetType(publishingContext);
-        //    if (targetType != null)
-        //    {
-        //        // If the target type has a business process type, then topology manager must be used for publishing
-        //        if (targetType.BusinessProcessType != null)
-        //        {
-        //            isUsingTopologyManager = true;
-        //        }
-        //    }
-        //    return isUsingTopologyManager;
-        //}
-
-        //private static bool IsTargetTypeXpmEnabled(PublishingContext publishingContext)
-        //{
-        //    bool enabled = false;
-        //    TargetType targetType = GetTargetType(publishingContext);
-        //    if (targetType != null)
-        //    {
-        //        RepositoryLocalObject item = publishingContext.ResolvedItem.Item as RepositoryLocalObject;
-        //        if (item != null)
-        //        {
-        //            Publication currentPublication = (Publication)item.ContextRepository;
-        //            if (targetType.IsPreviewCapable(currentPublication))
-        //            {
-        //                enabled = true;
-        //            }
-        //        }
-        //    }
-        //    return enabled;
-        //}
-
-        // when using 8.0 API, IsPublicationTargetXpmEnabled(PublicationTarget) can be made private, so we are forced to use IsPublishTargetXpmEnabled(PublishingContext)
-        //private static bool IsPublicationTargetXpmEnabled(PublicationTarget publicationTarget)
-        #endregion
 
         public static bool IsPublicationTargetXpmEnabled(PublicationTarget publicationTarget)
         {
-            bool enabled = false;
-            if (publicationTarget != null)
+            if (publicationTarget == null)
             {
-                ApplicationData appData = publicationTarget.LoadApplicationData(SiteEditApplicationId);
-                if (appData != null)
-                {
-                    ApplicationDataAdapter ada = new ApplicationDataAdapter(appData);
-                    XmlElement appDataXml = ada.GetAs<XmlElement>();
-                    if (appDataXml != null)
-                    {
-                        if (appDataXml.SelectSingleNode("self::se:configuration/se:PublicationTarget[se:EnableSiteEdit = 'true']", GetSeNamespaceManager()) != null)
-                        {
-                            enabled = true;
-                        }
-                    }
-                }
+                return false;
             }
-            return enabled;
+
+            ApplicationData appData = publicationTarget.LoadApplicationData(SiteEditApplicationId);
+            if (appData == null)
+            {
+                return false;
+            }
+
+            ApplicationDataAdapter ada = new ApplicationDataAdapter(appData);
+            XmlElement appDataXml = ada.GetAs<XmlElement>();
+            if (appDataXml == null)
+            {
+                return false;
+            }
+
+            return (appDataXml.SelectSingleNode("self::se:configuration/se:PublicationTarget[se:EnableSiteEdit = 'true']", GetSeNamespaceManager()) != null);
+        }
+
+        public static string GetCdEnvironmentPurpose(PublishingContext publishingContext)
+        {
+            if (!Session.ApiVersion.StartsWith("8."))
+            {
+                return null;
+            }
+
+            // We're going to use new properties which are only available in CM 8.1 and higher.
+            // To avoid having to reference CM 8.1 APIs (which won't bind on CM 7.1), we use dynamic types here.
+            dynamic pubContext = publishingContext;
+            dynamic targetType = pubContext.TargetType;
+            if (targetType == null || targetType.BusinessProcessType == null)
+            {
+                // Template Debugger, CM Preview or old-style publishing
+                return null;
+            }
+
+            // New-style publishing
+            return targetType.Purpose;
         }
 
         private static XmlNamespaceManager _ns;

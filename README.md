@@ -5,7 +5,7 @@ SDL Digital Experience Accelerator Core Template Building Blocks
 
 About
 -----
-The SDL Digital Experience Accelerator (formerly known as the SDL Tridion Reference Implementation) is a reference implementation of SDL Tridion intended to help you create, design and publish an SDL Tridion-based Web site quickly.
+The SDL Digital Experience Accelerator is a reference implementation of SDL Tridion intended to help you create, design and publish an SDL Web-based Web site quickly.
 
 You can find more details and a download of the entire release on https://community.sdl.com/developers/tridion_developer/m/mediagallery/852
 
@@ -20,7 +20,8 @@ If you encounter problems, reach out to the community: http://tridion.stackexcha
 Sources
 -------
 
-This repository contains the full source of all the 1.1 DXA core Template Building Blocks to give you insight in how they are built and what they do. You are free to use these sources under the terms and conditions of the license mentioned below, however we suggest you don't change them and implement your changes in a separate DXA module. 
+This repository contains the full source of all the DXA Core Template Building Blocks to give you insight in how they are built and what they do. 
+You are free to use these sources under the terms and conditions of the license mentioned below, however we suggest you don't change them and implement your changes in a separate DXA module. 
 
 
 Documentation
@@ -36,9 +37,9 @@ The following repositories with source code are available:
 
  - https://github.com/sdl/dxa-content-management - Core Template Building Blocks
  - https://github.com/sdl/dxa-html-design - Whitelabel HTML Design
- - https://github.com/sdl/dxa-modules - Modules
- - https://github.com/sdl/dxa-web-application-dotnet - .NET MVC web application
- - https://github.com/sdl/dxa-web-application-java - Java Spring MVC web application
+ - https://github.com/sdl/dxa-modules - Modules (.NET and Java)
+ - https://github.com/sdl/dxa-web-application-dotnet - ASP.NET MVC web application (incl. framework)
+ - https://github.com/sdl/dxa-web-application-java - Java Spring MVC web application (incl. framework)
 
 
 Branching model
@@ -55,7 +56,7 @@ Please submit your pull requests on develop. In the near future we intend to pus
 
 License
 -------
-Copyright (c) 2014-2015 SDL Group.
+Copyright (c) 2014-2016 SDL Group.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
