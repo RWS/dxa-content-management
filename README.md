@@ -5,7 +5,7 @@ SDL Digital Experience Accelerator Core Template Building Blocks
 
 About
 -----
-The SDL Digital Experience Accelerator is a reference implementation of SDL Tridion intended to help you create, design and publish an SDL Web-based Web site quickly.
+The SDL Digital Experience Accelerator is a reference implementation of SDL Web 8 and SDL Tridion 2013 SP1 intended to help you create, design and publish an SDL Web/Tridion-based Website quickly.
 
 You can find more details and a download of the entire release on https://community.sdl.com/developers/tridion_developer/m/mediagallery/852
 
@@ -26,25 +26,25 @@ You are free to use these sources under the terms and conditions of the license 
 Note that the Sdl.Web.Tridion.Templates.csproj references CM assemblies in _references subdirectories which are NOT included in this repository, 
 because these assemblies cannot be distributed without a signed license agreement.
 
-In order to build the project, the following CM assemblies will have to be obtained from an SDL Web/Tridion distribution and put in the appropriate C:\_references subdirectories:
+In order to build the project, the following CM assemblies will have to be obtained from an SDL Web/Tridion distribution and put in the appropriate _references subdirectories:
 
 2013-sp1
-•Tridion.Common.dll
-•Tridion.ContentManager.Common.dll
-•Tridion.ContentManager.dll
-•Tridion.ContentManager.Publishing.dll
-•Tridion.ContentManager.TemplateTypes.dll
-•Tridion.ContentManager.Templating.dll
-•Tridion.ContentManager.TypeRegistration.dll
-•Tridion.Logging.dll
+ - Tridion.Common.dll
+ - Tridion.ContentManager.Common.dll
+ - Tridion.ContentManager.dll
+ - Tridion.ContentManager.Publishing.dll
+ - Tridion.ContentManager.TemplateTypes.dll
+ - Tridion.ContentManager.Templating.dll
+ - Tridion.ContentManager.TypeRegistration.dll
+ - Tridion.Logging.dll
 
 cm-8.1
-•Tridion.TopologyManager.Client.dll
-•Microsoft.OData.Client.dll
-•Microsoft.OData.Core.dll
-•Microsoft.OData.Edm.dll
-•Microsoft.Spatial.dll
-•Newtonsoft.Json.dll
+ - Tridion.TopologyManager.Client.dll
+ - Microsoft.OData.Client.dll
+ - Microsoft.OData.Core.dll
+ - Microsoft.OData.Edm.dll
+ - Microsoft.Spatial.dll
+ - Newtonsoft.Json.dll
 
 
 Documentation
