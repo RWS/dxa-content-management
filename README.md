@@ -23,6 +23,29 @@ Sources
 This repository contains the full source of all the DXA Core Template Building Blocks to give you insight in how they are built and what they do. 
 You are free to use these sources under the terms and conditions of the license mentioned below, however we suggest you don't change them and implement your changes in a separate DXA module. 
 
+Note that the Sdl.Web.Tridion.Templates.csproj references CM assemblies in _references subdirectories which are NOT included in this repository, 
+because these assemblies cannot be distributed without a signed license agreement.
+
+In order to build the project, the following CM assemblies will have to be obtained from an SDL Web/Tridion distribution and put in the appropriate C:\_references subdirectories:
+
+2013-sp1
+•Tridion.Common.dll
+•Tridion.ContentManager.Common.dll
+•Tridion.ContentManager.dll
+•Tridion.ContentManager.Publishing.dll
+•Tridion.ContentManager.TemplateTypes.dll
+•Tridion.ContentManager.Templating.dll
+•Tridion.ContentManager.TypeRegistration.dll
+•Tridion.Logging.dll
+
+cm-8.1
+•Tridion.TopologyManager.Client.dll
+•Microsoft.OData.Client.dll
+•Microsoft.OData.Core.dll
+•Microsoft.OData.Edm.dll
+•Microsoft.Spatial.dll
+•Newtonsoft.Json.dll
+
 
 Documentation
 -------------
@@ -42,16 +65,23 @@ The following repositories with source code are available:
  - https://github.com/sdl/dxa-web-application-java - Java Spring MVC web application (incl. framework)
 
 
-Branching model
----------------
+Branches and Contributions
+--------------------------
 
-We intend to follow Gitflow (http://nvie.com/posts/a-successful-git-branching-model/) with the following main branches:
+We are using the following branching strategy:
 
- - master - Stable 
- - develop - Unstable
- - release/x.y - Release version x.y
+ - master - Represents the latest stable version. This may be an pre-release version (tagged as "DXA x.y Sprint z"). Updated each development Sprint (approx. bi-weekly).
+ - develop - Represents the latest development version. Updated very frequently (typically nightly).
+ - release/x.y - Represents the x.y Release. If hotfixes are applicable, they will be applied to the appropriate release branch, so that the release branch actually represent the initial release plus hotfixes.
 
-Please submit your pull requests on develop. In the near future we intend to push our changes to develop and master from our internal repositories, so you can follow our development process.
+All releases (including pre-releases) are Tagged. 
+ 
+If you wish to submit a Pull Request, it should normally be submitted on the develop branch, so it can be incorporated in the upcoming release.
+Fixes for really severe/urgent issues (which qualify as hotfixes) should be submitted as Pull Request on the appropriate release branch.
+Please always submit an Issue for the problem and indicate whether you think it qualifies as a hotfix; Pull Requests on release branches will only be accepted after agreement on the severity of the issue.
+Furthermore, Pull Requests on release branches are expected to be extensively tested.
+
+Of course, it's also possible to report an Issue without associated Pull Requests.
 
 
 License
