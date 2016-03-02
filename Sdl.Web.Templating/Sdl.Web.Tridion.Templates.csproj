@@ -75,7 +75,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Tridion.TopologyManager.Client">
-      <HintPath>C:\cm-8.1\Tridion.TopologyManager.Client.dll</HintPath>
+      <HintPath>C:\_references\cm-8.1\Tridion.TopologyManager.Client.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
