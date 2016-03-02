@@ -26,7 +26,7 @@ You are free to use these sources under the terms and conditions of the license 
 Note that the Sdl.Web.Tridion.Templates.csproj references CM assemblies in _references subdirectories which are NOT included in this repository, 
 because these assemblies cannot be distributed without a signed license agreement.
 
-In order to build the project, the following CM assemblies will have to be obtained from an SDL Web/Tridion distribution and put in the appropriate _references subdirectories:
+In order to build the project, the following CM assemblies will have to be obtained from an SDL Web/Tridion distribution and put in the appropriate C:\_references subdirectories:
 
 2013-sp1
 •Tridion.Common.dll
