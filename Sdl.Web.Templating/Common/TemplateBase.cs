@@ -426,7 +426,7 @@ namespace Sdl.Web.Tridion.Common
                 {
                     Component comp = (Component)Engine.GetObject(Engine.LocalizeUri(item.Key));
                     ItemFields fields = new ItemFields(comp.Content, comp.Schema);
-                    string moduleName = GetModuleNameFromConfig(comp).ToLower();
+                    string moduleName =  fields.GetTextValue("name").ToLower();
                     if (fields.GetTextValue("isActive").ToLower() == "yes" && !results.ContainsKey(moduleName))
                     {
                         results.Add(moduleName, comp);
@@ -456,12 +456,6 @@ namespace Sdl.Web.Tridion.Common
                 }
             }
             throw new Exception("Cannot find Schema named \"Module Configuration\"- please check that this has not been renamed.");
-        }
-
-        protected string GetModuleNameFromConfig(Component configComponent)
-        {
-            //Module config components are always found in /Modules/{Name}/System/, so the module name is defined to be the name of the folder 2 levels up.
-            return configComponent.OrganizationalItem.OrganizationalItem.Title.ToLower();
         }
 
         protected string GetModulesRoot(Component configComponent)
