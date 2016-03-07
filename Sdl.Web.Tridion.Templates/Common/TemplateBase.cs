@@ -426,7 +426,7 @@ namespace Sdl.Web.Tridion.Common
                 {
                     Component comp = (Component)Engine.GetObject(Engine.LocalizeUri(item.Key));
                     ItemFields fields = new ItemFields(comp.Content, comp.Schema);
-                    string moduleName =  fields.GetTextValue("name").ToLower();
+                    string moduleName =  fields.GetTextValue("name").Trim().ToLower();
                     if (fields.GetTextValue("isActive").ToLower() == "yes" && !results.ContainsKey(moduleName))
                     {
                         results.Add(moduleName, comp);
