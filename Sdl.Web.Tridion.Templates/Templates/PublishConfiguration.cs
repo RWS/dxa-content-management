@@ -67,12 +67,12 @@ namespace Sdl.Web.Tridion.Templates
                 Binary moduleSchemasConfig = PublishModuleSchemasConfig(moduleName, moduleFolder, moduleConfigComponent);
                 if (moduleSchemasConfig != null)
                 {
-                    filesCreated.Add(moduleSchemasConfig.Url);
+                    filesCreated.Add(JsonSerialize(moduleSchemasConfig.Url));
                 }
                 Binary moduleTemplatesConfig = PublishModuleTemplatesConfig(moduleName, moduleFolder, moduleConfigComponent);
                 if (moduleTemplatesConfig != null)
                 {
-                    filesCreated.Add(moduleTemplatesConfig.Url);
+                    filesCreated.Add(JsonSerialize(moduleTemplatesConfig.Url));
                 }
             }
             filesCreated.AddRange(PublishJsonData(ReadTaxonomiesData(), coreConfigComponent, "taxonomies", _configStructureGroup));
