@@ -358,6 +358,16 @@ namespace Sdl.Web.Tridion.Common
             return JsonEncode(binary.Url);
         }
 
+        protected Binary AddJsonBinary(object objectToSerialize, Component relatedComponent, StructureGroup structureGroup, string name, string variantId)
+        {
+            string json = JsonSerialize(objectToSerialize);
+            Item jsonItem = Package.CreateStringItem(ContentType.Text, json);
+            Binary jsonBinary = Engine.PublishingContext.RenderedItem.AddBinary(jsonItem.GetAsStream(), name + JsonExtension, structureGroup, variantId, relatedComponent, JsonMimetype);
+            jsonItem.Properties[Item.ItemPropertyPublishedPath] = jsonBinary.Url;
+            Package.PushItem(jsonBinary.Url, jsonItem);
+            return jsonBinary;
+        }
+
         protected Dictionary<string, string> ReadComponentData(Component comp)
         {
             Dictionary<string, string> settings = new Dictionary<string, string>();
@@ -397,8 +407,14 @@ namespace Sdl.Web.Tridion.Common
 
         protected string JsonEncode(object json)
         {
+            return JsonSerialize(json);
+        }
+
+        protected string JsonSerialize(object objectToSerialize)
+        {
+            // TODO TSI-1263: Use JSON.NET
             JavaScriptSerializer serializer = new JavaScriptSerializer();
-            return serializer.Serialize(json);
+            return serializer.Serialize(objectToSerialize);
         }
 
         #endregion
@@ -426,7 +442,7 @@ namespace Sdl.Web.Tridion.Common
                 {
                     Component comp = (Component)Engine.GetObject(Engine.LocalizeUri(item.Key));
                     ItemFields fields = new ItemFields(comp.Content, comp.Schema);
-                    string moduleName = GetModuleNameFromConfig(comp).ToLower();
+                    string moduleName =  fields.GetTextValue("name").Trim().ToLower();
                     if (fields.GetTextValue("isActive").ToLower() == "yes" && !results.ContainsKey(moduleName))
                     {
                         results.Add(moduleName, comp);
@@ -456,18 +472,6 @@ namespace Sdl.Web.Tridion.Common
                 }
             }
             throw new Exception("Cannot find Schema named \"Module Configuration\"- please check that this has not been renamed.");
-        }
-
-        protected string GetModuleNameFromConfig(Component configComponent)
-        {
-            //Module config components are always found in /Modules/{Name}/System/, so the module name is defined to be the name of the folder 2 levels up.
-            return configComponent.OrganizationalItem.OrganizationalItem.Title.ToLower();
-        }
-
-        protected string GetModulesRoot(Component configComponent)
-        {
-            //Module config components are always found in /Modules/{Name}/System/, so the module root is defined as the folder 3 levels up.
-            return configComponent.OrganizationalItem.OrganizationalItem.OrganizationalItem.WebDavUrl;
         }
 
         protected string GetModuleNameFromItem(RepositoryLocalObject item, string moduleRoot)

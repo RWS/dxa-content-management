@@ -2,6 +2,7 @@
 using System.Text;
 using Sdl.Web.Tridion.Common;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -9,6 +10,7 @@ using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.ContentManagement.Fields;
+using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
 using Tridion.ContentManager.Templating.Assembly;
 
@@ -38,7 +40,7 @@ namespace Sdl.Web.Tridion.Templates
         private const string StagingSearchIndexKey = "stagingIndexConfig";
         private const string LiveSearchIndexKey = "liveIndexConfig";
 
-        private string _moduleRoot = String.Empty;
+        private StructureGroup _configStructureGroup;
         private Component _localizationConfigurationComponent;
 
         public override void Transform(Engine engine, Package package)
@@ -47,24 +49,36 @@ namespace Sdl.Web.Tridion.Templates
             
             //The core configuration component should be the one being processed by the template
             Component coreConfigComponent = GetComponent();
-            StructureGroup sg = GetSystemStructureGroup("config");
-            _moduleRoot = GetModulesRoot(coreConfigComponent);
+            _configStructureGroup = GetSystemStructureGroup("config");
 
-            //Get all the active modules
-            Dictionary<string, Component> moduleComponents = GetActiveModules(coreConfigComponent);
+            // Determine the active modules
+            Dictionary<string, Component> modules = GetActiveModules(coreConfigComponent);
             List<string> filesCreated = new List<string>();
-            
+
             //For each active module, publish the config and add the filename(s) to the bootstrap list
-            foreach (KeyValuePair<string, Component> module in moduleComponents)
+            foreach (KeyValuePair<string, Component> module in modules)
             {
-                filesCreated.Add(ProcessModule(module.Key, module.Value, sg));
+                string moduleName = module.Key;
+                Component moduleConfigComponent = module.Value;
+                Folder moduleFolder = GetModuleFolder(moduleConfigComponent);
+
+                string moduleConfigFileName = PublishModuleConfig(moduleName, moduleConfigComponent);
+                filesCreated.Add(moduleConfigFileName);
+                Binary moduleSchemasConfig = PublishModuleSchemasConfig(moduleName, moduleFolder, moduleConfigComponent);
+                if (moduleSchemasConfig != null)
+                {
+                    filesCreated.Add(JsonSerialize(moduleSchemasConfig.Url));
+                }
+                Binary moduleTemplatesConfig = PublishModuleTemplatesConfig(moduleName, moduleFolder, moduleConfigComponent);
+                if (moduleTemplatesConfig != null)
+                {
+                    filesCreated.Add(JsonSerialize(moduleTemplatesConfig.Url));
+                }
             }
-            filesCreated.AddRange(PublishJsonData(ReadSchemaData(), coreConfigComponent, "schemas", sg));
-            filesCreated.AddRange(PublishJsonData(ReadTemplateData(), coreConfigComponent, "templates", sg));
-            filesCreated.AddRange(PublishJsonData(ReadTaxonomiesData(), coreConfigComponent, "taxonomies", sg));
+            filesCreated.AddRange(PublishJsonData(ReadTaxonomiesData(), coreConfigComponent, "taxonomies", _configStructureGroup));
             
             //Publish the boostrap list, this is used by the web application to load in all other configuration files
-            PublishBootstrapJson(filesCreated, coreConfigComponent, sg, "config-", BuildAdditionalData());
+            PublishBootstrapJson(filesCreated, coreConfigComponent, _configStructureGroup, "config-", BuildAdditionalData());
 
             StringBuilder publishedFiles = new StringBuilder();
             foreach (string file in filesCreated)
@@ -76,7 +90,7 @@ namespace Sdl.Web.Tridion.Templates
                 }
             }
 
-            // append json result to output
+            // Update JSON Summary Report in Output Item.
             string json = String.Format(JsonOutputFormat, publishedFiles);
             Item outputItem = package.GetByName(Package.OutputName);
             if (outputItem != null)
@@ -97,10 +111,10 @@ namespace Sdl.Web.Tridion.Templates
             package.PushItem(Package.OutputName, package.CreateStringItem(ContentType.Text, json));
         }
 
-        protected virtual string ProcessModule(string moduleName, Component module, StructureGroup sg)
+        private string PublishModuleConfig(string moduleName, Component moduleConfigComponent)
         {
             Dictionary<string, string> data = new Dictionary<string, string>();
-            ItemFields fields = new ItemFields(module.Content, module.Schema);
+            ItemFields fields = new ItemFields(moduleConfigComponent.Content, moduleConfigComponent.Schema);
             foreach (Component configComp in fields.GetComponentValues("furtherConfiguration"))
             {
                 data = MergeData(data, ReadComponentData(configComp));
@@ -153,87 +167,11 @@ namespace Sdl.Web.Tridion.Templates
 
                 }
             }
-            return PublishJsonData(data, module, moduleName, "config", sg);
+            return PublishJsonData(data, moduleConfigComponent, moduleName, "config", _configStructureGroup);
         }
 
-        protected virtual Dictionary<string, List<string>> ReadTaxonomiesData()
-        {
-            //Generate a list of taxonomy + id
-            Dictionary<string, List<string>> res = new Dictionary<string, List<string>>();
-            List<string> settings = new List<string>();
-            TaxonomiesFilter taxFilter = new TaxonomiesFilter(Engine.GetSession()) { BaseColumns = ListBaseColumns.Extended };
-            foreach (XmlElement item in GetPublication().GetListTaxonomies(taxFilter).ChildNodes)
-            {
-                string id = item.GetAttribute("ID");
-                Category taxonomy = (Category)Engine.GetObject(id);
-                settings.Add(String.Format("{0}:{1}", JsonEncode(Utility.GetKeyFromTaxonomy(taxonomy)), JsonEncode(taxonomy.Id.ItemId)));
-            }
-            res.Add("core." + TaxonomiesConfigName, settings);
-            return res;
-        }
 
-        protected virtual Dictionary<string, List<string>> ReadSchemaData()
-        {
-            //Generate a list of schema + mapping details, separated by module
-            Dictionary<string, List<string>> res = new Dictionary<string, List<string>>();
-            RepositoryItemsFilter schemaFilter = new RepositoryItemsFilter(Engine.GetSession())
-            {
-                Recursive = true,
-                ItemTypes = new List<ItemType> { ItemType.Schema },
-                BaseColumns = ListBaseColumns.Extended
-            };
-            foreach (XmlElement item in GetPublication().GetListItems(schemaFilter).ChildNodes)
-            {
-                string type = item.GetAttribute("Type");
-                string subType = item.GetAttribute("SubType");
-                //We only consider normal schemas (type=8 subtype=0)
-                if ((type == "8" && subType == "0"))
-                {
-                    string id = item.GetAttribute("ID");
-                    Schema schema = (Schema)Engine.GetObject(id);
-                    string module = GetModuleNameFromItem(schema, _moduleRoot);
-                    if (module != null)
-                    {
-                        string key = module + "." + SchemasConfigName;
-                        if (!res.ContainsKey(key))
-                        {
-                            res.Add(key, new List<string>());
-                        }
-                        res[key].Add(String.Format("{0}:{1}", JsonEncode(Utility.GetKeyFromSchema(schema)), JsonEncode(schema.Id.ItemId)));
-                    }
-                }
-            }
-            return res;
-        }
-
-        protected virtual Dictionary<string, List<string>> ReadTemplateData()
-        {
-            //Generate a list of dynamic CT + id, separated by module
-            Dictionary<string, List<string>> res = new Dictionary<string, List<string>>();
-            ComponentTemplatesFilter templateFilter = new ComponentTemplatesFilter(Engine.GetSession()) { BaseColumns = ListBaseColumns.Extended };
-            foreach (XmlElement item in GetPublication().GetListComponentTemplates(templateFilter).ChildNodes)
-            {
-                string id = item.GetAttribute("ID");
-                ComponentTemplate template = (ComponentTemplate)Engine.GetObject(id);
-                //Only consider dynamic CTs
-                if (template.IsRepositoryPublishable)
-                {
-                    string module = GetModuleNameFromItem(template, _moduleRoot);
-                    if (module != null)
-                    {
-                        string key = module + "." + TemplateConfigName;
-                        if (!res.ContainsKey(key))
-                        {
-                            res.Add(key, new List<string>());
-                        }
-                        res[key].Add(String.Format("{0}:{1}", JsonEncode(Utility.GetKeyFromTemplate(template)), JsonEncode(template.Id.ItemId)));
-                    }
-                }
-            }
-            return res;
-        }
-
-        protected List<string> BuildAdditionalData()
+        private List<string> BuildAdditionalData()
         {
             if (_localizationConfigurationComponent == null)
             {
@@ -370,6 +308,111 @@ namespace Sdl.Web.Tridion.Templates
                 return meta.GetTextValue("siteId");
             }
             return null;
+        }
+
+
+        private Dictionary<string, List<string>> ReadTaxonomiesData()
+        {
+            //Generate a list of taxonomy + id
+            Dictionary<string, List<string>> res = new Dictionary<string, List<string>>();
+            List<string> settings = new List<string>();
+            TaxonomiesFilter taxFilter = new TaxonomiesFilter(Engine.GetSession()) { BaseColumns = ListBaseColumns.Extended };
+            foreach (XmlElement item in GetPublication().GetListTaxonomies(taxFilter).ChildNodes)
+            {
+                string id = item.GetAttribute("ID");
+                Category taxonomy = (Category) Engine.GetObject(id);
+                settings.Add(String.Format("{0}:{1}", JsonEncode(Utility.GetKeyFromTaxonomy(taxonomy)), JsonEncode(taxonomy.Id.ItemId)));
+            }
+            res.Add("core." + TaxonomiesConfigName, settings);
+            return res;
+        }
+
+
+        private Folder GetModuleFolder(Component moduleConfigComponent)
+        {
+            IList<OrganizationalItem> moduleConfigAncestors = moduleConfigComponent.OrganizationalItem.GetAncestors().ToList();
+            moduleConfigAncestors.Insert(0, moduleConfigComponent.OrganizationalItem);
+            if (moduleConfigAncestors.Count < 3)
+            {
+                throw new ApplicationException(
+                    String.Format("Unable to determine Module Folder for Module Configuration Component '{0}': too few parent Folders.", moduleConfigComponent.WebDavUrl)
+                    );
+            }
+
+            // Module folder is always third level (under Root Folder and Modules folder).
+            return (Folder) moduleConfigAncestors[moduleConfigAncestors.Count - 3];
+        }
+
+        private Binary PublishModuleSchemasConfig(string moduleName, Folder moduleFolder, Component moduleConfigComponent)
+        {
+            OrganizationalItemItemsFilter moduleSchemasFilter = new OrganizationalItemItemsFilter(Engine.GetSession())
+            {
+                ItemTypes =  new [] { ItemType.Schema },
+                Recursive = true
+            };
+
+            Schema[] moduleSchemas = moduleFolder.GetItems(moduleSchemasFilter).Cast<Schema>().Where(s => s.Purpose == SchemaPurpose.Component).ToArray();
+            if (!moduleSchemas.Any())
+            {
+                return null;
+            }
+
+            IDictionary <string, int> moduleSchemasConfig = new Dictionary<string, int>();
+            foreach (Schema moduleSchema in moduleSchemas)
+            {
+                string schemaKey = Utility.GetKeyFromSchema(moduleSchema);
+                int sameKeyAsSchema;
+                if (moduleSchemasConfig.TryGetValue(schemaKey, out sameKeyAsSchema))
+                {
+                    Logger.Warning(string.Format("{0} has same key ('{1}') as Schema '{2}'; supressing from output.", moduleSchema, schemaKey, sameKeyAsSchema));
+                    continue;
+                }
+                moduleSchemasConfig.Add(schemaKey, moduleSchema.Id.ItemId);
+            }
+
+            return AddJsonBinary(
+                moduleSchemasConfig,
+                relatedComponent: moduleConfigComponent,
+                structureGroup: _configStructureGroup,
+                name: string.Format("{0}.{1}", moduleName, SchemasConfigName),
+                variantId: "schemas"
+                );
+        }
+
+        private Binary PublishModuleTemplatesConfig(string moduleName, Folder moduleFolder, Component moduleConfigComponent)
+        {
+            OrganizationalItemItemsFilter moduleTemplatesFilter = new OrganizationalItemItemsFilter(Engine.GetSession())
+            {
+                ItemTypes = new[] { ItemType.ComponentTemplate },
+                Recursive = true
+            };
+
+            ComponentTemplate[] moduleComponentTemplates = moduleFolder.GetItems(moduleTemplatesFilter).Cast<ComponentTemplate>().Where(ct => ct.IsRepositoryPublishable).ToArray();
+            if (!moduleComponentTemplates.Any())
+            {
+                return null;
+            }
+
+            IDictionary<string, int> moduleTemplatesConfig = new Dictionary<string, int>();
+            foreach (ComponentTemplate moduleTemplate in moduleComponentTemplates)
+            {
+                string templateKey = Utility.GetKeyFromTemplate(moduleTemplate);
+                int sameKeyAsTemplate;
+                if (moduleTemplatesConfig.TryGetValue(templateKey, out sameKeyAsTemplate))
+                {
+                    Logger.Warning(string.Format("{0} has same key ('{1}') as CT '{2}'; supressing from output.", moduleTemplate, templateKey, sameKeyAsTemplate));
+                    continue;
+                }
+                moduleTemplatesConfig.Add(templateKey, moduleTemplate.Id.ItemId);
+            }
+
+            return AddJsonBinary(
+                moduleTemplatesConfig,
+                relatedComponent: moduleConfigComponent,
+                structureGroup: _configStructureGroup,
+                name: string.Format("{0}.{1}", moduleName, TemplateConfigName),
+                variantId: "templates"
+                );
         }
     }
 
