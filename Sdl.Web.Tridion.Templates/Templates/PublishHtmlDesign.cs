@@ -43,6 +43,7 @@ namespace Sdl.Web.Tridion.Templates
             _mergeFileLines.Add("src\\system\\assets\\less\\_modules.less", new List<string>());
             _mergeFileLines.Add("src\\templates\\partials\\module-scripts-header.hbs", new List<string>());
             _mergeFileLines.Add("src\\templates\\partials\\module-scripts-footer.hbs", new List<string>());
+            _mergeFileLines.Add("src\\templates\\partials\\module-scripts-xpm.hbs", new List<string>());
 
             StringBuilder publishedFiles = new StringBuilder();
             string drive = package.GetValue("drive") ?? String.Empty;
