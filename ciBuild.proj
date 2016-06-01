@@ -8,7 +8,7 @@
         <IsPreRelease>true</IsPreRelease>
         <BuildConfiguration>Release</BuildConfiguration>
         <ProjectDirectory>$(MSBuildProjectDirectory)</ProjectDirectory>
-		<TemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.dll</TemplatesDll>
+		<TemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.merged.dll</TemplatesDll>
 		
         <VersionMajor>$(Version.Split('.')[0])</VersionMajor>
         <VersionMinor>$(Version.Split('.')[1])</VersionMinor>
