@@ -62,7 +62,7 @@
     <Target Name="DeployOutput">
       <Message Text="Deploying '$(TemplatesDll)' to CMS..." />
         
-        <Exec Command="TcmUploadAssembly.exe saintjohn11.xml /folder:tcm:2-17-2 /verbose &quot;$(TemplatesDll)&quot;" WorkingDirectory="$(CmToolsDir)" />
+        <Exec Command="TcmUploadAssembly.exe dxadevweb8.xml /folder:tcm:2-17-2 /verbose &quot;$(TemplatesDll)&quot;" WorkingDirectory="$(CmToolsDir)" />
     </Target>
  
 </Project>
