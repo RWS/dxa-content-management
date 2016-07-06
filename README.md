@@ -28,6 +28,8 @@ In order to build the project, the following CM assemblies will have to be obtai
  - Tridion.ContentManager.TemplateTypes.dll
  - Tridion.ContentManager.Templating.dll
  - Tridion.ContentManager.TypeRegistration.dll
+ - Tridion.ExternalContentLibrary.dll
+ - Tridion.ExternalContentLibrary.V2.dll
  - Tridion.Logging.dll
 
 cm-8.1:
@@ -38,8 +40,6 @@ cm-8.1:
  - Microsoft.OData.Edm.dll
  - Microsoft.Spatial.dll
  - Newtonsoft.Json.dll
- - Tridion.ExternalContentLibrary.dll
- - Tridion.ExternalContentLibrary.V2.dll
 
 
 Support
