@@ -38,6 +38,8 @@ cm-8.1:
  - Microsoft.OData.Edm.dll
  - Microsoft.Spatial.dll
  - Newtonsoft.Json.dll
+ - Tridion.ExternalContentLibrary.dll
+ - Tridion.ExternalContentLibrary.V2.dll
 
 
 Support
