@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using Tridion.ContentManager.CommunicationManagement;
-using Tridion.ContentManager.Templating;
 using Tridion.TopologyManager.Client;
 
 namespace Sdl.Web.Tridion
@@ -12,22 +11,17 @@ namespace Sdl.Web.Tridion
     /// </summary>
     internal static class TopologyManager
     {
-        private static readonly TemplatingLogger _logger = TemplatingLogger.GetLogger(typeof(TopologyManager));
         private static TopologyManagerClient _topologyManagerClient;
-        private static CmEnvironmentData _cmEnvironment;
 
         internal static string GetCmWebsiteUrl()
         {
-            if (_cmEnvironment == null)
+            CmEnvironmentData cmEnvironment = TopologyManagerClient.CmEnvironments.Where(env => env.Id == TopologyManagerClient.ContentManagerEnvironmentId).FirstOrDefault();
+            if (cmEnvironment == null)
             {
-                _cmEnvironment = TopologyManagerClient.CmEnvironments.Where(env => env.Id == TopologyManagerClient.ContentManagerEnvironmentId).FirstOrDefault();
-                if (_cmEnvironment == null)
-                {
-                    throw new Exception("Unable to obtain CM Environment Data from Topology Manager. CM Environment ID: " + TopologyManagerClient.ContentManagerEnvironmentId);
-                }
+                throw new Exception("Unable to obtain CM Environment Data from Topology Manager. CM Environment ID: " + TopologyManagerClient.ContentManagerEnvironmentId);
             }
 
-            return _cmEnvironment.WebsiteRootUrl;
+            return cmEnvironment.WebsiteRootUrl;
         }
 
         internal static string GetSearchQueryUrl(Publication publication, string environmentPurpose)
