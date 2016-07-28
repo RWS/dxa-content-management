@@ -20,8 +20,6 @@ namespace Sdl.Web.Tridion.Templates
         // json content in page
         private const string JsonOutputFormat = "{{\"name\":\"Publish Resources\",\"status\":\"Success\",\"files\":[{0}]}}";
 
-        //private string _moduleRoot;
-
         public override void Transform(Engine engine, Package package)
         {
             Initialize(engine, package);
@@ -32,7 +30,7 @@ namespace Sdl.Web.Tridion.Templates
             //_moduleRoot = GetModulesRoot(coreConfigComponent);
 
             //Get all the active modules
-            Dictionary<string, Component> moduleComponents = GetActiveModules(coreConfigComponent);
+            Dictionary<string, Component> moduleComponents = GetActiveModules();
             List<string> filesCreated = new List<string>();
             
             //For each active module, publish the config and add the filename(s) to the bootstrap list
