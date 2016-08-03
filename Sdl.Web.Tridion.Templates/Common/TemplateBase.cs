@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
 using System.Xml;
-using System.Xml.Linq;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
@@ -29,7 +27,9 @@ namespace Sdl.Web.Tridion.Common
         protected const string JsonMimetype = "application/json";
         protected const string JsonExtension = ".json";
         protected const string BootstrapFilename = "_all";
-        
+        protected const string DxaSchemaNamespaceUri = "http://www.sdl.com/web/schemas/core";
+        protected const string ModuleConfigurationSchemaRootElementName = "ModuleConfiguration";
+
         protected TemplatingLogger Logger
         {
             get
@@ -432,46 +432,64 @@ namespace Sdl.Web.Tridion.Common
             return sg;
         }
 
-        protected Dictionary<string, Component> GetActiveModules(Component coreConfigComponent = null)
+        [Obsolete("Deprecated in DXA 1.6. There is no need to pass in a coreConfigComponent; use the parameterless overload instead.")]
+        protected Dictionary<string, Component> GetActiveModules(Component coreConfigComponent)
         {
-            Schema moduleConfigSchema = coreConfigComponent != null ? coreConfigComponent.Schema : GetModuleConfigSchema();
-            Dictionary<string, Component> results = new Dictionary<string, Component>();
-            foreach (KeyValuePair<TcmUri, string> item in GetUsingItems(moduleConfigSchema, ItemType.Component))
+            return GetActiveModules();
+        }
+
+        protected Dictionary<string, Component> GetActiveModules()
+        {
+            Schema moduleConfigSchema = GetModuleConfigSchema();
+            Session session = moduleConfigSchema.Session;
+
+            UsingItemsFilter moduleConfigComponentsFilter = new UsingItemsFilter(session)
             {
-                try
+                ItemTypes = new[] {ItemType.Component},
+                BaseColumns = ListBaseColumns.Id
+            };
+
+            Repository contextRepository = GetPublication();
+            Dictionary<string, Component> results = new Dictionary<string, Component>();
+            foreach (Component comp in moduleConfigSchema.GetUsingItems(moduleConfigComponentsFilter).Cast<Component>())
+            {
+                // GetUsingItems returns the items in their Owning Publication, which could be lower in the BluePrint than were we are (so don't exist in our context Repository).
+                Component moduleConfigComponent = (Component) contextRepository.GetObject(comp.Id);
+                if (!session.IsExistingObject(moduleConfigComponent.Id))
                 {
-                    Component comp = (Component)Engine.GetObject(Engine.LocalizeUri(item.Key));
-                    ItemFields fields = new ItemFields(comp.Content, comp.Schema);
-                    string moduleName =  fields.GetTextValue("name").Trim().ToLower();
-                    if (fields.GetTextValue("isActive").ToLower() == "yes" && !results.ContainsKey(moduleName))
-                    {
-                        results.Add(moduleName, comp);
-                    }
+                    continue;
                 }
-                catch (Exception)
+
+                ItemFields fields = new ItemFields(moduleConfigComponent.Content, moduleConfigComponent.Schema);
+                string moduleName = fields.GetTextValue("name").Trim().ToLower();
+                if (fields.GetTextValue("isActive").ToLower() == "yes" && !results.ContainsKey(moduleName))
                 {
-                    //Do nothing, this module is not available in this publication
+                    results.Add(moduleName, moduleConfigComponent);
                 }
             }
+
             return results;
         }
+
 
         private Schema GetModuleConfigSchema()
         {
             Publication pub = GetPublication();
-            RepositoryItemsFilter filter = new RepositoryItemsFilter(pub.Session)
-                {
-                    ItemTypes = new List<ItemType> { ItemType.Schema },
-                    Recursive = true
-                };
-            foreach (KeyValuePair<TcmUri, string> item in XmlElementToTcmUriList(GetPublication().GetListItems(filter)))
+
+            Schema[] moduleConfigSchemas = pub.GetSchemasByNamespaceUri(DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName).ToArray();
+            if (moduleConfigSchemas.Length != 1)
             {
-                if (item.Value == "Module Configuration")
+                if (moduleConfigSchemas.Any())
                 {
-                    return (Schema)pub.Session.GetObject(item.Key); 
+                    throw new Exception(string.Format("Found multiple Schemas with namespace '{0}' and root element name '{1}'", DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName) );
+                }
+                else
+                {
+                    throw new Exception(string.Format("Schema with namespace '{0}' and root element name '{1}' not found.", DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName));
                 }
             }
-            throw new Exception("Cannot find Schema named \"Module Configuration\"- please check that this has not been renamed.");
+
+            return moduleConfigSchemas.First();
         }
 
         protected string GetModuleNameFromItem(RepositoryLocalObject item, string moduleRoot)

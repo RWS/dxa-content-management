@@ -2,7 +2,6 @@
 using System.Text;
 using Sdl.Web.Tridion.Common;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
@@ -52,7 +51,7 @@ namespace Sdl.Web.Tridion.Templates
             _configStructureGroup = GetSystemStructureGroup("config");
 
             // Determine the active modules
-            Dictionary<string, Component> modules = GetActiveModules(coreConfigComponent);
+            Dictionary<string, Component> modules = GetActiveModules();
             List<string> filesCreated = new List<string>();
 
             //For each active module, publish the config and add the filename(s) to the bootstrap list
