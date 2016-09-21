@@ -105,6 +105,7 @@
     <Compile Include="Common\ObjectExtensions.cs" />
     <Compile Include="Common\StringBuilderExtensions.cs" />
     <Compile Include="Common\Utility.cs" />
+    <Compile Include="DxaException.cs" />
     <Compile Include="Templates\DD4T\ContextExpressionManager.cs" />
     <Compile Include="Templates\DD4T\DxaBuildManager.cs" />
     <Compile Include="Templates\GenerateSitemap.cs" />
