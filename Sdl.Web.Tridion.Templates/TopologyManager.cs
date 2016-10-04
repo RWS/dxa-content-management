@@ -11,8 +11,6 @@ namespace Sdl.Web.Tridion
     /// </summary>
     internal static class TopologyManager
     {
-        private static TopologyManagerClient _topologyManagerClient;
-
         internal static string GetCmWebsiteUrl()
         {
             CmEnvironmentData cmEnvironment = TopologyManagerClient.CmEnvironments.Where(env => env.Id == TopologyManagerClient.ContentManagerEnvironmentId).FirstOrDefault();
@@ -46,14 +44,10 @@ namespace Sdl.Web.Tridion
         {
             get
             {
-                if (_topologyManagerClient == null)
+                return new TopologyManagerClient
                 {
-                    _topologyManagerClient = new TopologyManagerClient
-                    {
-                        Credentials = CredentialCache.DefaultNetworkCredentials
-                    };
-                }
-                return _topologyManagerClient;
+                    Credentials = CredentialCache.DefaultNetworkCredentials
+                };
             }
         }
     }

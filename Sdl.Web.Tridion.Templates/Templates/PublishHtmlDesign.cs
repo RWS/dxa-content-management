@@ -5,6 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 using Sdl.Web.Tridion.Common;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
@@ -23,208 +24,236 @@ namespace Sdl.Web.Tridion.Templates
     [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.PublishHtmlDesignParameters.xsd")]
     public class PublishHtmlDesign : TemplateBase
     {
-        // name of system structure group
         private const string SystemSgName = "_System";
- 
-        // json content in page
-        private const string JsonOutputFormat = "{{\"name\":\"Publish HTML Design\",\"status\":\"Success\",\"files\":[{0}]}}";
-        
-        // set of files to merge across modules
-        private readonly Dictionary<string, List<string>> _mergeFileLines = new Dictionary<string, List<string>>();
+        private const string HtmlDesignConfigNamespace = "http://www.sdl.com/web/schemas/html-design";
+        private const string HtmlDesignConfigRootElementName = "HtmlDesignConfig";
 
-        // work folder for unzipping, merging and building design files
-        private string _tempFolder;
+        // Set of files to merge across modules
+        private readonly Dictionary<string, List<string>> _mergeFileLines = new Dictionary<string, List<string>>
+        {
+            { @"src\system\assets\less\_custom.less", new List<string>()},
+            { @"src\system\assets\less\_modules.less", new List<string>()},
+            { @"src\templates\partials\module-scripts-header.hbs", new List<string>()},
+            { @"src\templates\partials\module-scripts-footer.hbs", new List<string>()},
+            { @"src\templates\partials\module-scripts-xpm.hbs", new List<string>()}
+        };
+
+        private class SummaryData
+        {
+            [JsonProperty("name")]
+            public string Name;
+
+            [JsonProperty("status")]
+            public string Status;
+
+            [JsonProperty("files")]
+            public IEnumerable<string> Files;
+        }
+
 
         public override void Transform(Engine engine, Package package)
         {
             Initialize(engine, package);
 
-            _mergeFileLines.Add("src\\system\\assets\\less\\_custom.less", new List<string>());
-            _mergeFileLines.Add("src\\system\\assets\\less\\_modules.less", new List<string>());
-            _mergeFileLines.Add("src\\templates\\partials\\module-scripts-header.hbs", new List<string>());
-            _mergeFileLines.Add("src\\templates\\partials\\module-scripts-footer.hbs", new List<string>());
-            _mergeFileLines.Add("src\\templates\\partials\\module-scripts-xpm.hbs", new List<string>());
+            string cleanupParameter = package.GetValue("cleanup");
+            string driveParameter = Package.GetValue("drive");
 
-            StringBuilder publishedFiles = new StringBuilder();
-            string drive = package.GetValue("drive") ?? String.Empty;
-            string cleanup = package.GetValue("cleanup") ?? String.Empty;
+            List<Binary> binaries = new List<Binary>();
 
-            // not using System.IO.Path.GetTempPath() because the paths in our zip are already quite long,
-            // so we need a very short temp path for the extract of our zipfile to succeed
-            // using current time and convert to hex (the date won't matter as this folder is cleaned up so time is unique enough)
-            int timestamp = Convert.ToInt32(DateTime.Now.ToString("HHmmssfff"));
-            if (!String.IsNullOrEmpty(drive) && Char.IsLetter(drive.First()))
+            // Read values from HTML Design Configuration Component (which should be the Component used for this Component Presentation)
+            Component inputComponent = GetComponent();
+            if (inputComponent.Schema.NamespaceUri != HtmlDesignConfigNamespace || inputComponent.Schema.RootElementName != HtmlDesignConfigRootElementName)
             {
+                throw new DxaException(
+                    string.Format("Unexpected input Component {0} ('{1}'). Expecting HTML Design Configuration Component.", inputComponent.Id, inputComponent.Title)
+                    );
+            }
+            ItemFields htmlDesignConfigFields = new ItemFields(inputComponent.Content, inputComponent.Schema);
+            Component favIconComponent = htmlDesignConfigFields.GetMultimediaLink("favicon");
+            string htmlDesignVersion = htmlDesignConfigFields.GetTextValue("version");
 
-                _tempFolder = drive.First() + @":\_" + timestamp.ToString("x");
-            }
-            else
-            {
-                // using drive from tridion cm homedir for temp folder
-                _tempFolder = ConfigurationSettings.GetTcmHomeDirectory().Substring(0, 3) + "_" + timestamp.ToString("x");
-            }
+            // Publish version.json file
+            IDictionary<string, string> versionData = new Dictionary<string, string> { { "version", htmlDesignVersion } };
+            Binary versionJsonBinary = AddJsonBinary(
+                versionData,
+                relatedComponent: inputComponent,
+                structureGroup: GetPublication().RootStructureGroup,
+                name: "version",
+                variantId: "version"
+                );
+            binaries.Add(versionJsonBinary);
+
+            string tempFolder = GetTempFolder(driveParameter);
+            Directory.CreateDirectory(tempFolder);
+            Logger.Debug("Created temp folder: " + tempFolder);
 
             try
             {
-                // read values from Component
-                Component config = GetComponent();
-                ItemFields fields = new ItemFields(config.Content, config.Schema);
-                Component favicon = fields.GetMultimediaLink("favicon");
-                string version = fields.GetTextValue("version");
-
-                string url = PublishJson(String.Format("{{\"version\":{0}}}", JsonEncode(version)), config, GetPublication().RootStructureGroup, "version", "version");
-                publishedFiles.AppendCommaSeparated(url);
-                Logger.Info("Published " + url);
-
-                // create temp folder
-                Directory.CreateDirectory(_tempFolder);
-                Logger.Debug("Created " + _tempFolder);
+                // Unzip and merge files
+                ProcessModules(tempFolder);
                 
-                // unzip and merge files
-                ProcessModules();                
-                
-                // build html design
-                string user = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-                ProcessStartInfo info = new ProcessStartInfo
-                    {
-                        FileName = "cmd.exe",
-                        Arguments = "/c npm start --color=false",
-                        WorkingDirectory = _tempFolder,
-                        CreateNoWindow = true,
-                        ErrorDialog = false,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        StandardErrorEncoding = Encoding.UTF8,
-                        StandardOutputEncoding = Encoding.UTF8
-                    };
-                using (Process cmd = new Process { StartInfo = info })
+                string distFolder = BuildHtmlDesign(tempFolder);
+
+                // Save favicon to disk (if available)
+                if (favIconComponent != null)
                 {
-                    cmd.Start();
-                    using (StreamReader reader = cmd.StandardOutput)
-                    {
-                        string output = reader.ReadToEnd();
-                        if (!String.IsNullOrEmpty(output))
-                        {
-                            Logger.Info(output);
-
-                            // TODO: check for errors in standard output and throw exception
-                        }
-                    }
-                    using (StreamReader reader = cmd.StandardError)
-                    {
-                        string error = reader.ReadToEnd();
-                        if (!String.IsNullOrEmpty(error))
-                        {
-                            Exception ex = new Exception(error);
-                            ex.Data.Add("Filename", info.FileName);
-                            ex.Data.Add("Arguments", info.Arguments);
-                            ex.Data.Add("User", user);
-
-                            // TODO: check for known errors and throw exception with a user friendly message
-                            //if (error.ToLower().Contains("something"))
-                            //{
-                            //    throw new Exception(String.Format("Something went wrong for user {0}.", user), ex);
-                            //}
-
-                            throw ex;
-                        }
-                    }
-                    cmd.WaitForExit();
+                    string favIconFilePath = Path.Combine(distFolder, "favicon.ico");
+                    File.WriteAllBytes(favIconFilePath, favIconComponent.BinaryContent.GetByteArray());
+                    Logger.Debug("Saved " + favIconFilePath);
                 }
 
-                // publish all binaries from dist folder
-                string dist = Path.Combine(_tempFolder, "dist");
-                if (Directory.Exists(dist))
+                // Publish all files from dist folder
+                Publication pub = (Publication) inputComponent.ContextRepository;
+                string rootStructureGroupWebDavUrl = pub.RootStructureGroup.WebDavUrl;
+                RenderedItem renderedItem = engine.PublishingContext.RenderedItem;
+
+                string[] distFiles = Directory.GetFiles(distFolder, "*.*", SearchOption.AllDirectories);
+                foreach (string file in distFiles)
                 {
-                    // save favicon to disk (if available)
-                    if (favicon != null)
+                    Logger.Debug("Found " + file);
+
+                    // Map the file path to a Structure Group
+                    string relativeFolderPath = file.Substring(distFolder.Length, file.LastIndexOf('\\') - distFolder.Length);
+                    Logger.Debug(string.Format("Relative folder path: '{0}'",relativeFolderPath));
+                    string sgWebDavUrl = rootStructureGroupWebDavUrl + relativeFolderPath.Replace("system", SystemSgName).Replace('\\', '/');
+                    StructureGroup structureGroup = engine.GetObject(sgWebDavUrl) as StructureGroup;
+                    if (structureGroup == null)
                     {
-                        string ico = Path.Combine(dist, "favicon.ico");
-                        File.WriteAllBytes(ico, favicon.BinaryContent.GetByteArray());
-                        Logger.Debug("Saved " + ico);
+                        throw new DxaException(string.Format("Cannot publish '{0}' because Structure Group '{1}' does not exist.", file, sgWebDavUrl));
                     }
 
-                    string[] files = Directory.GetFiles(dist, "*.*", SearchOption.AllDirectories);
-                    foreach (string file in files)
+                    // Add binary to package and publish
+                    using (FileStream fs = File.OpenRead(file))
                     {
                         string filename = Path.GetFileName(file);
                         string extension = Path.GetExtension(file);
-                        Logger.Debug("Found " + file);
+                        string variantId =  string.Format("dist-{0}-{1}", structureGroup.Id.ItemId, filename);
+                        Item binaryItem = Package.CreateStreamItem(GetContentType(extension), fs);
+                        Binary binary = renderedItem.AddBinary(
+                            binaryItem.GetAsStream(),
+                            filename,
+                            structureGroup,
+                            variantId,
+                            inputComponent,
+                            GetMimeType(extension)
+                            );
+                        binaryItem.Properties[Item.ItemPropertyPublishedPath] = binary.Url;
+                        package.PushItem(filename, binaryItem);
 
-                        // determine correct structure group
-                        Publication pub = (Publication)config.ContextRepository;
-                        string relativeFolderPath = file.Substring(dist.Length, file.LastIndexOf('\\') - dist.Length);
-                        Logger.Debug("Relative path: " + relativeFolderPath);
-                        relativeFolderPath = relativeFolderPath.Replace("system", SystemSgName).Replace('\\', '/');
-                        string pubSgWebDavUrl = pub.RootStructureGroup.WebDavUrl;
-                        string publishSgWebDavUrl = pubSgWebDavUrl + relativeFolderPath;
-                        Logger.Debug("Structure Group WebDAV URL: " + publishSgWebDavUrl);
-                        StructureGroup sg = engine.GetObject(publishSgWebDavUrl) as StructureGroup;
-                        if (sg == null)
-                        {
-                            throw new Exception("Missing Structure Group " + publishSgWebDavUrl);
-                        }
-
-                        // add binary to package and publish
-                        using (FileStream fs = File.OpenRead(file))
-                        {
-                            Item binaryItem = Package.CreateStreamItem(GetContentType(extension), fs);
-                            Binary binary = engine.PublishingContext.RenderedItem.AddBinary(binaryItem.GetAsStream(), filename, sg, "dist-" + filename, config, GetMimeType(extension));
-                            binaryItem.Properties[Item.ItemPropertyPublishedPath] = binary.Url;
-                            package.PushItem(filename, binaryItem);
-
-                            publishedFiles.AppendCommaSeparated("\"{0}\"", binary.Url);
-                            Logger.Info("Published " + binary.Url);
-                        }                            
+                        binaries.Add(binary);
+                        Logger.Info(string.Format("Added Binary '{0}' related to {1} with variant ID '{2}'", binary.Url, inputComponent, variantId));
                     }
-                }
-                else
-                {
-                    throw new Exception("Grunt build failed, dist folder is missing.");
                 }
             }
             finally
             {
-                if (String.IsNullOrEmpty(cleanup) || !cleanup.ToLower().Equals("false"))
+                if (string.IsNullOrEmpty(cleanupParameter) || !cleanupParameter.Equals("false", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    // cleanup workfolder
-                    Directory.Delete(_tempFolder, true);
-                    Logger.Debug("Removed " + _tempFolder);
+                    Directory.Delete(tempFolder, true);
+                    Logger.Debug("Removed temp folder " + tempFolder);
                 }
                 else
                 {
-                    Logger.Debug("Did not cleanup " + _tempFolder);
+                    Logger.Debug("Did not cleanup temp folder " + tempFolder);
                 }
             }
 
-            // output json result
-            package.PushItem(Package.OutputName, package.CreateStringItem(ContentType.Text, String.Format(JsonOutputFormat, publishedFiles)));
+            // Return Summary JSON as Output item
+            SummaryData summary = new SummaryData
+            {
+                Name = "Publish HTML Design",
+                Status = "success",
+                Files = binaries.Select(b => b.Url)
+            };
+            package.PushItem(Package.OutputName, package.CreateStringItem(ContentType.Text, JsonSerialize(summary)));
         }
 
-        protected void ProcessModules()
+        private string GetTempFolder(string driveParameter)
+        {
+            int timestamp = Convert.ToInt32(DateTime.Now.ToString("HHmmssfff"));
+            if (!string.IsNullOrEmpty(driveParameter) && char.IsLetter(driveParameter.First()))
+            {
+                // Supporting drive parameter for backward compatibility
+                return driveParameter.First() + @":\_" + timestamp.ToString("x");
+            }
+
+            return Path.Combine(Path.GetTempPath(), timestamp.ToString("x"));
+        }
+
+        private string BuildHtmlDesign(string tempFolder)
+        {
+            string user = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            ProcessStartInfo info = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = "/c npm start --color=false",
+                WorkingDirectory = tempFolder,
+                CreateNoWindow = true,
+                ErrorDialog = false,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                StandardErrorEncoding = Encoding.UTF8,
+                StandardOutputEncoding = Encoding.UTF8
+            };
+            using (Process cmd = new Process { StartInfo = info })
+            {
+                cmd.Start();
+                using (StreamReader reader = cmd.StandardOutput)
+                {
+                    string output = reader.ReadToEnd();
+                    if (!String.IsNullOrEmpty(output))
+                    {
+                        Logger.Info(output);
+                    }
+                }
+                using (StreamReader reader = cmd.StandardError)
+                {
+                    string error = reader.ReadToEnd();
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        Exception ex = new DxaException(error);
+                        ex.Data.Add("Filename", info.FileName);
+                        ex.Data.Add("Arguments", info.Arguments);
+                        ex.Data.Add("User", user);
+                        throw ex;
+                    }
+                }
+                cmd.WaitForExit();
+            }
+
+            string distFolder = Path.Combine(tempFolder, "dist");
+            if (!Directory.Exists(distFolder))
+            {
+                throw new DxaException("HTML Design build failed; dist folder is missing.");
+            }
+            return distFolder;
+        }
+
+        protected void ProcessModules(string tempFolder)
         {
             Dictionary<string, Component> modules = GetActiveModules();
+            // TODO TSI-1081: get rid of hard-coded "core" name here
             foreach (KeyValuePair<string, Component> module in modules)
             {
                 string moduleName = module.Key;
                 if (moduleName != "core")
                 {
-                    ProcessModule(moduleName, module.Value);
+                    ProcessModule(moduleName, module.Value, tempFolder);
                 }
             }
-            ProcessModule("core", modules["core"]);
+            ProcessModule("core", modules["core"], tempFolder);
 
             // overwrite all merged files
             foreach (KeyValuePair<string, List<string>> mergeFile in _mergeFileLines)
             {
-                string file = Path.Combine(_tempFolder, mergeFile.Key);
+                string file = Path.Combine(tempFolder, mergeFile.Key);
                 File.WriteAllText(file, String.Join(Environment.NewLine, mergeFile.Value));
                 Logger.Debug("Saved " + file);
             }   
         }
 
-        protected void ProcessModule(string moduleName, Component moduleComponent)
+        protected void ProcessModule(string moduleName, Component moduleComponent, string tempFolder)
         {
             Component designConfig = GetDesignConfigComponent(moduleComponent);
             if (designConfig != null)
@@ -237,20 +266,20 @@ namespace Sdl.Web.Tridion.Templates
                 if (zip != null)
                 {
                     // write binary contents as zipfile to disk
-                    string zipfile = Path.Combine(_tempFolder, moduleName + "-html-design.zip");
+                    string zipfile = Path.Combine(tempFolder, moduleName + "-html-design.zip");
                     File.WriteAllBytes(zipfile, zip.BinaryContent.GetByteArray());
 
                     // unzip
                     using (ZipArchive archive = ZipFile.OpenRead(zipfile))
                     {
-                        archive.ExtractToDirectory(_tempFolder, true);
+                        archive.ExtractToDirectory(tempFolder, true);
                     }
 
                     // add content from merge files if available
                     List<string> files = _mergeFileLines.Keys.Select(s => s).ToList();
                     foreach (string mergeFile in files)
                     {
-                        string path = Path.Combine(_tempFolder, mergeFile);
+                        string path = Path.Combine(tempFolder, mergeFile);
                         if (File.Exists(path))
                         {
                             foreach (string line in File.ReadAllLines(path))
@@ -276,22 +305,22 @@ namespace Sdl.Web.Tridion.Templates
                     Component buildFiles = fields.GetComponentValue("build");
                     if (buildFiles != null)
                     {
-                        ProcessBuildFiles(buildFiles);
+                        ProcessBuildFiles(buildFiles, tempFolder);
                     }
                 }
             }
         }
 
-        protected void ProcessBuildFiles(Component zip)
+        protected void ProcessBuildFiles(Component zip, string tempFolder)
         {
             // write binary contents as zipfile to disk
-            string zipfile = Path.Combine(_tempFolder, "build-files.zip");
+            string zipfile = Path.Combine(tempFolder, "build-files.zip");
             File.WriteAllBytes(zipfile, zip.BinaryContent.GetByteArray());
 
             // unzip
             using (ZipArchive archive = ZipFile.OpenRead(zipfile))
             {
-                archive.ExtractToDirectory(_tempFolder, true);
+                archive.ExtractToDirectory(tempFolder, true);
             }
         }
 

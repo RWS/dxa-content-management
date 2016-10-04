@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
 using System.Xml;
+using Newtonsoft.Json;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
@@ -365,6 +366,8 @@ namespace Sdl.Web.Tridion.Common
             Binary jsonBinary = Engine.PublishingContext.RenderedItem.AddBinary(jsonItem.GetAsStream(), name + JsonExtension, structureGroup, variantId, relatedComponent, JsonMimetype);
             jsonItem.Properties[Item.ItemPropertyPublishedPath] = jsonBinary.Url;
             Package.PushItem(jsonBinary.Url, jsonItem);
+
+            Logger.Info(string.Format("Added JSON Binary '{0}' related to {1} with variant ID '{2}'", jsonBinary.Url, relatedComponent, variantId));
             return jsonBinary;
         }
 
@@ -412,9 +415,7 @@ namespace Sdl.Web.Tridion.Common
 
         protected string JsonSerialize(object objectToSerialize)
         {
-            // TODO TSI-1263: Use JSON.NET
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            return serializer.Serialize(objectToSerialize);
+            return JsonConvert.SerializeObject(objectToSerialize);
         }
 
         #endregion
