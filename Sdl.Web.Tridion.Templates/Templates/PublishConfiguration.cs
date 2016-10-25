@@ -124,23 +124,20 @@ namespace Sdl.Web.Tridion.Templates
                         break;
 
                     case EnvironmentConfigComponentTitle:
-                        if (Session.ApiVersion.StartsWith("8."))
+                        string cmWebsiteUrl = TopologyManager.GetCmWebsiteUrl();
+                        string cmsUrl;
+                        if (data.TryGetValue(CmsUrlKey, out cmsUrl) && !string.IsNullOrWhiteSpace(cmsUrl))
                         {
-                            string cmWebsiteUrl = TopologyManager.GetCmWebsiteUrl();
-                            string cmsUrl;
-                            if (data.TryGetValue(CmsUrlKey, out cmsUrl) && !string.IsNullOrWhiteSpace(cmsUrl))
-                            {
-                                Logger.Warning(
-                                    string.Format("Overriding '{0}' specified in '{1}' Component ('{2}') with CM Website URL obtained from Topology Manager: '{3}'", 
-                                        CmsUrlKey, EnvironmentConfigComponentTitle, cmsUrl, cmWebsiteUrl)
-                                    );
-                            }
-                            else
-                            {
-                                Logger.Info(string.Format("Setting '{0}' to CM Website URL obtained from Topology Manager: '{1}'", CmsUrlKey, cmWebsiteUrl));
-                            }
-                            data[CmsUrlKey] = cmWebsiteUrl;
+                            Logger.Warning(
+                                string.Format("Overriding '{0}' specified in '{1}' Component ('{2}') with CM Website URL obtained from Topology Manager: '{3}'",
+                                    CmsUrlKey, EnvironmentConfigComponentTitle, cmsUrl, cmWebsiteUrl)
+                                );
                         }
+                        else
+                        {
+                            Logger.Info(string.Format("Setting '{0}' to CM Website URL obtained from Topology Manager: '{1}'", CmsUrlKey, cmWebsiteUrl));
+                        }
+                        data[CmsUrlKey] = cmWebsiteUrl;
                         break;
 
                     case SearchConfigComponentTitle:

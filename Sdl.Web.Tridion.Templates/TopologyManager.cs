@@ -7,7 +7,7 @@ using Tridion.TopologyManager.Client;
 namespace Sdl.Web.Tridion
 {
     /// <summary>
-    /// Wrapper class for access to Topology Manager (to prevent assembly binding errors when run on SDL Tridion 2013 SP1, which doesn't have Tridion.TopologyManager.Client).
+    /// Wrapper class for access to Topology Manager.
     /// </summary>
     internal static class TopologyManager
     {
