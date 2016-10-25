@@ -4,7 +4,7 @@ SDL Digital Experience Accelerator Core Template Building Blocks
 
 About
 -----
-The SDL Digital Experience Accelerator (DXA) is a reference implementation of SDL Web 8 and SDL Tridion 2013 SP1 intended to help you create, design and publish an SDL Web/Tridion-based website quickly.
+The SDL Digital Experience Accelerator (DXA) is a reference implementation of SDL Web 8 and SDL Tridion 2013 SP1(*) intended to help you create, design and publish an SDL Web/Tridion-based website quickly.
 
 It is available for .NET and Java Web Applications and has a modular architecture consisting of a Framework and example web application providing core functionality and separate Modules for additional, optional functionality.
 
@@ -19,7 +19,7 @@ Note that the `Sdl.Web.Tridion.Templates.csproj` project references CM assemblie
 because these assemblies cannot be distributed without a signed license agreement.
 In order to build the project, the following CM assemblies will have to be obtained from an SDL Web/Tridion distribution and put in the appropriate `_references` subdirectories:
 
-2013-sp1:
+cm-8.1:
 
  - Tridion.Common.dll
  - Tridion.ContentManager.Common.dll
@@ -31,9 +31,6 @@ In order to build the project, the following CM assemblies will have to be obtai
  - Tridion.ExternalContentLibrary.dll
  - Tridion.ExternalContentLibrary.V2.dll
  - Tridion.Logging.dll
-
-cm-8.1:
-
  - Tridion.TopologyManager.Client.dll
  - Microsoft.OData.Client.dll
  - Microsoft.OData.Core.dll
@@ -41,7 +38,8 @@ cm-8.1:
  - Microsoft.Spatial.dll
  - Newtonsoft.Json.dll
 
-
+(*) SDL Tridion 2013 SP1 is only supported up to DXA version 1.6.
+ 
 Support
 ---------------
 At SDL we take your investment in Digital Experience very seriously, and will do our best to support you throughout this journey. 
