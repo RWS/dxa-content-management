@@ -108,6 +108,7 @@
     <Compile Include="DxaException.cs" />
     <Compile Include="Templates\DD4T\ContextExpressionManager.cs" />
     <Compile Include="Templates\DD4T\DxaBuildManager.cs" />
+    <Compile Include="Templates\DD4T\GenerateDynamicComponent.cs" />
     <Compile Include="Templates\GenerateSitemap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />
@@ -132,6 +133,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\GenerateDynamicComponentParameters.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\GenerateDynamicPageParameters.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
