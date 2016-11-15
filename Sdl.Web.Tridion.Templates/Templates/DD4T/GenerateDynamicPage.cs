@@ -11,6 +11,7 @@ namespace Sdl.Web.Tridion.Templates.DD4T
     /// Generates a DD4T data model based on the current Page
     /// </summary>
     [TcmTemplateTitle("Generate Dynamic Page (DXA)")]
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.GenerateDynamicPageParameters.xsd")]
     public class GenerateDynamicPage : BasePageTemplate // TODO: Would be much nicer to inherit from DD4T.DynamicPage, but that's not in a NuGet package (?)
     {
         private BinaryPublisher _binaryPublisher = null;

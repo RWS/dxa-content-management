@@ -46,18 +46,12 @@ namespace Sdl.Web.Tridion.Common
                 return false;
             }
 
-            if (Session.ApiVersion.StartsWith("8."))
+            TargetType targetType = publishingContext.TargetType;
+            if (targetType != null && targetType.BusinessProcessType != null)
             {
-                // We're going to use new properties which are only available in CM 8.1 and higher.
-                // To avoid having to reference CM 8.1 APIs (which won't bind on CM 7.1), we use dynamic types here.
-                dynamic pubContext = publishingContext;
-                dynamic targetType = pubContext.TargetType;
-                if (targetType != null && targetType.BusinessProcessType != null)
-                {
-                    // New-style publishing
-                    Publication contextPublication = (Publication) ((RepositoryLocalObject) publishingContext.ResolvedItem.Item).ContextRepository;
-                    return targetType.IsPreviewCapable(contextPublication);
-                }
+                // New-style publishing
+                Publication contextPublication = (Publication) ((RepositoryLocalObject) publishingContext.ResolvedItem.Item).ContextRepository;
+                return targetType.IsPreviewCapable(contextPublication);
             }
 
             return IsPublicationTargetXpmEnabled(publishingContext.PublicationTarget);
@@ -88,15 +82,7 @@ namespace Sdl.Web.Tridion.Common
 
         public static string GetCdEnvironmentPurpose(PublishingContext publishingContext)
         {
-            if (!Session.ApiVersion.StartsWith("8."))
-            {
-                return null;
-            }
-
-            // We're going to use new properties which are only available in CM 8.1 and higher.
-            // To avoid having to reference CM 8.1 APIs (which won't bind on CM 7.1), we use dynamic types here.
-            dynamic pubContext = publishingContext;
-            dynamic targetType = pubContext.TargetType;
+            TargetType targetType = publishingContext.TargetType;
             if (targetType == null || targetType.BusinessProcessType == null)
             {
                 // Template Debugger, CM Preview or old-style publishing
