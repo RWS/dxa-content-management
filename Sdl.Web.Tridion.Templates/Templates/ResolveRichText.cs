@@ -25,7 +25,7 @@ namespace Sdl.Web.Tridion.Templates
         private const string FileNameAttribute = "data-multimediaFileName";
         private const string FileSizeAttribute = "data-multimediaFileSize";
         private const string MimeTypeAttribute = "data-multimediaMimeType";
-        private const string TcmXLinkPattern = @"xlink:href=\\""(tcm\:\d+\-\d+)\\""";
+        private const string TcmXLinkPattern = @"xlink:href=\\""(tcm\:\d+\-\d+)\\""(?!\sdata-schemaUri)";
         private const string XhtmlNamespaceDeclaration = " xmlns=\\\"http://www.w3.org/1999/xhtml\\\"";
 
         private List<string> _dataFieldNames;
