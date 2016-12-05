@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web.Script.Serialization;
 using System.Xml;
 using Newtonsoft.Json;
+using Sdl.Web.Common.Models.Data;
+using Sdl.Web.Tridion.Templates;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
@@ -21,30 +22,58 @@ namespace Sdl.Web.Tridion.Common
     /// </summary>
     public abstract class TemplateBase : ITemplate
     {
-        protected Engine Engine;
-        protected Package Package;
-        protected int RenderContext = -1;
-
         protected const string JsonMimetype = "application/json";
         protected const string JsonExtension = ".json";
         protected const string BootstrapFilename = "_all";
         protected const string DxaSchemaNamespaceUri = "http://www.sdl.com/web/schemas/core";
         protected const string ModuleConfigurationSchemaRootElementName = "ModuleConfiguration";
 
+        private TemplatingLogger _logger;
+        private Engine _engine;
+        private Package _package;
+        private bool? _isPublishingToStaging;
+
+        protected Engine Engine
+        {
+            get
+            {
+                if (_engine == null)
+                {
+                    throw new DxaException("Initialize has not been called.");
+                }
+                return _engine;
+            }
+        }
+        protected Package Package
+        {
+            get
+            {
+                if (_package == null)
+                {
+                    throw new DxaException("Initialize has not been called.");
+                }
+                return _package;
+            }
+        }
+
+        protected Session Session
+        {
+            get { return Engine.GetSession(); }
+        }
+
         protected TemplatingLogger Logger
         {
             get
             {
-                if (_mLogger == null)
+                if (_logger == null)
                 {
-                    _mLogger = TemplatingLogger.GetLogger(GetType());
+                    _logger = TemplatingLogger.GetLogger(GetType());
                 }
 
-                return _mLogger;
+                return _logger;
             }
         }
 
-        private TemplatingLogger _mLogger;
 
         /// <summary>
         /// Initializes the engine and package to use in this TemplateBase object.
@@ -53,23 +82,42 @@ namespace Sdl.Web.Tridion.Common
         /// <param name="package">The package to use in calls to the other methods of this TemplateBase object</param>
         protected void Initialize(Engine engine, Package package)
         {
-            Engine = engine;
-            Package = package;
+            _engine = engine;
+            _package = package;
         }
 
-        public virtual void Transform(Engine engine, Package package) { }
+        public abstract void Transform(Engine engine, Package package);
 
         /// <summary>
         /// Checks whether the TemplateBase object has been initialized correctly.
-        /// This method should be called from any method that requires the <c>m_Engine</c>, 
-        /// <c>m_Package</c> or <c>_log</c> member fields.
         /// </summary>
+        [Obsolete("Deprecated in DXA 1.7. No need to call this anymore.")]
         protected void CheckInitialized()
         {
-            if (Engine == null || Package == null)
+        }
+
+        /// <summary>
+        /// Update the (JSON) summary in the Output item.
+        /// </summary>
+        /// <param name="name">The name of the Template.</param>
+        /// <param name="files">The files/binaries created by the Template.</param>
+        protected void OutputSummary(string name, IEnumerable<string> files)
+        {
+            List<SummaryData> summaries = new List<SummaryData>();
+
+            Item outputItem = Package.GetByName(Package.OutputName);
+            if (outputItem != null)
             {
-                throw new InvalidOperationException("This method can not be invoked, unless Initialize has been called");
+                summaries = JsonConvert.DeserializeObject <List<SummaryData>>(outputItem.GetAsString());
+                Package.Remove(outputItem);
             }
+
+            SummaryData summary = new SummaryData { Name = name, Status = "Success", Files = files };
+            summaries.Add(summary);
+
+            string summariesJson = JsonSerialize(summaries);
+            outputItem = Package.CreateStringItem(ContentType.Text, summariesJson);
+            Package.PushItem(Package.OutputName, outputItem);
         }
 
         #region Get context objects and information
@@ -79,20 +127,7 @@ namespace Sdl.Web.Tridion.Common
         /// </summary>
         public bool IsPageTemplate()
         {
-
-            if (RenderContext == -1)
-            {
-                if (Engine.PublishingContext.ResolvedItem.Item is Page)
-                {
-                    RenderContext = 1;
-                }
-                else
-                {
-                    RenderContext = 0;
-                }
-            }
-
-            return RenderContext == 1;
+            return Engine.PublishingContext.ResolvedItem.Item is Page;
         }
 
         /// <summary>
@@ -105,7 +140,6 @@ namespace Sdl.Web.Tridion.Common
         /// <returns>the component object that is defined in the package for this template.</returns>
         public Component GetComponent()
         {
-            CheckInitialized();
             Item component = Package.GetByName(Package.ComponentName);
             if (component != null)
             {
@@ -121,7 +155,6 @@ namespace Sdl.Web.Tridion.Common
         /// <returns>A Component Template or null</returns>
         protected ComponentTemplate GetComponentTemplate()
         {
-            CheckInitialized();
             Template template = Engine.PublishingContext.ResolvedItem.Template;
 
             // "if (template is ComponentTemplate)" might work instead
@@ -143,8 +176,6 @@ namespace Sdl.Web.Tridion.Common
         /// <returns>the page object that is defined in the package for this template.</returns>
         public Page GetPage()
         {
-            CheckInitialized();
-
             //first try to get from the render context
             RenderContext renderContext = Engine.PublishingContext.RenderContext;
             if (renderContext != null)
@@ -168,16 +199,9 @@ namespace Sdl.Web.Tridion.Common
         /// <summary>
         /// Returns the publication object that can be determined from the package for this template.
         /// </summary>
-        /// <remarks>
-        /// This method currently depends on a Page item being available in the package, meaning that
-        /// it will only work when invoked from a Page Template.
-        /// 
-        /// </remarks>
         /// <returns>the Publication object that can be determined from the package for this template.</returns>
         protected Publication GetPublication()
         {
-            CheckInitialized();
-
             RepositoryLocalObject pubItem;
             Repository repository = null;
 
@@ -204,7 +228,11 @@ namespace Sdl.Web.Tridion.Common
         /// <returns>True if publishing to a target which is XPM enabled.</returns>
         protected bool IsPublishingToStaging()
         {
-            return Utility.IsXpmEnabled(Engine.PublishingContext);
+            if (!_isPublishingToStaging.HasValue)
+            {
+                _isPublishingToStaging = Utility.IsXpmEnabled(Engine.PublishingContext);
+            }
+            return _isPublishingToStaging.Value;
         }
 
         protected bool IsPreviewMode()
@@ -350,6 +378,15 @@ namespace Sdl.Web.Tridion.Common
             return PublishJson(String.Format("{{{0}\"files\":[{1}]}}", extras, String.Join(",", filesCreated.Where(i=>!String.IsNullOrEmpty(i)).ToList())), relatedComponent, sg, BootstrapFilename, variantName + "bootstrap");
         }
 
+        protected void AddBootstrapJsonBinary(IList<Binary> binaries, Component relatedComponent, StructureGroup sg, string variantName)
+        {
+            BootstrapData bootstrapData = new BootstrapData
+            {
+                Files = binaries.Select(b => b.Url).ToArray()
+            };
+            binaries.Add(AddJsonBinary(bootstrapData, relatedComponent, sg, BootstrapFilename, variantName + "-bootstrap"));
+        }
+
         protected string PublishJson(string json, Component relatedComponent, StructureGroup sg, string filename, string variantName)
         {
             Item jsonItem = Package.CreateStringItem(ContentType.Text, json);
@@ -359,15 +396,21 @@ namespace Sdl.Web.Tridion.Common
             return JsonEncode(binary.Url);
         }
 
-        protected Binary AddJsonBinary(object objectToSerialize, Component relatedComponent, StructureGroup structureGroup, string name, string variantId)
+        protected Binary AddJsonBinary(object objectToSerialize, Component relatedComponent, StructureGroup structureGroup, string name, string variantId = null)
         {
+            if (string.IsNullOrEmpty(variantId))
+            {
+                variantId = name;
+            }
+
             string json = JsonSerialize(objectToSerialize);
             Item jsonItem = Package.CreateStringItem(ContentType.Text, json);
             Binary jsonBinary = Engine.PublishingContext.RenderedItem.AddBinary(jsonItem.GetAsStream(), name + JsonExtension, structureGroup, variantId, relatedComponent, JsonMimetype);
             jsonItem.Properties[Item.ItemPropertyPublishedPath] = jsonBinary.Url;
             Package.PushItem(jsonBinary.Url, jsonItem);
 
-            Logger.Info(string.Format("Added JSON Binary '{0}' related to {1} with variant ID '{2}'", jsonBinary.Url, relatedComponent, variantId));
+            Logger.Info(string.Format("Added JSON Binary '{0}' related to Component '{1}' ({2}) with variant ID '{3}'", 
+                jsonBinary.Url, relatedComponent.Title, relatedComponent.Id, variantId));
             return jsonBinary;
         }
 
@@ -415,7 +458,16 @@ namespace Sdl.Web.Tridion.Common
 
         protected string JsonSerialize(object objectToSerialize)
         {
-            return JsonConvert.SerializeObject(objectToSerialize);
+            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+
+            Newtonsoft.Json.Formatting jsonFormatting = (IsPreviewMode() || IsPublishingToStaging()) ?
+                Newtonsoft.Json.Formatting.Indented :
+                Newtonsoft.Json.Formatting.None;
+
+            return JsonConvert.SerializeObject(objectToSerialize, jsonFormatting, jsonSerializerSettings);
         }
 
         #endregion

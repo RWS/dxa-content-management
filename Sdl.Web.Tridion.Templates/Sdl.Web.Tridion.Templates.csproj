@@ -103,8 +103,10 @@
     <Compile Include="Common\GeneralExtensionMethods.cs" />
     <Compile Include="Common\ItemFieldsExtensions.cs" />
     <Compile Include="Common\ObjectExtensions.cs" />
+    <Compile Include="Common\PackageExtensions.cs" />
     <Compile Include="Common\StringBuilderExtensions.cs" />
     <Compile Include="Common\Utility.cs" />
+    <Compile Include="Data.cs" />
     <Compile Include="DxaException.cs" />
     <Compile Include="Templates\DD4T\ContextExpressionManager.cs" />
     <Compile Include="Templates\DD4T\DxaBuildManager.cs" />
@@ -137,6 +139,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\GenerateDynamicPageParameters.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\PublishMappingsParameters.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
