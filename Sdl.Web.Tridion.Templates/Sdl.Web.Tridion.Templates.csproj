@@ -118,7 +118,6 @@
     <Compile Include="Templates\PublishHtmlDesign.cs" />
     <Compile Include="Templates\PublishMappings.cs" />
     <Compile Include="Templates\PublishResources.cs" />
-    <Compile Include="Templates\PublishStaticBootstrap.cs" />
     <Compile Include="Templates\RenderComponentPresentations.cs" />
     <Compile Include="Common\TemplateBase.cs" />
     <Compile Include="Templates\DD4T\GenerateDynamicPage.cs" />

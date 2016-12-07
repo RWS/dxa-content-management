@@ -31,7 +31,8 @@ namespace Sdl.Web.Tridion.Common
         private TemplatingLogger _logger;
         private Engine _engine;
         private Package _package;
-        private bool? _isPublishingToStaging;
+        private Publication _publication;
+        private bool? _isXpmEnabled;
 
         protected Engine Engine
         {
@@ -56,9 +57,24 @@ namespace Sdl.Web.Tridion.Common
             }
         }
 
+        protected Publication Publication
+        {
+            get
+            {
+                if (_publication == null)
+                {
+                    _publication = GetPublication();
+                }
+                return _publication;
+            }
+        }
+
         protected Session Session
         {
-            get { return Engine.GetSession(); }
+            get
+            {
+                return Engine.GetSession();
+            }
         }
 
         protected TemplatingLogger Logger
@@ -120,7 +136,6 @@ namespace Sdl.Web.Tridion.Common
             Package.PushItem(Package.OutputName, outputItem);
         }
 
-        #region Get context objects and information
 
         /// <summary>
         /// True if the rendering context is a page, rather than component
@@ -152,27 +167,15 @@ namespace Sdl.Web.Tridion.Common
         /// <summary>
         /// Returns the Template from the resolved item if it's a Component Template
         /// </summary>
-        /// <returns>A Component Template or null</returns>
+        /// <returns>A Component Template or <c>null</c></returns>
         protected ComponentTemplate GetComponentTemplate()
         {
-            Template template = Engine.PublishingContext.ResolvedItem.Template;
-
-            // "if (template is ComponentTemplate)" might work instead
-            if (template.GetType().Name.Equals(Package.ComponentTemplateName))
-            {
-                return (ComponentTemplate)template;
-            }
-
-            return null;
+            return Engine.PublishingContext.ResolvedItem.Template as ComponentTemplate;
         }
 
         /// <summary>
-        /// Returns the page object that is defined in the package for this template.
+        /// Returns the Page object that is defined in the package for this template.
         /// </summary>
-        /// <remarks>
-        /// This method should only be called when there is an actual Page item in the package. 
-        /// It does not currently handle the situation where no such item is available.
-        /// </remarks>
         /// <returns>the page object that is defined in the package for this template.</returns>
         public Page GetPage()
         {
@@ -188,51 +191,52 @@ namespace Sdl.Web.Tridion.Common
             }
 
             Item pageItem = Package.GetByType(ContentType.Page);
-            if (pageItem != null)
+            if (pageItem == null)
             {
-                return (Page)Engine.GetObject(pageItem.GetAsSource().GetValue("ID"));
+                return null;
             }
 
-            return null;
+            return (Page) Engine.GetObject(pageItem);
         }
 
         /// <summary>
-        /// Returns the publication object that can be determined from the package for this template.
+        /// Gets the context Publication.
         /// </summary>
-        /// <returns>the Publication object that can be determined from the package for this template.</returns>
+        /// <returns>The context Publication.</returns>
         protected Publication GetPublication()
         {
-            RepositoryLocalObject pubItem;
-            Repository repository = null;
-
-            if (Package.GetByType(ContentType.Page) != null)
+            RepositoryLocalObject inputItem = (RepositoryLocalObject) GetPage() ?? GetComponent();
+            if (inputItem == null)
             {
-                pubItem = GetPage();
-            }
-            else
-            {
-                pubItem = GetComponent();
+                throw new DxaException("Unable to determine the context Publication.");
             }
 
-            if (pubItem != null)
-            {
-                repository = pubItem.ContextRepository;
-            }
-
-            return repository as Publication;
+            return (Publication) inputItem.ContextRepository;
         }
 
         /// <summary>
-        /// Determine if current action is publishing to a XPM enabled target.
+        /// Gets whether XPM is enabled on the publishing target.
+        /// </summary>
+        protected bool IsXpmEnabled
+        {
+            get
+            {
+                if (!_isXpmEnabled.HasValue)
+                {
+                    _isXpmEnabled = Utility.IsXpmEnabled(Engine.PublishingContext);
+                }
+                return _isXpmEnabled.Value;
+            }
+        }
+
+        /// <summary>
+        /// Determines if current action is publishing to a XPM enabled target.
         /// </summary>
         /// <returns>True if publishing to a target which is XPM enabled.</returns>
+        [Obsolete("Deprecated in DXA 1.7. Use IsXpmEnabled instead.")]
         protected bool IsPublishingToStaging()
         {
-            if (!_isPublishingToStaging.HasValue)
-            {
-                _isPublishingToStaging = Utility.IsXpmEnabled(Engine.PublishingContext);
-            }
-            return _isPublishingToStaging.Value;
+            return IsXpmEnabled;
         }
 
         protected bool IsPreviewMode()
@@ -242,21 +246,14 @@ namespace Sdl.Web.Tridion.Common
 
         protected bool IsMasterWebPublication(Publication publication)
         {
-            if (publication.Metadata != null)
+            if (publication.Metadata == null)
             {
-                ItemFields meta = new ItemFields(publication.Metadata, publication.MetadataSchema);
-                string isMaster = meta.GetTextValue("isMaster");
-                if (!String.IsNullOrEmpty(isMaster))
-                {
-                    return true;
-                }
+                return false;
             }
-            return false;
+
+            ItemFields publicationMetadataFields = new ItemFields(publication.Metadata, publication.MetadataSchema);
+            return !string.IsNullOrEmpty(publicationMetadataFields.GetTextValue("isMaster"));
         }
-
-        #endregion
-
-        #region Useful Bits and Pieces
 
         /// <summary>
         /// Put the context component back on top of the package stack
@@ -272,11 +269,7 @@ namespace Sdl.Web.Tridion.Common
                 Package.PushItem("Component", mainComponent);
             }
         }
-        
-        
-        #endregion
 
-        #region TOM.NET Helper functions
         protected List<KeyValuePair<TcmUri, string>> GetOrganizationalItemContents(OrganizationalItem orgItem, ItemType itemType, bool recursive)
         {
             OrganizationalItemItemsFilter filter = new OrganizationalItemItemsFilter(orgItem.Session)
@@ -320,7 +313,6 @@ namespace Sdl.Web.Tridion.Common
             }
             return res;
         }
-        #endregion
 
         #region Json Data Processing
         protected Dictionary<string, string> MergeData(Dictionary<string, string> source, Dictionary<string, string> mergeData)
@@ -339,6 +331,7 @@ namespace Sdl.Web.Tridion.Common
             return source;
         }
 
+        [Obsolete("Deprecated in DXA 1.7. Use AddJsonBinary instead.")]
         protected List<string> PublishJsonData(Dictionary<string, List<string>> settings, Component relatedComponent, string variantName, StructureGroup sg, bool isArray = false)
         {
             List<string> files = new List<string>();
@@ -349,11 +342,13 @@ namespace Sdl.Web.Tridion.Common
             return files;
         }
 
+        [Obsolete("Deprecated in DXA 1.7. Use AddJsonBinary instead.")]
         protected string PublishJsonData(Dictionary<string,string> data, Component relatedComponent, string filename, string variantName, StructureGroup sg, bool isArray = false)
         {
             return PublishJsonData(data.Select(i => String.Format("{0}:{1}", JsonEncode(i.Key), JsonEncode(i.Value))).ToList(), relatedComponent, filename, variantName, sg, isArray);
         }
-            
+
+        [Obsolete("Deprecated in DXA 1.7. Use AddJsonBinary instead.")]
         protected string PublishJsonData(List<string> settings, Component relatedComponent, string filename, string variantName, StructureGroup sg, bool isArray = false)
         {
             if (settings.Count > 0)
@@ -372,6 +367,7 @@ namespace Sdl.Web.Tridion.Common
             return null;
         }
 
+        [Obsolete("Deprecated in DXA 1.7. Use AddBootstrapJsonBinary instead.")]
         protected string PublishBootstrapJson(List<string> filesCreated, Component relatedComponent, StructureGroup sg, string variantName = null, List<string> additionalData = null)
         {
             string extras = additionalData != null && additionalData.Count > 0 ? String.Join(",", additionalData) + "," : "";
@@ -382,11 +378,12 @@ namespace Sdl.Web.Tridion.Common
         {
             BootstrapData bootstrapData = new BootstrapData
             {
-                Files = binaries.Select(b => b.Url).ToArray()
+                Files = binaries.Where(b => b != null).Select(b => b.Url).ToArray()
             };
             binaries.Add(AddJsonBinary(bootstrapData, relatedComponent, sg, BootstrapFilename, variantName + "-bootstrap"));
         }
 
+        [Obsolete("Deprecated in DXA 1.7. Use AddJsonBinary instead.")]
         protected string PublishJson(string json, Component relatedComponent, StructureGroup sg, string filename, string variantName)
         {
             Item jsonItem = Package.CreateStringItem(ContentType.Text, json);
@@ -414,43 +411,46 @@ namespace Sdl.Web.Tridion.Common
             return jsonBinary;
         }
 
-        protected Dictionary<string, string> ReadComponentData(Component comp)
+        protected Dictionary<string, string> ExtractKeyValuePairs(Component component)
         {
-            Dictionary<string, string> settings = new Dictionary<string, string>();
-            if (comp.Content!=null)
+            Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
+            if (component.Content == null)
             {
-                ItemFields fields = new ItemFields(comp.Content, comp.Schema);
-                IEnumerable<ItemFields> configFields = fields.GetEmbeddedFields("settings");
-                if (configFields.Any())
+                return keyValuePairs;
+            }
+
+            ItemFields configComponentFields = new ItemFields(component.Content, component.Schema);
+            ItemFields[] settingsFieldValues = configComponentFields.GetEmbeddedFields("settings").ToArray();
+            if (settingsFieldValues.Any())
+            {
+                //either schema is a generic multival embedded name/value
+                foreach (ItemFields setting in settingsFieldValues)
                 {
-                    //either schema is a generic multival embedded name/value
-                    foreach (ItemFields setting in configFields)
+                    string key = setting.GetTextValue("name");
+                    if (!string.IsNullOrEmpty(key) && !keyValuePairs.ContainsKey(key))
                     {
-                        string key = setting.GetTextValue("name");
-                        if (!String.IsNullOrEmpty(key) && !settings.ContainsKey(key))
-                        {
-                            settings.Add(key, setting.GetTextValue("value"));
-                        }
-                        else
-                        {
-                            Logger.Warning(String.Format("Duplicate key found: '{0}' when processing component {1}", key, comp.Id));
-                        }
+                        keyValuePairs.Add(key, setting.GetTextValue("value"));
                     }
-                }
-                else
-                {
-                    //... or its a custom schema with individual fields
-                    foreach (ItemField field in fields)
+                    else
                     {
-                        //TODO - do we need to be smarter about date/number type fields?
-                        string key = field.Name;
-                        settings.Add(key, fields.GetSingleFieldValue(key));
+                        Logger.Warning(string.Format("Empty or duplicate key found ('{0}') in Component '{1}' ({2})", 
+                            key, component.Title, component.Id));
                     }
                 }
             }
-            return settings;
+            else
+            {
+                //... or its a custom schema with individual fields
+                foreach (ItemField field in configComponentFields)
+                {
+                    string key = field.Name;
+                    keyValuePairs.Add(key, configComponentFields.GetSingleFieldValue(key));
+                }
+            }
+            return keyValuePairs;
         }
 
+        [Obsolete("Deprecated in DXA 1.7. Use JsonSerialize instead.")]
         protected string JsonEncode(object json)
         {
             return JsonSerialize(json);
@@ -463,7 +463,7 @@ namespace Sdl.Web.Tridion.Common
                 NullValueHandling = NullValueHandling.Ignore
             };
 
-            Newtonsoft.Json.Formatting jsonFormatting = (IsPreviewMode() || IsPublishingToStaging()) ?
+            Newtonsoft.Json.Formatting jsonFormatting = (IsPreviewMode() || IsXpmEnabled) ?
                 Newtonsoft.Json.Formatting.Indented :
                 Newtonsoft.Json.Formatting.None;
 
@@ -474,15 +474,19 @@ namespace Sdl.Web.Tridion.Common
 
         #region Module Data Processing
 
-        protected StructureGroup GetSystemStructureGroup(string subStructureGroupTitle=null)
+        protected StructureGroup GetSystemStructureGroup(string subStructureGroupTitle = null)
         {
-            string webdavUrl = String.Format("{0}/_System{1}", GetPublication().RootStructureGroup.WebDavUrl, subStructureGroupTitle==null ? "" : "/" + subStructureGroupTitle);
-            StructureGroup sg = Engine.GetObject(webdavUrl) as StructureGroup;
-            if (sg == null)
+            string webDavUrl = string.Format("{0}/_System", Publication.RootStructureGroup.WebDavUrl);
+            if (!string.IsNullOrEmpty(subStructureGroupTitle))
             {
-                throw new Exception(String.Format("Cannot find structure group with webdav URL: {0}", webdavUrl));
+                webDavUrl += "/" + subStructureGroupTitle;
             }
-            return sg;
+            StructureGroup result = Engine.GetObject(webDavUrl) as StructureGroup;
+            if (result == null)
+            {
+                throw new DxaException(string.Format("Cannot find Structure Group with WebDAV URL '{0}'", webDavUrl));
+            }
+            return result;
         }
 
         [Obsolete("Deprecated in DXA 1.6. There is no need to pass in a coreConfigComponent; use the parameterless overload instead.")]
@@ -502,12 +506,11 @@ namespace Sdl.Web.Tridion.Common
                 BaseColumns = ListBaseColumns.Id
             };
 
-            Repository contextRepository = GetPublication();
             Dictionary<string, Component> results = new Dictionary<string, Component>();
             foreach (Component comp in moduleConfigSchema.GetUsingItems(moduleConfigComponentsFilter).Cast<Component>())
             {
                 // GetUsingItems returns the items in their Owning Publication, which could be lower in the BluePrint than were we are (so don't exist in our context Repository).
-                Component moduleConfigComponent = (Component) contextRepository.GetObject(comp.Id);
+                Component moduleConfigComponent = (Component) Publication.GetObject(comp.Id);
                 if (!session.IsExistingObject(moduleConfigComponent.Id))
                 {
                     continue;
@@ -527,24 +530,26 @@ namespace Sdl.Web.Tridion.Common
 
         private Schema GetModuleConfigSchema()
         {
-            Publication pub = GetPublication();
+            Schema[] moduleConfigSchemas = Publication.GetSchemasByNamespaceUri(DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName).ToArray();
 
-            Schema[] moduleConfigSchemas = pub.GetSchemasByNamespaceUri(DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName).ToArray();
-            if (moduleConfigSchemas.Length != 1)
+            if (moduleConfigSchemas.Length == 0)
             {
-                if (moduleConfigSchemas.Any())
-                {
-                    throw new Exception(string.Format("Found multiple Schemas with namespace '{0}' and root element name '{1}'", DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName) );
-                }
-                else
-                {
-                    throw new Exception(string.Format("Schema with namespace '{0}' and root element name '{1}' not found.", DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName));
-                }
+                throw new DxaException(
+                    string.Format("Schema with namespace '{0}' and root element name '{1}' not found.", DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName)
+                    );
+            }
+
+            if (moduleConfigSchemas.Length > 1)
+            {
+                    throw new DxaException(
+                        string.Format("Found multiple Schemas with namespace '{0}' and root element name '{1}'", DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName) 
+                        );
             }
 
             return moduleConfigSchemas.First();
         }
 
+        [Obsolete("Deprecated in DXA 1.7.")]
         protected string GetModuleNameFromItem(RepositoryLocalObject item, string moduleRoot)
         {
             //The module name is the name of the folder within the first level of the module root folder 
@@ -569,13 +574,13 @@ namespace Sdl.Web.Tridion.Common
                 ItemFields meta = new ItemFields(template.Metadata, template.MetadataSchema);
 
                 string regionName = meta.GetTextValue("regionName");
-                if (!String.IsNullOrEmpty(regionName))
+                if (!string.IsNullOrEmpty(regionName))
                 {
                     return regionName;
                 }
 
                 string regionViewName = meta.GetTextValue("regionView");
-                if (!String.IsNullOrEmpty(regionViewName))
+                if (!string.IsNullOrEmpty(regionViewName))
                 {
                     // strip module from fully qualified name
                     // since we need just the region name here as the web application can't deal with fully qualified region names yet

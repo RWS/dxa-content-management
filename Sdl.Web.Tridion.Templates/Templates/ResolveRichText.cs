@@ -1,12 +1,8 @@
-﻿using System.Globalization;
-using System.Text;
-using Sdl.Web.Tridion.Common;
-using System;
+﻿using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Xml;
-using Tridion;
+using Sdl.Web.Tridion.Common;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.ContentManagement.Fields;
 using Tridion.ContentManager.Templating;
@@ -90,7 +86,7 @@ namespace Sdl.Web.Tridion.Templates
                     if (dataAttributesBuilder.Length > 0)
                     {
                         // encode and strip first and last character (quotes added by encode)
-                        dataAttributes = JsonEncode(dataAttributesBuilder.ToString()).Substring(1);
+                        dataAttributes = JsonSerialize(dataAttributesBuilder.ToString()).Substring(1);
                         dataAttributes = dataAttributes.Substring(0, dataAttributes.Length - 1);
                         Logger.Debug("Added data attributes: " + dataAttributes);
                     }

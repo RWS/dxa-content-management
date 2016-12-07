@@ -99,7 +99,7 @@ namespace Sdl.Web.Tridion.Templates
                     ItemTypes = new[] { ItemType.Schema },
                     SchemaPurposes = new[] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata }
                 };
-                IEnumerable<Schema> schemas = GetPublication().GetItems(schemasFilter).Cast<Schema>();
+                IEnumerable<Schema> schemas = Publication.GetItems(schemasFilter).Cast<Schema>();
                 vocabularies.AddRange(schemas.Select(schema => new VocabularyData { Prefix = GetDefaultVocabularyPrefix(schema), Vocab = schema.NamespaceUri }));
 
             }
@@ -122,7 +122,7 @@ namespace Sdl.Web.Tridion.Templates
                 SchemaPurposes = new [] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata }
             };
 
-            IEnumerable<Schema> schemas = GetPublication().GetItems(schemasFilter).Cast<Schema>();
+            IEnumerable<Schema> schemas = Publication.GetItems(schemasFilter).Cast<Schema>();
             SemanticSchemaData[] semanticSchemas = schemas.Select(GetSemanticSchema).ToArray();
 
             return AddJsonBinary(semanticSchemas, relatedComponent, structureGroup, "schemas", variantId: "semantic-schemas");
@@ -132,7 +132,7 @@ namespace Sdl.Web.Tridion.Templates
         {
             IDictionary<string, XpmRegionData> xpmRegions = new Dictionary<string, XpmRegionData>();
 
-            foreach (ComponentTemplate ct in GetPublication().GetComponentTemplates())
+            foreach (ComponentTemplate ct in Publication.GetComponentTemplates())
             {
                 string regionName = GetRegionName(ct);
 
@@ -169,7 +169,7 @@ namespace Sdl.Web.Tridion.Templates
                 Recursive = true
             };
 
-            IEnumerable<PageTemplate> pageTemplates = GetPublication().GetItems(pageTemplatesFilter).Cast<PageTemplate>();
+            IEnumerable<PageTemplate> pageTemplates = Publication.GetItems(pageTemplatesFilter).Cast<PageTemplate>();
             foreach (PageTemplate pt in pageTemplates.Where(pt => pt.MetadataSchema != null && pt.Metadata != null))
             {
                 ItemFields ptMetadataFields = new ItemFields(pt.Metadata, pt.MetadataSchema);
