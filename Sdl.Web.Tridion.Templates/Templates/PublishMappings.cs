@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Sdl.Web.Tridion.Common;
+using Sdl.Web.Common.Models.Data;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,6 +12,7 @@ using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.ContentManagement.Fields;
+using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
 using Tridion.ContentManager.Templating.Assembly;
 
@@ -20,469 +22,356 @@ namespace Sdl.Web.Tridion.Templates
     /// Publishes schema and region mapping information in JSON format
     /// </summary>
     [TcmTemplateTitle("Publish Mappings")]
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.PublishMappingsParameters.xsd")]
     public class PublishMappings : TemplateBase
     {
-        // json content in page
-        private const string JsonOutputFormat = "{{\"name\":\"Publish Mappings\",\"status\":\"Success\",\"files\":[{0}]}}";
-
         private const string InvalidCharactersPattern = @"[^A-Za-z0-9.]+";
-        private const string SchemasConfigName = "schemas";
-        //private const string MappingsConfigName = "mappings";
-        private const string RegionConfigName = "regions";
-        private const string VocabulariesConfigName = "vocabularies";
         private const string VocabulariesAppDataId = "http://www.sdl.com/tridion/SemanticMapping/vocabularies";
         private const string TypeOfAppDataId = "http://www.sdl.com/tridion/SemanticMapping/typeof";
-        private const string TypeOfAppDataStartElement = "<typeof>";
-        private const string TypeOfAppDataEndElement = "</typeof>";
-        private const string DefaultVocabularyPrefix = "tri";
-        private const string DefaultVocabulary = "http://www.sdl.com/web/schemas/core";
-        
-        // list of known namespaces that are used in our schemas
-        private readonly Dictionary<string, string> _namespaces = new Dictionary<string, string>
-            {
-                {Constants.XsdPrefix, Constants.XsdNamespace},
-                {Constants.TcmPrefix, Constants.TcmNamespace},
-                {Constants.XlinkPrefix, Constants.XlinkNamespace},
-                {Constants.XhtmlPrefix, Constants.XhtmlNamespace},
-                {"tcmi","http://www.tridion.com/ContentManager/5.0/Instance"},
-                {"mapping", "http://www.sdl.com/tridion/SemanticMapping"}
-            };
+        private const string CoreVocabularyPrefix = "tri";
+        private const string CoreVocabulary = "http://www.sdl.com/web/schemas/core";
 
-        //private string _moduleRoot;
+        private static readonly XmlNamespaceManager _namespaceManager = new XmlNamespaceManager(new NameTable());
+        private static readonly IDictionary<string, string> _namespaces = new Dictionary<string, string>
+        {
+            {Constants.XsdPrefix, Constants.XsdNamespace},
+            {Constants.TcmPrefix, Constants.TcmNamespace},
+            {Constants.XlinkPrefix, Constants.XlinkNamespace},
+            {Constants.XhtmlPrefix, Constants.XhtmlNamespace},
+            {"tcmi","http://www.tridion.com/ContentManager/5.0/Instance"},
+            {"mapping", "http://www.sdl.com/tridion/SemanticMapping"}
+        };
+
+        private bool _retrofitMode;
+        private Schema _currentSchema;
+
+        public PublishMappings()
+        {
+            foreach (KeyValuePair<string, string> ns in _namespaces)
+            {
+                _namespaceManager.AddNamespace(ns.Key, ns.Value);
+            }
+        }
 
         public override void Transform(Engine engine, Package package)
         {
             Initialize(engine, package);
-            //The core configuration component should be the one being processed by the template
-            Component coreConfigComponent = GetComponent();
-            StructureGroup sg = GetSystemStructureGroup("mappings");
-            //_moduleRoot = GetModulesRoot(coreConfigComponent);
 
-            //Get all the active modules
-            //Dictionary<string, Component> moduleComponents = GetActiveModules(coreConfigComponent);
-            List<string> filesCreated = new List<string>();
-            filesCreated.AddRange(PublishJsonData(ReadMappingsData(), coreConfigComponent, "mapping", sg, true));
-            filesCreated.Add(PublishJsonData(ReadPageTemplateIncludes(), coreConfigComponent, "includes", "includes", sg));
-            
-            //Publish the boostrap list, this is used by the web application to load in all other mapping files
-            PublishBootstrapJson(filesCreated, coreConfigComponent, sg, "mapping-");
+            package.TryGetParameter("retrofitMode", out _retrofitMode, Logger);
 
-            StringBuilder publishedFiles = new StringBuilder();
-            foreach (string file in filesCreated)
+            // The input Component is used to relate all the generated Binaries to (so they get unpublished if the Component is unpublished).
+            Component inputComponent = GetComponent();
+            StructureGroup mappingsStructureGroup = GetSystemStructureGroup("mappings");
+
+            List<Binary> binaries = new List<Binary>
             {
-                if (!String.IsNullOrEmpty(file))
-                {
-                    publishedFiles.AppendCommaSeparated(file);
-                    Logger.Info("Published " + file);
-                }
-            }
+                PublishSemanticVocabularies(mappingsStructureGroup, inputComponent),
+                PublishSemanticSchemas(mappingsStructureGroup, inputComponent),
+                PublishXpmRegionConfiguration(mappingsStructureGroup, inputComponent),
+                PublishPageIncludes(mappingsStructureGroup, inputComponent)
+            };
 
-            // append json result to output
-            string json = String.Format(JsonOutputFormat, publishedFiles);
-            Item outputItem = package.GetByName(Package.OutputName);
-            if (outputItem != null)
-            {
-                package.Remove(outputItem);
-                string output = outputItem.GetAsString();
-                if (output.StartsWith("["))
-                {
-                    // insert new json object
-                    json = String.Format("{0},{1}{2}]", output.TrimEnd(']'), Environment.NewLine, json);
-                }
-                else
-                {
-                    // append new json object
-                    json = String.Format("[{0},{1}{2}]", output, Environment.NewLine, json);
-                }
-            }
-            package.PushItem(Package.OutputName, package.CreateStringItem(ContentType.Text, json));
+            AddBootstrapJsonBinary(binaries, inputComponent, mappingsStructureGroup, "mapping");
+
+            OutputSummary("Publish Mappings", binaries.Select(b => b.Url));
         }
 
-        private Dictionary<string, List<string>> ReadMappingsData()
+        private Binary PublishSemanticVocabularies(StructureGroup structureGroup, Component relatedComponent)
         {
-            bool containsDefaultVocabulary = false;
-
-            // generate a list of vocabulary prefix and name from appdata
-            Dictionary<string, List<string>> res = new Dictionary<string, List<string>> { { VocabulariesConfigName, new List<string>() } };
-            ApplicationData globalAppData = Engine.GetSession().SystemManager.LoadGlobalApplicationData(VocabulariesAppDataId);
-            if (globalAppData != null)
+            ApplicationData vocabularyAppData = Session.SystemManager.LoadGlobalApplicationData(VocabulariesAppDataId);
+            if (vocabularyAppData == null)
             {
-                XElement vocabulariesXml = XElement.Parse(Encoding.Unicode.GetString(globalAppData.Data));
-                foreach (XElement vocabulary in vocabulariesXml.Elements())
+                throw new DxaException("No Vocabularies are defined in Global Application Data: " + VocabulariesAppDataId);
+            }
+
+            XElement vocabulariesXml = XElement.Parse(Encoding.Unicode.GetString(vocabularyAppData.Data));
+
+            List<VocabularyData> vocabularies = vocabulariesXml.Elements()
+                .Select(vocabElement => new VocabularyData { Prefix = vocabElement.Attribute("prefix").Value, Vocab = vocabElement.Attribute("name").Value })
+                .ToList();
+
+            if (_retrofitMode)
+            {
+                Logger.Info("Retrofit mode is enabled; generating semantic vocabularies for each (non-embedded) Schema.");
+                RepositoryItemsFilter schemasFilter = new RepositoryItemsFilter(Session)
                 {
-                    string prefix = vocabulary.Attribute("prefix").Value;
-                    res[VocabulariesConfigName].Add(String.Format("{{\"Prefix\":{0},\"Vocab\":{1}}}", JsonEncode(prefix), JsonEncode(vocabulary.Attribute("name").Value)));
-                    if (prefix.Equals(DefaultVocabularyPrefix))
-                    {
-                        containsDefaultVocabulary = true;
-                    }
-                }
-            }
-            // add default vocabulary if it is not there already
-            if (!containsDefaultVocabulary)
-            {
-                res[VocabulariesConfigName].Add(String.Format("{{\"Prefix\":{0},\"Vocab\":{1}}}", JsonEncode(DefaultVocabularyPrefix), JsonEncode(DefaultVocabulary)));
+                    Recursive = true,
+                    ItemTypes = new[] { ItemType.Schema },
+                    SchemaPurposes = new[] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata }
+                };
+                IEnumerable<Schema> schemas = Publication.GetItems(schemasFilter).Cast<Schema>();
+                vocabularies.AddRange(schemas.Select(schema => new VocabularyData { Prefix = GetDefaultVocabularyPrefix(schema), Vocab = schema.NamespaceUri }));
+
             }
 
-            // generate a list of schema + id, separated by module
-            RepositoryItemsFilter schemaFilter = new RepositoryItemsFilter(Engine.GetSession())
+            if (!vocabularies.Any(vocab => vocab.Prefix == CoreVocabularyPrefix))
+            {
+                VocabularyData coreVocabulary = new VocabularyData { Prefix = CoreVocabularyPrefix, Vocab = CoreVocabulary };
+                vocabularies.Add(coreVocabulary);
+            }
+
+            return AddJsonBinary(vocabularies, relatedComponent, structureGroup, "vocabularies");
+        }
+
+        private Binary PublishSemanticSchemas(StructureGroup structureGroup, Component relatedComponent)
+        {
+            RepositoryItemsFilter schemasFilter = new RepositoryItemsFilter(Session)
             {
                 Recursive = true,
                 ItemTypes = new [] { ItemType.Schema },
-                // NOTE: including SchemaPurpose.Metadata for Page Metadata
-                SchemaPurposes = new [] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata },
-                BaseColumns = ListBaseColumns.Extended
+                SchemaPurposes = new [] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata }
             };
-            res.Add(SchemasConfigName, new List<string>());
-            foreach (Schema schema in GetPublication().GetItems(schemaFilter).Cast<Schema>())
-            {
-                string rootElementName = schema.RootElementName;
-                if (String.IsNullOrEmpty(rootElementName))
-                {
-                    // multimedia/metadata schemas don't have a root element name, so lets use its title without any invalid characters
-                    rootElementName = Regex.Replace(schema.Title.Trim(), InvalidCharactersPattern, String.Empty);
-                }
-                // add schema typeof using tridion standard implementation vocabulary prefix
-                string typeOf = String.Format("{0}:{1}", DefaultVocabularyPrefix, rootElementName);
-                StringBuilder schemaSemantics = new StringBuilder();
-                // append schema typeof from appdata 
-                ApplicationData appData = schema.LoadApplicationData(TypeOfAppDataId);
-                if (appData != null)
-                {
-                    typeOf += "," + ExtractTypeOfAppData(appData);
-                }
-                schemaSemantics.Append(BuildSchemaSemanticsJson(typeOf));
 
-                // TODO: serialize schema fields xml to json in a smart way
-                // field: {"Name":"something","Path":"/something","IsMultiValue":true,"Semantics":[],"Fields":[]}
-                // field semantics: {"Prefix":"s","Entity";"Article","Property":"headline"}
-                StringBuilder fields = new StringBuilder();
+            IEnumerable<Schema> schemas = Publication.GetItems(schemasFilter).Cast<Schema>();
+            SemanticSchemaData[] semanticSchemas = schemas.Select(GetSemanticSchema).ToArray();
 
-                // load namespace manager with schema namespaces
-                XmlNamespaceManager nsmgr = SchemaNamespaceManager(schema.Xsd.OwnerDocument.NameTable);
-
-                // build field elements from schema
-                string path = "/" + rootElementName;
-                fields.Append(BuildSchemaFieldsJson(schema, path, typeOf, nsmgr));
-
-                res[SchemasConfigName].Add(String.Format("{{\"Id\":{0},\"RootElement\":{1},\"Fields\":[{2}],\"Semantics\":[{3}]}}", JsonEncode(schema.Id.ItemId), JsonEncode(rootElementName), fields, schemaSemantics));
-            }
-
-            // get region mappings for all templates
-            Dictionary<string, List<string>> regions = BuildRegionMappings();
-            res.Add(RegionConfigName, new List<string>());
-
-            foreach (KeyValuePair<string, List<string>> region in regions)
-            {
-                StringBuilder allowedComponentTypes = new StringBuilder();
-                bool first = true;
-                foreach (string componentType in region.Value)
-                {
-                    if (first)
-                    {
-                        first = false;
-                    }
-                    else
-                    {
-                        allowedComponentTypes.Append(",");
-                    }
-                    allowedComponentTypes.Append(componentType);
-                }
-                res[RegionConfigName].Add(String.Format("{{\"Region\":{0},\"ComponentTypes\":[{1}]}}", JsonEncode(region.Key), allowedComponentTypes));
-            }
-
-            return res;
+            return AddJsonBinary(semanticSchemas, relatedComponent, structureGroup, "schemas", variantId: "semantic-schemas");
         }
 
-        private Dictionary<string, List<string>> BuildRegionMappings()
+        private Binary PublishXpmRegionConfiguration(StructureGroup structureGroup, Component relatedComponent)
         {
-            // format:  region { schema, template } 
-            Dictionary<string, List<string>> regions = new Dictionary<string, List<string>>();
+            IDictionary<string, XpmRegionData> xpmRegions = new Dictionary<string, XpmRegionData>();
 
-            ComponentTemplatesFilter templateFilter = new ComponentTemplatesFilter(Engine.GetSession()) { BaseColumns = ListBaseColumns.Extended };
-            foreach (ComponentTemplate template in GetPublication().GetComponentTemplates(templateFilter))
+            foreach (ComponentTemplate ct in Publication.GetComponentTemplates())
             {
-                string regionName = GetRegionName(template);
-                
-                if (!regions.ContainsKey(regionName))
+                string regionName = GetRegionName(ct);
+
+                XpmRegionData xpmRegion;
+                if (!xpmRegions.TryGetValue(regionName, out xpmRegion))
                 {
-                    regions.Add(regionName, new List<string>());
+                    xpmRegion = new XpmRegionData { Region = regionName, ComponentTypes = new List<XpmComponentTypeData>() };
+                    xpmRegions.Add(regionName, xpmRegion);
                 }
 
-                StringBuilder allowedComponentTypes = new StringBuilder();
-                bool first = true;
-                foreach (Schema schema in template.RelatedSchemas)
-                {
-                    if (first)
-                    {
-                        first = false;
-                    }
-                    else
-                    {
-                        allowedComponentTypes.Append(",");
-                    }
-                    allowedComponentTypes.AppendFormat("{{\"Schema\":{0},\"Template\":{1}}}", JsonEncode(schema.Id.GetVersionlessUri().ToString()), JsonEncode(template.Id.GetVersionlessUri().ToString()));
-                }
+                string templateId = ct.Id.GetVersionlessUri().ToString();
 
-                // do not append empty strings (template.RelatedSchemas can be empty)
-                if (allowedComponentTypes.Length > 0)
-                {
-                    regions[regionName].Add(allowedComponentTypes.ToString());
-                }
+                IEnumerable<XpmComponentTypeData> allowedComponentTypes = ct.RelatedSchemas.Select(
+                    schema => new XpmComponentTypeData
+                    {
+                        Schema = schema.Id.GetVersionlessUri().ToString(),
+                        Template = templateId
+                    }
+                    );
+
+                xpmRegion.ComponentTypes.AddRange(allowedComponentTypes);
             }
-            return regions;
+
+            return AddJsonBinary(xpmRegions.Values, relatedComponent, structureGroup, "regions");
         }
 
-        private XmlNamespaceManager SchemaNamespaceManager(XmlNameTable nameTable)
+        private Binary PublishPageIncludes(StructureGroup structureGroup, Component relatedComponent)
         {
-            // load namespace manager with schema namespaces
-            XmlNamespaceManager nsmgr = new XmlNamespaceManager(nameTable);
-            foreach (KeyValuePair<string, string> item in _namespaces)
+            IDictionary<string, string[]> pageIncludes = new Dictionary<string, string[]>();
+
+            RepositoryItemsFilter pageTemplatesFilter = new RepositoryItemsFilter(Session)
             {
-                nsmgr.AddNamespace(item.Key, item.Value);
+                ItemTypes = new [] { ItemType.PageTemplate },
+                Recursive = true
+            };
+
+            IEnumerable<PageTemplate> pageTemplates = Publication.GetItems(pageTemplatesFilter).Cast<PageTemplate>();
+            foreach (PageTemplate pt in pageTemplates.Where(pt => pt.MetadataSchema != null && pt.Metadata != null))
+            {
+                ItemFields ptMetadataFields = new ItemFields(pt.Metadata, pt.MetadataSchema);
+                string[] includes = ptMetadataFields.GetTextValues("includes").ToArray();
+                pageIncludes.Add(pt.Id.ItemId.ToString(), includes);
             }
-            return nsmgr;
+
+            return AddJsonBinary(pageIncludes, relatedComponent, structureGroup, "includes");
         }
 
-        // field: {"Name":"something","Path":"/something","IsMultiValue":true,"Semantics":[],"Fields":[]}
-        // field semantics: {"Prefix":"s","Entity":"Article","Property":"headline"}
-        private string BuildSchemaFieldsJson(Schema schema, string parentPath, string typeOf, XmlNamespaceManager nsmgr, bool embedded = false)
+        private SemanticSchemaData GetSemanticSchema(Schema schema)
         {
-            StringBuilder fields = new StringBuilder();
+            try
+            {
+                SemanticTypeData[] semanticTypes = GetSemanticTypes(schema).ToArray();
 
-            // loop over all field elements in schema
-            bool first = true;
-            string xpath = String.Format("/xsd:schema/xsd:element[@name='{0}']/xsd:complexType/xsd:sequence/xsd:element", schema.RootElementName);
-            if (embedded)
-            {
-                xpath = String.Format("/xsd:schema/xsd:complexType[@name='{0}']/xsd:sequence/xsd:element", schema.RootElementName);
-            }
-            foreach (XmlNode fieldNode in schema.Xsd.SelectNodes(xpath, nsmgr))
-            {
-                string fieldJson = BuildFieldJson(fieldNode, parentPath, typeOf, nsmgr);
-                if (first)
+                SemanticSchemaData semanticSchema = new SemanticSchemaData
                 {
-                    first = false;
+                    Id = schema.Id.ItemId,
+                    RootElement = GetSemanticRootElementName(schema),
+                    Semantics = semanticTypes
+                };
+
+                _currentSchema = schema;
+
+                SchemaFields schemaFields = new SchemaFields(schema, expandEmbeddedFields: true);
+                List<SemanticSchemaFieldData> semanticSchemaFields = new List<SemanticSchemaFieldData>();
+                semanticSchemaFields.AddRange(GetSemanticSchemaFields(schemaFields.Fields, semanticTypes, schema, "/" + schema.RootElementName));
+                semanticSchemaFields.AddRange(GetSemanticSchemaFields(schemaFields.MetadataFields, semanticTypes, schema, "/Metadata"));
+                semanticSchema.Fields = semanticSchemaFields.ToArray();
+
+                return semanticSchema;
+            }
+            catch (Exception ex)
+            {
+                throw new DxaException(
+                    string.Format("An error occurred while generating the semantic schema for Schema '{0}' ({1}).", schema.Title, schema.Id),
+                    ex
+                    );
+            }
+        }
+
+        private static string GetSemanticRootElementName(Schema schema)
+        {
+            string result = schema.RootElementName;
+            if (string.IsNullOrEmpty(result))
+            {
+                // Multimedia/metadata schemas don't have a root element name, so we use its title without any invalid characters
+                result = Regex.Replace(schema.Title.Trim(), InvalidCharactersPattern, string.Empty);
+            }
+            return result;
+        }
+
+        private string GetDefaultVocabularyPrefix(Schema schema)
+        {
+            return _retrofitMode && !string.IsNullOrEmpty(schema.NamespaceUri) ? string.Format("s{0}", schema.Id.ItemId) : CoreVocabularyPrefix;
+        }
+
+        private IEnumerable<SemanticTypeData> GetSemanticTypes(Schema schema)
+        {
+            List<SemanticTypeData> semanticTypes = new List<SemanticTypeData>
+            {
+                new SemanticTypeData { Prefix = GetDefaultVocabularyPrefix(schema), Entity = GetSemanticRootElementName(schema) }
+            };
+
+            ApplicationData typeOfAppData = schema.LoadApplicationData(TypeOfAppDataId);
+            if (typeOfAppData == null)
+            {
+                return semanticTypes;
+            }
+
+            string typeOfString = XElement.Parse(Encoding.Unicode.GetString(typeOfAppData.Data)).Value;
+
+            foreach (string typeOf in typeOfString.Split(','))
+            {
+                string[] typeOfParts = typeOf.Split(':');
+                if (typeOfParts.Length == 2)
+                {
+                    semanticTypes.Add(new SemanticTypeData { Prefix = typeOfParts[0], Entity = typeOfParts[1] });
                 }
                 else
                 {
-                    fields.Append(",");
-                }
-                fields.Append(fieldJson);
-            }
-
-            // embedded schemas do not contain metadata fields
-            if (!embedded)
-            {
-                // add metadata fields
-                xpath = "/xsd:schema/xsd:element[@name='Metadata']/xsd:complexType/xsd:sequence/xsd:element";
-                foreach (XmlNode fieldNode in schema.Xsd.SelectNodes(xpath, nsmgr))
-                {
-                    // change last item in parentPath to Metadata
-                    int index = parentPath.LastIndexOf('/');
-                    if (index != -1)
-                    {
-                        parentPath = parentPath.Substring(0, index) + "/Metadata";
-                    }
-
-                    string fieldJson = BuildFieldJson(fieldNode, parentPath, typeOf, nsmgr);
-                    if (first)
-                    {
-                        first = false;
-                    }
-                    else
-                    {
-                        fields.Append(",");
-                    }
-                    fields.Append(fieldJson);
+                    Logger.Warning(
+                        string.Format("Invalid format for semantic typeOf application data for Schema '{0}' ({1}): '{2}'.  Format must be <prefix>:<entity>.", 
+                        schema.Title, schema.Id, typeOf)
+                        );
                 }
             }
 
-            return fields.ToString();
+            return semanticTypes;
         }
 
-        // field: {"Name":"something","Path":"/something","IsMultiValue":true,"Semantics":[],"Fields":[]}
-        private string BuildFieldJson(XmlNode fieldNode, string parentPath, string typeOf, XmlNamespaceManager nsmgr)
+        private IEnumerable<SemanticSchemaFieldData> GetSemanticSchemaFields(
+            IEnumerable<ItemFieldDefinition> schemaFields, 
+            SemanticTypeData[] semanticTypes,
+            Schema schema, 
+            string contextPath
+            )
         {
-            string name = fieldNode.Attributes["name"].Value;
-            string path = parentPath + "/" + name;
-            string fieldTypeOf = typeOf;
-            StringBuilder fieldSemantics = new StringBuilder();
-
-            // if maxOccurs is anything else than 1, it is a multi value field
-            bool isMultiValue = !fieldNode.Attributes["maxOccurs"].Value.Equals("1");
-
-            // read semantic mapping from field so we can append it to the schema typeof
-            XmlNode typeOfNode = fieldNode.SelectSingleNode("xsd:annotation/xsd:appinfo/tcm:ExtensionXml/mapping:typeof", nsmgr);
-            if (typeOfNode != null)
+            List<SemanticSchemaFieldData> semanticSchemaFields = new List<SemanticSchemaFieldData>();
+            if (schemaFields == null)
             {
-                fieldTypeOf = typeOf + "," + typeOfNode.InnerText;
+                return semanticSchemaFields;
             }
 
-            // use field xml name as initial semantic mapping for field
-            string property = String.Format("{0}:{1}", DefaultVocabularyPrefix, fieldNode.Attributes["name"].Value);
-
-            // read semantic mapping from field and append if available
-            XmlNode propertyNode = fieldNode.SelectSingleNode("xsd:annotation/xsd:appinfo/tcm:ExtensionXml/mapping:property", nsmgr);
-            if (propertyNode != null)
+            foreach (ItemFieldDefinition schemaField in schemaFields)
             {
-                property += "," + propertyNode.InnerText;
-            }
-            fieldSemantics.Append(BuildFieldSemanticsJson(property, fieldTypeOf));
-
-            // handle embedded fields
-            StringBuilder embeddedFields = new StringBuilder();
-            XmlNode embeddedSchemaNode = fieldNode.SelectSingleNode("xsd:annotation/xsd:appinfo/tcm:EmbeddedSchema", nsmgr);
-            if (embeddedSchemaNode != null)
-            {
-                string uri = embeddedSchemaNode.Attributes["href", Constants.XlinkNamespace].Value;
-                Schema embeddedSchema = (Schema)Engine.GetObject(uri);
-                string embeddedTypeOf = String.Format("{0}:{1}", DefaultVocabularyPrefix, embeddedSchema.RootElementName);
-
-                // append schema typeof from appdata for embedded schemas
-                ApplicationData appData = embeddedSchema.LoadApplicationData(TypeOfAppDataId);
-                if (appData != null)
+                SemanticSchemaFieldData semanticSchemaField = new SemanticSchemaFieldData
                 {
-                    embeddedTypeOf += "," + Encoding.Unicode.GetString(appData.Data);
+                    Name = schemaField.Name,
+                    Path = string.Format("{0}/{1}", contextPath, schemaField.Name),
+                    IsMultiValue = schemaField.MaxOccurs != 1,
+                    Semantics = GetSemanticProperties(schemaField, semanticTypes, schema).ToArray()
+                };
+
+                EmbeddedSchemaFieldDefinition embeddedSchemaField = schemaField as EmbeddedSchemaFieldDefinition;
+                if (embeddedSchemaField == null)
+                {
+                    semanticSchemaField.Fields = new SemanticSchemaFieldData[0];
+                }
+                else
+                {
+                    Schema embeddedSchema = embeddedSchemaField.EmbeddedSchema;
+                    semanticSchemaField.Fields = GetSemanticSchemaFields(
+                        embeddedSchemaField.EmbeddedFields, 
+                        semanticTypes.Concat(GetSemanticTypes(embeddedSchema)).ToArray(),
+                        embeddedSchema, 
+                        semanticSchemaField.Path
+                        ).ToArray();
                 }
 
-                embeddedFields.Append(BuildSchemaFieldsJson(embeddedSchema, path, embeddedTypeOf, nsmgr, true));
+                semanticSchemaFields.Add(semanticSchemaField);
             }
 
-            // TODO: handle link fields
-            //XmlAttribute typeAttribute = fieldNode.Attributes["type"];
-            //if (typeAttribute != null)
-            //{
-            //    bool isSimpleLink = typeAttribute.Value.Equals("tcmi:SimpleLink");
-            //    XmlNode allowedTargetSchemasNode = fieldNode.SelectSingleNode("xsd:annotation/xsd:appinfo/tcm:AllowedTargetSchemas", nsmgr);
-            //    if (allowedTargetSchemasNode != null)
-            //    {
-            //        foreach (XmlNode allowedTargetSchemaNode in allowedTargetSchemasNode.SelectNodes("tcm:TargetSchema", nsmgr))
-            //        {
-            //            string uri = allowedTargetSchemaNode.Attributes["href", "http://www.w3.org/1999/xlink"].Value;
-            //            Schema allowedTargetSchema = (Schema)MEngine.GetObject(uri);
-            //
-            //        }
-            //    }
-            //    else
-            //    {
-            //        // if there are no allowed target schemas, all schemas are allowed...
-            //    }
-            //}
-            //else
-            //{
-            //    // if there is no type attribute, it is not a simple type so look for <xsd:complexType> inside the element
-            //}
-
-            return String.Format("{{\"Name\":{0},\"Path\":{1},\"IsMultiValue\":{2},\"Semantics\":[{3}],\"Fields\":[{4}]}}", JsonEncode(name), JsonEncode(path), JsonEncode(isMultiValue), fieldSemantics, embeddedFields);
+            return semanticSchemaFields;
         }
 
-        // schema semantics: {"Prefix":"s","Entity":"Article"}
-        private string BuildSchemaSemanticsJson(string input)
+        private IEnumerable<SemanticPropertyData> GetSemanticProperties(ItemFieldDefinition schemaField, IEnumerable<SemanticTypeData> semanticTypes, Schema schema)
         {
-            StringBuilder semantics = new StringBuilder();
-            if (!String.IsNullOrEmpty(input))
+            XmlElement typeOfExtensionElement = null;
+            XmlElement propertyExtensionElement = null;
+            XmlElement extensionElement = schemaField.ExtensionXml;
+            if (extensionElement != null)
             {
-                // input = "s:Article" but can also be "s:Article,x:Something"
-                string[] values = input.Split(',');
-                bool first = true;
-                foreach (string value in values)
-                {
-                    if (first)
-                    {
-                        first = false;
-                    }
-                    else
-                    {
-                        semantics.Append(",");
-                    }
-                    string[] parts = value.Split(':');
-                    semantics.AppendFormat("{{\"Prefix\":{0},\"Entity\":{1}}}", JsonEncode(parts[0]), JsonEncode(parts[1]));
-                }
+                typeOfExtensionElement = (XmlElement) extensionElement.SelectSingleNode("mapping:typeof", _namespaceManager);
+                propertyExtensionElement = (XmlElement) extensionElement.SelectSingleNode("mapping:property", _namespaceManager);
             }
 
-            return semantics.ToString();
-        }
-
-        // field semantics: {"Prefix":"s","Entity":"Article","Property":"headline"}
-        private string BuildFieldSemanticsJson(string input, string entity)
-        {
-            Dictionary<string, string> entities = new Dictionary<string, string>();
-            StringBuilder semantics = new StringBuilder();
-            bool first = true;
-            if (!String.IsNullOrEmpty(input))
+            // Create a set of distinct semantic types for this field.
+            List<SemanticTypeData> fieldSemanticTypes =  new List<SemanticTypeData>(semanticTypes);
+            if (typeOfExtensionElement != null)
             {
-                // entity = "s:Article" but can also be "s:Article,x:Something"
-                string[] values = entity.Split(',');
-                foreach (string value in values)
+                foreach (string typeOf in typeOfExtensionElement.InnerText.Split(','))
                 {
-                    string[] parts = value.Split(':');
-                    entities.Add(parts[0], parts[1]);
-                }
-
-                // input = "s:headline" but can also be "s:headline,x:something"
-                string[] properties = input.Split(',');
-                foreach (string value in properties)
-                {
-                    string[] parts = value.Split(':');
-                    if (entities.ContainsKey(parts[0]))
+                    string[] typeOfParts = typeOf.Split(':');
+                    if (typeOfParts.Length != 2)
                     {
-                        if (!first)
-                        {
-                            semantics.Append(",");
-                        }
-                        first = false;
-                        semantics.AppendFormat("{{\"Prefix\":{0},\"Entity\":{1},\"Property\":{2}}}", JsonEncode(parts[0]), JsonEncode(entities[parts[0]]), JsonEncode(parts[1]));
+                        throw new DxaException(string.Format("Invalid format for semantic typeOf extension data of field '{0}' in Schema '{1}' ({2}): '{3}'.  Format must be <prefix>:<entity>.",
+                            schemaField.Name, schema.Title, schema.Id, typeOf));
                     }
+                    fieldSemanticTypes.Add(new SemanticTypeData { Prefix = typeOfParts[0], Entity = typeOfParts[1] });
                 }
             }
+            fieldSemanticTypes = fieldSemanticTypes.Distinct().ToList();
 
-            return semantics.ToString();
-        }
+            // Create a list of semantic property names for this field
+            string semanticProperties = string.Format("{0}:{1}", GetDefaultVocabularyPrefix(schema), schemaField.Name);
+            if (_retrofitMode && string.IsNullOrEmpty(schema.NamespaceUri))
+            {
+                semanticProperties += string.Format(",{0}:{1}", GetDefaultVocabularyPrefix(_currentSchema), schemaField.Name);
+            }
+            if (propertyExtensionElement != null)
+            {
+                semanticProperties += "," + propertyExtensionElement.InnerText;
+            }
 
-        protected virtual List<string> ReadPageTemplateIncludes()
-        {
-            //Generate a list of Page Templates which have includes in the metadata
-            List<string> res = new List<string>();
-            RepositoryItemsFilter templateFilter = new RepositoryItemsFilter(Engine.GetSession())
+            // Resolve the property name prefixes to semantic types
+            List<SemanticPropertyData> result = new List<SemanticPropertyData>();
+            foreach (string property in semanticProperties.Split(','))
             {
-                ItemTypes = new List<ItemType> {ItemType.PageTemplate},
-                Recursive = true
-            };
-            foreach (XmlElement item in GetPublication().GetListItems(templateFilter).ChildNodes)
-            {
-                string id = item.GetAttribute("ID");
-                PageTemplate template = (PageTemplate)Engine.GetObject(id);
-                if (template.MetadataSchema != null && template.Metadata != null)
+                string[] propertyParts = property.Split(':');
+                if (propertyParts.Length != 2)
                 {
-                    ItemFields meta = new ItemFields(template.Metadata, template.MetadataSchema);
-                    IEnumerable<string> values = meta.GetTextValues("includes");
-                    if (values != null)
-                    {
-                        List<string> includes = new List<string>();
-                        foreach (string val in values)
-                        {
-                            includes.Add(JsonEncode(val));
-                        }
-                        string json = String.Format("\"{0}\":[{1}]", template.Id.ItemId, String.Join(",\n", includes));
-                        res.Add(json);
-                    }
+                    throw new DxaException(string.Format("Invalid format for semantic property of field '{0}' in Schema '{1}' ({2}): '{3}'.  Format must be <prefix>:<property>.",
+                        schemaField.Name, schema.Title, schema.Id, property));
                 }
-            }
-            return res;
-        }
 
-        private static string ExtractTypeOfAppData(ApplicationData appData)
-        {
-            if (appData != null)
-            {
-                // appdata is supposed to be a unicode encoded string
-                string xmlData = Encoding.Unicode.GetString(appData.Data);
+                string prefix = propertyParts[0];
+                string propertyName = propertyParts[1];
 
-                // remove start and end xml element from appdata string
-                return xmlData.Replace(TypeOfAppDataStartElement, String.Empty).Replace(TypeOfAppDataEndElement, String.Empty);
+                SemanticTypeData[] propertySemanticTypes = fieldSemanticTypes.Where(s => s.Prefix == prefix).ToArray();
+                if (propertySemanticTypes.Length == 0)
+                {
+                    Logger.Warning(string.Format("Semantic property of field '{0}' in Schema '{1}' ({2}) references an undeclared prefix '{3}'. Semantic types: {4}",
+                        schemaField.Name, schema.Title, schema.Id, property, string.Join(", ", fieldSemanticTypes.Select(s => s.ToString()))));
+                    continue;
+                }
+
+                result.AddRange(propertySemanticTypes.Select(s => new SemanticPropertyData { Prefix = s.Prefix, Entity = s.Entity, Property = propertyName }));
             }
-            return null;
+
+            return result;
         }
     }
 }

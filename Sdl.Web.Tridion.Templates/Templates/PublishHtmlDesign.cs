@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using Sdl.Web.Tridion.Common;
-using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.ContentManagement.Fields;
@@ -38,25 +37,15 @@ namespace Sdl.Web.Tridion.Templates
             { @"src\templates\partials\module-scripts-xpm.hbs", new List<string>()}
         };
 
-        private class SummaryData
-        {
-            [JsonProperty("name")]
-            public string Name;
-
-            [JsonProperty("status")]
-            public string Status;
-
-            [JsonProperty("files")]
-            public IEnumerable<string> Files;
-        }
-
-
         public override void Transform(Engine engine, Package package)
         {
             Initialize(engine, package);
 
-            string cleanupParameter = package.GetValue("cleanup");
-            string driveParameter = Package.GetValue("drive");
+            bool cleanup;
+            package.TryGetParameter("cleanup", out cleanup, Logger);
+
+            string drive;
+            package.TryGetParameter("drive", out drive, Logger);
 
             List<Binary> binaries = new List<Binary>();
 
@@ -74,16 +63,10 @@ namespace Sdl.Web.Tridion.Templates
 
             // Publish version.json file
             IDictionary<string, string> versionData = new Dictionary<string, string> { { "version", htmlDesignVersion } };
-            Binary versionJsonBinary = AddJsonBinary(
-                versionData,
-                relatedComponent: inputComponent,
-                structureGroup: GetPublication().RootStructureGroup,
-                name: "version",
-                variantId: "version"
-                );
+            Binary versionJsonBinary = AddJsonBinary(versionData, inputComponent, Publication.RootStructureGroup, "version", variantId: "version");
             binaries.Add(versionJsonBinary);
 
-            string tempFolder = GetTempFolder(driveParameter);
+            string tempFolder = GetTempFolder(drive);
             Directory.CreateDirectory(tempFolder);
             Logger.Debug("Created temp folder: " + tempFolder);
 
@@ -141,13 +124,14 @@ namespace Sdl.Web.Tridion.Templates
                         package.PushItem(filename, binaryItem);
 
                         binaries.Add(binary);
-                        Logger.Info(string.Format("Added Binary '{0}' related to {1} with variant ID '{2}'", binary.Url, inputComponent, variantId));
+                        Logger.Info(string.Format("Added Binary '{0}' related to Component '{1}' ({2}) with variant ID '{3}'", 
+                            binary.Url, inputComponent.Title, inputComponent.Id, variantId));
                     }
                 }
             }
             finally
             {
-                if (string.IsNullOrEmpty(cleanupParameter) || !cleanupParameter.Equals("false", StringComparison.InvariantCultureIgnoreCase))
+                if (cleanup)
                 {
                     Directory.Delete(tempFolder, true);
                     Logger.Debug("Removed temp folder " + tempFolder);
@@ -158,14 +142,7 @@ namespace Sdl.Web.Tridion.Templates
                 }
             }
 
-            // Return Summary JSON as Output item
-            SummaryData summary = new SummaryData
-            {
-                Name = "Publish HTML Design",
-                Status = "success",
-                Files = binaries.Select(b => b.Url)
-            };
-            package.PushItem(Package.OutputName, package.CreateStringItem(ContentType.Text, JsonSerialize(summary)));
+            OutputSummary("Publish HTML Design", binaries.Select(b => b.Url));
         }
 
         private string GetTempFolder(string driveParameter)

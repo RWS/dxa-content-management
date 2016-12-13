@@ -1,10 +1,10 @@
 ﻿using System.Globalization;
-using System.Text;
 using Sdl.Web.Tridion.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using Sdl.Web.Common.Models.Data;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
@@ -24,13 +24,8 @@ namespace Sdl.Web.Tridion.Templates
     [TcmTemplateTitle("Publish Configuration")]
     public class PublishConfiguration : TemplateBase
     {
-        // json content in page
-        private const string JsonOutputFormat = "{{\"name\":\"Publish Configuration\",\"status\":\"Success\",\"files\":[{0}]}}";
-
         private const string TemplateConfigName = "templates";
         private const string SchemasConfigName = "schemas";
-        private const string TaxonomiesConfigName = "taxonomies";
-
         private const string LocalizationConfigComponentTitle = "Localization Configuration";
         private const string EnvironmentConfigComponentTitle = "Environment Configuration";
         private const string SearchConfigComponentTitle = "Search Configuration";
@@ -45,78 +40,43 @@ namespace Sdl.Web.Tridion.Templates
         public override void Transform(Engine engine, Package package)
         {
             Initialize(engine, package);
-            
-            //The core configuration component should be the one being processed by the template
-            Component coreConfigComponent = GetComponent();
+
+            // The input Component is used to relate some of the generated Binaries to (so they get unpublished if the Component is unpublished).
+            Component inputComponent = GetComponent();
             _configStructureGroup = GetSystemStructureGroup("config");
 
-            // Determine the active modules
-            Dictionary<string, Component> modules = GetActiveModules();
-            List<string> filesCreated = new List<string>();
+            List<Binary> binaries = new List<Binary>()
+            {
+                PublishTaxonomyMappings(inputComponent)
+            };
 
             //For each active module, publish the config and add the filename(s) to the bootstrap list
-            foreach (KeyValuePair<string, Component> module in modules)
+            foreach (KeyValuePair<string, Component> module in GetActiveModules())
             {
                 string moduleName = module.Key;
                 Component moduleConfigComponent = module.Value;
                 Folder moduleFolder = GetModuleFolder(moduleConfigComponent);
-
-                string moduleConfigFileName = PublishModuleConfig(moduleName, moduleConfigComponent);
-                filesCreated.Add(moduleConfigFileName);
-                Binary moduleSchemasConfig = PublishModuleSchemasConfig(moduleName, moduleFolder, moduleConfigComponent);
-                if (moduleSchemasConfig != null)
-                {
-                    filesCreated.Add(JsonSerialize(moduleSchemasConfig.Url));
-                }
-                Binary moduleTemplatesConfig = PublishModuleTemplatesConfig(moduleName, moduleFolder, moduleConfigComponent);
-                if (moduleTemplatesConfig != null)
-                {
-                    filesCreated.Add(JsonSerialize(moduleTemplatesConfig.Url));
-                }
+                binaries.Add(PublishModuleConfig(moduleName, moduleConfigComponent));
+                binaries.Add(PublishModuleSchemasConfig(moduleName, moduleFolder, moduleConfigComponent));
+                binaries.Add(PublishModuleTemplatesConfig(moduleName, moduleFolder, moduleConfigComponent));
             }
-            filesCreated.AddRange(PublishJsonData(ReadTaxonomiesData(), coreConfigComponent, "taxonomies", _configStructureGroup));
-            
+
+            // Remove empty/null entries
+            binaries = binaries.Where(b => b != null).ToList();
+
             //Publish the boostrap list, this is used by the web application to load in all other configuration files
-            PublishBootstrapJson(filesCreated, coreConfigComponent, _configStructureGroup, "config-", BuildAdditionalData());
+            binaries.Add(PublishLocalizationData(binaries, inputComponent));
 
-            StringBuilder publishedFiles = new StringBuilder();
-            foreach (string file in filesCreated)
-            {
-                if (!String.IsNullOrEmpty(file))
-                {
-                    publishedFiles.AppendCommaSeparated(file);
-                    Logger.Info("Published " + file);
-                }
-            }
-
-            // Update JSON Summary Report in Output Item.
-            string json = String.Format(JsonOutputFormat, publishedFiles);
-            Item outputItem = package.GetByName(Package.OutputName);
-            if (outputItem != null)
-            {
-                package.Remove(outputItem);
-                string output = outputItem.GetAsString();
-                if (output.StartsWith("["))
-                {
-                    // insert new json object
-                    json = String.Format("{0},{1}{2}]", output.TrimEnd(']'), Environment.NewLine, json);
-                }
-                else
-                {
-                    // append new json object
-                    json = String.Format("[{0},{1}{2}]", output, Environment.NewLine, json);
-                }
-            }
-            package.PushItem(Package.OutputName, package.CreateStringItem(ContentType.Text, json));
+            OutputSummary("Publish Configuration", binaries.Select(b => b.Url));
         }
 
-        private string PublishModuleConfig(string moduleName, Component moduleConfigComponent)
+        private Binary PublishModuleConfig(string moduleName, Component moduleConfigComponent)
         {
-            Dictionary<string, string> data = new Dictionary<string, string>();
-            ItemFields fields = new ItemFields(moduleConfigComponent.Content, moduleConfigComponent.Schema);
-            foreach (Component configComp in fields.GetComponentValues("furtherConfiguration"))
+            Dictionary<string, string> configSettings = new Dictionary<string, string>();
+            ItemFields configComponentFields = new ItemFields(moduleConfigComponent.Content, moduleConfigComponent.Schema);
+            foreach (Component configComp in configComponentFields.GetComponentValues("furtherConfiguration"))
             {
-                data = MergeData(data, ReadComponentData(configComp));
+                configSettings = MergeData(configSettings, ExtractKeyValuePairs(configComp));
                 switch (configComp.Title)
                 {
                     case LocalizationConfigComponentTitle:
@@ -126,7 +86,7 @@ namespace Sdl.Web.Tridion.Templates
                     case EnvironmentConfigComponentTitle:
                         string cmWebsiteUrl = TopologyManager.GetCmWebsiteUrl();
                         string cmsUrl;
-                        if (data.TryGetValue(CmsUrlKey, out cmsUrl) && !string.IsNullOrWhiteSpace(cmsUrl))
+                        if (configSettings.TryGetValue(CmsUrlKey, out cmsUrl) && !string.IsNullOrWhiteSpace(cmsUrl))
                         {
                             Logger.Warning(
                                 string.Format("Overriding '{0}' specified in '{1}' Component ('{2}') with CM Website URL obtained from Topology Manager: '{3}'",
@@ -137,7 +97,7 @@ namespace Sdl.Web.Tridion.Templates
                         {
                             Logger.Info(string.Format("Setting '{0}' to CM Website URL obtained from Topology Manager: '{1}'", CmsUrlKey, cmWebsiteUrl));
                         }
-                        data[CmsUrlKey] = cmWebsiteUrl;
+                        configSettings[CmsUrlKey] = cmWebsiteUrl;
                         break;
 
                     case SearchConfigComponentTitle:
@@ -150,8 +110,8 @@ namespace Sdl.Web.Tridion.Templates
                                 string legacyConfigKey = Utility.IsXpmEnabled(Engine.PublishingContext) ? StagingSearchIndexKey : LiveSearchIndexKey;
                                 Logger.Info(string.Format("Setting '{0}' and '{1}' to Search Query URL obtained from Topology Manager: '{2}'", 
                                     SearchQueryUrlKey, legacyConfigKey, searchQueryUrl));
-                                data[legacyConfigKey] = searchQueryUrl;
-                                data[SearchQueryUrlKey] = searchQueryUrl;
+                                configSettings[legacyConfigKey] = searchQueryUrl;
+                                configSettings[SearchQueryUrlKey] = searchQueryUrl;
                             }
                             else
                             {
@@ -163,26 +123,26 @@ namespace Sdl.Web.Tridion.Templates
 
                 }
             }
-            return PublishJsonData(data, moduleConfigComponent, moduleName, "config", _configStructureGroup);
+
+            return configSettings.Count == 0 ? null : AddJsonBinary(configSettings, moduleConfigComponent, _configStructureGroup, moduleName, "config");
         }
 
 
-        private List<string> BuildAdditionalData()
+        private Binary PublishLocalizationData(IEnumerable<Binary> binaries, Component relatedComponent)
         {
-            if (_localizationConfigurationComponent == null)
+            string localizationId = Publication.Id.ItemId.ToString();
+            List<SiteLocalizationData> siteLocalizations = DetermineSiteLocalizations(Publication);
+ 
+            LocalizationData localizationData = new LocalizationData
             {
-                Logger.Warning("Could not find 'Localization Configuration' component, cannot publish language data");
-            }
-            IEnumerable<PublicationDetails> sitePubs = LoadSitePublications(GetPublication());
-            bool isMaster = sitePubs.Where(p => p.Id == GetPublication().Id.ItemId.ToString(CultureInfo.InvariantCulture)).FirstOrDefault().IsMaster;
-            List<string> additionalData = new List<string>
-                {
-                    String.Format("\"defaultLocalization\":{0}", JsonEncode(isMaster)),
-                    String.Format("\"staging\":{0}", JsonEncode(IsPublishingToStaging())),
-                    String.Format("\"mediaRoot\":{0}", JsonEncode(GetPublication().MultimediaUrl)),
-                    String.Format("\"siteLocalizations\":{0}", JsonEncode(sitePubs))
-                };
-            return additionalData;
+                IsDefaultLocalization = siteLocalizations.First(p => p.Id == localizationId).IsMaster,
+                IsXpmEnabled = IsXpmEnabled,
+                MediaRoot = Publication.MultimediaUrl,
+                SiteLocalizations = siteLocalizations.ToArray(),
+                ConfigStaticContentUrls = binaries.Select(b => b.Url).ToArray()
+            };
+
+            return AddJsonBinary(localizationData, relatedComponent, _configStructureGroup, "_all", variantId: "config-bootstrap");
         }
 
         private Publication GetMasterPublication(Publication contextPublication)
@@ -217,28 +177,28 @@ namespace Sdl.Web.Tridion.Templates
         }
 
 
-        private IEnumerable<PublicationDetails> LoadSitePublications(Publication contextPublication)
+        private List<SiteLocalizationData> DetermineSiteLocalizations(Publication contextPublication)
         {
             string siteId = GetSiteIdFromPublication(contextPublication);
             Publication master = GetMasterPublication(contextPublication);
             Logger.Debug(String.Format("Master publication is : {0}, siteId is {1}", master.Title, siteId));
-            List<PublicationDetails> pubs = new List<PublicationDetails>();
+            List<SiteLocalizationData> siteLocalizations = new List<SiteLocalizationData>();
             bool masterAdded = false;
             if (GetSiteIdFromPublication(master) == siteId)
             {
                 masterAdded = IsMasterWebPublication(master);
-                pubs.Add(GetPublicationDetails(master, masterAdded));
+                siteLocalizations.Add(GetPublicationDetails(master, masterAdded));
             }
             if (siteId!=null)
             {
-                pubs.AddRange(GetChildPublicationDetails(master, siteId, masterAdded));
+                siteLocalizations.AddRange(GetChildPublicationDetails(master, siteId, masterAdded));
             }
             //It is possible that no publication has been set explicitly as the master
             //in which case we set the context publication as the master
-            if (!pubs.Any(p => p.IsMaster))
+            if (!siteLocalizations.Any(p => p.IsMaster))
             {
-                string currentPubId = GetPublication().Id.ItemId.ToString(CultureInfo.InvariantCulture);
-                foreach (PublicationDetails pub in pubs)
+                string currentPubId = Publication.Id.ItemId.ToString(CultureInfo.InvariantCulture);
+                foreach (SiteLocalizationData pub in siteLocalizations)
                 {
                     if (pub.Id==currentPubId)
                     {
@@ -246,12 +206,18 @@ namespace Sdl.Web.Tridion.Templates
                     }
                 }
             }
-            return pubs;
+            return siteLocalizations;
         }
 
-        private PublicationDetails GetPublicationDetails(Publication pub, bool isMaster = false)
+        private SiteLocalizationData GetPublicationDetails(Publication pub, bool isMaster = false)
         {
-            PublicationDetails pubData = new PublicationDetails { Id = pub.Id.ItemId.ToString(CultureInfo.InvariantCulture), Path = pub.PublicationUrl, IsMaster = isMaster};
+            SiteLocalizationData pubData = new SiteLocalizationData
+            {
+                Id = pub.Id.ItemId.ToString(CultureInfo.InvariantCulture),
+                Path = pub.PublicationUrl,
+                IsMaster = isMaster
+            };
+
             if (_localizationConfigurationComponent != null)
             {
                 TcmUri localUri = new TcmUri(_localizationConfigurationComponent.Id.ItemId,ItemType.Component,pub.Id.ItemId);
@@ -272,10 +238,10 @@ namespace Sdl.Web.Tridion.Templates
             return pubData;
         }
 
-        private IEnumerable<PublicationDetails> GetChildPublicationDetails(Publication master, string siteId, bool masterAdded)
+        private IEnumerable<SiteLocalizationData> GetChildPublicationDetails(Publication master, string siteId, bool masterAdded)
         {
-            List<PublicationDetails> pubs = new List<PublicationDetails>();
-            UsingItemsFilter filter = new UsingItemsFilter(Engine.GetSession()) { ItemTypes = new List<ItemType> { ItemType.Publication } };
+            List<SiteLocalizationData> pubs = new List<SiteLocalizationData>();
+            UsingItemsFilter filter = new UsingItemsFilter(Session) { ItemTypes = new List<ItemType> { ItemType.Publication } };
             foreach (XmlElement item in master.GetListUsingItems(filter).ChildNodes)
             {
                 string id = item.GetAttribute("ID");
@@ -306,21 +272,12 @@ namespace Sdl.Web.Tridion.Templates
             return null;
         }
 
-
-        private Dictionary<string, List<string>> ReadTaxonomiesData()
+        private Binary PublishTaxonomyMappings(Component relatedComponent)
         {
-            //Generate a list of taxonomy + id
-            Dictionary<string, List<string>> res = new Dictionary<string, List<string>>();
-            List<string> settings = new List<string>();
-            TaxonomiesFilter taxFilter = new TaxonomiesFilter(Engine.GetSession()) { BaseColumns = ListBaseColumns.Extended };
-            foreach (XmlElement item in GetPublication().GetListTaxonomies(taxFilter).ChildNodes)
-            {
-                string id = item.GetAttribute("ID");
-                Category taxonomy = (Category) Engine.GetObject(id);
-                settings.Add(String.Format("{0}:{1}", JsonEncode(Utility.GetKeyFromTaxonomy(taxonomy)), JsonEncode(taxonomy.Id.ItemId)));
-            }
-            res.Add("core." + TaxonomiesConfigName, settings);
-            return res;
+            IEnumerable<Category> taxonomies = Publication.GetTaxonomies();
+            IDictionary<string, int> taxonomyMappings = taxonomies.ToDictionary(Utility.GetKeyFromTaxonomy, cat => cat.Id.ItemId);
+
+            return AddJsonBinary(taxonomyMappings, relatedComponent, _configStructureGroup, "core.taxonomies", variantId: "taxonomies");
         }
 
 
@@ -341,7 +298,7 @@ namespace Sdl.Web.Tridion.Templates
 
         private Binary PublishModuleSchemasConfig(string moduleName, Folder moduleFolder, Component moduleConfigComponent)
         {
-            OrganizationalItemItemsFilter moduleSchemasFilter = new OrganizationalItemItemsFilter(Engine.GetSession())
+            OrganizationalItemItemsFilter moduleSchemasFilter = new OrganizationalItemItemsFilter(Session)
             {
                 ItemTypes =  new [] { ItemType.Schema },
                 Recursive = true
@@ -366,18 +323,13 @@ namespace Sdl.Web.Tridion.Templates
                 moduleSchemasConfig.Add(schemaKey, moduleSchema.Id.ItemId);
             }
 
-            return AddJsonBinary(
-                moduleSchemasConfig,
-                relatedComponent: moduleConfigComponent,
-                structureGroup: _configStructureGroup,
-                name: string.Format("{0}.{1}", moduleName, SchemasConfigName),
-                variantId: "schemas"
-                );
+            string fileName = string.Format("{0}.{1}", moduleName, SchemasConfigName);
+            return AddJsonBinary(moduleSchemasConfig, moduleConfigComponent, _configStructureGroup, fileName, variantId: "schemas");
         }
 
         private Binary PublishModuleTemplatesConfig(string moduleName, Folder moduleFolder, Component moduleConfigComponent)
         {
-            OrganizationalItemItemsFilter moduleTemplatesFilter = new OrganizationalItemItemsFilter(Engine.GetSession())
+            OrganizationalItemItemsFilter moduleTemplatesFilter = new OrganizationalItemItemsFilter(Session)
             {
                 ItemTypes = new[] { ItemType.ComponentTemplate },
                 Recursive = true
@@ -402,21 +354,8 @@ namespace Sdl.Web.Tridion.Templates
                 moduleTemplatesConfig.Add(templateKey, moduleTemplate.Id.ItemId);
             }
 
-            return AddJsonBinary(
-                moduleTemplatesConfig,
-                relatedComponent: moduleConfigComponent,
-                structureGroup: _configStructureGroup,
-                name: string.Format("{0}.{1}", moduleName, TemplateConfigName),
-                variantId: "templates"
-                );
+            string fileName = string.Format("{0}.{1}", moduleName, TemplateConfigName);
+            return AddJsonBinary(moduleTemplatesConfig,moduleConfigComponent, _configStructureGroup, fileName, variantId: "templates");
         }
-    }
-
-    internal class PublicationDetails
-    {
-        public string Id { get; set; }
-        public string Path { get; set; }
-        public string Language { get; set; }
-        public bool IsMaster { get; set; }
     }
 }

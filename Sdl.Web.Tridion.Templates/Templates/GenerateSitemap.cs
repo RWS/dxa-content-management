@@ -4,164 +4,159 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web.Script.Serialization;
 using System.Xml;
-using System.Xml.Linq;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.ContentManagement.Fields;
 using Tridion.ContentManager.Publishing;
 using Tridion.ContentManager.Templating.Assembly;
-using tpl = Tridion.ContentManager.Templating;
+using Tridion.ContentManager.Templating;
+using TcmComponentPresentation = Tridion.ContentManager.CommunicationManagement.ComponentPresentation;
 
 namespace Sdl.Web.Tridion.Templates
 {
     /// <summary>
-    /// Generates sitemap JSON. 
-    /// Should be used in a Component Template.
+    /// Generates Sitemap JSON based on Structure Groups (for Static Navigation). 
     /// </summary>
+    /// <remarks>
+    /// Should be used in a Component Template.
+    /// </remarks>
     [TcmTemplateTitle("Generate Sitemap")]
     public class GenerateSiteMap : TemplateBase
     {
-        private const string MainRegionName = "Main";
-
-        private StructureGroup _startPoint;
         private NavigationConfig _config;
 
-        public override void Transform(tpl.Engine engine, tpl.Package package)
+        #region Nested Classes
+        private enum NavigationType
+        {
+            Simple,
+            Localizable
+        }
+
+        private class NavigationConfig
+        {
+            public List<string> NavTextFieldPaths { get; set; }
+            public NavigationType NavType { get; set; }
+            public string ExternalUrlTemplate { get; set; }
+        }
+
+        private class SitemapItem
+        {
+            public SitemapItem()
+            {
+                Items = new List<SitemapItem>();
+            }
+
+            public string Title { get; set; }
+
+            public string Url { get; set; }
+
+            public string Id { get; set; }
+            public string Type { get; set; }
+            public List<SitemapItem> Items { get; set; }
+            public DateTime? PublishedDate { get; set; }
+            public bool Visible { get; set; }
+        }
+        #endregion
+
+        public override void Transform(Engine engine, Package package)
         {
             Initialize(engine, package);
-            _config = LoadConfig(GetComponent());
-            _startPoint = GetPublication().RootStructureGroup;
 
-            if (_startPoint != null)
-            {
-                string nav = GenerateNavigation();
-                if (!string.IsNullOrEmpty(GenerateNavigation()))
-                {
-                    package.PushItem(tpl.Package.OutputName, package.CreateStringItem(tpl.ContentType.Text, nav));
-                }
-            }
+            _config = GetNavigationConfiguration(GetComponent());
+
+            SitemapItem sitemap = GenerateStructureGroupNavigation(Publication.RootStructureGroup);
+            string sitemapJson = JsonSerialize(sitemap);
+
+            package.PushItem(Package.OutputName, package.CreateStringItem(ContentType.Text, sitemapJson));
         }
 
-        private static NavigationConfig LoadConfig(Component component)
+        private static NavigationConfig GetNavigationConfiguration(Component navConfigComponent)
         {
-            NavigationConfig res = new NavigationConfig {NavType = NavigationType.Simple};
-            if (component.Metadata != null)
+            NavigationConfig result = new NavigationConfig { NavType = NavigationType.Simple };
+            if (navConfigComponent.Metadata == null)
             {
-                ItemFields meta = new ItemFields(component.Metadata, component.MetadataSchema);
-                Keyword type = meta.GetKeywordValue("navigationType");
-                switch (type.Key.ToLower())
-                {
-                    case "localizable":
-                        res.NavType = NavigationType.Localizable;
-                        break;
-                }
-                string navTextFields = meta.GetSingleFieldValue("navigationTextFieldPaths");
-                if (!String.IsNullOrEmpty(navTextFields))
-                {
-                    res.NavTextFieldPaths = navTextFields.Split(',').Select(s => s.Trim()).ToList();
-                }
-                res.ExternalUrlTemplate = meta.GetSingleFieldValue("externalLinkTemplate");
+                return result;
             }
-            return res;
+
+            ItemFields navConfigComponentMetadataFields = new ItemFields(navConfigComponent.Metadata, navConfigComponent.MetadataSchema);
+            Keyword type = navConfigComponentMetadataFields.GetKeywordValue("navigationType");
+            switch (type.Key.ToLower())
+            {
+                case "localizable":
+                    result.NavType = NavigationType.Localizable;
+                    break;
+            }
+            string navTextFields = navConfigComponentMetadataFields.GetSingleFieldValue("navigationTextFieldPaths");
+            if (!string.IsNullOrEmpty(navTextFields))
+            {
+                result.NavTextFieldPaths = navTextFields.Split(',').Select(s => s.Trim()).ToList();
+            }
+            result.ExternalUrlTemplate = navConfigComponentMetadataFields.GetSingleFieldValue("externalLinkTemplate");
+            return result;
         }
 
-        public string GenerateNavigation()
+        private SitemapItem GenerateStructureGroupNavigation(StructureGroup structureGroup)
         {
-            try
+            SitemapItem result = new SitemapItem
             {
-                return new JavaScriptSerializer().Serialize(GenerateStructureGroupNavigation(_startPoint));
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex.Message);
-                throw;
-            }
-        }
+                Id = structureGroup.Id,
+                Title = GetNavigationTitle(structureGroup),
+                Url = System.Web.HttpUtility.UrlDecode(structureGroup.PublishLocationUrl),
+                Type = ItemType.StructureGroup.ToString(),
+                Visible = IsVisible(structureGroup.Title)
+            };
 
-        private SitemapItem GenerateStructureGroupNavigation(StructureGroup startPoint)
-        {
-            SitemapItem root = GenerateFolderNode(startPoint);
-            IEnumerable<XElement> orderedDocument = GetItemsInFolderAsAList(startPoint);
-
-            foreach (XElement pgNode in orderedDocument)
+            foreach (RepositoryLocalObject item in structureGroup.GetItems().Where(i => !i.Title.StartsWith("_")).OrderBy(i => i.Title))
             {
-                Page page = Engine.GetObject(pgNode.Attribute("ID").Value) as Page;
+                SitemapItem childSitemapItem;
+                Page page = item as Page;
                 if (page != null)
                 {
-                    if (IsPublished(page) && !IsSystem(pgNode.Attribute("Title").Value))
+                    if (!IsPublished(page))
                     {
-                        root.Items.Add(GeneratePageNode(page));
+                        continue;
                     }
+
+                    childSitemapItem = new SitemapItem
+                    {
+                        Id = page.Id,
+                        Title = GetNavigationTitle(page),
+                        Url = GetUrl(page),
+                        Type = ItemType.Page.ToString(),
+                        PublishedDate = GetPublishedDate(page, Engine.PublishingContext.TargetType),
+                        Visible = IsVisible(page.Title)
+                    };
                 }
                 else
                 {
-                    if (!IsSystem(pgNode.Attribute("Title").Value))
-                    {
-                        root.Items.Add(GenerateStructureGroupNavigation(Engine.GetObject(pgNode.Attribute("ID").Value) as StructureGroup));
-                    }
+                    childSitemapItem = GenerateStructureGroupNavigation((StructureGroup) item);
                 }
 
+                result.Items.Add(childSitemapItem);
             }
-            return root;
-        }
-
-        private SitemapItem GenerateFolderNode(StructureGroup startPoint)
-        {
-            SitemapItem root = new SitemapItem(GetNavigationTitle(startPoint))
-                {
-                    Id = startPoint.Id,
-                    Url = GetUrl(startPoint),
-                    Type = ItemType.StructureGroup.ToString(),
-                    Visible = IsVisible(startPoint.Title)
-                };
-
-            return root;
+            return result;
         }
 
         protected string GetNavigationTitle(StructureGroup sg)
         {
-            string result = StripPrefix(sg.Title);
-            return result;
+            return StripPrefix(sg.Title);
         }
 
         protected string StripPrefix(string title)
         {
-            return Regex.Replace(title, @"^\d{3}\s", String.Empty);
+            return Regex.Replace(title, @"^\d{3}\s", string.Empty);
         }
 
-        private static string GetUrl(StructureGroup sg)
+        private static DateTime? GetPublishedDate(Page page, TargetType targetType )
         {
-            String url = sg.PublishLocationUrl;
-            return System.Web.HttpUtility.UrlDecode(url);
-        }
-
-        private SitemapItem GeneratePageNode(Page page)
-        {
-            SitemapItem sitemapItem = new SitemapItem(GetNavigationTitle(page))
+            PublishInfo publishInfo = PublishEngine.GetPublishInfo(page).FirstOrDefault(pi => pi.TargetType == targetType);
+            if (publishInfo == null)
             {
-                Id = page.Id,
-                Url = GetUrl(page),
-                Type = ItemType.Page.ToString(),
-                PublishedDate = GetPublishedDate(page, Engine.PublishingContext.PublicationTarget),
-                Visible = IsVisible(page.Title)
-            };
-            return sitemapItem;
-        }
-
-        private static string GetPublishedDate(Page page, PublicationTarget target )
-        {
-            ICollection<PublishInfo> publishInfos = PublishEngine.GetPublishInfo(page);
-            foreach (PublishInfo publishInfo in publishInfos)
-            {
-                if (publishInfo.PublicationTarget == target)
-                {
-                    return publishInfo.PublishedAt.GetIso8601Date();
-                }
+                return null;
             }
-            return "";
+            return publishInfo.PublishedAt;
         }
 
         private string GetNavigationTitle(Page page)
@@ -171,16 +166,16 @@ namespace Sdl.Web.Tridion.Templates
             {
                 title = GetNavTextFromPageComponents(page);
             }
-            return String.IsNullOrEmpty(title) ? StripPrefix(page.Title) : title;
+            return string.IsNullOrEmpty(title) ? StripPrefix(page.Title) : title;
         }
 
         private string GetNavTextFromPageComponents(Page page)
         {
             string title = null;
-            foreach (ComponentPresentation cp in page.ComponentPresentations)
+            foreach (TcmComponentPresentation cp in page.ComponentPresentations)
             {
                 title = GetNavTitleFromComponent(cp.Component);
-                if (!String.IsNullOrEmpty(title))
+                if (!string.IsNullOrEmpty(title))
                 {
                     return title;
                 }
@@ -202,7 +197,7 @@ namespace Sdl.Web.Tridion.Templates
             foreach (string fieldname in _config.NavTextFieldPaths)
             {
                 string title = GetNavTitleFromField(fieldname, data);
-                if (!String.IsNullOrEmpty(title))
+                if (!string.IsNullOrEmpty(title))
                 {
                     return title;
                 }
@@ -230,51 +225,16 @@ namespace Sdl.Web.Tridion.Templates
             return "//" + String.Join("/", bits.Select(f => String.Format("*[local-name()='{0}']", f)));
         }
 
-        private string GetRegionFromComponentPresentation(ComponentPresentation cp)
-        {
-            Match match = Regex.Match(cp.ComponentTemplate.Title, @".*?\[(.*?)\]");
-            if (match.Success)
-            {
-                return match.Groups[1].Value;
-            }
-            //default region name
-            return MainRegionName;
-        }
-
-        private string GetNavigationTitleFromComp(Component mainComp)
-        {
-            //TODO, make the field names used to extract the title configurable as TBB parameters
-            string title = null;
-            if (mainComp != null)
-            {
-                if (mainComp.Metadata != null)
-                {
-                    ItemFields meta = new ItemFields(mainComp.Metadata, mainComp.MetadataSchema);
-                    ItemFields embedMeta = meta.GetEmbeddedField("standardMeta");
-                    if (embedMeta != null)
-                    {
-                        title = embedMeta.GetTextValue("name");
-                    }
-                }
-                if (String.IsNullOrEmpty(title))
-                {
-                    ItemFields content = new ItemFields(mainComp.Content, mainComp.Schema);
-                    title = content.GetTextValue("headline");
-                }
-            }
-            return title;
-        }
-
         protected string GetUrl(Page page)
         {
-            String url;
+            string url;
             if (page.PageTemplate.Title.Equals(_config.ExternalUrlTemplate, StringComparison.InvariantCultureIgnoreCase) && page.Metadata != null)
             {
                 // The Page is a "Redirect Page"; obtain the URL from its metadata.
                 ItemFields meta = new ItemFields(page.Metadata, page.MetadataSchema);
                 ItemFields link = meta.GetEmbeddedField("redirect");
                 url = link.GetExternalLink("externalLink");
-                if (String.IsNullOrEmpty(url))
+                if (string.IsNullOrEmpty(url))
                 {
                     url = link.GetSingleFieldValue("internalLink");
                 }
@@ -289,37 +249,13 @@ namespace Sdl.Web.Tridion.Templates
         private static string GetExtensionlessUrl(string url)
         {
             string extension = Path.GetExtension(url);
-            return String.IsNullOrEmpty(extension) ? url : url.Substring(0, url.Length - extension.Length);
-        }
-
-        private IEnumerable<XElement> GetItemsInFolderAsAList(StructureGroup startPoint)
-        {
-            OrganizationalItemItemsFilter filter = new OrganizationalItemItemsFilter(Engine.GetSession())
-                {
-                    ItemTypes = new List<ItemType> {ItemType.Page, ItemType.StructureGroup},
-                    BaseColumns = ListBaseColumns.Extended
-                };
-            //get pages first to see if they have to appear in nav 
-            XmlElement pagesXml = startPoint.GetListItems(filter);
-            XmlDocument rootDocument = new XmlDocument();
-
-            rootDocument.LoadXml(pagesXml.OuterXml);
-            XDocument pageDoc = XDocument.Parse(rootDocument.OuterXml);
-
-            List<XElement> orderedDocument = (from XElement el in pageDoc.Root.Descendants()
-                                   orderby el.Attribute("Title").Value
-                                   select el).ToList();
-            return orderedDocument;
+            return string.IsNullOrEmpty(extension) ? url : url.Substring(0, url.Length - extension.Length);
         }
 
         private bool IsPublished(Page page)
         {
-            if (Engine.PublishingContext.PublicationTarget != null)
-            {
-                return PublishEngine.IsPublished(page, Engine.PublishingContext.PublicationTarget);
-            }
             //For preview we always return true - to help debugging
-            return true;
+            return Engine.PublishingContext.PublicationTarget == null || PublishEngine.IsPublished(page, Engine.PublishingContext.PublicationTarget);
         }
 
         private static bool IsVisible(string title)
@@ -327,54 +263,6 @@ namespace Sdl.Web.Tridion.Templates
             Match match = Regex.Match(title, @"^\d{3}\s");
             return match.Success;
         }
-
-        private static bool IsSystem(string title)
-        {
-            return title.StartsWith("_");
-        }
     }
-
-    internal enum NavigationType
-    {
-        Simple,
-        Localizable
-    }
-
-    #region Sitemap Classes
-    internal class NavigationConfig
-    {
-        public List<string> NavTextFieldPaths { get; set; }
-        public NavigationType NavType { get; set; }
-        public string ExternalUrlTemplate { get; set; }
-    }
-
-    internal class SitemapItem
-    {
-        public SitemapItem()
-        {
-            Items = new List<SitemapItem>();
-        }
-
-        public SitemapItem(String title)
-        {
-            Items = new List<SitemapItem>();
-            Title = title;
-        }
-
-        public string Title { get; set; }
-
-        public string Url
-        {
-            get;
-            set;
-        }
-
-        public string Id { get; set; }
-        public string Type { get; set; }
-        public List<SitemapItem> Items { get; set; }
-        public string PublishedDate { get; set; }
-        public bool Visible { get; set; }
-    }
-    #endregion Sitemap Classes
 }
 
