@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Sdl.Web.Tridion.Common;
-using Sdl.Web.Common.Models.Data;
+using Sdl.Web.DataModel;
 using System;
 using System.Collections.Generic;
 using System.Text;

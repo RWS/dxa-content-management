@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Sdl.Web.Common.Models.Data
+// TODO: Split out into separate files
+namespace Sdl.Web.DataModel
 {
     public class SummaryData
     {
@@ -74,7 +75,7 @@ namespace Sdl.Web.Common.Models.Data
         public override bool Equals(object obj)
         {
             SemanticTypeData other = obj as SemanticTypeData;
-            return other != null && other.Prefix == Prefix && other.Entity == Entity;
+            return (other != null) && (other.Prefix == Prefix) && (other.Entity == Entity);
         }
 
         public override int GetHashCode()
@@ -84,7 +85,7 @@ namespace Sdl.Web.Common.Models.Data
 
         public override string ToString()
         {
-            return string.Format("{0}:{1}", Prefix, Entity);
+            return $"{Prefix}:{Entity}";
         }
         #endregion
     }
@@ -98,7 +99,7 @@ namespace Sdl.Web.Common.Models.Data
         public override bool Equals(object obj)
         {
             SemanticPropertyData other = obj as SemanticPropertyData;
-            return other != null && base.Equals(other) && other.Property == Property;
+            return (other != null) && base.Equals(other) && (other.Property == Property);
         }
 
         public override int GetHashCode()
@@ -108,7 +109,7 @@ namespace Sdl.Web.Common.Models.Data
 
         public override string ToString()
         {
-            return string.Format("{0}:{1}:{2}", Prefix, Entity, Property);
+            return $"{Prefix}:{Entity}:{Property}";
         }
         #endregion
     }
