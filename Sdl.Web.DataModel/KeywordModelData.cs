@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json.Linq;
 
 namespace Sdl.Web.DataModel
 {
@@ -30,6 +30,25 @@ namespace Sdl.Web.DataModel
         public string TaxonomyId { get; set; }
 
         public string MetadataSchemaId { get; set; }
-        public Dictionary<string, object> Metadata { get; set; }
+        public ContentModelData Metadata { get; set; }
+
+        #region Overrides
+        protected override void Initialize(JObject jObject)
+        {
+            base.Initialize(jObject);
+
+            Id = jObject.GetPropertyValueAsString("Id");
+            Title = jObject.GetPropertyValueAsString("Title");
+            Description = jObject.GetPropertyValueAsString("Description");
+            Key = jObject.GetPropertyValueAsString("Key");
+            TaxonomyId = jObject.GetPropertyValueAsString("TaxonomyId");
+            MetadataSchemaId = jObject.GetPropertyValueAsString("MetadataSchemaId");
+            JObject metadata = jObject.GetPropertyValueAsObject("Metadata");
+            if (metadata != null)
+            {
+                Metadata = new ContentModelData(metadata);
+            }
+        }
+        #endregion
     }
 }

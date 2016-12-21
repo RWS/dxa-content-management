@@ -541,14 +541,14 @@ namespace Sdl.Web.Tridion.Templates
             };
         }
 
-        internal Dictionary<string, object> BuildContentModel(XmlElement xmlElement, int expandLinkLevels)
+        internal ContentModelData BuildContentModel(XmlElement xmlElement, int expandLinkLevels)
         {
             if (xmlElement == null)
             {
                 return null;
             }
-            
-            Dictionary<string, object> result = new Dictionary<string, object>();
+
+            ContentModelData result = new ContentModelData();
 
             string currentFieldName = null;
             object currentFieldValue = null;

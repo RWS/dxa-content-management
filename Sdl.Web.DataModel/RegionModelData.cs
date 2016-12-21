@@ -19,6 +19,8 @@ namespace Sdl.Web.DataModel
         /// </summary>
         public List<RegionModelData> Regions { get; set; }
 
-        public Dictionary<string, object> Metadata;
+        public ContentModelData Metadata;
+
+        public string IncludePageUrl { get; set; }
     }
 }

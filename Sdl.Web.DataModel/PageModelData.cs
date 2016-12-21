@@ -24,6 +24,6 @@ namespace Sdl.Web.DataModel
         /// </summary>
         public List<RegionModelData> Regions { get; set; }
 
-        public Dictionary<string, object> Metadata { get; set; }
+        public ContentModelData Metadata { get; set; }
     }
 }

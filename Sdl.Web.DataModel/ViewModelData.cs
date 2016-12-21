@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace Sdl.Web.DataModel
 {
-    public abstract class ViewModelData
+    public abstract class ViewModelData : ModelData
     {
         /// <summary>
         /// Gets or sets MVC data used to determine which View to use.
@@ -43,5 +45,13 @@ namespace Sdl.Web.DataModel
             }
             ExtensionData[key] = value;
         }
+
+        #region Overrides
+        protected override void Initialize(JObject jObject)
+        {
+            HtmlClasses = jObject.GetPropertyValueAsString("HtmlClasses");
+            // TODO: MvcData, XpmMetadata and ExtensionData (not likely to have those on embedded models, though)
+        }
+        #endregion
     }
 }

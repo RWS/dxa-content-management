@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json.Linq;
 
 namespace Sdl.Web.DataModel
 {
@@ -14,9 +14,32 @@ namespace Sdl.Web.DataModel
         public string Id { get; set; }
 
         public string SchemaId { get; set; }
-        public Dictionary<string, object> Content { get; set; }
-        public Dictionary<string, object> Metadata { get; set; }
+        public ContentModelData Content { get; set; }
+        public ContentModelData Metadata { get; set; }
         public BinaryContentData BinaryContent { get; set; }
         public ExternalContentData ExternalContent { get; set; }
+
+        #region Overrides
+        protected override void Initialize(JObject jObject)
+        {
+            base.Initialize(jObject);
+
+            Id = jObject.GetPropertyValueAsString("Id");
+            SchemaId = jObject.GetPropertyValueAsString("SchemaId");
+            JObject content = jObject.GetPropertyValueAsObject("Content");
+            if (content != null)
+            {
+                Content = new ContentModelData(content);
+            }
+            JObject metadata = jObject.GetPropertyValueAsObject("Metadata");
+            if (metadata != null)
+            {
+                Metadata = new ContentModelData(metadata);
+            }
+            BinaryContent = jObject.GetPropertyValueAsModel<BinaryContentData>("BinaryContent");
+            ExternalContent = jObject.GetPropertyValueAsModel<ExternalContentData>("ExternalContent");
+        }
+        #endregion
+
     }
 }
