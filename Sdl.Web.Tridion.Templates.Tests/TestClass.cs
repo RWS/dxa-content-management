@@ -27,6 +27,19 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Console.WriteLine("---- JSON Representation of {0} ----", objectToSerialize.GetType().FullName);
             Console.WriteLine(json);
         }
+        protected T JsonSerializeDeserialize<T>(T objectToSerialize)
+        {
+            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            string json = JsonConvert.SerializeObject(objectToSerialize, jsonSerializerSettings);
+            T result = JsonConvert.DeserializeObject<T>(json);
+
+            OutputJson(result);
+
+            return result;
+        }
 
         protected TException AssertThrowsException<TException>(Action action, string actionName = null)
             where TException : Exception
@@ -58,5 +71,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 Assert.AreEqual(expected.Count(), actual.Count(), subjectName + ".Count()");
             }
         }
+
     }
 }

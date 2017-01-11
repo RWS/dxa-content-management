@@ -66,6 +66,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ModelDataTest.cs" />
     <Compile Include="Dxa2ModelBuilderTest.cs" />
     <Compile Include="MockBinaryPublisher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -29,6 +29,10 @@ namespace Sdl.Web.DataModel
         /// </value>
         public Dictionary<string, object> ExtensionData { get; set; }
 
+        public ContentModelData Metadata { get; set; }
+
+        public string SchemaId { get; set; }
+
         /// <summary>
         ///  Sets an extension data key/value pair.
         /// </summary>
@@ -50,7 +54,14 @@ namespace Sdl.Web.DataModel
         protected override void Initialize(JObject jObject)
         {
             HtmlClasses = jObject.GetPropertyValueAsString("HtmlClasses");
-            // TODO: MvcData, XpmMetadata and ExtensionData (not likely to have those on embedded models, though)
+            XpmMetadata = jObject.GetPropertyValueAsDictionary("XpmMetadata");
+            ExtensionData = jObject.GetPropertyValueAsDictionary("ExtensionData");
+            SchemaId = jObject.GetPropertyValueAsString("SchemaId");
+            JObject metadata = jObject.GetPropertyValueAsObject("Metadata");
+            if (metadata != null)
+            {
+                Metadata = new ContentModelData(metadata);
+            }
         }
         #endregion
     }

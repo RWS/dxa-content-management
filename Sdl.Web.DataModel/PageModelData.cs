@@ -23,7 +23,5 @@ namespace Sdl.Web.DataModel
         /// Gets the Page Regions.
         /// </summary>
         public List<RegionModelData> Regions { get; set; }
-
-        public ContentModelData Metadata { get; set; }
     }
 }

@@ -13,11 +13,17 @@ namespace Sdl.Web.DataModel
         /// </remarks>
         public string Id { get; set; }
 
-        public string SchemaId { get; set; }
         public ContentModelData Content { get; set; }
-        public ContentModelData Metadata { get; set; }
         public BinaryContentData BinaryContent { get; set; }
         public ExternalContentData ExternalContent { get; set; }
+
+        /// <summary>
+        /// Gets or sets the resolved URL for the Component this Entity Model represents.
+        /// </summary>
+        /// <remarks>
+        /// This property is not set on CM-side, but may be set in the DXA Model Service.
+        /// </remarks>
+        public string LinkUrl { get; set; }
 
         #region Overrides
         protected override void Initialize(JObject jObject)
@@ -25,19 +31,14 @@ namespace Sdl.Web.DataModel
             base.Initialize(jObject);
 
             Id = jObject.GetPropertyValueAsString("Id");
-            SchemaId = jObject.GetPropertyValueAsString("SchemaId");
             JObject content = jObject.GetPropertyValueAsObject("Content");
             if (content != null)
             {
                 Content = new ContentModelData(content);
             }
-            JObject metadata = jObject.GetPropertyValueAsObject("Metadata");
-            if (metadata != null)
-            {
-                Metadata = new ContentModelData(metadata);
-            }
             BinaryContent = jObject.GetPropertyValueAsModel<BinaryContentData>("BinaryContent");
             ExternalContent = jObject.GetPropertyValueAsModel<ExternalContentData>("ExternalContent");
+            LinkUrl = jObject.GetPropertyValueAsString("LinkUrl");
         }
         #endregion
 

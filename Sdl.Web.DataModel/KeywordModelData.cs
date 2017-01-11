@@ -29,9 +29,6 @@ namespace Sdl.Web.DataModel
         /// </summary>
         public string TaxonomyId { get; set; }
 
-        public string MetadataSchemaId { get; set; }
-        public ContentModelData Metadata { get; set; }
-
         #region Overrides
         protected override void Initialize(JObject jObject)
         {
@@ -42,12 +39,6 @@ namespace Sdl.Web.DataModel
             Description = jObject.GetPropertyValueAsString("Description");
             Key = jObject.GetPropertyValueAsString("Key");
             TaxonomyId = jObject.GetPropertyValueAsString("TaxonomyId");
-            MetadataSchemaId = jObject.GetPropertyValueAsString("MetadataSchemaId");
-            JObject metadata = jObject.GetPropertyValueAsObject("Metadata");
-            if (metadata != null)
-            {
-                Metadata = new ContentModelData(metadata);
-            }
         }
         #endregion
     }

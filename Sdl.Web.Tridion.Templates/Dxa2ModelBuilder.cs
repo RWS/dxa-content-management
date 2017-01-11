@@ -168,7 +168,8 @@ namespace Sdl.Web.Tridion.Templates
                     {
                         ViewName = regionViewName,
                         AreaName = moduleName
-                    }
+                    },
+                    IncludePageUrl = includePage.PublishLocationUrl
                 };
                 if (Settings.IsXpmEnabled)
                 {
@@ -412,7 +413,7 @@ namespace Sdl.Web.Tridion.Templates
                 Description = keyword.Description,
                 Key = keyword.Key,
                 TaxonomyId = GetDxaIdentifier(keyword.OrganizationalItem),
-                MetadataSchemaId = GetDxaIdentifier(keyword.MetadataSchema),
+                SchemaId = GetDxaIdentifier(keyword.MetadataSchema),
                 Metadata = BuildContentModel(keyword.Metadata, expandLinkLevels)
             };
         }

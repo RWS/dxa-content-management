@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
@@ -41,6 +42,19 @@ namespace Sdl.Web.DataModel
             JObject propertyValue = jObject.GetPropertyValueAsObject(propertyName);
             return (propertyValue == null) ? null : (T) ModelData.Create(propertyValue);
         }
+
+        /// <summary>
+        /// Gets the value of a JObject property as Dictionary.
+        /// </summary>
+        /// <param name="jObject">The subject JObject.</param>
+        /// <param name="propertyName">The name of the property.</param>
+        /// <returns>The value of the property or <c>null</c> if the property is not present or not a complex type.</returns>
+        internal static Dictionary<string, object> GetPropertyValueAsDictionary(this JObject jObject, string propertyName)
+        {
+            JObject propertyValue = jObject.GetPropertyValueAsObject(propertyName);
+            return propertyValue == null ? null : propertyValue.Properties().ToDictionary(jProperty => jProperty.Name, jProperty => jProperty.Value.GetStronglyTypedValue());
+        }
+
 
         /// <summary>
         /// Gets a strongly typed value for a given JToken.
