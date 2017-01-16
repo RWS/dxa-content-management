@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Sdl.Web.DataModel;
+﻿using Sdl.Web.DataModel;
 using Sdl.Web.Tridion.Common;
 using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
@@ -39,7 +38,7 @@ namespace Sdl.Web.Tridion.Templates
                 );
             PageModelData pageModel = modelBuilder.BuildPageModel(GetPage());
 
-            string pageModelJson = JsonSerialize(pageModel);
+            string pageModelJson = JsonSerialize(pageModel, DataModelBinder.SerializerSettings);
             Item outputItem = Package.CreateStringItem(ContentType.Text, pageModelJson);
             Package.PushItem(Package.OutputName, outputItem);
         }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using Sdl.Web.DataModel;
 
 namespace Sdl.Web.Tridion.Templates.Tests
 {
@@ -22,19 +22,27 @@ namespace Sdl.Web.Tridion.Templates.Tests
             string json = JsonConvert.SerializeObject(
                 objectToSerialize,
                 Newtonsoft.Json.Formatting.Indented,
-                new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+                DataModelBinder.SerializerSettings
                 );
             Console.WriteLine("---- JSON Representation of {0} ----", objectToSerialize.GetType().FullName);
             Console.WriteLine(json);
         }
+
         protected T JsonSerializeDeserialize<T>(T objectToSerialize)
         {
             JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
             {
-                NullValueHandling = NullValueHandling.Ignore
+                Formatting = Formatting.Indented,
+                NullValueHandling = NullValueHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Binder = new DataModelBinder()
             };
             string json = JsonConvert.SerializeObject(objectToSerialize, jsonSerializerSettings);
-            T result = JsonConvert.DeserializeObject<T>(json);
+
+            Console.WriteLine($"---- Serialized JSON for {objectToSerialize} ----");
+            Console.WriteLine(json);
+
+            T result = JsonConvert.DeserializeObject<T>(json, jsonSerializerSettings);
 
             OutputJson(result);
 

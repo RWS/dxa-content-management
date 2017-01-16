@@ -21,6 +21,49 @@ namespace Sdl.Web.Tridion.Templates.Tests
             // TODO: further assertions
         }
 
+        [TestMethod]
+        public void ContentModelData_SerializeDeserialize_Success()
+        {
+            ContentModelData testContentModel = CreateTestContentModel(
+                "ContentModelData_SerializeDeserialize_Success",
+                includeEntityModels: true,
+                includeKeywordModels: true
+                );
+            string testTextField = (string) testContentModel["textField"];
+            string[] testMultiValueTextField = (string[]) testContentModel["multiValueTextField"];
+            RichTextData testRichTextField = (RichTextData) testContentModel["richTextField"];
+            RichTextData[] testMultiValueRichTextField = (RichTextData[]) testContentModel["multiValueRichTextField"];
+            EntityModelData testCompLinkField = (EntityModelData) testContentModel["compLinkField"];
+            EntityModelData[] testMultiValueCompLinkField = (EntityModelData[]) testContentModel["multiValueCompLinkField"];
+            KeywordModelData testKeywordField = (KeywordModelData) testContentModel["keywordField"];
+            KeywordModelData[] testMultiValueKeywordField = (KeywordModelData[]) testContentModel["multiValueKeywordField"];
+
+            ContentModelData deserializedContentModel = JsonSerializeDeserialize(testContentModel);
+
+            RichTextData deserializedRichTextField = deserializedContentModel["richTextField"] as RichTextData;
+            RichTextData[] deserializedMultiValueRichTextField = deserializedContentModel["multiValueRichTextField"] as RichTextData[];
+            EntityModelData deserializedCompLink = deserializedContentModel["compLinkField"] as EntityModelData;
+            EntityModelData[] deserializedMultiValueCompLink = deserializedContentModel["multiValueCompLinkField"] as EntityModelData[];
+            KeywordModelData deserializedKeyword = deserializedContentModel["keywordField"] as KeywordModelData;
+            KeywordModelData[] deserializedMultiValueKeywordField = (KeywordModelData[]) deserializedContentModel["multiValueKeywordField"];
+
+            Assert.IsNotNull(deserializedRichTextField, "deserializedRichTextField");
+            Assert.IsNotNull(deserializedMultiValueRichTextField, "deserializedMultiValueRichTextField");
+            Assert.IsNotNull(deserializedCompLink, "deserializedCompLink");
+            Assert.IsNotNull(deserializedMultiValueCompLink, "deserializedMultiValueCompLink");
+            Assert.IsNotNull(deserializedKeyword, "deserializedKeyword");
+            Assert.IsNotNull(deserializedMultiValueKeywordField, "deserializedMultiValueKeywordField");
+
+            Assert.AreEqual(testTextField, deserializedContentModel["textField"], "textField");
+            AssertEqualCollections(testMultiValueTextField, deserializedContentModel["multiValueTextField"] as string[], "multiValueTextField");
+            Assert.AreEqual(testRichTextField.Fragments.Count, deserializedRichTextField.Fragments.Count, "deserializedRichTextField.Fragments.Count");
+            AssertEqualCollections(testMultiValueRichTextField, deserializedMultiValueRichTextField, "deserializedMultiValueRichTextField");
+            Assert.AreEqual(testCompLinkField.Id, deserializedCompLink.Id, "deserializedCompLink.Id");
+            AssertEqualCollections(testMultiValueCompLinkField, deserializedMultiValueCompLink, "deserializedMultiValueCompLink");
+            Assert.AreEqual(testKeywordField.Id, deserializedKeyword.Id, "deserializedKeyword.Id");
+            AssertEqualCollections(testMultiValueKeywordField, deserializedMultiValueKeywordField, "deserializedMultiValueKeywordField");
+        }
+
         private static PageModelData CreateTestPageModelData(string testId)
         {
             return new PageModelData
@@ -101,7 +144,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
             {
                 { "textField", "Test content for " + testId },
                 { "multiValueTextField", new[] { "value1", "value2" } },
-                { "richTextField", CreateTestRichText(testId + "_richTextField", includeEntityModels) }
+                { "richTextField", CreateTestRichText(testId + "_richTextField", includeEntityModels) },
+                { "multiValueRichTextField", new[] { CreateTestRichText("multiValueRichTextField", includeEntityModels) } }
             };
 
             if (includeEntityModels)

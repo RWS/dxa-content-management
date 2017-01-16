@@ -143,8 +143,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(pageModel);
             OutputJson(pageModel);
 
-            // TODO: further assertions
-
             PageModelData deserializedPageModel = JsonSerializeDeserialize(pageModel);
             Assert.IsNotNull(deserializedPageModel, "deserializedPageModel");
             OutputJson(deserializedPageModel);

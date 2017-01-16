@@ -40,7 +40,7 @@ namespace Sdl.Web.Tridion.Templates
                 );
             EntityModelData entityModel = modelBuilder.BuildEntityModel(GetComponent(), GetComponentTemplate());
 
-            string entityModelJson = JsonSerialize(entityModel);
+            string entityModelJson = JsonSerialize(entityModel, DataModelBinder.SerializerSettings);
             Item outputItem = Package.CreateStringItem(ContentType.Text, entityModelJson);
             Package.PushItem(Package.OutputName, outputItem);
         }

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
+﻿using System.Collections.Generic;
 
 namespace Sdl.Web.DataModel
 {
-    public abstract class ViewModelData : ModelData
+    public abstract class ViewModelData
     {
         /// <summary>
         /// Gets or sets MVC data used to determine which View to use.
@@ -49,20 +47,5 @@ namespace Sdl.Web.DataModel
             }
             ExtensionData[key] = value;
         }
-
-        #region Overrides
-        protected override void Initialize(JObject jObject)
-        {
-            HtmlClasses = jObject.GetPropertyValueAsString("HtmlClasses");
-            XpmMetadata = jObject.GetPropertyValueAsDictionary("XpmMetadata");
-            ExtensionData = jObject.GetPropertyValueAsDictionary("ExtensionData");
-            SchemaId = jObject.GetPropertyValueAsString("SchemaId");
-            JObject metadata = jObject.GetPropertyValueAsObject("Metadata");
-            if (metadata != null)
-            {
-                Metadata = new ContentModelData(metadata);
-            }
-        }
-        #endregion
     }
 }

@@ -50,10 +50,9 @@
     <Compile Include="BinaryContentData.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="ContentModelData.cs" />
+    <Compile Include="DataModelBinder.cs" />
     <Compile Include="EntityModelData.cs" />
     <Compile Include="ExternalContentData.cs" />
-    <Compile Include="JsonExtensions.cs" />
-    <Compile Include="ModelData.cs" />
     <Compile Include="KeywordModelData.cs" />
     <Compile Include="MvcData.cs" />
     <Compile Include="PageModelData.cs" />

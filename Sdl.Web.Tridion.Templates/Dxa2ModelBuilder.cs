@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -552,38 +553,47 @@ namespace Sdl.Web.Tridion.Templates
             ContentModelData result = new ContentModelData();
 
             string currentFieldName = null;
-            object currentFieldValue = null;
+            List<object> currentFieldValues = new List<object>();
             foreach (XmlElement childElement in xmlElement.SelectElements("*"))
             {
-                if (childElement.Name == currentFieldName)
-                {
-                    // Multi-valued field.
-                    List<object> fieldValues = currentFieldValue as List<object>;
-                    if (fieldValues == null)
-                    {
-                        fieldValues = new List<object> { currentFieldValue };
-                        currentFieldValue = fieldValues;
-                    }
-                    fieldValues.Add(GetFieldValue(childElement, expandLinkLevels));
-                }
-                else
+                if (childElement.Name != currentFieldName)
                 {
                     // New field
                     if (currentFieldName != null)
                     {
-                        result.Add(currentFieldName, currentFieldValue);
+                        result.Add(currentFieldName,  GetTypedFieldValue(currentFieldValues));
                     }
                     currentFieldName = childElement.Name;
-                    currentFieldValue = GetFieldValue(childElement, expandLinkLevels);
+                    currentFieldValues = new List<object>();
                 }
+                currentFieldValues.Add(GetFieldValue(childElement, expandLinkLevels));
             }
 
-            if (currentFieldValue != null)
+            if (currentFieldName != null)
             {
-                result.Add(currentFieldName, currentFieldValue);
+                result.Add(currentFieldName, GetTypedFieldValue(currentFieldValues));
             }
 
             return result.Count == 0 ? null : result;
+        }
+
+        private static object GetTypedFieldValue(List<object> fieldValues)
+        {
+            switch (fieldValues.Count)
+            {
+                case 0:
+                    return null;
+                case 1:
+                    return fieldValues[0];
+            }
+
+            Array typedArray = Array.CreateInstance(fieldValues[0].GetType(), fieldValues.Count);
+            int i = 0;
+            foreach (object fieldValue in fieldValues)
+            {
+                typedArray.SetValue(fieldValue, i++);
+            }
+            return typedArray;
         }
 
         private object GetFieldValue(XmlElement xmlElement, int expandLinkLevels)

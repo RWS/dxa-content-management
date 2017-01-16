@@ -456,18 +456,21 @@ namespace Sdl.Web.Tridion.Common
             return JsonSerialize(json);
         }
 
-        protected string JsonSerialize(object objectToSerialize)
+        protected string JsonSerialize(object objectToSerialize, JsonSerializerSettings settings = null)
         {
-            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
+            if (settings == null)
             {
-                NullValueHandling = NullValueHandling.Ignore
-            };
+                settings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                };
+            }
 
             Newtonsoft.Json.Formatting jsonFormatting = (IsPreviewMode() || IsXpmEnabled) ?
                 Newtonsoft.Json.Formatting.Indented :
                 Newtonsoft.Json.Formatting.None;
 
-            return JsonConvert.SerializeObject(objectToSerialize, jsonFormatting, jsonSerializerSettings);
+            return JsonConvert.SerializeObject(objectToSerialize, jsonFormatting, settings);
         }
 
         #endregion

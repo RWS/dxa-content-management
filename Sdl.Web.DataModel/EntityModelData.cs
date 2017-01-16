@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-
-namespace Sdl.Web.DataModel
+﻿namespace Sdl.Web.DataModel
 {
     public class EntityModelData : ViewModelData
     {
@@ -24,23 +22,5 @@ namespace Sdl.Web.DataModel
         /// This property is not set on CM-side, but may be set in the DXA Model Service.
         /// </remarks>
         public string LinkUrl { get; set; }
-
-        #region Overrides
-        protected override void Initialize(JObject jObject)
-        {
-            base.Initialize(jObject);
-
-            Id = jObject.GetPropertyValueAsString("Id");
-            JObject content = jObject.GetPropertyValueAsObject("Content");
-            if (content != null)
-            {
-                Content = new ContentModelData(content);
-            }
-            BinaryContent = jObject.GetPropertyValueAsModel<BinaryContentData>("BinaryContent");
-            ExternalContent = jObject.GetPropertyValueAsModel<ExternalContentData>("ExternalContent");
-            LinkUrl = jObject.GetPropertyValueAsString("LinkUrl");
-        }
-        #endregion
-
     }
 }
