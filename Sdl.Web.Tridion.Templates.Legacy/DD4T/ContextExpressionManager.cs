@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Tridion.ContentManager.AudienceManagement;
 
-namespace Sdl.Web.Tridion.Templates.DD4T
+namespace Sdl.Web.Tridion.Templates.Legacy.DD4T
 {
     internal static class ContextExpressionManager
     {

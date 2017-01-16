@@ -31,22 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DD4T.ContentModel, Version=2.0.7.0, Culture=neutral, PublicKeyToken=4450e3c7f68bf872, processorArchitecture=MSIL">
-      <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.ContentModel.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DD4T.ContentModel.Contracts, Version=2.0.7.0, Culture=neutral, PublicKeyToken=4450e3c7f68bf872, processorArchitecture=MSIL">
-      <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.ContentModel.Contracts.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DD4T.Serialization, Version=2.0.7.0, Culture=neutral, PublicKeyToken=4450e3c7f68bf872, processorArchitecture=MSIL">
-      <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.Serialization.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="DD4T.Templates.Base, Version=2.0.8.0, Culture=neutral, PublicKeyToken=4450e3c7f68bf872, processorArchitecture=MSIL">
-      <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.Templates.Base.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.OData.Client">
       <HintPath>C:\_references\cm-8.1\Microsoft.OData.Client.dll</HintPath>
@@ -116,9 +100,6 @@
     <Compile Include="Dxa2ModelBuilderSettings.cs" />
     <Compile Include="DxaException.cs" />
     <Compile Include="EclModelBuilder.cs" />
-    <Compile Include="Templates\DD4T\ContextExpressionManager.cs" />
-    <Compile Include="Templates\DD4T\DxaBuildManager.cs" />
-    <Compile Include="Templates\DD4T\GenerateDynamicComponent.cs" />
     <Compile Include="Templates\GenerateEntityModel.cs" />
     <Compile Include="Templates\GeneratePageModel.cs" />
     <Compile Include="Templates\GenerateSitemap.cs" />
@@ -128,18 +109,12 @@
     <Compile Include="Templates\PublishHtmlDesign.cs" />
     <Compile Include="Templates\PublishMappings.cs" />
     <Compile Include="Templates\PublishResources.cs" />
-    <Compile Include="Templates\RenderComponentPresentations.cs" />
     <Compile Include="Common\TemplateBase.cs" />
-    <Compile Include="Templates\DD4T\GenerateDynamicPage.cs" />
-    <Compile Include="Templates\ResolveRichText.cs" />
     <Compile Include="TopologyManager.cs" />
     <Compile Include="XmlElementExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\PublishHtmlDesignParameters.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\ResolveRichTextParameters.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
@@ -163,12 +138,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe"  ^
-    /out:Sdl.Web.Tridion.Templates.merged.dll ^
-    /targetplatform:v4 ^
-    /lib:C:\_references\cm-8.1 ^
-    Sdl.Web.Tridion.Templates.dll Sdl.Web.DataModel.dll DD4T.ContentModel.Contracts.dll DD4T.ContentModel.dll DD4T.Serialization.dll DD4T.Templates.Base.dll Newtonsoft.Json.dll
-</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
