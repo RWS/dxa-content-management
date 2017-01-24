@@ -9,6 +9,7 @@
         <BuildConfiguration>Release</BuildConfiguration>
         <ProjectDirectory>$(MSBuildProjectDirectory)</ProjectDirectory>
         <TemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.merged.dll</TemplatesDll>
+        <CmsTargetDefinitionFile>dxadevweb8.xml</CmsTargetDefinitionFile>
         
         <VersionMajor>$(Version.Split('.')[0])</VersionMajor>
         <VersionMinor>$(Version.Split('.')[1])</VersionMinor>
@@ -62,7 +63,7 @@
     <Target Name="DeployOutput">
       <Message Text="Deploying '$(TemplatesDll)' to CMS..." />
         
-        <Exec Command="TcmUploadAssembly.exe dxadevweb8.xml /folder:tcm:2-17-2 /verbose &quot;$(TemplatesDll)&quot;" WorkingDirectory="$(CmToolsDir)" />
+        <Exec Command="TcmUploadAssembly.exe $(CmsTargetDefinitionFile) /folder:tcm:2-17-2 /verbose &quot;$(TemplatesDll)&quot;" WorkingDirectory="$(CmToolsDir)" />
     </Target>
  
 </Project>
