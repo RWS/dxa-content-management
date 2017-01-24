@@ -14,7 +14,7 @@ namespace Sdl.Web.Tridion.Templates.Legacy
     /// Pre-processes Rich Text fields so they contain sufficient information for Rich Text Processing in the Web Application.
     /// </summary>
     [TcmTemplateTitle("Resolve Rich Text")]
-    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.ResolveRichTextParameters.xsd")]
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Templates.Legacy.Resources.ResolveRichTextParameters.xsd")]
     public class ResolveRichText : TemplateBase
     {
         private const string SchemaUriAttribute = "data-schemaUri";

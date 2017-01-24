@@ -80,9 +80,6 @@
     <EmbeddedResource Include="Resources\ResolveRichTextParameters.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\PublishMappingsParameters.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\GenerateDynamicPageParameters.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
