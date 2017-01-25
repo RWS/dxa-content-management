@@ -20,6 +20,8 @@ namespace Sdl.Web.Tridion.Templates
         {
             Logger.Debug("Transform");
 
+            Initialize(engine, package);
+
             int expandLinkDepth;
             package.TryGetParameter("expandLinkDepth", out expandLinkDepth, Logger);
 
