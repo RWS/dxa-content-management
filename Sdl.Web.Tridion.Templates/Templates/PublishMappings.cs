@@ -1,12 +1,12 @@
 ﻿using System.Linq;
 using Sdl.Web.Tridion.Common;
-using Sdl.Web.DataModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
+using Sdl.Web.DataModel.Configuration;
 using Tridion;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;

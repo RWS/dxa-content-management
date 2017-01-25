@@ -74,16 +74,6 @@
       <FileName>ExternalContentData.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Sdl.Web.DataModel.ContentModelData">
-    <Position X="0.5" Y="6.5" Width="1.75" />
-    <Compartments>
-      <Compartment Name="Methods" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>ContentModelData.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Sdl.Web.DataModel.RichTextData">
     <Position X="2.75" Y="6.5" Width="2" />
     <Compartments>
@@ -92,6 +82,13 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>RichTextData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sdl.Web.DataModel.ContentModelData">
+    <Position X="0.5" Y="6.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ContentModelData.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

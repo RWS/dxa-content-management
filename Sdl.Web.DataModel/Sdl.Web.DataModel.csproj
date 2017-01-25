@@ -48,7 +48,16 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BinaryContentData.cs" />
-    <Compile Include="Configuration.cs" />
+    <Compile Include="Configuration\BootstrapData.cs" />
+    <Compile Include="Configuration\LocalizationData.cs" />
+    <Compile Include="Configuration\SemanticPropertyData.cs" />
+    <Compile Include="Configuration\SemanticTypeData.cs" />
+    <Compile Include="Configuration\SemanticSchemaData.cs" />
+    <Compile Include="Configuration\SemanticSchemaFieldData.cs" />
+    <Compile Include="Configuration\XpmComponentTypeData.cs" />
+    <Compile Include="Configuration\XpmRegionData.cs" />
+    <Compile Include="Configuration\VocabularyData.cs" />
+    <Compile Include="Configuration\SummaryData.cs" />
     <Compile Include="ContentModelData.cs" />
     <Compile Include="DataModelBinder.cs" />
     <Compile Include="EntityModelData.cs" />

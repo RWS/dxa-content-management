@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Newtonsoft.Json;
-using Sdl.Web.DataModel;
+using Sdl.Web.DataModel.Configuration;
 using Sdl.Web.Tridion.Templates;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
