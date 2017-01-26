@@ -6,7 +6,7 @@ using Tridion.ContentManager.Templating;
 using Tridion.ContentManager.Templating.Assembly;
 using ComponentPresentation = Tridion.ContentManager.CommunicationManagement.ComponentPresentation;
 
-namespace Sdl.Web.Tridion.Templates
+namespace Sdl.Web.Tridion.Templates.Legacy
 {
     /// <summary>
     /// Renders the component presentations to the package output. Useful when there is no page layout for publishing data
