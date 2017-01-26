@@ -30,7 +30,7 @@ namespace Sdl.Web.Tridion.Templates
             R2ModelBuilderSettings settings = new R2ModelBuilderSettings
             {
                 ExpandLinkDepth = expandLinkDepth,
-                GenerateXpmMetadata = IsXpmEnabled
+                GenerateXpmMetadata = IsXpmEnabled || IsPreview
             };
 
             R2ModelBuilder modelBuilder = new R2ModelBuilder(

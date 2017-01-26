@@ -234,15 +234,15 @@ namespace Sdl.Web.Tridion.Common
         /// </summary>
         /// <returns>True if publishing to a target which is XPM enabled.</returns>
         [Obsolete("Deprecated in DXA 1.7. Use IsXpmEnabled instead.")]
-        protected bool IsPublishingToStaging()
-        {
-            return IsXpmEnabled;
-        }
+        protected bool IsPublishingToStaging() => IsXpmEnabled;
 
-        protected bool IsPreviewMode()
-        {
-            return Engine.RenderMode == RenderMode.PreviewDynamic || Engine.RenderMode == RenderMode.PreviewStatic;
-        }
+        [Obsolete("Deprecated in DXA 2.0. Use IsPreview property instead.")]
+        protected bool IsPreviewMode() => IsPreview;
+
+        /// <summary>
+        /// Gets whether the item is being rendered as part of CM Preview.
+        /// </summary>
+        protected bool IsPreview => (Engine.RenderMode == RenderMode.PreviewDynamic) || (Engine.RenderMode == RenderMode.PreviewStatic);
 
         protected bool IsMasterWebPublication(Publication publication)
         {
