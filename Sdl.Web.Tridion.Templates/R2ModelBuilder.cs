@@ -119,8 +119,7 @@ namespace Sdl.Web.Tridion.Templates
 
                 if (regionModels.ContainsKey(regionName))
                 {
-                    _logger.Warning($"Duplicate predefined Region name '{regionName}' encountered in {pageTemplate}. Skipping the duplicate definition.");
-                    continue;
+                    throw new DxaException($"Duplicate predefined Region name '{regionName}' encountered in Page Template '{pageTemplate.Title}' ({pageTemplate.Id}).");
                 }
 
                 RegionModelData regionModel = new RegionModelData

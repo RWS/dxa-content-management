@@ -200,7 +200,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void BuildPageModel_PredefinedRegions_Success()
+        public void BuildPageModel_DuplicatePredefinedRegions_Exception()
         {
             Session testSession = new Session();
             Page testPage = (Page) testSession.GetObject(TestFixture.PredefinedRegionsTestPageWebDavUrl);
@@ -212,14 +212,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 mockBinaryPublisher.AddBinary,
                 mockBinaryPublisher.AddBinaryStream
                 );
-            PageModelData pageModel = testModelBuilder.BuildPageModel(testPage);
-
-            Assert.IsNotNull(pageModel);
-            OutputJson(pageModel);
-
-            // TODO TSI-132: further assertions
+            AssertThrowsException<DxaException>(() => testModelBuilder.BuildPageModel(testPage));
         }
-
 
         [TestMethod]
         public void BuildEntityModel_ArticleDcp_Success()

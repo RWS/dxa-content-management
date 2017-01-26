@@ -1,5 +1,7 @@
-﻿using Sdl.Web.DataModel;
+﻿using System;
+using Sdl.Web.DataModel;
 using Sdl.Web.Tridion.Common;
+using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
 using Tridion.ContentManager.Templating.Assembly;
@@ -26,24 +28,32 @@ namespace Sdl.Web.Tridion.Templates
             package.TryGetParameter("expandLinkDepth", out expandLinkDepth, Logger);
 
             RenderedItem renderedItem = Engine.PublishingContext.RenderedItem;
+            Page page = GetPage();
 
-            R2ModelBuilderSettings settings = new R2ModelBuilderSettings
+            try
             {
-                ExpandLinkDepth = expandLinkDepth,
-                GenerateXpmMetadata = IsXpmEnabled || IsPreview
-            };
+                R2ModelBuilderSettings settings = new R2ModelBuilderSettings
+                {
+                    ExpandLinkDepth = expandLinkDepth,
+                    GenerateXpmMetadata = IsXpmEnabled || IsPreview
+                };
 
-            R2ModelBuilder modelBuilder = new R2ModelBuilder(
-                Session,
-                settings,
-                mmc => renderedItem.AddBinary(mmc).Url,
-                (stream, fileName, relatedComponent, mimeType) => renderedItem.AddBinary(stream, fileName, string.Empty, relatedComponent, mimeType).Url
-                );
-            PageModelData pageModel = modelBuilder.BuildPageModel(GetPage());
+                R2ModelBuilder modelBuilder = new R2ModelBuilder(
+                    Session,
+                    settings,
+                    mmc => renderedItem.AddBinary(mmc).Url,
+                    (stream, fileName, relatedComponent, mimeType) => renderedItem.AddBinary(stream, fileName, string.Empty, relatedComponent, mimeType).Url
+                    );
+                PageModelData pageModel = modelBuilder.BuildPageModel(GetPage());
 
-            string pageModelJson = JsonSerialize(pageModel, DataModelBinder.SerializerSettings);
-            Item outputItem = Package.CreateStringItem(ContentType.Text, pageModelJson);
-            Package.PushItem(Package.OutputName, outputItem);
+                string pageModelJson = JsonSerialize(pageModel, DataModelBinder.SerializerSettings);
+                Item outputItem = Package.CreateStringItem(ContentType.Text, pageModelJson);
+                Package.PushItem(Package.OutputName, outputItem);
+            }
+            catch (Exception ex)
+            {
+                throw new DxaException($"An error occurred while rendering Page '{page.Title}' ({page.Id})", ex);
+            }
         }
     }
 }

@@ -1,5 +1,8 @@
-﻿using Sdl.Web.DataModel;
+﻿using System;
+using Sdl.Web.DataModel;
 using Sdl.Web.Tridion.Common;
+using Tridion.ContentManager.CommunicationManagement;
+using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
 using Tridion.ContentManager.Templating.Assembly;
@@ -26,24 +29,36 @@ namespace Sdl.Web.Tridion.Templates
             package.TryGetParameter("expandLinkDepth", out expandLinkDepth, Logger);
 
             RenderedItem renderedItem = Engine.PublishingContext.RenderedItem;
+            Component component = GetComponent();
+            ComponentTemplate ct = GetComponentTemplate();
 
-            R2ModelBuilderSettings settings = new R2ModelBuilderSettings
+            try
             {
-                ExpandLinkDepth = expandLinkDepth,
-                GenerateXpmMetadata = IsXpmEnabled || IsPreview
-            };
+                R2ModelBuilderSettings settings = new R2ModelBuilderSettings
+                {
+                    ExpandLinkDepth = expandLinkDepth,
+                    GenerateXpmMetadata = IsXpmEnabled || IsPreview
+                };
 
-            R2ModelBuilder modelBuilder = new R2ModelBuilder(
-                Session,
-                settings,
-                mmc => renderedItem.AddBinary(mmc).Url,
-                (stream, fileName, relatedComponent, mimeType) => renderedItem.AddBinary(stream, fileName, string.Empty, relatedComponent, mimeType).Url
-                );
-            EntityModelData entityModel = modelBuilder.BuildEntityModel(GetComponent(), GetComponentTemplate());
+                R2ModelBuilder modelBuilder = new R2ModelBuilder(
+                    Session,
+                    settings,
+                    mmc => renderedItem.AddBinary(mmc).Url,
+                    (stream, fileName, relatedComponent, mimeType) => renderedItem.AddBinary(stream, fileName, string.Empty, relatedComponent, mimeType).Url
+                    );
+                EntityModelData entityModel = modelBuilder.BuildEntityModel(component, ct);
 
-            string entityModelJson = JsonSerialize(entityModel, DataModelBinder.SerializerSettings);
-            Item outputItem = Package.CreateStringItem(ContentType.Text, entityModelJson);
-            Package.PushItem(Package.OutputName, outputItem);
+                string entityModelJson = JsonSerialize(entityModel, DataModelBinder.SerializerSettings);
+                Item outputItem = Package.CreateStringItem(ContentType.Text, entityModelJson);
+                Package.PushItem(Package.OutputName, outputItem);
+            }
+            catch (Exception ex)
+            {
+                throw new DxaException(
+                    $"An error occurred while rendering Component '{component.Title}' ({component.Id}) with Template '{ct.Title}' ({ct.Id})", 
+                    ex
+                    );
+            }
         }
     }
 }
