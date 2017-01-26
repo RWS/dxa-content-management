@@ -205,7 +205,7 @@ namespace Sdl.Web.Tridion.Templates
 
         private List<RegionModelData> ExpandIncludePage(Page includePage)
         {
-            _logger.Debug($"Expanding Include Page '{includePage.Id}' for now (until we have a Model Service).");
+            _logger.Debug($"Expanding Include Page '{includePage.Title}' for now (until we have a Model Service).");
 
             PageModelData includePageModel = BuildPageModel(includePage);
             return includePageModel.Regions;
