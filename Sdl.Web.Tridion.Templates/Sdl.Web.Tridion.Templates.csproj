@@ -92,12 +92,12 @@
   <ItemGroup>
     <Compile Include="Common\GeneralExtensionMethods.cs" />
     <Compile Include="Common\ItemFieldsExtensions.cs" />
-    <Compile Include="Dxa2ModelBuilder.cs" />
+    <Compile Include="R2ModelBuilder.cs" />
     <Compile Include="Common\ObjectExtensions.cs" />
     <Compile Include="Common\PackageExtensions.cs" />
     <Compile Include="Common\StringBuilderExtensions.cs" />
     <Compile Include="Common\Utility.cs" />
-    <Compile Include="Dxa2ModelBuilderSettings.cs" />
+    <Compile Include="R2ModelBuilderSettings.cs" />
     <Compile Include="DxaException.cs" />
     <Compile Include="EclModelBuilder.cs" />
     <Compile Include="Templates\GenerateEntityModel.cs" />

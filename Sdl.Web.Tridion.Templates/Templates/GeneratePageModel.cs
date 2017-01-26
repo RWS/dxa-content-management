@@ -7,7 +7,7 @@ using Tridion.ContentManager.Templating.Assembly;
 namespace Sdl.Web.Tridion.Templates
 {
     /// <summary>
-    /// Generates a DXA 2 data model based on the current Page
+    /// Generates a DXA R2 Data Model based on the current Page
     /// </summary>
     [TcmTemplateTitle("Generate DXA 2 Page Model")]
     [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.GenerateDynamicPageParameters.xsd")]
@@ -27,14 +27,14 @@ namespace Sdl.Web.Tridion.Templates
 
             RenderedItem renderedItem = Engine.PublishingContext.RenderedItem;
 
-            Dxa2ModelBuilderSettings settings = new Dxa2ModelBuilderSettings
+            R2ModelBuilderSettings settings = new R2ModelBuilderSettings
             {
                 ExpandLinkDepth = expandLinkDepth
             };
 
-            Dxa2ModelBuilder modelBuilder = new Dxa2ModelBuilder(
-                Session, 
-                settings, 
+            R2ModelBuilder modelBuilder = new R2ModelBuilder(
+                Session,
+                settings,
                 mmc => renderedItem.AddBinary(mmc).Url,
                 (stream, fileName, relatedComponent, mimeType) => renderedItem.AddBinary(stream, fileName, string.Empty, relatedComponent, mimeType).Url
                 );

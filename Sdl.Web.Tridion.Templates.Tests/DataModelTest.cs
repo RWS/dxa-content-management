@@ -7,7 +7,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
 {
 
     [TestClass]
-    public class ModelDataTest : TestClass
+    public class DataModelTest : TestClass
     {
 
         [TestMethod]
@@ -18,7 +18,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             PageModelData deserializedPageModel = JsonSerializeDeserialize(testPageModel);
 
             Assert.AreEqual(deserializedPageModel.MvcData, testPageModel.MvcData, "testPageModel.MvcData");
-            // TODO: further assertions
+            // TODO TSI-132: further assertions
         }
 
         [TestMethod]

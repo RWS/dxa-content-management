@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sdl.Web.DataModel;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
@@ -12,12 +8,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
 {
 
     [TestClass]
-    public class Dxa2ModelBuilderTest : TestClass
+    public class R2ModelBuilderTest : TestClass
     {
-        private static readonly Dxa2ModelBuilderSettings _defaultModelBuilderSettings =  new Dxa2ModelBuilderSettings
+        private static readonly R2ModelBuilderSettings _defaultModelBuilderSettings =  new R2ModelBuilderSettings
         {
-            ExpandLinkDepth = 2,
-            IsXpmEnabled = true
+            ExpandLinkDepth = 1,
+            GenerateXpmMetadata = true
         };
 
         [TestMethod]
@@ -27,9 +23,9 @@ namespace Sdl.Web.Tridion.Templates.Tests
             MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
             Page testPage = (Page) testSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
 
-            Dxa2ModelBuilder testModelBuilder = new Dxa2ModelBuilder(
-                testSession, 
-                _defaultModelBuilderSettings, 
+            R2ModelBuilder testModelBuilder = new R2ModelBuilder(
+                testSession,
+                _defaultModelBuilderSettings,
                 mockBinaryPublisher.AddBinary,
                 mockBinaryPublisher.AddBinaryStream
                 );
@@ -38,7 +34,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(pageModel);
             OutputJson(pageModel);
 
-            // TODO: further assertions
+            // TODO TSI-132: further assertions
         }
 
         [TestMethod]
@@ -48,7 +44,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
             Page testPage = (Page) testSession.GetObject(TestFixture.ArticleDcpPageWebDavUrl);
 
-            Dxa2ModelBuilder testModelBuilder = new Dxa2ModelBuilder(
+            R2ModelBuilder testModelBuilder = new R2ModelBuilder(
                 testSession,
                 _defaultModelBuilderSettings,
                 mockBinaryPublisher.AddBinary,
@@ -59,7 +55,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(pageModel);
             OutputJson(pageModel);
 
-            // TODO: further assertions
+            // TODO TSI-132: further assertions
         }
 
         [TestMethod]
@@ -69,7 +65,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
             Page testPage = (Page) testSession.GetObject(TestFixture.MediaManagerPageWebDavUrl);
 
-            Dxa2ModelBuilder testModelBuilder = new Dxa2ModelBuilder(
+            R2ModelBuilder testModelBuilder = new R2ModelBuilder(
                 testSession,
                 _defaultModelBuilderSettings,
                 mockBinaryPublisher.AddBinary,
@@ -80,7 +76,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(pageModel);
             OutputJson(pageModel);
 
-            // TODO: further assertions
+            // TODO TSI-132: further assertions
         }
 
         [TestMethod]
@@ -90,7 +86,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
             Page testPage = (Page) testSession.GetObject(TestFixture.FlickrTestPageWebDavUrl);
 
-            Dxa2ModelBuilder testModelBuilder = new Dxa2ModelBuilder(
+            R2ModelBuilder testModelBuilder = new R2ModelBuilder(
                 testSession,
                 _defaultModelBuilderSettings,
                 mockBinaryPublisher.AddBinary,
@@ -101,7 +97,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(pageModel);
             OutputJson(pageModel);
 
-            // TODO: further assertions
+            // TODO TSI-132: further assertions
         }
 
         [TestMethod]
@@ -111,7 +107,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
             Page testPage = (Page) testSession.GetObject(TestFixture.SmartTargetPageWebDavUrl);
 
-            Dxa2ModelBuilder testModelBuilder = new Dxa2ModelBuilder(
+            R2ModelBuilder testModelBuilder = new R2ModelBuilder(
                 testSession,
                 _defaultModelBuilderSettings,
                 mockBinaryPublisher.AddBinary,
@@ -122,7 +118,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(pageModel);
             OutputJson(pageModel);
 
-            // TODO: further assertions
+            // TODO TSI-132: further assertions
         }
 
         [TestMethod]
@@ -132,7 +128,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
             Page testPage = (Page) testSession.GetObject(TestFixture.Tsi811PageWebDavUrl);
 
-            Dxa2ModelBuilder testModelBuilder = new Dxa2ModelBuilder(
+            R2ModelBuilder testModelBuilder = new R2ModelBuilder(
                 testSession,
                 _defaultModelBuilderSettings,
                 mockBinaryPublisher.AddBinary,
@@ -168,7 +164,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
             Page testPage = (Page) testSession.GetObject(TestFixture.Tsi1758PageWebDavUrl);
 
-            Dxa2ModelBuilder testModelBuilder = new Dxa2ModelBuilder(
+            R2ModelBuilder testModelBuilder = new R2ModelBuilder(
                 testSession,
                 _defaultModelBuilderSettings,
                 mockBinaryPublisher.AddBinary,
@@ -179,7 +175,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(pageModel);
             OutputJson(pageModel);
 
-            // TODO: further assertions
+            // TODO TSI-132: further assertions
         }
 
         [TestMethod]
@@ -189,7 +185,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Page testPage = (Page) testSession.GetObject(TestFixture.Tsi1946PageWebDavUrl);
             MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
 
-            Dxa2ModelBuilder testModelBuilder = new Dxa2ModelBuilder(
+            R2ModelBuilder testModelBuilder = new R2ModelBuilder(
                 testSession,
                 _defaultModelBuilderSettings,
                 mockBinaryPublisher.AddBinary,
@@ -200,7 +196,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(pageModel);
             OutputJson(pageModel);
 
-            // TODO: further assertions
+            // TODO TSI-132: further assertions
         }
 
         [TestMethod]
@@ -212,7 +208,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Component article = (Component) testSession.GetObject(articleDcpIds[0]);
             ComponentTemplate ct = (ComponentTemplate) testSession.GetObject(articleDcpIds[1]);
 
-            Dxa2ModelBuilder testModelBuilder = new Dxa2ModelBuilder(
+            R2ModelBuilder testModelBuilder = new R2ModelBuilder(
                 testSession,
                 _defaultModelBuilderSettings,
                 mockBinaryPublisher.AddBinary,
@@ -223,7 +219,29 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(entityModel);
             OutputJson(entityModel);
 
-            // TODO: further assertions
+            // TODO TSI-132: further assertions
+        }
+
+        [TestMethod]
+        public void BuildEntityModel_WithoutComponentTemplate_Success()
+        {
+            Session testSession = new Session();
+            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
+            string[] articleDcpIds = TestFixture.ArticleDcpId.Split('/');
+            Component article = (Component) testSession.GetObject(articleDcpIds[0]);
+
+            R2ModelBuilder testModelBuilder = new R2ModelBuilder(
+                testSession,
+                _defaultModelBuilderSettings,
+                mockBinaryPublisher.AddBinary,
+                mockBinaryPublisher.AddBinaryStream
+                );
+            EntityModelData entityModel = testModelBuilder.BuildEntityModel(article);
+
+            Assert.IsNotNull(entityModel);
+            OutputJson(entityModel);
+
+            // TODO TSI-132: further assertions
         }
     }
 }

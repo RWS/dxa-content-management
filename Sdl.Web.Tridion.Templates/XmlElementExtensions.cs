@@ -52,5 +52,17 @@ namespace Sdl.Web.Tridion
         {
             return xmlElement.SelectNodes(xpath, namespaceManager).OfType<XmlElement>();
         }
+
+        public static string GetPath(this XmlElement xmlElement)
+        {
+            List<string> pathSegments = new List<string>();
+            XmlElement currentElement = xmlElement;
+            while (currentElement != null)
+            {
+                pathSegments.Insert(0,  currentElement.LocalName);
+                currentElement = currentElement.ParentNode as XmlElement;
+            }
+            return "/" + string.Join("/", pathSegments);
+        }
     }
 }

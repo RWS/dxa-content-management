@@ -1,5 +1,4 @@
-﻿using System.IO;
-using Sdl.Web.DataModel;
+﻿using Sdl.Web.DataModel;
 using Sdl.Web.Tridion.Common;
 using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
@@ -8,7 +7,7 @@ using Tridion.ContentManager.Templating.Assembly;
 namespace Sdl.Web.Tridion.Templates
 {
     /// <summary>
-    /// Generates a DXA 2 data model based on the current Page
+    /// Generates a DXA R2 Data Model based on the current Component (Presentation)
     /// </summary>
     [TcmTemplateTitle("Generate DXA 2 Entity Model")]
     [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.GenerateDynamicComponentParameters.xsd")]
@@ -28,13 +27,13 @@ namespace Sdl.Web.Tridion.Templates
 
             RenderedItem renderedItem = Engine.PublishingContext.RenderedItem;
 
-            Dxa2ModelBuilderSettings settings = new Dxa2ModelBuilderSettings
+            R2ModelBuilderSettings settings = new R2ModelBuilderSettings
             {
                 ExpandLinkDepth = expandLinkDepth,
-                IsXpmEnabled = Utility.IsXpmEnabled(Engine.PublishingContext)
+                GenerateXpmMetadata = Utility.IsXpmEnabled(Engine.PublishingContext)
             };
 
-            Dxa2ModelBuilder modelBuilder = new Dxa2ModelBuilder(
+            R2ModelBuilder modelBuilder = new R2ModelBuilder(
                 Session,
                 settings,
                 mmc => renderedItem.AddBinary(mmc).Url,

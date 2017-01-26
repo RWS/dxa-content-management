@@ -12,10 +12,10 @@ namespace Sdl.Web.Tridion.Templates
     internal class EclModelBuilder : IDisposable
     {
         private static readonly IList<ITemplateAttribute> _emptyAttributes = new List<ITemplateAttribute>();
-        private readonly Dxa2ModelBuilder _dxaModelBuilder;
+        private readonly R2ModelBuilder _dxaModelBuilder;
         private IEclSession _eclSession;
 
-        internal EclModelBuilder(Dxa2ModelBuilder dxaModelBuilder)
+        internal EclModelBuilder(R2ModelBuilder dxaModelBuilder)
         {
             _dxaModelBuilder = dxaModelBuilder;
             _eclSession = SessionFactory.CreateEclSession(dxaModelBuilder.Session);
