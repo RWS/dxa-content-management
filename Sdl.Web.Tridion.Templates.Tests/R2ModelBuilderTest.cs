@@ -200,6 +200,28 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
+        public void BuildPageModel_PredefinedRegions_Success()
+        {
+            Session testSession = new Session();
+            Page testPage = (Page) testSession.GetObject(TestFixture.PredefinedRegionsTestPageWebDavUrl);
+            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
+
+            R2ModelBuilder testModelBuilder = new R2ModelBuilder(
+                testSession,
+                _defaultModelBuilderSettings,
+                mockBinaryPublisher.AddBinary,
+                mockBinaryPublisher.AddBinaryStream
+                );
+            PageModelData pageModel = testModelBuilder.BuildPageModel(testPage);
+
+            Assert.IsNotNull(pageModel);
+            OutputJson(pageModel);
+
+            // TODO TSI-132: further assertions
+        }
+
+
+        [TestMethod]
         public void BuildEntityModel_ArticleDcp_Success()
         {
             Session testSession = new Session();

@@ -117,6 +117,12 @@ namespace Sdl.Web.Tridion.Templates
                     regionName = regionViewName;
                 }
 
+                if (regionModels.ContainsKey(regionName))
+                {
+                    _logger.Warning($"Duplicate predefined Region name '{regionName}' encountered in {pageTemplate}. Skipping the duplicate definition.");
+                    continue;
+                }
+
                 RegionModelData regionModel = new RegionModelData
                 {
                     Name = regionName,

@@ -15,6 +15,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         internal const string Tsi811PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-811 Test Page.tpg";
         internal const string Tsi1758PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-1758 Test Page.tpg";
         internal const string Tsi1946PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-1946 Test Page.tpg";
+        internal const string PredefinedRegionsTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/RegionsTest/Predefined Regions - Empty.tpg";
 
         internal const string ArticleDcpId = "tcm:1065-9712/tcm:1065-9711-32";
 
