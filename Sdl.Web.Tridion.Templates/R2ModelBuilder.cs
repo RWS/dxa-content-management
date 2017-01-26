@@ -186,8 +186,10 @@ namespace Sdl.Web.Tridion.Templates
                         ViewName = regionViewName,
                         AreaName = moduleName
                     },
-                    IncludePageUrl = includePage.PublishLocationUrl
+                    IncludePageUrl = includePage.PublishLocationUrl,
+                    Regions = ExpandIncludePage(includePage) // TODO TSI-24: We expand the include Page here for now (until we have a Model Service to do it).
                 };
+
                 if (Settings.GenerateXpmMetadata)
                 {
                     includePageRegion.XpmMetadata = new Dictionary<string, object>
@@ -201,15 +203,28 @@ namespace Sdl.Web.Tridion.Templates
             }
         }
 
+        private List<RegionModelData> ExpandIncludePage(Page includePage)
+        {
+            _logger.Debug($"Expanding Include Page '{includePage.Id}' for now (until we have a Model Service).");
+
+            PageModelData includePageModel = BuildPageModel(includePage);
+            return includePageModel.Regions;
+        }
+
         private void AddComponentPresentationRegions(IDictionary<string, RegionModelData> regionModels, Page page)
         {
             foreach (ComponentPresentation cp in page.ComponentPresentations)
             {
+                ComponentTemplate ct = cp.ComponentTemplate;
                 // TODO TSI-24: For DCPs we should output only a minimal Entity Model containing the Component and Template ID, so it can be retrieved dynamically.
                 //EntityModelData entityModel = cp.ComponentTemplate.IsRepositoryPublishable ?
                 //    new EntityModelData { Id = GetDxaIdentifier(cp.Component, cp.ComponentTemplate) } :
                 //    BuildEntityModel(cp.Component, cp.ComponentTemplate);
-                EntityModelData entityModel = BuildEntityModel(cp.Component, cp.ComponentTemplate);
+                if (ct.IsRepositoryPublishable)
+                {
+                    _logger.Debug($"Expanding DCP ({cp.Component}, {ct}) for now (until we have a Model Service).");
+                }
+                EntityModelData entityModel = BuildEntityModel(cp.Component, ct);
 
                 string regionName;
                 MvcData regionMvcData = GetRegionMvcData(cp.ComponentTemplate, out regionName);
@@ -640,7 +655,7 @@ namespace Sdl.Web.Tridion.Templates
 
                 TcmUri linkedItemUri = new TcmUri(xlinkHref);
                 string path = xmlElement.GetPath();
-                _logger.Debug($"Encountered XLink '{path}': {xlinkHref}");
+                _logger.Debug($"Encountered XLink '{path}' -> {xlinkHref}");
                 if (expandLinkLevels == 0)
                 {
                     _logger.Debug($"Not expanding XLink because configured ExpandLinkDepth of {Settings.ExpandLinkDepth} has been reached.");
