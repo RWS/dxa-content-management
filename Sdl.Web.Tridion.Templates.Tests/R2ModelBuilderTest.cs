@@ -200,6 +200,22 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
+        public void BuildPageModel_DuplicatePredefinedRegions_Exception()
+        {
+            Session testSession = new Session();
+            Page testPage = (Page) testSession.GetObject(TestFixture.PredefinedRegionsTestPageWebDavUrl);
+            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
+
+            R2ModelBuilder testModelBuilder = new R2ModelBuilder(
+                testSession,
+                _defaultModelBuilderSettings,
+                mockBinaryPublisher.AddBinary,
+                mockBinaryPublisher.AddBinaryStream
+                );
+            AssertThrowsException<DxaException>(() => testModelBuilder.BuildPageModel(testPage));
+        }
+
+        [TestMethod]
         public void BuildEntityModel_ArticleDcp_Success()
         {
             Session testSession = new Session();
