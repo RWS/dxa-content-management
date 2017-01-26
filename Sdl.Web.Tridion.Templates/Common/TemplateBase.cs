@@ -466,7 +466,7 @@ namespace Sdl.Web.Tridion.Common
                 };
             }
 
-            Newtonsoft.Json.Formatting jsonFormatting = (IsPreviewMode() || IsXpmEnabled) ?
+            Newtonsoft.Json.Formatting jsonFormatting = (IsPreview || IsXpmEnabled) ?
                 Newtonsoft.Json.Formatting.Indented :
                 Newtonsoft.Json.Formatting.None;
 
