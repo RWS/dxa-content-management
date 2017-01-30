@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Sdl.Web.DataModel;
@@ -11,10 +10,9 @@ using Tridion.ContentManager;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.Templating;
-using Tridion.Logging;
 using ComponentPresentation = Tridion.ContentManager.CommunicationManagement.ComponentPresentation;
 
-namespace Sdl.Web.Tridion.Templates
+namespace Sdl.Web.Tridion.Data
 {
     /// <summary>
     /// Model Builder used to generate DXA R2 Data Models.
@@ -24,28 +22,27 @@ namespace Sdl.Web.Tridion.Templates
     /// It is currently already possible to extend the Data Model using the Modular Templating Pipeline,
     /// but that requires deserializing/serializing for each step in the pipeline.
     /// </remarks>
-    public class R2ModelBuilder
+    public class DataModelBuilder
     {
         private const string LegacyIncludePrefix = "system/include/";
         private const string EclMimeType = "application/externalcontentlibrary";
 
         private static readonly XmlNamespaceManager _xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
         private static readonly Regex _embeddedEntityRegex = new Regex(@"<\?EmbeddedEntity\s\?>", RegexOptions.Compiled);
-        private readonly TemplatingLogger _logger = TemplatingLogger.GetLogger(typeof(R2ModelBuilder));
 
         public delegate string AddBinaryDelegate(Component mmComponent);
         public delegate string AddBinaryStreamDelegate(Stream inputStream, string fileName, Component relatedComponent, string mimeType);
 
-
         internal Session Session { get; }
-        internal R2ModelBuilderSettings Settings { get; }
+        internal DataModelBuilderSettings Settings { get; }
         internal AddBinaryDelegate AddBinaryFunction { get; }
         internal AddBinaryStreamDelegate AddBinaryStreamFunction { get; }
+        internal ILogger Logger { get; }
 
         /// <summary>
         /// Class constructor
         /// </summary>
-        static R2ModelBuilder()
+        static DataModelBuilder()
         {
             _xmlNamespaceManager.AddNamespace("xlink", Constants.XlinkNamespace);
             _xmlNamespaceManager.AddNamespace("xhtml", Constants.XhtmlNamespace);
@@ -54,12 +51,19 @@ namespace Sdl.Web.Tridion.Templates
         /// <summary>
         /// Constructor
         /// </summary>
-        public R2ModelBuilder(Session session, R2ModelBuilderSettings settings, AddBinaryDelegate addBinaryFunction, AddBinaryStreamDelegate addBinaryStreamFunction)
+        public DataModelBuilder(
+            Session session,
+            DataModelBuilderSettings settings,
+            AddBinaryDelegate addBinaryFunction,
+            AddBinaryStreamDelegate addBinaryStreamFunction,
+            ILogger logger = null
+            )
         {
             Session = session;
             Settings = settings;
             AddBinaryFunction = addBinaryFunction;
             AddBinaryStreamFunction = addBinaryStreamFunction;
+            Logger = logger ?? new TemplatingLoggerAdapter(TemplatingLogger.GetLogger(GetType()));
         }
 
         /// <summary>
@@ -69,7 +73,7 @@ namespace Sdl.Web.Tridion.Templates
         /// <returns>The Page Model.</returns>
         public PageModelData BuildPageModel(Page page)
         {
-            _logger.Debug($"BuildPageModel({page})");
+            Logger.Debug($"BuildPageModel({page})");
 
             if (page == null)
             {
@@ -97,11 +101,13 @@ namespace Sdl.Web.Tridion.Templates
             };
         }
 
+
         private void AddPredefinedRegions(IDictionary<string, RegionModelData> regionModels, PageTemplate pageTemplate)
         {
             IEnumerable<XmlElement> regionsMetadata = pageTemplate.Metadata.GetEmbeddedFieldValues("regions");
             if (regionsMetadata == null)
             {
+                Logger.Debug($"No predefined Regions found in {pageTemplate.FormatIdentifier()}");
                 return;
             }
 
@@ -119,7 +125,7 @@ namespace Sdl.Web.Tridion.Templates
 
                 if (regionModels.ContainsKey(regionName))
                 {
-                    throw new DxaException($"Duplicate predefined Region name '{regionName}' encountered in Page Template '{pageTemplate.Title}' ({pageTemplate.Id}).");
+                    throw new DxaException($"Duplicate predefined Region name '{regionName}' encountered in {pageTemplate.FormatIdentifier()}.");
                 }
 
                 RegionModelData regionModel = new RegionModelData
@@ -153,6 +159,7 @@ namespace Sdl.Web.Tridion.Templates
             IEnumerable<string> includes = pageTemplate.Metadata.GetTextFieldValues("includes"); // TODO: use external link field (?)
             if (includes == null)
             {
+                Logger.Debug($"No include Pages found in {pageTemplate.FormatIdentifier()}");
                 return;
             }
 
@@ -164,7 +171,8 @@ namespace Sdl.Web.Tridion.Templates
                     // Legacy include: publish path. Try to convert to WebDAV URL.
                     string relativeUrl = include.Substring(LegacyIncludePrefix.Length).Replace('-', ' ');
                     Publication contextPub = (Publication) pageTemplate.ContextRepository;
-                    includePageId = $"/webdav/{contextPub.Title}/{contextPub.RootStructureGroup.Title}/_System/include/{relativeUrl}.tpg"; 
+                    includePageId = $"/webdav/{contextPub.Title}/{contextPub.RootStructureGroup.Title}/_System/include/{relativeUrl}.tpg";
+                    Logger.Debug($"Converted legacy Page include '{include}' to WebDAV URL '{includePageId}'.");
                 }
                 else
                 {
@@ -180,6 +188,7 @@ namespace Sdl.Web.Tridion.Templates
                 if (regionModels.ContainsKey(regionName))
                 {
                     // TODO: log this? Throw exception? Promote Region to Include Page Region?
+                    Logger.Debug("TODO: merge include Page Region '{regionName}'");
                     continue;
                 }
 
@@ -210,7 +219,7 @@ namespace Sdl.Web.Tridion.Templates
 
         private List<RegionModelData> ExpandIncludePage(Page includePage)
         {
-            _logger.Debug($"Expanding Include Page '{includePage.Title}' for now (until we have a Model Service).");
+            Logger.Debug($"Expanding Include Page '{includePage.Title}' for now (until we have a Model Service).");
 
             PageModelData includePageModel = BuildPageModel(includePage);
             return includePageModel.Regions;
@@ -227,7 +236,7 @@ namespace Sdl.Web.Tridion.Templates
                 //    BuildEntityModel(cp.Component, cp.ComponentTemplate);
                 if (ct.IsRepositoryPublishable)
                 {
-                    _logger.Debug($"Expanding DCP ({cp.Component}, {ct}) for now (until we have a Model Service).");
+                    Logger.Debug($"Expanding DCP ({cp.Component}, {ct}) for now (until we have a Model Service).");
                 }
                 EntityModelData entityModel = BuildEntityModel(cp.Component, ct);
 
@@ -389,7 +398,7 @@ namespace Sdl.Web.Tridion.Templates
         /// <returns>The Entity Model.</returns>
         public EntityModelData BuildEntityModel(Component component, ComponentTemplate ct = null)
         {
-            _logger.Debug($"BuildEntityModel({component}, {ct})");
+            Logger.Debug($"BuildEntityModel({component}, {ct})");
 
             if (component == null)
             {
@@ -422,6 +431,7 @@ namespace Sdl.Web.Tridion.Templates
 
             if (IsEclItem(component))
             {
+                Logger.Debug($"Building Model for ECL Stub Component {component.FormatIdentifier()}");
                 using (EclModelBuilder eclModelBuilder = new EclModelBuilder(this))
                 {
                     eclModelBuilder.BuildEclModel(result, component);
@@ -521,9 +531,31 @@ namespace Sdl.Web.Tridion.Templates
                 AreaName = moduleName,
                 ControllerName = StripModuleName(qualifiedControllerName, out controllerModuleName),
                 ControllerAreaName = controllerModuleName,
-                ActionName = controllerAction
-                // TODO: Parameters
+                ActionName = controllerAction,
+                Parameters = GetMvcParameters(ct)
             };
+        }
+
+        private static Dictionary<string, string> GetMvcParameters(ComponentTemplate ct)
+        {
+            // TODO: support Key/Value Pair Schema (multi-valued embedded field)
+            string routeValues = ct.Metadata.GetTextFieldValue("routeValues");
+            if (string.IsNullOrEmpty(routeValues))
+            {
+                return null;
+            }
+
+            Dictionary<string, string> result = new Dictionary<string, string>();
+            foreach (string[] keyValuePair in routeValues.Split(',').Select(routeValue => routeValue.Split(':')))
+            {
+                if (keyValuePair.Length != 2)
+                {
+                    throw new DxaException($"Invalid syntax for 'routeValues' field in {ct.FormatIdentifier()}: '{keyValuePair}'");
+                }
+                result.Add(keyValuePair[0].Trim(), keyValuePair[1].Trim());
+            }
+
+            return result;
         }
 
         private static MvcData GetRegionMvcData(ComponentTemplate ct, out string regionName)
@@ -658,19 +690,22 @@ namespace Sdl.Web.Tridion.Templates
                     return xlinkHref;
                 }
 
-                TcmUri linkedItemUri = new TcmUri(xlinkHref);
+                IdentifiableObject linkedItem = Session.GetObject(xmlElement);
                 string path = xmlElement.GetPath();
-                _logger.Debug($"Encountered XLink '{path}' -> {xlinkHref}");
+                Logger.Debug($"Encountered XLink '{path}' -> {linkedItem}");
                 if (expandLinkLevels == 0)
                 {
-                    _logger.Debug($"Not expanding XLink because configured ExpandLinkDepth of {Settings.ExpandLinkDepth} has been reached.");
-                    if (linkedItemUri.ItemType == ItemType.Component)
+                    Logger.Debug($"Not expanding link because configured ExpandLinkDepth of {Settings.ExpandLinkDepth} has been reached.");
+                    if (linkedItem is Component)
                     {
-                        return new EntityModelData { Id = linkedItemUri.ItemId.ToString() };
+                        return new EntityModelData
+                        {
+                            Id = GetDxaIdentifier(linkedItem)
+                        };
                     }
-                    if (linkedItemUri.ItemType == ItemType.Keyword)
+                    Keyword keyword = linkedItem as Keyword;
+                    if (keyword != null)
                     {
-                        Keyword keyword = (Keyword) Session.GetObject(linkedItemUri);
                         return new KeywordModelData
                         {
                             Id = GetDxaIdentifier(keyword),
@@ -680,22 +715,20 @@ namespace Sdl.Web.Tridion.Templates
                 }
                 else
                 {
-                    // Expand Component and Keyword Links
-                    _logger.Debug($"Expanding XLink. expandLinkLevels: {expandLinkLevels}");
-                    if (linkedItemUri.ItemType == ItemType.Component)
+                    if (linkedItem is Component)
                     {
-                        Component linkedComponent = (Component) Session.GetObject(linkedItemUri);
-                        return BuildEntityModel(linkedComponent, expandLinkLevels - 1);
+                        Logger.Debug($"Expanding Component link. expandLinkLevels: {expandLinkLevels}");
+                        return BuildEntityModel((Component) linkedItem, expandLinkLevels - 1);
                     }
-                    if (linkedItemUri.ItemType == ItemType.Keyword)
+                    if (linkedItem is Keyword)
                     {
-                        Keyword keyword = (Keyword) Session.GetObject(linkedItemUri);
-                        return BuildKeywordModel(keyword, expandLinkLevels - 1);
+                        Logger.Debug($"Expanding Keyword link. expandLinkLevels: {expandLinkLevels}");
+                        return BuildKeywordModel((Keyword) linkedItem, expandLinkLevels - 1);
                     }
                 }
 
                 // Not a Component or Keyword link.
-                _logger.Debug($"XLink is not a Component or Keyword link.");
+                Logger.Debug($"XLink is not a Component or Keyword link.");
                 return xlinkHref;
             }
 
@@ -727,15 +760,15 @@ namespace Sdl.Web.Tridion.Templates
                     return xlinkHref;
                 }
 
-                TcmUri linkedItemId = new TcmUri(xlinkHref);
-                if (linkedItemId.ItemType != ItemType.Keyword)
+                IdentifiableObject linkedItem = Session.GetObject(xmlElement);
+                Keyword keyword = linkedItem as Keyword;
+                if (keyword == null)
                 {
-                    // Component link field
+                    // Component link field or some other linked item (except Keyword)
                     return xlinkHref;
                 }
 
-
-                Keyword keyword = (Keyword) Session.GetObject(linkedItemId);
+                // Keyword link field
                 return string.IsNullOrEmpty(keyword.Description) ? keyword.Title : keyword.Description;
             }
 
@@ -810,9 +843,7 @@ namespace Sdl.Web.Tridion.Templates
 
             return new RichTextData { Fragments = richTextFragments };
         }
-        private static bool IsEclItem(Component component)
-        {
-            return component.BinaryContent != null && component.BinaryContent.MultimediaType.MimeType == EclMimeType;
-        }
+        private static bool IsEclItem(Component component) =>
+            (component.BinaryContent != null) && (component.BinaryContent.MultimediaType.MimeType == EclMimeType);
     }
 }

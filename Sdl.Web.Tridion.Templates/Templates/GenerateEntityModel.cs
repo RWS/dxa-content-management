@@ -1,6 +1,7 @@
 ﻿using System;
 using Sdl.Web.DataModel;
 using Sdl.Web.Tridion.Common;
+using Sdl.Web.Tridion.Data;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Publishing.Rendering;
@@ -12,7 +13,7 @@ namespace Sdl.Web.Tridion.Templates
     /// <summary>
     /// Generates a DXA R2 Data Model based on the current Component (Presentation)
     /// </summary>
-    [TcmTemplateTitle("Generate DXA 2 Entity Model")]
+    [TcmTemplateTitle("Generate DXA R2 Entity Model")]
     [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.GenerateDynamicComponentParameters.xsd")]
     public class GenerateEntityModel : TemplateBase
     {
@@ -34,13 +35,13 @@ namespace Sdl.Web.Tridion.Templates
 
             try
             {
-                R2ModelBuilderSettings settings = new R2ModelBuilderSettings
+                DataModelBuilderSettings settings = new DataModelBuilderSettings
                 {
                     ExpandLinkDepth = expandLinkDepth,
                     GenerateXpmMetadata = IsXpmEnabled || IsPreview
                 };
 
-                R2ModelBuilder modelBuilder = new R2ModelBuilder(
+                DataModelBuilder modelBuilder = new DataModelBuilder(
                     Session,
                     settings,
                     mmc => renderedItem.AddBinary(mmc).Url,
@@ -54,10 +55,7 @@ namespace Sdl.Web.Tridion.Templates
             }
             catch (Exception ex)
             {
-                throw new DxaException(
-                    $"An error occurred while rendering Component '{component.Title}' ({component.Id}) with Template '{ct.Title}' ({ct.Id})", 
-                    ex
-                    );
+                throw new DxaException($"An error occurred while rendering {component.FormatIdentifier()} with {ct.FormatIdentifier()}", ex);
             }
         }
     }

@@ -1,9 +1,9 @@
-﻿namespace Sdl.Web.Tridion.Templates
+﻿namespace Sdl.Web.Tridion.Data
 {
     /// <summary>
-    /// Represents the settings for <see cref="R2ModelBuilder"/>
+    /// Represents the settings for <see cref="DataModelBuilder"/>
     /// </summary>
-    public class R2ModelBuilderSettings
+    public class DataModelBuilderSettings
     {
         /// <summary>
         /// Gets or sets the depth that Component/Keyword links should be expanded (on CM-side)
