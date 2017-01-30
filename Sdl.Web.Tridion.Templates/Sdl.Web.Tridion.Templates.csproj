@@ -92,14 +92,17 @@
   <ItemGroup>
     <Compile Include="Common\GeneralExtensionMethods.cs" />
     <Compile Include="Common\ItemFieldsExtensions.cs" />
-    <Compile Include="R2ModelBuilder.cs" />
+    <Compile Include="TemplatingLoggerAdapter.cs" />
+    <Compile Include="IdentifiableObjectExtensions.cs" />
+    <Compile Include="ILogger.cs" />
+    <Compile Include="Data\DataModelBuilder.cs" />
     <Compile Include="Common\ObjectExtensions.cs" />
     <Compile Include="Common\PackageExtensions.cs" />
     <Compile Include="Common\StringBuilderExtensions.cs" />
     <Compile Include="Common\Utility.cs" />
-    <Compile Include="R2ModelBuilderSettings.cs" />
+    <Compile Include="Data\DataModelBuilderSettings.cs" />
     <Compile Include="DxaException.cs" />
-    <Compile Include="EclModelBuilder.cs" />
+    <Compile Include="Data\EclModelBuilder.cs" />
     <Compile Include="Templates\GenerateEntityModel.cs" />
     <Compile Include="Templates\GeneratePageModel.cs" />
     <Compile Include="Templates\GenerateSitemap.cs" />

@@ -7,18 +7,18 @@ using Sdl.Web.DataModel;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ExternalContentLibrary.V2;
 
-namespace Sdl.Web.Tridion.Templates
+namespace Sdl.Web.Tridion.Data
 {
     internal class EclModelBuilder : IDisposable
     {
         private static readonly IList<ITemplateAttribute> _emptyAttributes = new List<ITemplateAttribute>();
-        private readonly R2ModelBuilder _dxaModelBuilder;
+        private readonly DataModelBuilder _dataModelBuilder;
         private IEclSession _eclSession;
 
-        internal EclModelBuilder(R2ModelBuilder dxaModelBuilder)
+        internal EclModelBuilder(DataModelBuilder dataModelBuilder)
         {
-            _dxaModelBuilder = dxaModelBuilder;
-            _eclSession = SessionFactory.CreateEclSession(dxaModelBuilder.Session);
+            _dataModelBuilder = dataModelBuilder;
+            _eclSession = SessionFactory.CreateEclSession(dataModelBuilder.Session);
         }
 
 
@@ -54,7 +54,7 @@ namespace Sdl.Web.Tridion.Templates
                 {
                     Id = eclItem.Id.ToString(),
                     DisplayTypeId = eclItem.DisplayTypeId,
-                    Metadata = _dxaModelBuilder.BuildContentModel(externalMetadata, 0)
+                    Metadata = _dataModelBuilder.BuildContentModel(externalMetadata, 0)
                 };
             }
         }
@@ -88,7 +88,7 @@ namespace Sdl.Web.Tridion.Templates
             string uniqueFilename =
                 $"{Path.GetFileNameWithoutExtension(eclItem.Filename)}_{eclStubComponent.Id.ToString().Substring(4)}{Path.GetExtension(eclItem.Filename)}";
 
-            return _dxaModelBuilder.AddBinaryStreamFunction(eclContent.Stream, uniqueFilename, eclStubComponent, eclContent.ContentType);
+            return _dataModelBuilder.AddBinaryStreamFunction(eclContent.Stream, uniqueFilename, eclStubComponent, eclContent.ContentType);
         }
 
         public void Dispose()

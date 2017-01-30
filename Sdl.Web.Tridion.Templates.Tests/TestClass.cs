@@ -17,34 +17,31 @@ namespace Sdl.Web.Tridion.Templates.Tests
             // TODO: Log.Info("==== {0} ====", testContext.FullyQualifiedTestClassName);
         }
 
-        protected void OutputJson(object objectToSerialize)
+        protected void OutputJson(object objectToSerialize, JsonSerializerSettings serializerSettings = null)
         {
-            string json = JsonConvert.SerializeObject(
-                objectToSerialize,
-                Newtonsoft.Json.Formatting.Indented,
-                DataModelBinder.SerializerSettings
-                );
-            Console.WriteLine("---- JSON Representation of {0} ----", objectToSerialize.GetType().FullName);
-            Console.WriteLine(json);
+            if (serializerSettings == null)
+            {
+                serializerSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                };
+            }
+
+            Console.WriteLine($"---- JSON Representation of {objectToSerialize} ----");
+            Console.WriteLine(JsonConvert.SerializeObject(objectToSerialize, Formatting.Indented, serializerSettings));
         }
 
         protected T JsonSerializeDeserialize<T>(T objectToSerialize)
         {
-            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
-            {
-                Formatting = Formatting.Indented,
-                NullValueHandling = NullValueHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
-                Binder = new DataModelBinder()
-            };
-            string json = JsonConvert.SerializeObject(objectToSerialize, jsonSerializerSettings);
+            string json = JsonConvert.SerializeObject(objectToSerialize, Formatting.Indented, DataModelBinder.SerializerSettings);
 
             Console.WriteLine($"---- Serialized JSON for {objectToSerialize} ----");
             Console.WriteLine(json);
 
-            T result = JsonConvert.DeserializeObject<T>(json, jsonSerializerSettings);
+            T result = JsonConvert.DeserializeObject<T>(json, DataModelBinder.SerializerSettings);
 
-            OutputJson(result);
+            Assert.IsNotNull(result);
+            OutputJson(result, DataModelBinder.SerializerSettings);
 
             return result;
         }
@@ -55,12 +52,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
             try
             {
                 action();
-                Assert.Fail("Action {0} did not throw an exception. Expected exception {1}.", actionName, typeof(TException).Name);
+                Assert.Fail($"Action {actionName} did not throw an exception. Expected exception {typeof(TException).Name}.");
                 return null; // Should never get here
             }
             catch (TException ex)
             {
-                Console.WriteLine("Expected exception was thrown by action {0}:", actionName);
+                Console.WriteLine($"Expected exception was thrown by action {actionName}:");
                 Console.WriteLine(ex.ToString());
                 return ex;
             }
@@ -79,6 +76,5 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 Assert.AreEqual(expected.Count(), actual.Count(), subjectName + ".Count()");
             }
         }
-
     }
 }

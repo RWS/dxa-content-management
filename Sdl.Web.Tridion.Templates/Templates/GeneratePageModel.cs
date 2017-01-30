@@ -1,6 +1,7 @@
 ﻿using System;
 using Sdl.Web.DataModel;
 using Sdl.Web.Tridion.Common;
+using Sdl.Web.Tridion.Data;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
@@ -11,7 +12,7 @@ namespace Sdl.Web.Tridion.Templates
     /// <summary>
     /// Generates a DXA R2 Data Model based on the current Page
     /// </summary>
-    [TcmTemplateTitle("Generate DXA 2 Page Model")]
+    [TcmTemplateTitle("Generate DXA R2 Page Model")]
     [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.GenerateDynamicPageParameters.xsd")]
     public class GeneratePageModel : TemplateBase
     {
@@ -32,19 +33,19 @@ namespace Sdl.Web.Tridion.Templates
 
             try
             {
-                R2ModelBuilderSettings settings = new R2ModelBuilderSettings
+                DataModelBuilderSettings settings = new DataModelBuilderSettings
                 {
                     ExpandLinkDepth = expandLinkDepth,
                     GenerateXpmMetadata = IsXpmEnabled || IsPreview
                 };
 
-                R2ModelBuilder modelBuilder = new R2ModelBuilder(
+                DataModelBuilder modelBuilder = new DataModelBuilder(
                     Session,
                     settings,
                     mmc => renderedItem.AddBinary(mmc).Url,
                     (stream, fileName, relatedComponent, mimeType) => renderedItem.AddBinary(stream, fileName, string.Empty, relatedComponent, mimeType).Url
                     );
-                PageModelData pageModel = modelBuilder.BuildPageModel(GetPage());
+                PageModelData pageModel = modelBuilder.BuildPageModel(page);
 
                 string pageModelJson = JsonSerialize(pageModel, DataModelBinder.SerializerSettings);
                 Item outputItem = Package.CreateStringItem(ContentType.Text, pageModelJson);
@@ -52,7 +53,7 @@ namespace Sdl.Web.Tridion.Templates
             }
             catch (Exception ex)
             {
-                throw new DxaException($"An error occurred while rendering Page '{page.Title}' ({page.Id})", ex);
+                throw new DxaException($"An error occurred while rendering {page.FormatIdentifier()}", ex);
             }
         }
     }
