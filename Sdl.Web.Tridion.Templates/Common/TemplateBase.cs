@@ -29,6 +29,7 @@ namespace Sdl.Web.Tridion.Common
         protected const string ModuleConfigurationSchemaRootElementName = "ModuleConfiguration";
 
         private TemplatingLogger _logger;
+        private Session _session;
         private Engine _engine;
         private Package _package;
         private Publication _publication;
@@ -57,6 +58,9 @@ namespace Sdl.Web.Tridion.Common
             }
         }
 
+        /// <summary>
+        /// Gets or sets the current Publication.
+        /// </summary>
         protected Publication Publication
         {
             get
@@ -67,13 +71,30 @@ namespace Sdl.Web.Tridion.Common
                 }
                 return _publication;
             }
+            set
+            {
+                // Allows dependency injection for unit test purposes.
+                _publication = value;
+            }
         }
 
+        /// <summary>
+        /// Gets or sets the current Session.
+        /// </summary>
         protected Session Session
         {
             get
             {
-                return Engine.GetSession();
+                if (_session == null)
+                {
+                    _session = Engine.GetSession();
+                }
+                return _session;
+            }
+            set
+            {
+                // Allows dependency injection for unit test purposes.
+                _session = value;
             }
         }
 
@@ -314,6 +335,83 @@ namespace Sdl.Web.Tridion.Common
             return res;
         }
 
+        /// <summary>
+        /// Gets a cached value.
+        /// </summary>
+        /// <typeparam name="T">The type of the value.</typeparam>
+        /// <param name="cacheRegion">The cache region.</param>
+        /// <param name="cacheKey">The cache key.</param>
+        /// <param name="addFunction">The function used to provide a value if no value is cached yet.</param>
+        /// <remarks>
+        /// This uses the TOM.NET Session Cache if available (it typically is during rendering/publishing).
+        /// </remarks>
+        /// <returns>The cached value.</returns>
+        protected T GetCachedValue<T>(string cacheRegion, string cacheKey, Func<T> addFunction)
+        {
+            ICache cache = Session.Cache;
+            object cachedValue = cache?.Get(cacheRegion, cacheKey);
+
+            T result;
+            if (cachedValue == null)
+            {
+                result = addFunction();
+
+                if (cache != null)
+                {
+                    cache.Add(cacheRegion, cacheKey, result);
+                }
+            }
+            else
+            {
+                result = (T) cachedValue;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Determines the locale/culture for the current Publication.
+        /// </summary>
+        /// <returns>The locale or <c>null</c> if it cannot be determined.</returns>
+        protected string GetLocale()
+            => GetCachedValue("DxaLocale", Publication.Id, DetermineLocale);
+
+        private string DetermineLocale()
+        {
+            // TODO: use a less complicated (and more explicit) way to store locale/language. What about Publication metadata?
+            Schema generalConfigSchema = GetSchema("GeneralConfiguration");
+
+            UsingItemsFilter configComponentsFilter = new UsingItemsFilter(Session)
+            {
+                ItemTypes = new[] { ItemType.Component },
+                BaseColumns = ListBaseColumns.IdAndTitle
+            };
+
+            IEnumerable<Component> configComponents = generalConfigSchema.GetUsingItems(configComponentsFilter).Cast<Component>();
+            Component localizationConfigComponent = configComponents.FirstOrDefault(c => c.Title == "Localization Configuration");
+            if (localizationConfigComponent == null)
+            {
+                Logger.Warning("No Localization Configuration Component found.");
+                return null;
+            }
+
+            // Ensure we load the Component in the current context Publication
+            localizationConfigComponent = (Component) Publication.GetObject(localizationConfigComponent.Id);
+
+            Dictionary<string, string> settings = ExtractKeyValuePairs(localizationConfigComponent);
+
+            string result;
+            const string cultureSetting = "culture";
+            if (!settings.TryGetValue(cultureSetting, out result))
+            {
+                Logger.Warning($"No '{cultureSetting}' setting found in Localization Configuration {localizationConfigComponent.FormatIdentifier()}.");
+            }
+
+            return result;
+        }
+
+
+
         #region Json Data Processing
         protected Dictionary<string, string> MergeData(Dictionary<string, string> source, Dictionary<string, string> mergeData)
         {
@@ -500,7 +598,7 @@ namespace Sdl.Web.Tridion.Common
 
         protected Dictionary<string, Component> GetActiveModules()
         {
-            Schema moduleConfigSchema = GetModuleConfigSchema();
+            Schema moduleConfigSchema = GetSchema(ModuleConfigurationSchemaRootElementName);
             Session session = moduleConfigSchema.Session;
 
             UsingItemsFilter moduleConfigComponentsFilter = new UsingItemsFilter(session)
@@ -531,25 +629,20 @@ namespace Sdl.Web.Tridion.Common
         }
 
 
-        private Schema GetModuleConfigSchema()
+        protected Schema GetSchema(string rootElementName, string namespaceUri = DxaSchemaNamespaceUri)
         {
-            Schema[] moduleConfigSchemas = Publication.GetSchemasByNamespaceUri(DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName).ToArray();
+            Schema[] schemas = Publication.GetSchemasByNamespaceUri(namespaceUri, rootElementName).ToArray();
 
-            if (moduleConfigSchemas.Length == 0)
+            if (schemas.Length == 0)
             {
-                throw new DxaException(
-                    string.Format("Schema with namespace '{0}' and root element name '{1}' not found.", DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName)
-                    );
+                throw new DxaException($"Schema with namespace '{namespaceUri}' and root element name '{rootElementName}' not found.");
+            }
+            if (schemas.Length > 1)
+            {
+                throw new DxaException($"Found multiple Schemas with namespace '{namespaceUri}' and root element name '{rootElementName}'.");
             }
 
-            if (moduleConfigSchemas.Length > 1)
-            {
-                    throw new DxaException(
-                        string.Format("Found multiple Schemas with namespace '{0}' and root element name '{1}'", DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName) 
-                        );
-            }
-
-            return moduleConfigSchemas.First();
+            return schemas.First();
         }
 
         [Obsolete("Deprecated in DXA 1.7.")]

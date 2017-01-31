@@ -36,7 +36,8 @@ namespace Sdl.Web.Tridion.Templates
                 DataModelBuilderSettings settings = new DataModelBuilderSettings
                 {
                     ExpandLinkDepth = expandLinkDepth,
-                    GenerateXpmMetadata = IsXpmEnabled || IsPreview
+                    GenerateXpmMetadata = IsXpmEnabled || IsPreview,
+                    Locale = GetLocale()
                 };
 
                 DataModelBuilder modelBuilder = new DataModelBuilder(

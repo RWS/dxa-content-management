@@ -14,5 +14,11 @@
         /// Gets or sets whether XPM metadata should be generated or not.
         /// </summary>
         public bool GenerateXpmMetadata { get; set; }
+
+
+        /// <summary>
+        /// Gets or sets the Locale which is output as <c>og:locale</c> PageModel Meta.
+        /// </summary>
+        public string Locale { get; set; }
     }
 }

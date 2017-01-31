@@ -335,7 +335,11 @@ namespace Sdl.Web.Tridion.Data
             result.Add("twitter:card", "summary");
             result.Add("og:title", title);
             result.Add("og:type", "article");
-            // TODO: result.Add("og:locale", localization.Culture);
+
+            if (!string.IsNullOrEmpty(Settings.Locale))
+            {
+                result.Add("og:locale", Settings.Locale);
+            }
             if (description != null)
             {
                 result.Add("og:description", description);

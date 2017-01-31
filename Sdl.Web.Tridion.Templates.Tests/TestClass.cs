@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Sdl.Web.DataModel;
+using Tridion.ContentManager;
 
 namespace Sdl.Web.Tridion.Templates.Tests
 {
@@ -12,6 +13,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
     /// </summary>
     public abstract class TestClass
     {
+        protected static Session TestSession { get; } = new Session();
+
         protected static void DefaultInitialize(TestContext testContext)
         {
             // TODO: Log.Info("==== {0} ====", testContext.FullyQualifiedTestClassName);
