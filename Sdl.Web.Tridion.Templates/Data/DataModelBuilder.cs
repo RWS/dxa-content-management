@@ -358,7 +358,8 @@ namespace Sdl.Web.Tridion.Data
             string currentFieldValue = string.Empty;
             foreach (XmlElement childElement in xmlElement.SelectElements("*"))
             {
-                if (childElement.SelectElements("*").Any())
+                bool isRichText = childElement.SelectSingleNode("xhtml:*", _xmlNamespaceManager) != null;
+                if (!isRichText && (childElement.SelectSingleNode("*") != null))
                 {
                     // Embedded field: flatten
                     ExtractKeyValuePairs(childElement, result);
@@ -780,7 +781,8 @@ namespace Sdl.Web.Tridion.Data
             }
 
             // Text, number or date field
-            return xmlElement.InnerText;
+            // Multi-line text field may use CR+LF to separate lines, but JSON.NET expects LF only.
+            return xmlElement.InnerText.Replace("\r\n", "\n");
         }
 
         private RichTextData BuildRichTextModel(XmlElement xhtmlElement)

@@ -164,6 +164,19 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
+        public void BuildPageModel_Tsi1308_Success()
+        {
+            Session testSession = new Session();
+            Page testPage = (Page) testSession.GetObject(TestFixture.Tsi1308PageWebDavUrl);
+            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
+
+            PageModelData pageModel = BuildPageModel(testPage, mockBinaryPublisher);
+
+            // TODO TSI-132: further assertions
+        }
+
+
+        [TestMethod]
         public void BuildPageModel_DuplicatePredefinedRegions_Exception()
         {
             Session testSession = new Session();
