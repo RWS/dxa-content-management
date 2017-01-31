@@ -92,6 +92,7 @@
   <ItemGroup>
     <Compile Include="Common\GeneralExtensionMethods.cs" />
     <Compile Include="Common\ItemFieldsExtensions.cs" />
+    <Compile Include="Templates\RenderComponentPresentations.cs" />
     <Compile Include="TemplatingLoggerAdapter.cs" />
     <Compile Include="IdentifiableObjectExtensions.cs" />
     <Compile Include="ILogger.cs" />

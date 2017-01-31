@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using Newtonsoft.Json;
 using Sdl.Web.DataModel.Configuration;
-using Sdl.Web.Tridion.Templates;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
@@ -27,6 +26,8 @@ namespace Sdl.Web.Tridion.Common
         protected const string BootstrapFilename = "_all";
         protected const string DxaSchemaNamespaceUri = "http://www.sdl.com/web/schemas/core";
         protected const string ModuleConfigurationSchemaRootElementName = "ModuleConfiguration";
+
+        private static readonly Regex _tcdlComponentPresentationRegex = new Regex("</?tcdl:ComponentPresentation[^>]*>", RegexOptions.Compiled);
 
         private TemplatingLogger _logger;
         private Session _session;
@@ -410,7 +411,13 @@ namespace Sdl.Web.Tridion.Common
             return result;
         }
 
-
+        /// <summary>
+        /// Strips tcdl:ComponentPresentation tag from rendered Component Presentation.
+        /// </summary>
+        /// <param name="renderedComponentPresentation">The rendered Component Presentation.</param>
+        /// <returns>The rendered Component Presentation without tcdl:ComponentPresentation tag.</returns>
+        protected static string StripTcdlComponentPresentationTag(string renderedComponentPresentation)
+            => _tcdlComponentPresentationRegex.Replace(renderedComponentPresentation, string.Empty);
 
         #region Json Data Processing
         protected Dictionary<string, string> MergeData(Dictionary<string, string> source, Dictionary<string, string> mergeData)
