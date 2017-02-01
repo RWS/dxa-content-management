@@ -52,6 +52,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Common.dll</HintPath>
     </Reference>
+    <Reference Include="Tridion.ContentManager.Templating, Version=8.1.0.1287, Culture=neutral, PublicKeyToken=360aac4d3354074b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Templating.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -69,8 +73,8 @@
     <Compile Include="ConsoleLogger.cs" />
     <Compile Include="DataModelTest.cs" />
     <Compile Include="DataModelBuilderTest.cs" />
-    <Compile Include="MockBinaryPublisher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TemplateBaseTest.cs" />
     <Compile Include="TestClass.cs" />
     <Compile Include="TestFixture.cs" />
   </ItemGroup>
@@ -111,7 +115,7 @@
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>xcopy C:\_references\cm-8.1\*.dll $(TargetDir) /Y</PreBuildEvent>
+    <PreBuildEvent>xcopy C:\_references\cm-8.1\*.* $(TargetDir) /Y</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>

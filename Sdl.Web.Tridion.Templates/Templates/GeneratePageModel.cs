@@ -36,18 +36,14 @@ namespace Sdl.Web.Tridion.Templates
                 DataModelBuilderSettings settings = new DataModelBuilderSettings
                 {
                     ExpandLinkDepth = expandLinkDepth,
-                    GenerateXpmMetadata = IsXpmEnabled || IsPreview
+                    GenerateXpmMetadata = IsXpmEnabled || IsPreview,
+                    Locale = GetLocale()
                 };
 
-                DataModelBuilder modelBuilder = new DataModelBuilder(
-                    Session,
-                    settings,
-                    mmc => renderedItem.AddBinary(mmc).Url,
-                    (stream, fileName, relatedComponent, mimeType) => renderedItem.AddBinary(stream, fileName, string.Empty, relatedComponent, mimeType).Url
-                    );
+                DataModelBuilder modelBuilder = new DataModelBuilder(renderedItem, settings);
                 PageModelData pageModel = modelBuilder.BuildPageModel(page);
 
-                string pageModelJson = JsonSerialize(pageModel, DataModelBinder.SerializerSettings);
+                string pageModelJson = JsonSerialize(pageModel, IsPreview, DataModelBinder.SerializerSettings);
                 Item outputItem = Package.CreateStringItem(ContentType.Text, pageModelJson);
                 Package.PushItem(Package.OutputName, outputItem);
             }

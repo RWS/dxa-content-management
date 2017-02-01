@@ -9,6 +9,8 @@ using Tridion;
 using Tridion.ContentManager;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.CommunicationManagement;
+using Tridion.ContentManager.Publishing.Rendering;
+using Tridion.ContentManager.Publishing.Resolving;
 using Tridion.ContentManager.Templating;
 using ComponentPresentation = Tridion.ContentManager.CommunicationManagement.ComponentPresentation;
 
@@ -30,13 +32,9 @@ namespace Sdl.Web.Tridion.Data
         private static readonly XmlNamespaceManager _xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
         private static readonly Regex _embeddedEntityRegex = new Regex(@"<\?EmbeddedEntity\s\?>", RegexOptions.Compiled);
 
-        public delegate string AddBinaryDelegate(Component mmComponent);
-        public delegate string AddBinaryStreamDelegate(Stream inputStream, string fileName, Component relatedComponent, string mimeType);
-
         internal Session Session { get; }
+        internal RenderedItem RenderedItem { get; }
         internal DataModelBuilderSettings Settings { get; }
-        internal AddBinaryDelegate AddBinaryFunction { get; }
-        internal AddBinaryStreamDelegate AddBinaryStreamFunction { get; }
         internal ILogger Logger { get; }
 
         /// <summary>
@@ -52,17 +50,14 @@ namespace Sdl.Web.Tridion.Data
         /// Constructor
         /// </summary>
         public DataModelBuilder(
-            Session session,
+            RenderedItem renderedItem,
             DataModelBuilderSettings settings,
-            AddBinaryDelegate addBinaryFunction,
-            AddBinaryStreamDelegate addBinaryStreamFunction,
             ILogger logger = null
             )
         {
-            Session = session;
+            Session = renderedItem.ResolvedItem.Item.Session;
+            RenderedItem = renderedItem;
             Settings = settings;
-            AddBinaryFunction = addBinaryFunction;
-            AddBinaryStreamFunction = addBinaryStreamFunction;
             Logger = logger ?? new TemplatingLoggerAdapter(TemplatingLogger.GetLogger(GetType()));
         }
 
@@ -230,6 +225,11 @@ namespace Sdl.Web.Tridion.Data
             foreach (ComponentPresentation cp in page.ComponentPresentations)
             {
                 ComponentTemplate ct = cp.ComponentTemplate;
+
+                // Create a Child Rendered Item for the CP in order to make Component linking work.
+                RenderedItem childRenderedItem = new RenderedItem(new ResolvedItem(cp.Component, ct), RenderedItem.RenderInstruction);
+                RenderedItem.AddRenderedItem(childRenderedItem);
+
                 // TODO TSI-24: For DCPs we should output only a minimal Entity Model containing the Component and Template ID, so it can be retrieved dynamically.
                 //EntityModelData entityModel = cp.ComponentTemplate.IsRepositoryPublishable ?
                 //    new EntityModelData { Id = GetDxaIdentifier(cp.Component, cp.ComponentTemplate) } :
@@ -335,7 +335,11 @@ namespace Sdl.Web.Tridion.Data
             result.Add("twitter:card", "summary");
             result.Add("og:title", title);
             result.Add("og:type", "article");
-            // TODO: result.Add("og:locale", localization.Culture);
+
+            if (!string.IsNullOrEmpty(Settings.Locale))
+            {
+                result.Add("og:locale", Settings.Locale);
+            }
             if (description != null)
             {
                 result.Add("og:description", description);
@@ -358,7 +362,8 @@ namespace Sdl.Web.Tridion.Data
             string currentFieldValue = string.Empty;
             foreach (XmlElement childElement in xmlElement.SelectElements("*"))
             {
-                if (childElement.SelectElements("*").Any())
+                bool isRichText = childElement.SelectSingleNode("xhtml:*", _xmlNamespaceManager) != null;
+                if (!isRichText && (childElement.SelectSingleNode("*") != null))
                 {
                     // Embedded field: flatten
                     ExtractKeyValuePairs(childElement, result);
@@ -455,7 +460,7 @@ namespace Sdl.Web.Tridion.Data
 
             return new BinaryContentData
             {
-                Url = AddBinaryFunction(component),
+                Url =  RenderedItem.AddBinary(component).Url,
                 FileName = binaryContent.Filename,
                 FileSize = binaryContent.Size,
                 MimeType = binaryContent.MultimediaType.MimeType
@@ -780,7 +785,8 @@ namespace Sdl.Web.Tridion.Data
             }
 
             // Text, number or date field
-            return xmlElement.InnerText;
+            // Multi-line text field may use CR+LF to separate lines, but JSON.NET expects LF only.
+            return xmlElement.InnerText.Replace("\r\n", "\n");
         }
 
         private RichTextData BuildRichTextModel(XmlElement xhtmlElement)
@@ -812,7 +818,7 @@ namespace Sdl.Web.Tridion.Data
                 else
                 {
                     // Hyperlink to MM Component: add the Binary and set the URL as href
-                    string binaryUrl = AddBinaryFunction(linkedComponent);
+                    string binaryUrl = RenderedItem.AddBinary(linkedComponent).Url;
                     xlinkElement.SetAttribute("href", binaryUrl);
                     xlinkElement.RemoveXlinkAttributes();
                 }

@@ -72,7 +72,6 @@
     <Compile Include="DD4T\GenerateDynamicComponent.cs" />
     <Compile Include="DD4T\GenerateDynamicPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RenderComponentPresentations.cs" />
     <Compile Include="ResolveRichText.cs" />
   </ItemGroup>
   <ItemGroup>

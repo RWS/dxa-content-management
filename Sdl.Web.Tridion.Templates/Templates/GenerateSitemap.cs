@@ -67,7 +67,7 @@ namespace Sdl.Web.Tridion.Templates
             _config = GetNavigationConfiguration(GetComponent());
 
             SitemapItem sitemap = GenerateStructureGroupNavigation(Publication.RootStructureGroup);
-            string sitemapJson = JsonSerialize(sitemap);
+            string sitemapJson = JsonSerialize(sitemap, IsPreview);
 
             package.PushItem(Package.OutputName, package.CreateStringItem(ContentType.Text, sitemapJson));
         }

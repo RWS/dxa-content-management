@@ -6,7 +6,7 @@ using Tridion.ContentManager.Templating;
 using Tridion.ContentManager.Templating.Assembly;
 using ComponentPresentation = Tridion.ContentManager.CommunicationManagement.ComponentPresentation;
 
-namespace Sdl.Web.Tridion.Templates.Legacy
+namespace Sdl.Web.Tridion.Templates
 {
     /// <summary>
     /// Renders the component presentations to the package output. Useful when there is no page layout for publishing data
@@ -17,22 +17,22 @@ namespace Sdl.Web.Tridion.Templates.Legacy
         public override void Transform(Engine engine, Package package)
         {
             Initialize(engine, package);
-            Page page = GetPage();
-            StringBuilder output = new StringBuilder();
-            if (page != null)
-            {
-                foreach (ComponentPresentation cp in page.ComponentPresentations)
-                {
-                    output.AppendLine(RemoveTcdl(engine.RenderComponentPresentation(cp.Component.Id, cp.ComponentTemplate.Id)));
-                }
-            }
-            package.PushItem(Package.OutputName, package.CreateStringItem(ContentType.Text, output.ToString()));
-        }
 
-        private static string RemoveTcdl(string p)
-        {
-            p = Regex.Replace(p, "<tcdl:ComponentPresentation[^>]+>", "");
-            return p.Replace("</tcdl:ComponentPresentation>", "");
+            Page page = GetPage();
+            if (page == null)
+            {
+                throw new DxaException("No Page found. This TBB should be used in a Page Template only.");
+            }
+
+            StringBuilder resultBuilder = new StringBuilder();
+            foreach (ComponentPresentation cp in page.ComponentPresentations)
+            {
+                string renderedCp = engine.RenderComponentPresentation(cp.Component.Id, cp.ComponentTemplate.Id);
+                renderedCp = StripTcdlComponentPresentationTag(renderedCp);
+                resultBuilder.AppendLine(renderedCp);
+            }
+
+            package.PushItem(Package.OutputName, package.CreateStringItem(ContentType.Text, resultBuilder.ToString()));
         }
     }
 }

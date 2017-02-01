@@ -4,6 +4,9 @@ using Sdl.Web.Tridion.Data;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
+using Tridion.ContentManager.Publishing;
+using Tridion.ContentManager.Publishing.Rendering;
+using Tridion.ContentManager.Publishing.Resolving;
 
 namespace Sdl.Web.Tridion.Templates.Tests
 {
@@ -14,18 +17,25 @@ namespace Sdl.Web.Tridion.Templates.Tests
         private static readonly DataModelBuilderSettings _defaultModelBuilderSettings =  new DataModelBuilderSettings
         {
             ExpandLinkDepth = 1,
-            GenerateXpmMetadata = true
+            GenerateXpmMetadata = true,
+            Locale = "en-US"
         };
 
-        private PageModelData BuildPageModel(Page page, MockBinaryPublisher mockBinaryPublisher)
+        private RenderedItem CreateTestRenderedItem(IdentifiableObject item, Template template)
         {
-            DataModelBuilder testModelBuilder = new DataModelBuilder(
-                page.Session,
-                _defaultModelBuilderSettings,
-                mockBinaryPublisher.AddBinary,
-                mockBinaryPublisher.AddBinaryStream,
-                new ConsoleLogger()
-                );
+            RenderInstruction testRenderInstruction = new RenderInstruction(item.Session)
+            {
+                BinaryStoragePath = @"C:\Temp\DXA\Test",
+                RenderMode = RenderMode.PreviewDynamic
+            };
+            return new RenderedItem(new ResolvedItem(item, template), testRenderInstruction);
+        }
+
+        private PageModelData BuildPageModel(Page page, out RenderedItem renderedItem)
+        {
+            renderedItem = CreateTestRenderedItem(page, page.PageTemplate);
+
+            DataModelBuilder testModelBuilder = new DataModelBuilder(renderedItem, _defaultModelBuilderSettings, new ConsoleLogger());
 
             PageModelData result = testModelBuilder.BuildPageModel(page);
 
@@ -35,15 +45,11 @@ namespace Sdl.Web.Tridion.Templates.Tests
             return result;
         }
 
-        private EntityModelData BuildEntityModel(Component component, ComponentTemplate ct, MockBinaryPublisher mockBinaryPublisher)
+        private EntityModelData BuildEntityModel(Component component, ComponentTemplate ct, out RenderedItem renderedItem)
         {
-            DataModelBuilder testModelBuilder = new DataModelBuilder(
-                component.Session,
-                _defaultModelBuilderSettings,
-                mockBinaryPublisher.AddBinary,
-                mockBinaryPublisher.AddBinaryStream,
-                new ConsoleLogger()
-                );
+            renderedItem = CreateTestRenderedItem(component, ct);
+
+            DataModelBuilder testModelBuilder = new DataModelBuilder(renderedItem, _defaultModelBuilderSettings, new ConsoleLogger());
 
             EntityModelData result = testModelBuilder.BuildEntityModel(component, ct);
 
@@ -57,23 +63,25 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void BuildPageModel_ExampleSiteHomePage_Success()
         {
-            Session testSession = new Session();
-            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
-            Page testPage = (Page) testSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
+            Page testPage = (Page) TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
 
-            PageModelData pageModel = BuildPageModel(testPage, mockBinaryPublisher);
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
 
+            Assert.AreEqual("Home", pageModel.Title, "pageModel.Title");
+            Assert.IsNotNull(testRenderedItem, "testRenderedItem");
+            Assert.AreEqual(6, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
+            Assert.AreEqual(16, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
             // TODO TSI-132: further assertions
         }
 
         [TestMethod]
         public void BuildPageModel_ArticleDcp_Success()
         {
-            Session testSession = new Session();
-            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
-            Page testPage = (Page) testSession.GetObject(TestFixture.ArticleDcpPageWebDavUrl);
+            Page testPage = (Page) TestSession.GetObject(TestFixture.ArticleDcpPageWebDavUrl);
 
-            PageModelData pageModel = BuildPageModel(testPage, mockBinaryPublisher);
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }
@@ -81,11 +89,10 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void BuildPageModel_MediaManager_Success()
         {
-            Session testSession = new Session();
-            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
-            Page testPage = (Page) testSession.GetObject(TestFixture.MediaManagerPageWebDavUrl);
+            Page testPage = (Page) TestSession.GetObject(TestFixture.MediaManagerPageWebDavUrl);
 
-            PageModelData pageModel = BuildPageModel(testPage, mockBinaryPublisher);
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }
@@ -93,11 +100,10 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void BuildPageModel_Flickr_Success()
         {
-            Session testSession = new Session();
-            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
-            Page testPage = (Page) testSession.GetObject(TestFixture.FlickrTestPageWebDavUrl);
+            Page testPage = (Page) TestSession.GetObject(TestFixture.FlickrTestPageWebDavUrl);
 
-            PageModelData pageModel = BuildPageModel(testPage, mockBinaryPublisher);
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }
@@ -105,11 +111,10 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void BuildPageModel_SmartTarget_Success()
         {
-            Session testSession = new Session();
-            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
-            Page testPage = (Page) testSession.GetObject(TestFixture.SmartTargetPageWebDavUrl);
+            Page testPage = (Page) TestSession.GetObject(TestFixture.SmartTargetPageWebDavUrl);
 
-            PageModelData pageModel = BuildPageModel(testPage, mockBinaryPublisher);
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }
@@ -117,11 +122,10 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void BuildPageModel_Tsi811_Success()
         {
-            Session testSession = new Session();
-            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
-            Page testPage = (Page) testSession.GetObject(TestFixture.Tsi811PageWebDavUrl);
+            Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi811PageWebDavUrl);
 
-            PageModelData pageModel = BuildPageModel(testPage, mockBinaryPublisher);
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
 
             PageModelData deserializedPageModel = JsonSerializeDeserialize(pageModel);
 
@@ -142,11 +146,10 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void BuildPageModel_Tsi1758_Success()
         {
-            Session testSession = new Session();
-            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
-            Page testPage = (Page) testSession.GetObject(TestFixture.Tsi1758PageWebDavUrl);
+            Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1758PageWebDavUrl);
 
-            PageModelData pageModel = BuildPageModel(testPage, mockBinaryPublisher);
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }
@@ -154,35 +157,44 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void BuildPageModel_Tsi1946_Success()
         {
-            Session testSession = new Session();
-            Page testPage = (Page) testSession.GetObject(TestFixture.Tsi1946PageWebDavUrl);
-            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
+            Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1946PageWebDavUrl);
 
-            PageModelData pageModel = BuildPageModel(testPage, mockBinaryPublisher);
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }
 
         [TestMethod]
+        public void BuildPageModel_Tsi1308_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1308PageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+
+            // TODO TSI-132: further assertions
+        }
+
+
+        [TestMethod]
         public void BuildPageModel_DuplicatePredefinedRegions_Exception()
         {
-            Session testSession = new Session();
-            Page testPage = (Page) testSession.GetObject(TestFixture.PredefinedRegionsTestPageWebDavUrl);
-            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
+            Page testPage = (Page) TestSession.GetObject(TestFixture.PredefinedRegionsTestPageWebDavUrl);
 
-            AssertThrowsException<DxaException>(() => BuildPageModel(testPage, mockBinaryPublisher));
+            RenderedItem testRenderedItem;
+            AssertThrowsException<DxaException>(() => BuildPageModel(testPage, out testRenderedItem));
         }
 
         [TestMethod]
         public void BuildEntityModel_ArticleDcp_Success()
         {
-            Session testSession = new Session();
-            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
             string[] articleDcpIds = TestFixture.ArticleDcpId.Split('/');
-            Component article = (Component) testSession.GetObject(articleDcpIds[0]);
-            ComponentTemplate ct = (ComponentTemplate) testSession.GetObject(articleDcpIds[1]);
+            Component article = (Component) TestSession.GetObject(articleDcpIds[0]);
+            ComponentTemplate ct = (ComponentTemplate) TestSession.GetObject(articleDcpIds[1]);
 
-            EntityModelData entityModel = BuildEntityModel(article, ct, mockBinaryPublisher);
+            RenderedItem testRenderedItem;
+            EntityModelData entityModel = BuildEntityModel(article, ct, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }
@@ -190,12 +202,11 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void BuildEntityModel_WithoutComponentTemplate_Success()
         {
-            Session testSession = new Session();
-            MockBinaryPublisher mockBinaryPublisher = new MockBinaryPublisher();
             string[] articleDcpIds = TestFixture.ArticleDcpId.Split('/');
-            Component article = (Component) testSession.GetObject(articleDcpIds[0]);
+            Component article = (Component) TestSession.GetObject(articleDcpIds[0]);
 
-            EntityModelData entityModel = BuildEntityModel(article, null, mockBinaryPublisher);
+            RenderedItem testRenderedItem;
+            EntityModelData entityModel = BuildEntityModel(article, null, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }

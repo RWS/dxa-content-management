@@ -88,7 +88,7 @@ namespace Sdl.Web.Tridion.Data
             string uniqueFilename =
                 $"{Path.GetFileNameWithoutExtension(eclItem.Filename)}_{eclStubComponent.Id.ToString().Substring(4)}{Path.GetExtension(eclItem.Filename)}";
 
-            return _dataModelBuilder.AddBinaryStreamFunction(eclContent.Stream, uniqueFilename, eclStubComponent, eclContent.ContentType);
+            return _dataModelBuilder.RenderedItem.AddBinary(eclContent.Stream, uniqueFilename, string.Empty, eclStubComponent, eclContent.ContentType).Url;
         }
 
         public void Dispose()
