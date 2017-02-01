@@ -10,6 +10,7 @@ using Tridion.ContentManager;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.Publishing.Rendering;
+using Tridion.ContentManager.Publishing.Resolving;
 using Tridion.ContentManager.Templating;
 using ComponentPresentation = Tridion.ContentManager.CommunicationManagement.ComponentPresentation;
 
@@ -224,6 +225,11 @@ namespace Sdl.Web.Tridion.Data
             foreach (ComponentPresentation cp in page.ComponentPresentations)
             {
                 ComponentTemplate ct = cp.ComponentTemplate;
+
+                // Create a Child Rendered Item for the CP in order to make Component linking work.
+                RenderedItem childRenderedItem = new RenderedItem(new ResolvedItem(cp.Component, ct), RenderedItem.RenderInstruction);
+                RenderedItem.AddRenderedItem(childRenderedItem);
+
                 // TODO TSI-24: For DCPs we should output only a minimal Entity Model containing the Component and Template ID, so it can be retrieved dynamically.
                 //EntityModelData entityModel = cp.ComponentTemplate.IsRepositoryPublishable ?
                 //    new EntityModelData { Id = GetDxaIdentifier(cp.Component, cp.ComponentTemplate) } :

@@ -71,7 +71,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.AreEqual("Home", pageModel.Title, "pageModel.Title");
             Assert.IsNotNull(testRenderedItem, "testRenderedItem");
             Assert.AreEqual(6, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
-            Assert.AreEqual(0, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count"); // TODO
+            Assert.AreEqual(16, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
             // TODO TSI-132: further assertions
         }
 
