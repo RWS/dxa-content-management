@@ -153,7 +153,7 @@ namespace Sdl.Web.Tridion.Common
             SummaryData summary = new SummaryData { Name = name, Status = "Success", Files = files };
             summaries.Add(summary);
 
-            string summariesJson = JsonSerialize(summaries);
+            string summariesJson = JsonSerialize(summaries, IsPreview);
             outputItem = Package.CreateStringItem(ContentType.Text, summariesJson);
             Package.PushItem(Package.OutputName, outputItem);
         }
@@ -505,7 +505,7 @@ namespace Sdl.Web.Tridion.Common
                 variantId = name;
             }
 
-            string json = JsonSerialize(objectToSerialize);
+            string json = JsonSerialize(objectToSerialize, IsPreview | IsXpmEnabled);
             Item jsonItem = Package.CreateStringItem(ContentType.Text, json);
             Binary jsonBinary = Engine.PublishingContext.RenderedItem.AddBinary(jsonItem.GetAsStream(), name + JsonExtension, structureGroup, variantId, relatedComponent, JsonMimetype);
             jsonItem.Properties[Item.ItemPropertyPublishedPath] = jsonBinary.Url;
@@ -561,7 +561,7 @@ namespace Sdl.Web.Tridion.Common
             return JsonSerialize(json);
         }
 
-        protected string JsonSerialize(object objectToSerialize, JsonSerializerSettings settings = null)
+        protected string JsonSerialize(object objectToSerialize, bool prettyPrint = false, JsonSerializerSettings settings = null)
         {
             if (settings == null)
             {
@@ -571,9 +571,7 @@ namespace Sdl.Web.Tridion.Common
                 };
             }
 
-            Newtonsoft.Json.Formatting jsonFormatting = (IsPreview || IsXpmEnabled) ?
-                Newtonsoft.Json.Formatting.Indented :
-                Newtonsoft.Json.Formatting.None;
+            Newtonsoft.Json.Formatting jsonFormatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
 
             return JsonConvert.SerializeObject(objectToSerialize, jsonFormatting, settings);
         }

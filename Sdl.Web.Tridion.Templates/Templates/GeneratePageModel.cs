@@ -43,7 +43,7 @@ namespace Sdl.Web.Tridion.Templates
                 DataModelBuilder modelBuilder = new DataModelBuilder(renderedItem, settings);
                 PageModelData pageModel = modelBuilder.BuildPageModel(page);
 
-                string pageModelJson = JsonSerialize(pageModel, DataModelBinder.SerializerSettings);
+                string pageModelJson = JsonSerialize(pageModel, IsPreview, DataModelBinder.SerializerSettings);
                 Item outputItem = Package.CreateStringItem(ContentType.Text, pageModelJson);
                 Package.PushItem(Package.OutputName, outputItem);
             }
