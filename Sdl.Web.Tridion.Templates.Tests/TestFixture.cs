@@ -8,6 +8,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         internal const string AutoTestParentWebDavUrl = "/webdav/401 Automated Test Parent";
 
         internal const string ExampleSiteHomePageWebDavUrl = ExampleSiteWebDavUrl + "/Home/000 Home.tpg";
+        internal const string AutoTestParentHomePageWebDavUrl = AutoTestParentWebDavUrl + "/Home/000 Home.tpg";
         internal const string ArticleDcpPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Test Article (Dynamic) Page.tpg";
         internal const string MediaManagerPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/MediaManager.tpg";
         internal const string FlickrTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/Flickr Test.tpg";
@@ -20,5 +21,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
         internal const string ArticleDcpId = "tcm:1065-9712/tcm:1065-9711-32";
 
+        internal const string BullsEyeComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Images/Large/bulls-eye.jpg";
     }
 }

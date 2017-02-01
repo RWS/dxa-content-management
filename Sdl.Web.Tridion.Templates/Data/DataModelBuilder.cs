@@ -9,6 +9,7 @@ using Tridion;
 using Tridion.ContentManager;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.CommunicationManagement;
+using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
 using ComponentPresentation = Tridion.ContentManager.CommunicationManagement.ComponentPresentation;
 
@@ -30,13 +31,9 @@ namespace Sdl.Web.Tridion.Data
         private static readonly XmlNamespaceManager _xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
         private static readonly Regex _embeddedEntityRegex = new Regex(@"<\?EmbeddedEntity\s\?>", RegexOptions.Compiled);
 
-        public delegate string AddBinaryDelegate(Component mmComponent);
-        public delegate string AddBinaryStreamDelegate(Stream inputStream, string fileName, Component relatedComponent, string mimeType);
-
         internal Session Session { get; }
+        internal RenderedItem RenderedItem { get; }
         internal DataModelBuilderSettings Settings { get; }
-        internal AddBinaryDelegate AddBinaryFunction { get; }
-        internal AddBinaryStreamDelegate AddBinaryStreamFunction { get; }
         internal ILogger Logger { get; }
 
         /// <summary>
@@ -52,17 +49,14 @@ namespace Sdl.Web.Tridion.Data
         /// Constructor
         /// </summary>
         public DataModelBuilder(
-            Session session,
+            RenderedItem renderedItem,
             DataModelBuilderSettings settings,
-            AddBinaryDelegate addBinaryFunction,
-            AddBinaryStreamDelegate addBinaryStreamFunction,
             ILogger logger = null
             )
         {
-            Session = session;
+            Session = renderedItem.ResolvedItem.Item.Session;
+            RenderedItem = renderedItem;
             Settings = settings;
-            AddBinaryFunction = addBinaryFunction;
-            AddBinaryStreamFunction = addBinaryStreamFunction;
             Logger = logger ?? new TemplatingLoggerAdapter(TemplatingLogger.GetLogger(GetType()));
         }
 
@@ -460,7 +454,7 @@ namespace Sdl.Web.Tridion.Data
 
             return new BinaryContentData
             {
-                Url = AddBinaryFunction(component),
+                Url =  RenderedItem.AddBinary(component).Url,
                 FileName = binaryContent.Filename,
                 FileSize = binaryContent.Size,
                 MimeType = binaryContent.MultimediaType.MimeType
@@ -818,7 +812,7 @@ namespace Sdl.Web.Tridion.Data
                 else
                 {
                     // Hyperlink to MM Component: add the Binary and set the URL as href
-                    string binaryUrl = AddBinaryFunction(linkedComponent);
+                    string binaryUrl = RenderedItem.AddBinary(linkedComponent).Url;
                     xlinkElement.SetAttribute("href", binaryUrl);
                     xlinkElement.RemoveXlinkAttributes();
                 }

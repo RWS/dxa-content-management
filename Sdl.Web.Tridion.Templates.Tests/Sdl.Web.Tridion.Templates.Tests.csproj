@@ -73,7 +73,6 @@
     <Compile Include="ConsoleLogger.cs" />
     <Compile Include="DataModelTest.cs" />
     <Compile Include="DataModelBuilderTest.cs" />
-    <Compile Include="MockBinaryPublisher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TemplateBaseTest.cs" />
     <Compile Include="TestClass.cs" />

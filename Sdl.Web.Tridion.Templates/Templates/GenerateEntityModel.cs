@@ -41,12 +41,7 @@ namespace Sdl.Web.Tridion.Templates
                     GenerateXpmMetadata = IsXpmEnabled || IsPreview
                 };
 
-                DataModelBuilder modelBuilder = new DataModelBuilder(
-                    Session,
-                    settings,
-                    mmc => renderedItem.AddBinary(mmc).Url,
-                    (stream, fileName, relatedComponent, mimeType) => renderedItem.AddBinary(stream, fileName, string.Empty, relatedComponent, mimeType).Url
-                    );
+                DataModelBuilder modelBuilder = new DataModelBuilder(renderedItem, settings);
                 EntityModelData entityModel = modelBuilder.BuildEntityModel(component, ct);
 
                 string entityModelJson = JsonSerialize(entityModel, DataModelBinder.SerializerSettings);
