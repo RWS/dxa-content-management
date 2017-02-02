@@ -85,8 +85,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             RenderedItem testRenderedItem;
             PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
 
-            RegionModelData mainRegion = pageModel.Regions.FirstOrDefault(r => r.Name == "Main");
-            Assert.IsNotNull(mainRegion, "mainRegion");
+            RegionModelData mainRegion = GetMainRegion(pageModel);
             EntityModelData article = mainRegion.Entities[0];
 
             Assert.IsNotNull(article);
@@ -155,6 +154,27 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
+        public void BuildPageModel_Tsi1614_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1614PageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData article = mainRegion.Entities[0];
+            Assert.AreEqual("article tsi1614", article.HtmlClasses, "article.HtmlClasses");
+
+            ContentModelData articleBody = article.Content["articleBody"] as ContentModelData;
+            Assert.IsNotNull(articleBody, "articleBody");
+            RichTextData content = articleBody["content"] as RichTextData;
+            Assert.IsNotNull(content, "content");
+            EntityModelData embeddedEntity = content.Fragments.OfType<EntityModelData>().FirstOrDefault();
+            Assert.IsNotNull(embeddedEntity, "embeddedEntity");
+            Assert.AreEqual("test tsi1614", embeddedEntity.HtmlClasses, "embeddedEntity.HtmlClasses");
+        }
+
+        [TestMethod]
         public void BuildPageModel_Tsi1758_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1758PageWebDavUrl);
@@ -220,6 +240,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
             EntityModelData entityModel = BuildEntityModel(article, null, out testRenderedItem);
 
             // TODO TSI-132: further assertions
+        }
+
+        private static RegionModelData GetMainRegion(PageModelData pageModelData)
+        {
+            RegionModelData mainRegion = pageModelData.Regions.FirstOrDefault(r => r.Name == "Main");
+            Assert.IsNotNull(mainRegion, "No 'Main' Region found in Page Model.");
+            return mainRegion;
         }
     }
 }

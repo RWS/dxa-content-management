@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -419,6 +418,7 @@ namespace Sdl.Web.Tridion.Data
             }
 
             result.MvcData = GetEntityMvcData(ct);
+            result.HtmlClasses = GetHtmlClasses(ct);
             result.XpmMetadata = GetXpmMetadata(component, ct);
             if (ct.IsRepositoryPublishable)
             {
@@ -426,6 +426,12 @@ namespace Sdl.Web.Tridion.Data
             }
 
             return result;
+        }
+
+        private static string GetHtmlClasses(ComponentTemplate ct)
+        {
+            IEnumerable<string> htmlClasses = ct?.Metadata?.GetTextFieldValues("htmlClasses");
+            return (htmlClasses == null) ? null : string.Join(" ", htmlClasses);
         }
 
         private EntityModelData BuildEntityModel(Component component, int expandLinkLevels)
@@ -438,7 +444,7 @@ namespace Sdl.Web.Tridion.Data
                 Id = GetDxaIdentifier(component),
                 SchemaId = GetDxaIdentifier(component.Schema),
                 Content = BuildContentModel(component.Content, expandLinkLevels),
-                Metadata = BuildContentModel(component.Metadata, expandLinkLevels),
+                Metadata = BuildContentModel(component.Metadata, expandLinkLevels)
             };
 
             if (IsEclItem(component))
@@ -805,7 +811,13 @@ namespace Sdl.Web.Tridion.Data
                 if (xlinkElement.LocalName == "img")
                 {
                     // img element pointing to MM Component is expanded to an embedded Entity Model
-                    embeddedEntities.Add(BuildEntityModel(linkedComponent, 0));
+                    EntityModelData embeddedEntity = BuildEntityModel(linkedComponent, expandLinkLevels: 0);
+                    string htmlClasses = xlinkElement.GetAttribute("class");
+                    if (!string.IsNullOrEmpty(htmlClasses))
+                    {
+                        embeddedEntity.HtmlClasses = htmlClasses;
+                    }
+                    embeddedEntities.Add(embeddedEntity);
 
                     // Replace entire img element with marker XML processing instruction (see below). 
                     xlinkElement.ParentNode.ReplaceChild(
