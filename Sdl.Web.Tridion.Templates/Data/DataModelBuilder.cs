@@ -87,6 +87,7 @@ namespace Sdl.Web.Tridion.Data
             return new PageModelData
             {
                 Id = GetDxaIdentifier(page),
+                SchemaId = GetDxaIdentifier(page.MetadataSchema),
                 Meta = BuildPageModelMeta(page, out title),
                 Title = title,
                 Regions = regionModels.Values.ToList(),
@@ -412,10 +413,16 @@ namespace Sdl.Web.Tridion.Data
 
             EntityModelData result = BuildEntityModel(component, Settings.ExpandLinkDepth);
 
-            if (ct != null)
+            if (ct == null)
             {
-                result.MvcData = GetEntityMvcData(ct);
-                result.XpmMetadata = GetXpmMetadata(component, ct);
+                return result;
+            }
+
+            result.MvcData = GetEntityMvcData(ct);
+            result.XpmMetadata = GetXpmMetadata(component, ct);
+            if (ct.IsRepositoryPublishable)
+            {
+                result.Id += "-" + GetDxaIdentifier(ct);
             }
 
             return result;
@@ -484,20 +491,11 @@ namespace Sdl.Web.Tridion.Data
             };
         }
 
-        private static string GetDxaIdentifier(IdentifiableObject tcmItem, ComponentTemplate ct = null)
-        {
-            if (tcmItem == null)
-            {
-                return null;
-            }
-
-            return ct == null ? tcmItem.Id.ItemId.ToString() : $"{tcmItem.Id.ItemId}-{ct.Id.ItemId}";
-        }
+        private static string GetDxaIdentifier(IdentifiableObject tcmItem)
+            => tcmItem?.Id.ItemId.ToString();
 
         private static string GetTcmIdentifier(IdentifiableObject tcmItem)
-        {
-            return tcmItem?.Id.GetVersionlessUri().ToString();
-        }
+            => tcmItem?.Id.GetVersionlessUri().ToString();
 
         private static string StripModuleName(string qualifiedName, out string moduleName)
         {

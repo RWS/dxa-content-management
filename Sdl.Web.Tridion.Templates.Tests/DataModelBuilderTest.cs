@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Linq;
+using System.Text.RegularExpressions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sdl.Web.DataModel;
 using Sdl.Web.Tridion.Data;
 using Tridion.ContentManager;
@@ -83,6 +85,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
             RenderedItem testRenderedItem;
             PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
 
+            RegionModelData mainRegion = pageModel.Regions.FirstOrDefault(r => r.Name == "Main");
+            Assert.IsNotNull(mainRegion, "mainRegion");
+            EntityModelData article = mainRegion.Entities[0];
+
+            Assert.IsNotNull(article);
+            StringAssert.Matches(article.Id, new Regex(@"\d+-\d+"));
+
             // TODO TSI-132: further assertions
         }
 
@@ -126,6 +135,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
             RenderedItem testRenderedItem;
             PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+
+            Assert.IsNotNull(pageModel.SchemaId, "pageModel.SchemaId");
 
             PageModelData deserializedPageModel = JsonSerializeDeserialize(pageModel);
 
