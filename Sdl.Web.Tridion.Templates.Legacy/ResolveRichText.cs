@@ -8,13 +8,13 @@ using Tridion.ContentManager.ContentManagement.Fields;
 using Tridion.ContentManager.Templating;
 using Tridion.ContentManager.Templating.Assembly;
 
-namespace Sdl.Web.Tridion.Templates
+namespace Sdl.Web.Tridion.Templates.Legacy
 {
     /// <summary>
     /// Pre-processes Rich Text fields so they contain sufficient information for Rich Text Processing in the Web Application.
     /// </summary>
     [TcmTemplateTitle("Resolve Rich Text")]
-    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.ResolveRichTextParameters.xsd")]
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Templates.Legacy.Resources.ResolveRichTextParameters.xsd")]
     public class ResolveRichText : TemplateBase
     {
         private const string SchemaUriAttribute = "data-schemaUri";

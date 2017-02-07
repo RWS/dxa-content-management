@@ -8,7 +8,7 @@ using Dd4tComponentPresentation = DD4T.ContentModel.ComponentPresentation;
 using TcmComponentPresentation = Tridion.ContentManager.CommunicationManagement.ComponentPresentation;
 using TcmKeyword = Tridion.ContentManager.ContentManagement.Keyword;
 
-namespace Sdl.Web.Tridion.Templates.DD4T
+namespace Sdl.Web.Tridion.Templates.Legacy.DD4T
 {
     internal class DxaBuildManager : BuildManager
     {

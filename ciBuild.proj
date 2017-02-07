@@ -8,7 +8,12 @@
         <IsPreRelease>true</IsPreRelease>
         <BuildConfiguration>Release</BuildConfiguration>
         <ProjectDirectory>$(MSBuildProjectDirectory)</ProjectDirectory>
-        <TemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.merged.dll</TemplatesDll>
+        <TemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Legacy\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.merged.dll</TemplatesDll>
+        <CmsTargetDefinitionFile>dxadevweb85.xml</CmsTargetDefinitionFile>
+        <NuGetRepositoryUrl></NuGetRepositoryUrl>
+
+        <NuGet>&quot;$(ProjectDirectory)\_tools\NuGet.exe&quot;</NuGet>
+        <NuGetPackageDirectory>$(ProjectDirectory)\_NuGet</NuGetPackageDirectory>
         
         <VersionMajor>$(Version.Split('.')[0])</VersionMajor>
         <VersionMinor>$(Version.Split('.')[1])</VersionMinor>
@@ -30,6 +35,8 @@
         
         <CallTarget Targets="PrepareBuild"/>
         <CallTarget Targets="RunBuild"/>
+        <CallTarget Targets="CreatePackages"/>
+        <CallTarget Targets="PublishPackages" Condition="'$(NuGetRepositoryUrl)' != ''"/>
         <!-- NOTE: Not calling DeployOutput here; should be called separately by Jenkins build -->
     </Target>
 
@@ -56,13 +63,31 @@
         <Message Text="Running build commands..." Importance="high" />
 
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates\Sdl.Web.Tridion.Templates.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
+        <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Legacy\Sdl.Web.Tridion.Templates.Legacy.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
+        <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Tests\Sdl.Web.Tridion.Templates.Tests.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
     </Target>
 
+    <!-- =============================================================================================================================================  -->
+    <Target Name="CreatePackages">
+        <Message Text="Creating NuGet packages in '$(NuGetPackageDirectory)' ..." Importance="high" />
+
+        <Message Text="Package Version: $(PackageVersion)" />
+        
+        <Exec Command="$(NuGet) pack Sdl.Dxa.DataModel.nuspec -Version $(PackageVersion)" WorkingDirectory="$(NuGetPackageDirectory)" />
+    </Target>
+
+    <!-- =============================================================================================================================================  -->
+    <Target Name="PublishPackages">
+        <Message Text="Publishing NuGet packages to '$(NuGetRepositoryUrl)' ..." Importance="high" />
+
+        <Exec Command="$(NuGet) push Sdl.Dxa.DataModel.$(PackageVersion).nupkg -Source $(NuGetRepositoryUrl)" WorkingDirectory="$(NuGetPackageDirectory)" />
+    </Target>
+    
     <!-- =============================================================================================================================================  -->
     <Target Name="DeployOutput">
       <Message Text="Deploying '$(TemplatesDll)' to CMS..." />
         
-        <Exec Command="TcmUploadAssembly.exe dxadevweb8.xml /folder:tcm:2-17-2 /verbose &quot;$(TemplatesDll)&quot;" WorkingDirectory="$(CmToolsDir)" />
+        <Exec Command="TcmUploadAssembly.exe $(CmsTargetDefinitionFile) /folder:tcm:2-17-2 /verbose &quot;$(TemplatesDll)&quot;" WorkingDirectory="$(CmToolsDir)" />
     </Target>
  
 </Project>

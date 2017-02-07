@@ -41,13 +41,13 @@ namespace Sdl.Web.Tridion.Common
 
         public static bool IsXpmEnabled(PublishingContext publishingContext)
         {
-            if (publishingContext == null || publishingContext.PublicationTarget == null)
+            if (publishingContext?.PublicationTarget == null)
             {
                 return false;
             }
 
             TargetType targetType = publishingContext.TargetType;
-            if (targetType != null && targetType.BusinessProcessType != null)
+            if (targetType?.BusinessProcessType != null)
             {
                 // New-style publishing
                 Publication contextPublication = (Publication) ((RepositoryLocalObject) publishingContext.ResolvedItem.Item).ContextRepository;

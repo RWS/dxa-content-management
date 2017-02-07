@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Newtonsoft.Json;
-using Sdl.Web.Common.Models.Data;
-using Sdl.Web.Tridion.Templates;
+using Sdl.Web.DataModel.Configuration;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
@@ -28,7 +27,10 @@ namespace Sdl.Web.Tridion.Common
         protected const string DxaSchemaNamespaceUri = "http://www.sdl.com/web/schemas/core";
         protected const string ModuleConfigurationSchemaRootElementName = "ModuleConfiguration";
 
+        private static readonly Regex _tcdlComponentPresentationRegex = new Regex("</?tcdl:ComponentPresentation[^>]*>", RegexOptions.Compiled);
+
         private TemplatingLogger _logger;
+        private Session _session;
         private Engine _engine;
         private Package _package;
         private Publication _publication;
@@ -57,6 +59,9 @@ namespace Sdl.Web.Tridion.Common
             }
         }
 
+        /// <summary>
+        /// Gets or sets the current Publication.
+        /// </summary>
         protected Publication Publication
         {
             get
@@ -67,13 +72,30 @@ namespace Sdl.Web.Tridion.Common
                 }
                 return _publication;
             }
+            set
+            {
+                // Allows dependency injection for unit test purposes.
+                _publication = value;
+            }
         }
 
+        /// <summary>
+        /// Gets or sets the current Session.
+        /// </summary>
         protected Session Session
         {
             get
             {
-                return Engine.GetSession();
+                if (_session == null)
+                {
+                    _session = Engine.GetSession();
+                }
+                return _session;
+            }
+            set
+            {
+                // Allows dependency injection for unit test purposes.
+                _session = value;
             }
         }
 
@@ -131,7 +153,7 @@ namespace Sdl.Web.Tridion.Common
             SummaryData summary = new SummaryData { Name = name, Status = "Success", Files = files };
             summaries.Add(summary);
 
-            string summariesJson = JsonSerialize(summaries);
+            string summariesJson = JsonSerialize(summaries, IsPreview);
             outputItem = Package.CreateStringItem(ContentType.Text, summariesJson);
             Package.PushItem(Package.OutputName, outputItem);
         }
@@ -234,15 +256,15 @@ namespace Sdl.Web.Tridion.Common
         /// </summary>
         /// <returns>True if publishing to a target which is XPM enabled.</returns>
         [Obsolete("Deprecated in DXA 1.7. Use IsXpmEnabled instead.")]
-        protected bool IsPublishingToStaging()
-        {
-            return IsXpmEnabled;
-        }
+        protected bool IsPublishingToStaging() => IsXpmEnabled;
 
-        protected bool IsPreviewMode()
-        {
-            return Engine.RenderMode == RenderMode.PreviewDynamic || Engine.RenderMode == RenderMode.PreviewStatic;
-        }
+        [Obsolete("Deprecated in DXA 2.0. Use IsPreview property instead.")]
+        protected bool IsPreviewMode() => IsPreview;
+
+        /// <summary>
+        /// Gets whether the item is being rendered as part of CM Preview.
+        /// </summary>
+        protected bool IsPreview => (Engine.RenderMode == RenderMode.PreviewDynamic) || (Engine.RenderMode == RenderMode.PreviewStatic);
 
         protected bool IsMasterWebPublication(Publication publication)
         {
@@ -313,6 +335,89 @@ namespace Sdl.Web.Tridion.Common
             }
             return res;
         }
+
+        /// <summary>
+        /// Gets a cached value.
+        /// </summary>
+        /// <typeparam name="T">The type of the value.</typeparam>
+        /// <param name="cacheRegion">The cache region.</param>
+        /// <param name="cacheKey">The cache key.</param>
+        /// <param name="addFunction">The function used to provide a value if no value is cached yet.</param>
+        /// <remarks>
+        /// This uses the TOM.NET Session Cache if available (it typically is during rendering/publishing).
+        /// </remarks>
+        /// <returns>The cached value.</returns>
+        protected T GetCachedValue<T>(string cacheRegion, string cacheKey, Func<T> addFunction)
+        {
+            ICache cache = Session.Cache;
+            object cachedValue = cache?.Get(cacheRegion, cacheKey);
+
+            T result;
+            if (cachedValue == null)
+            {
+                result = addFunction();
+
+                if (cache != null)
+                {
+                    cache.Add(cacheRegion, cacheKey, result);
+                }
+            }
+            else
+            {
+                result = (T) cachedValue;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Determines the locale/culture for the current Publication.
+        /// </summary>
+        /// <returns>The locale or <c>null</c> if it cannot be determined.</returns>
+        protected string GetLocale()
+            => GetCachedValue("DxaLocale", Publication.Id, DetermineLocale);
+
+        private string DetermineLocale()
+        {
+            // TODO: use a less complicated (and more explicit) way to store locale/language. What about Publication metadata?
+            Schema generalConfigSchema = GetSchema("GeneralConfiguration");
+
+            UsingItemsFilter configComponentsFilter = new UsingItemsFilter(Session)
+            {
+                ItemTypes = new[] { ItemType.Component },
+                BaseColumns = ListBaseColumns.IdAndTitle
+            };
+
+            IEnumerable<Component> configComponents = generalConfigSchema.GetUsingItems(configComponentsFilter).Cast<Component>();
+            Component localizationConfigComponent = configComponents.FirstOrDefault(c => c.Title == "Localization Configuration");
+            if (localizationConfigComponent == null)
+            {
+                Logger.Warning("No Localization Configuration Component found.");
+                return null;
+            }
+
+            // Ensure we load the Component in the current context Publication
+            localizationConfigComponent = (Component) Publication.GetObject(localizationConfigComponent.Id);
+
+            Dictionary<string, string> settings = ExtractKeyValuePairs(localizationConfigComponent);
+
+            string result;
+            const string cultureSetting = "culture";
+            if (!settings.TryGetValue(cultureSetting, out result))
+            {
+                Logger.Warning($"No '{cultureSetting}' setting found in Localization Configuration {localizationConfigComponent.FormatIdentifier()}.");
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Strips tcdl:ComponentPresentation tag from rendered Component Presentation.
+        /// </summary>
+        /// <param name="renderedComponentPresentation">The rendered Component Presentation.</param>
+        /// <returns>The rendered Component Presentation without tcdl:ComponentPresentation tag.</returns>
+        protected static string StripTcdlComponentPresentationTag(string renderedComponentPresentation)
+            => _tcdlComponentPresentationRegex.Replace(renderedComponentPresentation, string.Empty);
 
         #region Json Data Processing
         protected Dictionary<string, string> MergeData(Dictionary<string, string> source, Dictionary<string, string> mergeData)
@@ -400,7 +505,7 @@ namespace Sdl.Web.Tridion.Common
                 variantId = name;
             }
 
-            string json = JsonSerialize(objectToSerialize);
+            string json = JsonSerialize(objectToSerialize, IsPreview | IsXpmEnabled);
             Item jsonItem = Package.CreateStringItem(ContentType.Text, json);
             Binary jsonBinary = Engine.PublishingContext.RenderedItem.AddBinary(jsonItem.GetAsStream(), name + JsonExtension, structureGroup, variantId, relatedComponent, JsonMimetype);
             jsonItem.Properties[Item.ItemPropertyPublishedPath] = jsonBinary.Url;
@@ -456,18 +561,19 @@ namespace Sdl.Web.Tridion.Common
             return JsonSerialize(json);
         }
 
-        protected string JsonSerialize(object objectToSerialize)
+        protected string JsonSerialize(object objectToSerialize, bool prettyPrint = false, JsonSerializerSettings settings = null)
         {
-            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings
+            if (settings == null)
             {
-                NullValueHandling = NullValueHandling.Ignore
-            };
+                settings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                };
+            }
 
-            Newtonsoft.Json.Formatting jsonFormatting = (IsPreviewMode() || IsXpmEnabled) ?
-                Newtonsoft.Json.Formatting.Indented :
-                Newtonsoft.Json.Formatting.None;
+            Newtonsoft.Json.Formatting jsonFormatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
 
-            return JsonConvert.SerializeObject(objectToSerialize, jsonFormatting, jsonSerializerSettings);
+            return JsonConvert.SerializeObject(objectToSerialize, jsonFormatting, settings);
         }
 
         #endregion
@@ -497,7 +603,7 @@ namespace Sdl.Web.Tridion.Common
 
         protected Dictionary<string, Component> GetActiveModules()
         {
-            Schema moduleConfigSchema = GetModuleConfigSchema();
+            Schema moduleConfigSchema = GetSchema(ModuleConfigurationSchemaRootElementName);
             Session session = moduleConfigSchema.Session;
 
             UsingItemsFilter moduleConfigComponentsFilter = new UsingItemsFilter(session)
@@ -528,25 +634,20 @@ namespace Sdl.Web.Tridion.Common
         }
 
 
-        private Schema GetModuleConfigSchema()
+        protected Schema GetSchema(string rootElementName, string namespaceUri = DxaSchemaNamespaceUri)
         {
-            Schema[] moduleConfigSchemas = Publication.GetSchemasByNamespaceUri(DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName).ToArray();
+            Schema[] schemas = Publication.GetSchemasByNamespaceUri(namespaceUri, rootElementName).ToArray();
 
-            if (moduleConfigSchemas.Length == 0)
+            if (schemas.Length == 0)
             {
-                throw new DxaException(
-                    string.Format("Schema with namespace '{0}' and root element name '{1}' not found.", DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName)
-                    );
+                throw new DxaException($"Schema with namespace '{namespaceUri}' and root element name '{rootElementName}' not found.");
+            }
+            if (schemas.Length > 1)
+            {
+                throw new DxaException($"Found multiple Schemas with namespace '{namespaceUri}' and root element name '{rootElementName}'.");
             }
 
-            if (moduleConfigSchemas.Length > 1)
-            {
-                    throw new DxaException(
-                        string.Format("Found multiple Schemas with namespace '{0}' and root element name '{1}'", DxaSchemaNamespaceUri, ModuleConfigurationSchemaRootElementName) 
-                        );
-            }
-
-            return moduleConfigSchemas.First();
+            return schemas.First();
         }
 
         [Obsolete("Deprecated in DXA 1.7.")]
