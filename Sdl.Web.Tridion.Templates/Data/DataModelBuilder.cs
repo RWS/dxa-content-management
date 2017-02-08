@@ -267,7 +267,7 @@ namespace Sdl.Web.Tridion.Data
                 {
                     includePageRegion.XpmMetadata = new Dictionary<string, object>
                     {
-                        {"IncludedFromPageId", GetTcmIdentifier(includePage)},
+                        {"IncludedFromPageID", GetTcmIdentifier(includePage)},
                         {"IncludedFromPageTitle", includePage.Title},
                         {"IncludedFromPageFileName", includePage.FileName}
                     };
