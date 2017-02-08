@@ -30,6 +30,8 @@ namespace Sdl.Web.Tridion.Data
 
         private static readonly XmlNamespaceManager _xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
         private static readonly Regex _embeddedEntityRegex = new Regex(@"<\?EmbeddedEntity\s\?>", RegexOptions.Compiled);
+        private static readonly string[] _standardPageTemplateMetadataFields = new[] { "includes", "view", "regions", "htmlClasses" };
+        private static readonly string[] _standardRegionMetadataFields = new[] { "name", "view" };
 
         internal Session Session { get; }
         internal RenderedItem RenderedItem { get; }
@@ -77,10 +79,24 @@ namespace Sdl.Web.Tridion.Data
             // We need Keyword XLinks for Keyword field expansion
             page.Load(LoadFlags.KeywordXlinks);
 
+            PageTemplate pt = page.PageTemplate;
+
             IDictionary<string, RegionModelData> regionModels = new Dictionary<string, RegionModelData>();
-            AddPredefinedRegions(regionModels, page.PageTemplate);
+            AddPredefinedRegions(regionModels, pt);
             AddComponentPresentationRegions(regionModels, page);
-            AddIncludePageRegions(regionModels, page.PageTemplate);
+            AddIncludePageRegions(regionModels, pt);
+
+
+            // Merge Page metadata and PT custom metadata
+            ContentModelData ptCustomMetadata = ExtractCustomMetadata(pt.Metadata, excludeFields: _standardPageTemplateMetadataFields);
+            ContentModelData pageMetadata = BuildContentModel(page.Metadata, Settings.ExpandLinkDepth);
+            string[] duplicateFieldNames;
+            ContentModelData pageModelMetadata = MergeFields(pageMetadata, ptCustomMetadata, out duplicateFieldNames);
+            if (duplicateFieldNames.Length > 0)
+            {
+                string formattedDuplicateFieldNames = string.Join(", ", duplicateFieldNames);
+                Logger.Debug($"Some custom metadata fields from {pt.FormatIdentifier()} are overridden by Page metadata: {formattedDuplicateFieldNames}");
+            }
 
             string title;
             return new PageModelData
@@ -90,12 +106,45 @@ namespace Sdl.Web.Tridion.Data
                 Meta = BuildPageModelMeta(page, out title),
                 Title = title,
                 Regions = regionModels.Values.ToList(),
-                Metadata = BuildContentModel(page.Metadata, Settings.ExpandLinkDepth),
-                MvcData = GetPageMvcData(page.PageTemplate),
+                Metadata = pageModelMetadata,
+                MvcData = GetPageMvcData(pt),
                 XpmMetadata = GetXpmMetadata(page)
             };
         }
 
+
+        private static ContentModelData MergeFields(ContentModelData primaryFields, ContentModelData secondaryFields, out string[] duplicateFieldNames)
+        {
+            List<string> duplicates = new List<string>();
+
+            ContentModelData result;
+            if (secondaryFields == null)
+            {
+                result = primaryFields;
+            }
+            else if (primaryFields == null)
+            {
+                result = secondaryFields;
+            }
+            else
+            {
+                result = primaryFields;
+                foreach (KeyValuePair<string, object> field in secondaryFields)
+                {
+                    if (result.ContainsKey(field.Key))
+                    {
+                        duplicates.Add(field.Key);
+                    }
+                    else
+                    {
+                        result.Add(field.Key, field.Value);
+                    }
+                }
+            }
+
+            duplicateFieldNames = duplicates.ToArray();
+            return result;
+        }
 
         private void AddPredefinedRegions(IDictionary<string, RegionModelData> regionModels, PageTemplate pageTemplate)
         {
@@ -131,22 +180,37 @@ namespace Sdl.Web.Tridion.Data
                         ViewName = regionViewName,
                         AreaName = moduleName
                     },
+                    Metadata = ExtractCustomMetadata(regionMetadata, excludeFields: _standardRegionMetadataFields),
                     Entities = new List<EntityModelData>()
                 };
 
-                XmlElement additionalRegionMetadata = (XmlElement) regionMetadata.CloneNode(deep: true);
-                XmlElement[] standardRegionMetadata = additionalRegionMetadata.SelectElements("*[local-name()='name' or local-name()='view']").ToArray();
-                if (additionalRegionMetadata.SelectElements("*").Count() > standardRegionMetadata.Length)
-                {
-                    foreach (XmlElement xmlElement in standardRegionMetadata)
-                    {
-                        additionalRegionMetadata.RemoveChild(xmlElement);
-                    }
-                    regionModel.Metadata = BuildContentModel(additionalRegionMetadata, 0);
-                }
-
                 regionModels.Add(regionName, regionModel);
             }
+        }
+
+        private ContentModelData ExtractCustomMetadata(XmlElement metadata, IEnumerable<string> excludeFields)
+        {
+            if (metadata == null)
+            {
+                return null;
+            }
+
+            XmlElement customMetadata = (XmlElement) metadata.CloneNode(deep: true);
+            string excludeXPathPredicate = string.Join(" or ", excludeFields.Select(name => $"local-name()='{name}'"));
+            XmlElement[] excludeElements = customMetadata.SelectElements($"*[{excludeXPathPredicate}]").ToArray();
+
+            if (customMetadata.SelectElements("*").Count() <= excludeElements.Length)
+            {
+                // No custom metadata found.
+                return null;
+            }
+
+            foreach (XmlElement excludeElement in excludeElements)
+            {
+                customMetadata.RemoveChild(excludeElement);
+            }
+
+            return BuildContentModel(customMetadata, expandLinkLevels: 0);
         }
 
         private void AddIncludePageRegions(IDictionary<string, RegionModelData> regionModels, PageTemplate pageTemplate)

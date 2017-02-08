@@ -124,7 +124,17 @@ namespace Sdl.Web.Tridion.Templates.Tests
             RenderedItem testRenderedItem;
             PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
 
-            // TODO TSI-132: further assertions
+            Assert.IsNotNull(pageModel.Metadata, "pageModel.Metadata");
+            object allowDups;
+            Assert.IsTrue(pageModel.Metadata.TryGetValue("allowDuplicationOnSamePage", out allowDups), "pageModel.Metadata[allowDuplicationOnSamePage]");
+            Assert.AreEqual("Use core configuration", allowDups, "allowDups");
+
+            RegionModelData example1Region = pageModel.Regions.FirstOrDefault(r => r.Name == "Example1");
+            Assert.IsNotNull(example1Region, "example1Region");
+            Assert.IsNotNull(example1Region.Metadata, "example1Region.Metadata");
+            object maxItems;
+            Assert.IsTrue(example1Region.Metadata.TryGetValue("maxItems", out maxItems), "example1Region.Metadata[maxItems]");
+            Assert.AreEqual("3", maxItems, "maxItems");
         }
 
         [TestMethod]
