@@ -74,8 +74,8 @@ namespace Sdl.Web.Tridion.Templates.Legacy.DD4T
             }
             _logger.Debug("ComponentPresentation has Conditions");
 
-            string[] includeContextExpressions = ContextExpressionManager.GetContextExpressions(tcmComponentPresentation.Conditions.Where(c => !c.Negate).Select(c => c.TargetGroup));
-            string[] excludeContextExpressions = ContextExpressionManager.GetContextExpressions(tcmComponentPresentation.Conditions.Where(c => c.Negate).Select(c => c.TargetGroup));
+            string[] includeContextExpressions = ContextExpressionUtils.GetContextExpressions(tcmComponentPresentation.Conditions.Where(c => !c.Negate).Select(c => c.TargetGroup));
+            string[] excludeContextExpressions = ContextExpressionUtils.GetContextExpressions(tcmComponentPresentation.Conditions.Where(c => c.Negate).Select(c => c.TargetGroup));
 
             if (includeContextExpressions.Any())
             {

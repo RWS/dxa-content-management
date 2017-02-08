@@ -302,7 +302,7 @@ namespace Sdl.Web.Tridion.Data
                 {
                     Logger.Debug($"Expanding DCP ({cp.Component}, {ct}) for now (until we have a Model Service).");
                 }
-                EntityModelData entityModel = BuildEntityModel(cp.Component, ct);
+                EntityModelData entityModel = BuildEntityModel(cp);
 
                 string regionName;
                 MvcData regionMvcData = GetRegionMvcData(cp.ComponentTemplate, out regionName);
@@ -457,6 +457,35 @@ namespace Sdl.Web.Tridion.Data
             {
                 result.Add(currentFieldName, currentFieldValue);
             }
+        }
+
+        /// <summary>
+        /// Builds an Entity Model for a given CM Component Presentation.
+        /// </summary>
+        /// <param name="cp">The CM Component Presentation.</param>
+        /// <returns>The Entity Model.</returns>
+        public EntityModelData BuildEntityModel(ComponentPresentation cp)
+        {
+            EntityModelData result = BuildEntityModel(cp.Component, cp.ComponentTemplate);
+
+            // Add extension data for Context Expressions (if applicable)
+            // TODO: this should be done in a separate (optional) Model Builder class.
+            string[] includeContextExpressions = ContextExpressionUtils.GetContextExpressions(cp.Conditions.Where(c => !c.Negate).Select(c => c.TargetGroup));
+            string[] excludeContextExpressions = ContextExpressionUtils.GetContextExpressions(cp.Conditions.Where(c => c.Negate).Select(c => c.TargetGroup));
+
+            if (includeContextExpressions.Any())
+            {
+                Logger.Debug("Adding Context Expression Conditions (Include): " + string.Join(", ", includeContextExpressions));
+                result.SetExtensionData("CX.Include", includeContextExpressions);
+            }
+
+            if (excludeContextExpressions.Any())
+            {
+                Logger.Debug("Adding Context Expression Conditions (Exclude): " + string.Join(", ", excludeContextExpressions));
+                result.SetExtensionData("CX.Exclude", excludeContextExpressions);
+            }
+
+            return result;
         }
 
         /// <summary>
