@@ -9,6 +9,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
         internal const string ExampleSiteHomePageWebDavUrl = ExampleSiteWebDavUrl + "/Home/000 Home.tpg";
         internal const string AutoTestParentHomePageWebDavUrl = AutoTestParentWebDavUrl + "/Home/000 Home.tpg";
+        internal const string ArticlePageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Test Article Page.tpg";
         internal const string ArticleDcpPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Test Article (Dynamic) Page.tpg";
         internal const string MediaManagerPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/MediaManager.tpg";
         internal const string FlickrTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/Flickr Test.tpg";

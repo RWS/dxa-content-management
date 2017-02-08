@@ -893,6 +893,14 @@ namespace Sdl.Web.Tridion.Data
             foreach (XmlElement xlinkElement in xhtmlElement.SelectElements(".//*[starts-with(@xlink:href, 'tcm:')]", _xmlNamespaceManager))
             {
                 Component linkedComponent = Session.GetObject(xlinkElement) as Component;
+
+                if ((xlinkElement.LocalName == "a") && (linkedComponent != null))
+                {
+                    // Hyperlink to Component; put a Component Link marker just after the hyperlink to facilitate link suppression.
+                    XmlComment compLinkEndMarker = xmlDoc.CreateComment($"CompLink {linkedComponent.Id.GetVersionlessUri()}");
+                    xlinkElement.ParentNode.InsertAfter(compLinkEndMarker, xlinkElement);
+                }
+
                 if (linkedComponent?.BinaryContent == null)
                 {
                     // Not a MM Component link; put TCM URI in href and remove XLink attributes.

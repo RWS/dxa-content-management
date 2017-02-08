@@ -226,6 +226,23 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
+        public void BuildPageModel_Tsi2265_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.ArticlePageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData article = mainRegion.Entities[0];
+            ContentModelData articleBody = (ContentModelData) article.Content["articleBody"];
+            RichTextData content = (RichTextData) articleBody["content"];
+            string firstHtmlFragment = (string) content.Fragments[0];
+            StringAssert.Contains(firstHtmlFragment, "href=\"tcm:1065-9710\"");
+            StringAssert.Contains(firstHtmlFragment, "<!--CompLink tcm:1065-9710-->");
+        }
+
+        [TestMethod]
         public void BuildPageModel_Tsi1308_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1308PageWebDavUrl);
