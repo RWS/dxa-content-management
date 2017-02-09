@@ -356,24 +356,31 @@ namespace Sdl.Web.Tridion.Data
                         continue;
                     }
 
-                    XmlElement componentContent = cp.Component.Content;
-                    XmlElement componentMetadata = cp.Component.Metadata;
+                    Component component = cp.Component;
+                    XmlElement componentContent = component.Content;
+                    XmlElement componentMetadata = component.Metadata;
+                    string namespaceUri = componentContent?.NamespaceURI ?? componentMetadata?.NamespaceURI;
+                    XmlNamespaceManager xmlNsManager = new XmlNamespaceManager(new NameTable());
+                    if (namespaceUri != null)
+                    {
+                        xmlNsManager.AddNamespace("c", namespaceUri);
+                    }
 
                     XmlElement titleElement = null;
                     XmlElement descriptionElement = null;
                     XmlElement imageElement = null;
                     if (componentMetadata != null)
                     {
-                        titleElement = componentMetadata.SelectSingleElement("standardMeta/name");
-                        descriptionElement = componentMetadata.SelectSingleElement("standardMeta/description");
+                        titleElement = componentMetadata.SelectSingleElement("c:standardMeta/c:name", xmlNsManager);
+                        descriptionElement = componentMetadata.SelectSingleElement("c:standardMeta/c:description", xmlNsManager);
                     }
                     if (componentContent != null)
                     {
                         if (titleElement == null)
                         {
-                            titleElement = componentContent.SelectSingleElement("headline");
+                            titleElement = componentContent.SelectSingleElement("c:headline", xmlNsManager);
                         }
-                        imageElement = componentContent.SelectSingleElement("image");
+                        imageElement = componentContent.SelectSingleElement("c:image",xmlNsManager);
                     }
                     if (title == null)
                     {

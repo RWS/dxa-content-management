@@ -243,6 +243,31 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
+        public void BuildPageModel_Tsi2277_Success()
+        {
+            Page testPage1 = (Page) TestSession.GetObject(TestFixture.Tsi2277Page1WebDavUrl);
+            Page testPage2 = (Page) TestSession.GetObject(TestFixture.Tsi2277Page2WebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel1 = BuildPageModel(testPage1, out testRenderedItem);
+            PageModelData pageModel2 = BuildPageModel(testPage2, out testRenderedItem);
+
+            const string articleHeadline = "Article headline";
+            const string articleStandardMetaName = "Article standardMeta name";
+            const string articleStandardMetaDescription = "Article standardMeta description";
+
+            Assert.AreEqual(articleHeadline, pageModel1.Title, "pageModel1.Title");
+            Assert.AreEqual(articleHeadline, pageModel1.Meta["description"], "pageModel1.Meta['description']");
+            Assert.IsFalse(pageModel1.Meta.ContainsKey("og:description"));
+
+            Assert.AreEqual(articleStandardMetaName, pageModel2.Title, "pageModel2.Title");
+            Assert.AreEqual(articleStandardMetaDescription, pageModel2.Meta["description"], "pageModel2.Meta['description']");
+            string ogDescription;
+            Assert.IsTrue(pageModel2.Meta.TryGetValue("og:description", out ogDescription), "pageModel2.Meta['og: description']");
+            Assert.AreEqual(articleStandardMetaDescription, ogDescription, "ogDescription");
+        }
+
+        [TestMethod]
         public void BuildPageModel_Tsi1308_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1308PageWebDavUrl);

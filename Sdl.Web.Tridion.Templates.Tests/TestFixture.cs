@@ -20,6 +20,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
         internal const string Tsi1614PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/TSI-1614 Rich Text Image with HTML class.tpg";
         internal const string Tsi1758PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-1758 Test Page.tpg";
         internal const string Tsi1946PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-1946 Test Page.tpg";
+        internal const string Tsi2277Page1WebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-2277 Test Page 1.tpg";
+        internal const string Tsi2277Page2WebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-2277 Test Page 2.tpg";
         internal const string PredefinedRegionsTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/RegionsTest/Predefined Regions - Empty.tpg";
 
         internal const string ArticleDcpId = "tcm:1065-9712/tcm:1065-9711-32";
