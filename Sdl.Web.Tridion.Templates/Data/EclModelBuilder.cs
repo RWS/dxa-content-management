@@ -54,6 +54,7 @@ namespace Sdl.Web.Tridion.Data
                 {
                     Id = eclItem.Id.ToString(),
                     DisplayTypeId = eclItem.DisplayTypeId,
+                    TemplateFragment = eclItem.GetTemplateFragment(_emptyAttributes),
                     Metadata = _dataModelBuilder.BuildContentModel(externalMetadata, 0)
                 };
             }

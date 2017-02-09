@@ -119,6 +119,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 {
                     DisplayTypeId = "image",
                     Metadata = CreateTestContentModel(testId + "_ExternalMetadata", false, false),
+                    TemplateFragment = "test template fragment",
                     Id = "123456"
                 }
             };

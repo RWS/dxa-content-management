@@ -103,7 +103,22 @@ namespace Sdl.Web.Tridion.Templates.Tests
             RenderedItem testRenderedItem;
             PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
 
-            // TODO TSI-132: further assertions
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData mmItem = mainRegion.Entities[0];
+            BinaryContentData binaryContent = mmItem.BinaryContent;
+            ExternalContentData externalContent = mmItem.ExternalContent;
+
+            Assert.IsNotNull(binaryContent, "binaryContent");
+            Assert.AreEqual("https://mmecl.dist.sdlmedia.com/distributions/?o=51498399-31e9-4c89-98eb-0c4256c96f71", binaryContent.Url, "binaryContent.Url");
+            Assert.AreEqual("application/externalcontentlibrary", binaryContent.MimeType, "binaryContent.MimeType");
+            Assert.IsNotNull(externalContent, "externalContent");
+            Assert.AreEqual("ecl:1065-mm-415-dist-file", externalContent.Id, "externalContent.Id");
+            Assert.AreEqual("html5dist", externalContent.DisplayTypeId, "externalContent.DisplayTypeId");
+            Assert.IsNotNull(externalContent.Metadata, "externalContent.Metadata");
+            object globalId;
+            Assert.IsTrue(externalContent.Metadata.TryGetValue("GlobalId", out globalId), "externalContent.Metadata['GlobalId']");
+            Assert.AreEqual("51498399-31e9-4c89-98eb-0c4256c96f71", globalId, "globalId");
+            StringAssert.Contains(externalContent.TemplateFragment, (string) globalId, "externalContent.TemplateFragment");
         }
 
         [TestMethod]
