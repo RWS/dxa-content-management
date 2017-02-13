@@ -925,6 +925,16 @@ namespace Sdl.Web.Tridion.Data
                     {
                         embeddedEntity.HtmlClasses = htmlClasses;
                     }
+                    string altText = xlinkElement.GetAttribute("alt");
+                    if (!string.IsNullOrEmpty(altText))
+                    {
+                        // The XHTML img element has an alt attribute; use this as "altText" metadata field (possibly overwriting the actual metadata field).
+                        if (embeddedEntity.Metadata == null)
+                        {
+                            embeddedEntity.Metadata = new ContentModelData();
+                        }
+                        embeddedEntity.Metadata["altText"] = altText;
+                    }
                     embeddedEntities.Add(embeddedEntity);
 
                     // Replace entire img element with marker XML processing instruction (see below). 

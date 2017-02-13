@@ -79,6 +79,40 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
+        public void BuildPageModel_Article_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.ArticlePageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData article = mainRegion.Entities[0];
+
+            Assert.IsNotNull(article);
+            StringAssert.Matches(article.Id, new Regex(@"\d+"));
+
+            ContentModelData articleBody = (ContentModelData) article.Content["articleBody"];
+            RichTextData content = (RichTextData) articleBody["content"];
+
+            Assert.IsNotNull(content, "content");
+            Assert.IsNotNull(content.Fragments, "content.Fragments");
+
+            // Embedded image in Rich Text field should be represented as an embedded EntityModelData
+            Assert.AreEqual(3, content.Fragments.Count, "content.Fragments.Count");
+            EntityModelData image = content.Fragments.OfType<EntityModelData>().FirstOrDefault();
+            Assert.IsNotNull(image, "image");
+            Assert.IsNotNull(image.BinaryContent, "image.BinaryContent");
+            Assert.AreEqual("image/jpeg", image.BinaryContent.MimeType, "image.BinaryContent.MimeType");
+
+            // Image should have "altText" metadata field obtained from the original XHTML; see TSI-2289.
+            Assert.IsNotNull(image.Metadata, "image.Metadata");
+            object altText;
+            Assert.IsTrue(image.Metadata.TryGetValue("altText", out altText));
+            Assert.AreEqual("calculator", altText, "altText");
+        }
+
+        [TestMethod]
         public void BuildPageModel_ArticleDcp_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.ArticleDcpPageWebDavUrl);
