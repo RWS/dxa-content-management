@@ -28,8 +28,7 @@ namespace Sdl.Web.Tridion.Templates
             int expandLinkDepth;
             package.TryGetParameter("expandLinkDepth", out expandLinkDepth, Logger);
 
-            string[] modelBuilderTypeNames;
-            package.TryGetParameter("modelBuilderTypeNames", out modelBuilderTypeNames, Logger);
+            string[] modelBuilderTypeNames = GetModelBuilderTypeNames();
 
             RenderedItem renderedItem = Engine.PublishingContext.RenderedItem;
             Page page = GetPage();

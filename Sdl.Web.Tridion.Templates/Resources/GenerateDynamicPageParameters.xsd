@@ -4,7 +4,7 @@
         <xsd:appinfo>
             <tcm:Labels xmlns:tcm="http://www.tridion.com/ContentManager/5.0">
                 <tcm:Label ElementName="expandLinkDepth" Metadata="false">Depth to expand Component/Keyword links</tcm:Label>
-                <tcm:Label ElementName="modelBuilderTypeNames" Metadata="false">Type names of Model Builders to use</tcm:Label>
+                <tcm:Label ElementName="modelBuilderTypeNames" Metadata="false">Type names of Model Builders to use (separated by semicolons)</tcm:Label>
             </tcm:Labels>
         </xsd:appinfo>
     </xsd:annotation>
@@ -12,7 +12,7 @@
         <xsd:complexType>
             <xsd:sequence>
                 <xsd:element name="expandLinkDepth" minOccurs="0" maxOccurs="1" type="xsd:integer" />
-                <xsd:element name="modelBuilderTypeNames" minOccurs="1" maxOccurs="unbounded" type="xsd:normalizedString" />
+                <xsd:element name="modelBuilderTypeNames" minOccurs="0" maxOccurs="1" type="xsd:normalizedString" />
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
