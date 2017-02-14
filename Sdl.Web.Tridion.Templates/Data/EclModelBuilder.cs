@@ -1,103 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml;
+﻿using System.Xml;
 using Sdl.Web.DataModel;
+using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
-using Tridion.ExternalContentLibrary.V2;
 
 namespace Sdl.Web.Tridion.Data
 {
-    internal class EclModelBuilder : IDisposable
+    /// <summary>
+    /// Entity Model Builder implementation for ECL Stub Components.
+    /// </summary>
+    public class EclModelBuilder : DataModelBuilder, IEntityModelDataBuilder
     {
-        private static readonly IList<ITemplateAttribute> _emptyAttributes = new List<ITemplateAttribute>();
-        private readonly DataModelBuilder _dataModelBuilder;
-        private IEclSession _eclSession;
-
-        internal EclModelBuilder(DataModelBuilder dataModelBuilder)
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="pipeline">The context <see cref="DataModelBuilderPipeline"/></param>
+        public EclModelBuilder(DataModelBuilderPipeline pipeline) : base(pipeline)
         {
-            _dataModelBuilder = dataModelBuilder;
-            _eclSession = SessionFactory.CreateEclSession(dataModelBuilder.Session);
         }
 
-
-        internal void BuildEclModel(EntityModelData eclModel, Component eclStubComponent)
+        /// <summary>
+        /// Builds an Entity Data Model from a given CM Component Presentation object.
+        /// </summary>
+        /// <param name="entityModelData">The Entity Data Model to build. Is <c>null</c> for the first Model Builder in the pipeline.</param>
+        /// <param name="cp">The CM Component Presentation.</param>
+        public void BuildEntityModel(ref EntityModelData entityModelData, ComponentPresentation cp)
         {
-            IContentLibraryContext eclContext;
-            IContentLibraryMultimediaItem eclItem = GetEclItem(eclStubComponent.Id, out eclContext);
-
-            // This may look a bit unusual, but we have to ensure that ECL Item members are accessed *before* the ECL Context is disposed.
-            using (eclContext)
-            {
-                BinaryContent eclStubBinaryContent = eclStubComponent.BinaryContent;
-
-                string directLinkToPublished = eclItem.GetDirectLinkToPublished(_emptyAttributes);
-
-                eclModel.BinaryContent = new BinaryContentData
-                {
-                    Url = string.IsNullOrEmpty(directLinkToPublished) ? PublishBinaryContent(eclItem, eclStubComponent) : directLinkToPublished,
-                    MimeType = eclItem.MimeType ?? eclStubBinaryContent.MultimediaType.MimeType,
-                    FileName = eclItem.Filename ?? eclStubBinaryContent.Filename,
-                    FileSize = eclStubComponent.BinaryContent.Size
-                };
-
-                XmlElement externalMetadata = null;
-                if (!string.IsNullOrEmpty(eclItem.MetadataXml))
-                {
-                    XmlDocument externalMetadataDoc = new XmlDocument();
-                    externalMetadataDoc.LoadXml(eclItem.MetadataXml);
-                    externalMetadata = externalMetadataDoc.DocumentElement;
-                }
-
-                eclModel.ExternalContent = new ExternalContentData
-                {
-                    Id = eclItem.Id.ToString(),
-                    DisplayTypeId = eclItem.DisplayTypeId,
-                    TemplateFragment = eclItem.GetTemplateFragment(_emptyAttributes),
-                    Metadata = _dataModelBuilder.BuildContentModel(externalMetadata, 0)
-                };
-            }
+            // Nothing to do here
         }
 
-        private IContentLibraryMultimediaItem GetEclItem(string eclStubComponentId, out IContentLibraryContext eclContext)
+        /// <summary>
+        /// Builds an Entity Data Model from a given CM Component and Component Template.
+        /// </summary>
+        /// <param name="entityModelData">The Entity Data Model to build. Is <c>null</c> for the first Model Builder in the pipeline.</param>
+        /// <param name="component">The CM Component.</param>
+        /// <param name="ct">The CM Component Template. Can be <c>null</c>.</param>
+        public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct)
         {
-            IEclUri eclUri = _eclSession.TryGetEclUriFromTcmUri(eclStubComponentId);
-            if (eclUri == null)
+            if (!IsEclItem(component))
             {
-                throw new DxaException("Unable to get ECL URI for ECL Stub Component: " + eclStubComponentId);
+                return;
             }
 
-            eclContext = _eclSession.GetContentLibrary(eclUri);
-            // This is done this way to not have an exception thrown through GetItem, as stated in the ECL API doc.
-            // The reason to do this, is because if there is an exception, the ServiceChannel is going into the aborted state.
-            // GetItems allows up to 20 (depending on config) connections. 
-            IList<IContentLibraryItem> eclItems = eclContext.GetItems(new[] { eclUri });
-            IContentLibraryMultimediaItem eclItem = (eclItems == null) ? null : eclItems.OfType<IContentLibraryMultimediaItem>().FirstOrDefault();
-            if (eclItem == null)
+            Logger.Debug($"Processing ECL Stub Component {component.FormatIdentifier()}");
+            using (ExternalContentLibrary externalContentLibrary = new ExternalContentLibrary(Pipeline))
             {
-                eclContext.Dispose();
-                throw new DxaException($"ECL item '{eclUri}' not found (TCM URI: '{eclStubComponentId}')");
-            }
-
-            return eclItem;
-        }
-
-        private string PublishBinaryContent(IContentLibraryMultimediaItem eclItem, Component eclStubComponent)
-        {
-            IContentResult eclContent = eclItem.GetContent(_emptyAttributes);
-            string uniqueFilename =
-                $"{Path.GetFileNameWithoutExtension(eclItem.Filename)}_{eclStubComponent.Id.ToString().Substring(4)}{Path.GetExtension(eclItem.Filename)}";
-
-            return _dataModelBuilder.RenderedItem.AddBinary(eclContent.Stream, uniqueFilename, string.Empty, eclStubComponent, eclContent.ContentType).Url;
-        }
-
-        public void Dispose()
-        {
-            if (_eclSession != null)
-            {
-                _eclSession.Dispose();
-                _eclSession = null;
+                XmlElement externalMetadata = externalContentLibrary.BuildEntityModel(entityModelData, component);
+                entityModelData.ExternalContent.Metadata = BuildContentModel(externalMetadata, expandLinkLevels:0);
             }
         }
     }

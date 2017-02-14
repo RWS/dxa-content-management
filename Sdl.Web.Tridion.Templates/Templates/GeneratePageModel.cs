@@ -28,6 +28,9 @@ namespace Sdl.Web.Tridion.Templates
             int expandLinkDepth;
             package.TryGetParameter("expandLinkDepth", out expandLinkDepth, Logger);
 
+            string[] modelBuilderTypeNames;
+            package.TryGetParameter("modelBuilderTypeNames", out modelBuilderTypeNames, Logger);
+
             RenderedItem renderedItem = Engine.PublishingContext.RenderedItem;
             Page page = GetPage();
 
@@ -40,8 +43,8 @@ namespace Sdl.Web.Tridion.Templates
                     Locale = GetLocale()
                 };
 
-                DataModelBuilder modelBuilder = new DataModelBuilder(renderedItem, settings);
-                PageModelData pageModel = modelBuilder.BuildPageModel(page);
+                DataModelBuilderPipeline modelBuilderPipeline = new DataModelBuilderPipeline(renderedItem, settings, modelBuilderTypeNames);
+                PageModelData pageModel = modelBuilderPipeline.CreatePageModel(page);
 
                 string pageModelJson = JsonSerialize(pageModel, IsPreview, DataModelBinder.SerializerSettings);
                 Item outputItem = Package.CreateStringItem(ContentType.Text, pageModelJson);

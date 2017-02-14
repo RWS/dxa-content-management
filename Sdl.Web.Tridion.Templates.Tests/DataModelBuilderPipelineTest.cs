@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sdl.Web.DataModel;
@@ -15,13 +14,21 @@ namespace Sdl.Web.Tridion.Templates.Tests
 {
 
     [TestClass]
-    public class DataModelBuilderTest : TestClass
+    public class DataModelBuilderPipelineTest : TestClass
     {
         private static readonly DataModelBuilderSettings _defaultModelBuilderSettings =  new DataModelBuilderSettings
         {
             ExpandLinkDepth = 1,
             GenerateXpmMetadata = true,
             Locale = "en-US"
+        };
+
+        private static readonly string[] _defaultModelBuilderTypeNames =
+        {
+            typeof(DefaultModelBuilder).Name,
+            typeof(DefaultPageMetaModelBuilder).Name,
+            typeof(EclModelBuilder).Name,
+            typeof(ContextExpressionsModelBuilder).FullName // Both unqualified and qualified type names should work.
         };
 
         private RenderedItem CreateTestRenderedItem(IdentifiableObject item, Template template)
@@ -34,13 +41,18 @@ namespace Sdl.Web.Tridion.Templates.Tests
             return new RenderedItem(new ResolvedItem(item, template), testRenderInstruction);
         }
 
-        private PageModelData BuildPageModel(Page page, out RenderedItem renderedItem)
+        private PageModelData CreatePageModel(Page page, out RenderedItem renderedItem)
         {
             renderedItem = CreateTestRenderedItem(page, page.PageTemplate);
 
-            DataModelBuilder testModelBuilder = new DataModelBuilder(renderedItem, _defaultModelBuilderSettings, new ConsoleLogger());
+            DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
+                renderedItem,
+                _defaultModelBuilderSettings,
+                _defaultModelBuilderTypeNames,
+                new ConsoleLogger()
+                );
 
-            PageModelData result = testModelBuilder.BuildPageModel(page);
+            PageModelData result = testModelBuilderPipeline.CreatePageModel(page);
 
             Assert.IsNotNull(result);
             OutputJson(result, DataModelBinder.SerializerSettings);
@@ -48,13 +60,18 @@ namespace Sdl.Web.Tridion.Templates.Tests
             return result;
         }
 
-        private EntityModelData BuildEntityModel(Component component, ComponentTemplate ct, out RenderedItem renderedItem)
+        private EntityModelData CreateEntityModel(Component component, ComponentTemplate ct, out RenderedItem renderedItem)
         {
             renderedItem = CreateTestRenderedItem(component, ct);
 
-            DataModelBuilder testModelBuilder = new DataModelBuilder(renderedItem, _defaultModelBuilderSettings, new ConsoleLogger());
+            DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
+                renderedItem,
+                _defaultModelBuilderSettings,
+                _defaultModelBuilderTypeNames,
+                new ConsoleLogger()
+                );
 
-            EntityModelData result = testModelBuilder.BuildEntityModel(component, ct);
+            EntityModelData result = testModelBuilderPipeline.CreateEntityModel(component, ct);
 
             Assert.IsNotNull(result);
             OutputJson(result, DataModelBinder.SerializerSettings);
@@ -64,12 +81,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
 
         [TestMethod]
-        public void BuildPageModel_ExampleSiteHomePage_Success()
+        public void CreatePageModel_ExampleSiteHomePage_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             Assert.AreEqual("Home", pageModel.Title, "pageModel.Title");
             Assert.IsNotNull(testRenderedItem, "testRenderedItem");
@@ -79,12 +96,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void BuildPageModel_Article_Success()
+        public void CreatePageModel_Article_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.ArticlePageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             RegionModelData mainRegion = GetMainRegion(pageModel);
             EntityModelData article = mainRegion.Entities[0];
@@ -113,12 +130,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void BuildPageModel_ArticleDcp_Success()
+        public void CreatePageModel_ArticleDcp_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.ArticleDcpPageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             RegionModelData mainRegion = GetMainRegion(pageModel);
             EntityModelData article = mainRegion.Entities[0];
@@ -130,12 +147,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void BuildPageModel_MediaManager_Success()
+        public void CreatePageModel_MediaManager_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.MediaManagerPageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             RegionModelData mainRegion = GetMainRegion(pageModel);
             EntityModelData mmItem = mainRegion.Entities[0];
@@ -156,23 +173,23 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void BuildPageModel_Flickr_Success()
+        public void CreatePageModel_Flickr_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.FlickrTestPageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }
 
         [TestMethod]
-        public void BuildPageModel_SmartTarget_Success()
+        public void CreatePageModel_SmartTarget_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.SmartTargetPageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             Assert.IsNotNull(pageModel.Metadata, "pageModel.Metadata");
             object allowDups;
@@ -188,12 +205,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void BuildPageModel_ContextExpressions_Success()
+        public void CreatePageModel_ContextExpressions_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.ContextExpressionsPageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             RegionModelData mainRegion = GetMainRegion(pageModel);
             EntityModelData[] entitiesWithExtensionData = mainRegion.Entities.Where(e => e.ExtensionData != null).ToArray();
@@ -206,12 +223,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void BuildPageModel_Tsi811_Success()
+        public void CreatePageModel_Tsi811_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi811PageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             Assert.IsNotNull(pageModel.SchemaId, "pageModel.SchemaId");
 
@@ -232,12 +249,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void BuildPageModel_Tsi1614_Success()
+        public void CreatePageModel_Tsi1614_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1614PageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             RegionModelData mainRegion = GetMainRegion(pageModel);
             EntityModelData article = mainRegion.Entities[0];
@@ -253,34 +270,34 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void BuildPageModel_Tsi1758_Success()
+        public void CreatePageModel_Tsi1758_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1758PageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }
 
         [TestMethod]
-        public void BuildPageModel_Tsi1946_Success()
+        public void CreatePageModel_Tsi1946_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1946PageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }
 
         [TestMethod]
-        public void BuildPageModel_Tsi2265_Success()
+        public void CreatePageModel_Tsi2265_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.ArticlePageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             RegionModelData mainRegion = GetMainRegion(pageModel);
             EntityModelData article = mainRegion.Entities[0];
@@ -292,14 +309,14 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void BuildPageModel_Tsi2277_Success()
+        public void CreatePageModel_Tsi2277_Success()
         {
             Page testPage1 = (Page) TestSession.GetObject(TestFixture.Tsi2277Page1WebDavUrl);
             Page testPage2 = (Page) TestSession.GetObject(TestFixture.Tsi2277Page2WebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel1 = BuildPageModel(testPage1, out testRenderedItem);
-            PageModelData pageModel2 = BuildPageModel(testPage2, out testRenderedItem);
+            PageModelData pageModel1 = CreatePageModel(testPage1, out testRenderedItem);
+            PageModelData pageModel2 = CreatePageModel(testPage2, out testRenderedItem);
 
             const string articleHeadline = "Article headline";
             const string articleStandardMetaName = "Article standardMeta name";
@@ -317,47 +334,47 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void BuildPageModel_Tsi1308_Success()
+        public void CreatePageModel_Tsi1308_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1308PageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = BuildPageModel(testPage, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }
 
 
         [TestMethod]
-        public void BuildPageModel_DuplicatePredefinedRegions_Exception()
+        public void CreatePageModel_DuplicatePredefinedRegions_Exception()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.PredefinedRegionsTestPageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            AssertThrowsException<DxaException>(() => BuildPageModel(testPage, out testRenderedItem));
+            AssertThrowsException<DxaException>(() => CreatePageModel(testPage, out testRenderedItem));
         }
 
         [TestMethod]
-        public void BuildEntityModel_ArticleDcp_Success()
+        public void CreateEntityModel_ArticleDcp_Success()
         {
             string[] articleDcpIds = TestFixture.ArticleDcpId.Split('/');
             Component article = (Component) TestSession.GetObject(articleDcpIds[0]);
             ComponentTemplate ct = (ComponentTemplate) TestSession.GetObject(articleDcpIds[1]);
 
             RenderedItem testRenderedItem;
-            EntityModelData entityModel = BuildEntityModel(article, ct, out testRenderedItem);
+            EntityModelData entityModel = CreateEntityModel(article, ct, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }
 
         [TestMethod]
-        public void BuildEntityModel_WithoutComponentTemplate_Success()
+        public void CreateEntityModel_WithoutComponentTemplate_Success()
         {
             string[] articleDcpIds = TestFixture.ArticleDcpId.Split('/');
             Component article = (Component) TestSession.GetObject(articleDcpIds[0]);
 
             RenderedItem testRenderedItem;
-            EntityModelData entityModel = BuildEntityModel(article, null, out testRenderedItem);
+            EntityModelData entityModel = CreateEntityModel(article, null, out testRenderedItem);
 
             // TODO TSI-132: further assertions
         }

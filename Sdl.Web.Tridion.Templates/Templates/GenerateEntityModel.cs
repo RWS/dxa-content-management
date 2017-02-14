@@ -29,6 +29,9 @@ namespace Sdl.Web.Tridion.Templates
             int expandLinkDepth;
             package.TryGetParameter("expandLinkDepth", out expandLinkDepth, Logger);
 
+            string[] modelBuilderTypeNames;
+            package.TryGetParameter("modelBuilderTypeNames", out modelBuilderTypeNames, Logger);
+
             RenderedItem renderedItem = Engine.PublishingContext.RenderedItem;
             Component component = GetComponent();
             ComponentTemplate ct = GetComponentTemplate();
@@ -41,8 +44,8 @@ namespace Sdl.Web.Tridion.Templates
                     GenerateXpmMetadata = IsXpmEnabled || IsPreview
                 };
 
-                DataModelBuilder modelBuilder = new DataModelBuilder(renderedItem, settings);
-                EntityModelData entityModel = modelBuilder.BuildEntityModel(component, ct);
+                DataModelBuilderPipeline modelBuilderPipeline = new DataModelBuilderPipeline(renderedItem, settings, modelBuilderTypeNames);
+                EntityModelData entityModel = modelBuilderPipeline.CreateEntityModel(component, ct);
 
                 string entityModelJson = JsonSerialize(entityModel, IsPreview, DataModelBinder.SerializerSettings);
                 Item outputItem = Package.CreateStringItem(ContentType.Text, entityModelJson);

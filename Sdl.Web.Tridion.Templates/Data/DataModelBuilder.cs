@@ -6,604 +6,61 @@ using System.Xml;
 using Sdl.Web.DataModel;
 using Tridion;
 using Tridion.ContentManager;
-using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.CommunicationManagement;
-using Tridion.ContentManager.Publishing.Rendering;
-using Tridion.ContentManager.Publishing.Resolving;
+using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Templating;
-using ComponentPresentation = Tridion.ContentManager.CommunicationManagement.ComponentPresentation;
 
 namespace Sdl.Web.Tridion.Data
 {
     /// <summary>
-    /// Model Builder used to generate DXA R2 Data Models.
+    /// Abstract base class for DXA R2 Data Model Builders.
     /// </summary>
-    /// <remarks>
-    /// TODO: This should be made extensible (a "Model Builder Pipeline").
-    /// It is currently already possible to extend the Data Model using the Modular Templating Pipeline,
-    /// but that requires deserializing/serializing for each step in the pipeline.
-    /// </remarks>
     public class DataModelBuilder
     {
-        private const string LegacyIncludePrefix = "system/include/";
         private const string EclMimeType = "application/externalcontentlibrary";
 
-        private static readonly XmlNamespaceManager _xmlNamespaceManager = new XmlNamespaceManager(new NameTable());
         private static readonly Regex _embeddedEntityRegex = new Regex(@"<\?EmbeddedEntity\s\?>", RegexOptions.Compiled);
-        private static readonly string[] _standardPageTemplateMetadataFields = new[] { "includes", "view", "regions", "htmlClasses" };
-        private static readonly string[] _standardRegionMetadataFields = new[] { "name", "view" };
-
-        internal Session Session { get; }
-        internal RenderedItem RenderedItem { get; }
-        internal DataModelBuilderSettings Settings { get; }
-        internal ILogger Logger { get; }
 
         /// <summary>
-        /// Class constructor
+        /// Gets the context <see cref="DataModelBuilderPipeline"/>.
         /// </summary>
-        static DataModelBuilder()
-        {
-            _xmlNamespaceManager.AddNamespace("xlink", Constants.XlinkNamespace);
-            _xmlNamespaceManager.AddNamespace("xhtml", Constants.XhtmlNamespace);
-        }
+        protected DataModelBuilderPipeline Pipeline { get; }
 
         /// <summary>
-        /// Constructor
+        /// Gets the Logger used by this Model Builder.
         /// </summary>
-        public DataModelBuilder(
-            RenderedItem renderedItem,
-            DataModelBuilderSettings settings,
-            ILogger logger = null
-            )
-        {
-            Session = renderedItem.ResolvedItem.Item.Session;
-            RenderedItem = renderedItem;
-            Settings = settings;
-            Logger = logger ?? new TemplatingLoggerAdapter(TemplatingLogger.GetLogger(GetType()));
-        }
+        protected ILogger Logger { get; }
 
         /// <summary>
-        /// Builds a Page Model for a given CM Page.
+        /// Constructor.
         /// </summary>
-        /// <param name="page">The CM Page.</param>
-        /// <returns>The Page Model.</returns>
-        public PageModelData BuildPageModel(Page page)
+        /// <param name="pipeline">The context Model Builder Pipeline.</param>
+        protected DataModelBuilder(DataModelBuilderPipeline pipeline)
         {
-            Logger.Debug($"BuildPageModel({page})");
+            Pipeline = pipeline;
 
-            if (page == null)
+            if (pipeline.Logger is TemplatingLoggerAdapter)
             {
-                return null;
-            }
-
-            // We need Keyword XLinks for Keyword field expansion
-            page.Load(LoadFlags.KeywordXlinks);
-
-            PageTemplate pt = page.PageTemplate;
-
-            IDictionary<string, RegionModelData> regionModels = new Dictionary<string, RegionModelData>();
-            AddPredefinedRegions(regionModels, pt);
-            AddComponentPresentationRegions(regionModels, page);
-            AddIncludePageRegions(regionModels, pt);
-
-
-            // Merge Page metadata and PT custom metadata
-            ContentModelData ptCustomMetadata = ExtractCustomMetadata(pt.Metadata, excludeFields: _standardPageTemplateMetadataFields);
-            ContentModelData pageMetadata = BuildContentModel(page.Metadata, Settings.ExpandLinkDepth);
-            string[] duplicateFieldNames;
-            ContentModelData pageModelMetadata = MergeFields(pageMetadata, ptCustomMetadata, out duplicateFieldNames);
-            if (duplicateFieldNames.Length > 0)
-            {
-                string formattedDuplicateFieldNames = string.Join(", ", duplicateFieldNames);
-                Logger.Debug($"Some custom metadata fields from {pt.FormatIdentifier()} are overridden by Page metadata: {formattedDuplicateFieldNames}");
-            }
-
-            string title;
-            return new PageModelData
-            {
-                Id = GetDxaIdentifier(page),
-                SchemaId = GetDxaIdentifier(page.MetadataSchema),
-                Meta = BuildPageModelMeta(page, out title),
-                Title = title,
-                Regions = regionModels.Values.ToList(),
-                Metadata = pageModelMetadata,
-                MvcData = GetPageMvcData(pt),
-                XpmMetadata = GetXpmMetadata(page)
-            };
-        }
-
-
-        private static ContentModelData MergeFields(ContentModelData primaryFields, ContentModelData secondaryFields, out string[] duplicateFieldNames)
-        {
-            List<string> duplicates = new List<string>();
-
-            ContentModelData result;
-            if (secondaryFields == null)
-            {
-                result = primaryFields;
-            }
-            else if (primaryFields == null)
-            {
-                result = secondaryFields;
+                // If the pipeline uses a TemplatingLogger (default), we also use our own.
+                Logger = new TemplatingLoggerAdapter(TemplatingLogger.GetLogger(this.GetType()));
             }
             else
             {
-                result = primaryFields;
-                foreach (KeyValuePair<string, object> field in secondaryFields)
-                {
-                    if (result.ContainsKey(field.Key))
-                    {
-                        duplicates.Add(field.Key);
-                    }
-                    else
-                    {
-                        result.Add(field.Key, field.Value);
-                    }
-                }
-            }
-
-            duplicateFieldNames = duplicates.ToArray();
-            return result;
-        }
-
-        private void AddPredefinedRegions(IDictionary<string, RegionModelData> regionModels, PageTemplate pageTemplate)
-        {
-            IEnumerable<XmlElement> regionsMetadata = pageTemplate.Metadata.GetEmbeddedFieldValues("regions");
-            if (regionsMetadata == null)
-            {
-                Logger.Debug($"No predefined Regions found in {pageTemplate.FormatIdentifier()}");
-                return;
-            }
-
-            foreach (XmlElement regionMetadata in regionsMetadata)
-            {
-                string regionName = regionMetadata.GetTextFieldValue("name");
-                string qualifiedRegionViewName = regionMetadata.GetTextFieldValue("view");
-                string moduleName;
-                string regionViewName = StripModuleName(qualifiedRegionViewName, out moduleName);
-
-                if (string.IsNullOrEmpty(regionName))
-                {
-                    regionName = regionViewName;
-                }
-
-                if (regionModels.ContainsKey(regionName))
-                {
-                    throw new DxaException($"Duplicate predefined Region name '{regionName}' encountered in {pageTemplate.FormatIdentifier()}.");
-                }
-
-                RegionModelData regionModel = new RegionModelData
-                {
-                    Name = regionName,
-                    MvcData = new MvcData
-                    {
-                        ViewName = regionViewName,
-                        AreaName = moduleName
-                    },
-                    Metadata = ExtractCustomMetadata(regionMetadata, excludeFields: _standardRegionMetadataFields),
-                    Entities = new List<EntityModelData>()
-                };
-
-                regionModels.Add(regionName, regionModel);
+                // If the pipeline uses another logger (unit/integration tests), we use that one.
+                Logger = pipeline.Logger;
             }
         }
 
-        private ContentModelData ExtractCustomMetadata(XmlElement metadata, IEnumerable<string> excludeFields)
-        {
-            if (metadata == null)
-            {
-                return null;
-            }
+        protected static bool IsEclItem(Component component) =>
+            (component.BinaryContent != null) && (component.BinaryContent.MultimediaType.MimeType == EclMimeType);
 
-            XmlElement customMetadata = (XmlElement) metadata.CloneNode(deep: true);
-            string excludeXPathPredicate = string.Join(" or ", excludeFields.Select(name => $"local-name()='{name}'"));
-            XmlElement[] excludeElements = customMetadata.SelectElements($"*[{excludeXPathPredicate}]").ToArray();
-
-            if (customMetadata.SelectElements("*").Count() <= excludeElements.Length)
-            {
-                // No custom metadata found.
-                return null;
-            }
-
-            foreach (XmlElement excludeElement in excludeElements)
-            {
-                customMetadata.RemoveChild(excludeElement);
-            }
-
-            return BuildContentModel(customMetadata, expandLinkLevels: 0);
-        }
-
-        private void AddIncludePageRegions(IDictionary<string, RegionModelData> regionModels, PageTemplate pageTemplate)
-        {
-            IEnumerable<string> includes = pageTemplate.Metadata.GetTextFieldValues("includes"); // TODO: use external link field (?)
-            if (includes == null)
-            {
-                Logger.Debug($"No include Pages found in {pageTemplate.FormatIdentifier()}");
-                return;
-            }
-
-            foreach (string include in includes)
-            {
-                string includePageId;
-                if (include.StartsWith(LegacyIncludePrefix))
-                {
-                    // Legacy include: publish path. Try to convert to WebDAV URL.
-                    string relativeUrl = include.Substring(LegacyIncludePrefix.Length).Replace('-', ' ');
-                    Publication contextPub = (Publication) pageTemplate.ContextRepository;
-                    includePageId = $"/webdav/{contextPub.Title}/{contextPub.RootStructureGroup.Title}/_System/include/{relativeUrl}.tpg";
-                    Logger.Debug($"Converted legacy Page include '{include}' to WebDAV URL '{includePageId}'.");
-                }
-                else
-                {
-                    includePageId = include;
-                }
-
-                Page includePage = (Page) Session.GetObject(includePageId);
-
-                string moduleName;
-                string regionViewName = StripModuleName(includePage.Title, out moduleName);
-                string regionName = regionViewName;
-
-                if (regionModels.ContainsKey(regionName))
-                {
-                    // TODO: log this? Throw exception? Promote Region to Include Page Region?
-                    Logger.Debug("TODO: merge include Page Region '{regionName}'");
-                    continue;
-                }
-
-                RegionModelData includePageRegion = new RegionModelData
-                {
-                    Name = regionName,
-                    MvcData = new MvcData
-                    {
-                        ViewName = regionViewName,
-                        AreaName = moduleName
-                    },
-                    IncludePageUrl = includePage.PublishLocationUrl,
-                    Regions = ExpandIncludePage(includePage) // TODO TSI-24: We expand the include Page here for now (until we have a Model Service to do it).
-                };
-
-                if (Settings.GenerateXpmMetadata)
-                {
-                    includePageRegion.XpmMetadata = new Dictionary<string, object>
-                    {
-                        {"IncludedFromPageID", GetTcmIdentifier(includePage)},
-                        {"IncludedFromPageTitle", includePage.Title},
-                        {"IncludedFromPageFileName", includePage.FileName}
-                    };
-                }
-                regionModels.Add(regionName, includePageRegion);
-            }
-        }
-
-        private List<RegionModelData> ExpandIncludePage(Page includePage)
-        {
-            Logger.Debug($"Expanding Include Page '{includePage.Title}' for now (until we have a Model Service).");
-
-            PageModelData includePageModel = BuildPageModel(includePage);
-            return includePageModel.Regions;
-        }
-
-        private void AddComponentPresentationRegions(IDictionary<string, RegionModelData> regionModels, Page page)
-        {
-            foreach (ComponentPresentation cp in page.ComponentPresentations)
-            {
-                ComponentTemplate ct = cp.ComponentTemplate;
-
-                // Create a Child Rendered Item for the CP in order to make Component linking work.
-                RenderedItem childRenderedItem = new RenderedItem(new ResolvedItem(cp.Component, ct), RenderedItem.RenderInstruction);
-                RenderedItem.AddRenderedItem(childRenderedItem);
-
-                // TODO TSI-24: For DCPs we should output only a minimal Entity Model containing the Component and Template ID, so it can be retrieved dynamically.
-                //EntityModelData entityModel = cp.ComponentTemplate.IsRepositoryPublishable ?
-                //    new EntityModelData { Id = GetDxaIdentifier(cp.Component, cp.ComponentTemplate) } :
-                //    BuildEntityModel(cp.Component, cp.ComponentTemplate);
-                if (ct.IsRepositoryPublishable)
-                {
-                    Logger.Debug($"Expanding DCP ({cp.Component}, {ct}) for now (until we have a Model Service).");
-                }
-                EntityModelData entityModel = BuildEntityModel(cp);
-
-                string regionName;
-                MvcData regionMvcData = GetRegionMvcData(cp.ComponentTemplate, out regionName);
-
-                RegionModelData regionModel;
-                if (regionModels.TryGetValue(regionName, out regionModel))
-                {
-                    if (!regionMvcData.Equals(regionModel.MvcData))
-                    {
-                        throw new DxaException($"Conflicting Region MVC data detected: [{regionMvcData}] versus [{regionModel.MvcData}]");
-                    }
-                }
-                else
-                {
-                    regionModel = new RegionModelData
-                    {
-                        Name = regionName,
-                        MvcData = regionMvcData,
-                        Entities = new List<EntityModelData>()
-                    };
-                    regionModels.Add(regionName, regionModel);
-                }
-                regionModel.Entities.Add(entityModel);
-            }
-        }
-
-        private Dictionary<string, string> BuildPageModelMeta(Page page, out string title)
-        {
-            // TODO: This logic reflects the DXA 1.x logic in DefaultModelBuilder, but should be revised.
-            Dictionary<string, string> result = new Dictionary<string, string>();
-            if (page.Metadata != null)
-            {
-                ExtractKeyValuePairs(page.Metadata, result);
-            }
-
-            string description;
-            string image;
-            result.TryGetValue("description", out description);
-            result.TryGetValue("title", out title);
-            result.TryGetValue("image", out image);
-
-            if (title == null || description == null)
-            {
-                // Try to get title/description/image from Component in Main Region.
-                foreach (ComponentPresentation cp in page.ComponentPresentations)
-                {
-                    string regionName;
-                    GetRegionMvcData(cp.ComponentTemplate, out regionName);
-                    if (regionName != "Main")
-                    {
-                        continue;
-                    }
-
-                    Component component = cp.Component;
-                    XmlElement componentContent = component.Content;
-                    XmlElement componentMetadata = component.Metadata;
-                    string namespaceUri = componentContent?.NamespaceURI ?? componentMetadata?.NamespaceURI;
-                    XmlNamespaceManager xmlNsManager = new XmlNamespaceManager(new NameTable());
-                    if (namespaceUri != null)
-                    {
-                        xmlNsManager.AddNamespace("c", namespaceUri);
-                    }
-
-                    XmlElement titleElement = null;
-                    XmlElement descriptionElement = null;
-                    XmlElement imageElement = null;
-                    if (componentMetadata != null)
-                    {
-                        titleElement = componentMetadata.SelectSingleElement("c:standardMeta/c:name", xmlNsManager);
-                        descriptionElement = componentMetadata.SelectSingleElement("c:standardMeta/c:description", xmlNsManager);
-                    }
-                    if (componentContent != null)
-                    {
-                        if (titleElement == null)
-                        {
-                            titleElement = componentContent.SelectSingleElement("c:headline", xmlNsManager);
-                        }
-                        imageElement = componentContent.SelectSingleElement("c:image",xmlNsManager);
-                    }
-                    if (title == null)
-                    {
-                        title = titleElement?.InnerText;
-                    }
-                    if (description == null)
-                    {
-                        description = descriptionElement?.InnerText;
-                    }
-                    if (image == null)
-                    {
-                        image = imageElement?.GetAttribute("href", Constants.XlinkNamespace);
-                    }
-                    break;
-                }
-            }
-
-            if (title == null)
-            {
-                title = Regex.Replace(page.Title, @"^\d{3}\s", string.Empty);
-            }
-
-            result.Add("twitter:card", "summary");
-            result.Add("og:title", title);
-            result.Add("og:type", "article");
-
-            if (!string.IsNullOrEmpty(Settings.Locale))
-            {
-                result.Add("og:locale", Settings.Locale);
-            }
-            if (description != null)
-            {
-                result.Add("og:description", description);
-            }
-            if (image != null)
-            {
-                result.Add("og:image", image);
-            }
-            if (!result.ContainsKey("description"))
-            {
-                result.Add("description", description ?? title);
-            }
-
-            return result;
-        }
-
-        private void ExtractKeyValuePairs(XmlElement xmlElement, IDictionary<string, string> result)
-        {
-            string currentFieldName = null;
-            string currentFieldValue = string.Empty;
-            foreach (XmlElement childElement in xmlElement.SelectElements("*"))
-            {
-                bool isRichText = childElement.SelectSingleNode("xhtml:*", _xmlNamespaceManager) != null;
-                if (!isRichText && (childElement.SelectSingleNode("*") != null))
-                {
-                    // Embedded field: flatten
-                    ExtractKeyValuePairs(childElement, result);
-                }
-                else
-                {
-                    string fieldValue = GetFieldValueAsString(childElement);
-                    if (childElement.Name == currentFieldName)
-                    {
-                        // Multi-valued field: comma separate the values
-                        currentFieldValue += ", " + fieldValue;
-                    }
-                    else
-                    {
-                        // New field
-                        if (currentFieldName != null)
-                        {
-                            result.Add(currentFieldName, currentFieldValue);
-                        }
-                        currentFieldName = childElement.Name;
-                        currentFieldValue = fieldValue;
-                    }
-                }
-            }
-
-            if (!string.IsNullOrEmpty(currentFieldValue))
-            {
-                result.Add(currentFieldName, currentFieldValue);
-            }
-        }
-
-        /// <summary>
-        /// Builds an Entity Model for a given CM Component Presentation.
-        /// </summary>
-        /// <param name="cp">The CM Component Presentation.</param>
-        /// <returns>The Entity Model.</returns>
-        public EntityModelData BuildEntityModel(ComponentPresentation cp)
-        {
-            EntityModelData result = BuildEntityModel(cp.Component, cp.ComponentTemplate);
-
-            // Add extension data for Context Expressions (if applicable)
-            // TODO: this should be done in a separate (optional) Model Builder class.
-            string[] includeContextExpressions = ContextExpressionUtils.GetContextExpressions(cp.Conditions.Where(c => !c.Negate).Select(c => c.TargetGroup));
-            string[] excludeContextExpressions = ContextExpressionUtils.GetContextExpressions(cp.Conditions.Where(c => c.Negate).Select(c => c.TargetGroup));
-
-            if (includeContextExpressions.Any())
-            {
-                Logger.Debug("Adding Context Expression Conditions (Include): " + string.Join(", ", includeContextExpressions));
-                result.SetExtensionData("CX.Include", includeContextExpressions);
-            }
-
-            if (excludeContextExpressions.Any())
-            {
-                Logger.Debug("Adding Context Expression Conditions (Exclude): " + string.Join(", ", excludeContextExpressions));
-                result.SetExtensionData("CX.Exclude", excludeContextExpressions);
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Builds an Entity Model for a given CM Component/Template.
-        /// </summary>
-        /// <param name="component">The CM Component.</param>
-        /// <param name="ct">The Component Template (optional; can be <c>null</c>)</param>
-        /// <returns>The Entity Model.</returns>
-        public EntityModelData BuildEntityModel(Component component, ComponentTemplate ct = null)
-        {
-            Logger.Debug($"BuildEntityModel({component}, {ct})");
-
-            if (component == null)
-            {
-                return null;
-            }
-
-            EntityModelData result = BuildEntityModel(component, Settings.ExpandLinkDepth);
-
-            if (ct == null)
-            {
-                return result;
-            }
-
-            result.MvcData = GetEntityMvcData(ct);
-            result.HtmlClasses = GetHtmlClasses(ct);
-            result.XpmMetadata = GetXpmMetadata(component, ct);
-            if (ct.IsRepositoryPublishable)
-            {
-                result.Id += "-" + GetDxaIdentifier(ct);
-            }
-
-            return result;
-        }
-
-        private static string GetHtmlClasses(ComponentTemplate ct)
-        {
-            IEnumerable<string> htmlClasses = ct?.Metadata?.GetTextFieldValues("htmlClasses");
-            return (htmlClasses == null) ? null : string.Join(" ", htmlClasses);
-        }
-
-        private EntityModelData BuildEntityModel(Component component, int expandLinkLevels)
-        {
-            // We need Keyword XLinks for Keyword field expansion
-            component.Load(LoadFlags.KeywordXlinks);
-
-            EntityModelData result = new EntityModelData
-            {
-                Id = GetDxaIdentifier(component),
-                SchemaId = GetDxaIdentifier(component.Schema),
-                Content = BuildContentModel(component.Content, expandLinkLevels),
-                Metadata = BuildContentModel(component.Metadata, expandLinkLevels)
-            };
-
-            if (IsEclItem(component))
-            {
-                Logger.Debug($"Building Model for ECL Stub Component {component.FormatIdentifier()}");
-                using (EclModelBuilder eclModelBuilder = new EclModelBuilder(this))
-                {
-                    eclModelBuilder.BuildEclModel(result, component);
-                }
-            }
-            else
-            {
-                result.BinaryContent = BuildBinaryContentData(component);
-            }
-
-            return result;
-        }
-
-        private BinaryContentData BuildBinaryContentData(Component component)
-        {
-            BinaryContent binaryContent = component.BinaryContent;
-            if (binaryContent == null)
-            {
-                return null;
-            }
-
-            return new BinaryContentData
-            {
-                Url =  RenderedItem.AddBinary(component).Url,
-                FileName = binaryContent.Filename,
-                FileSize = binaryContent.Size,
-                MimeType = binaryContent.MultimediaType.MimeType
-            };
-        }
-
-        private KeywordModelData BuildKeywordModel(Keyword keyword, int expandLinkLevels)
-        {
-            // We need Keyword XLinks for Keyword field expansion
-            keyword.Load(LoadFlags.KeywordXlinks);
-
-            return new KeywordModelData
-            {
-                Id = GetDxaIdentifier(keyword),
-                Title = keyword.Title,
-                Description = keyword.Description,
-                Key = keyword.Key,
-                TaxonomyId = GetDxaIdentifier(keyword.OrganizationalItem),
-                SchemaId = GetDxaIdentifier(keyword.MetadataSchema),
-                Metadata = BuildContentModel(keyword.Metadata, expandLinkLevels)
-            };
-        }
-
-        private static string GetDxaIdentifier(IdentifiableObject tcmItem)
+        protected static string GetDxaIdentifier(IdentifiableObject tcmItem)
             => tcmItem?.Id.ItemId.ToString();
 
-        private static string GetTcmIdentifier(IdentifiableObject tcmItem)
+        protected static string GetTcmIdentifier(IdentifiableObject tcmItem)
             => tcmItem?.Id.GetVersionlessUri().ToString();
 
-        private static string StripModuleName(string qualifiedName, out string moduleName)
+        protected static string StripModuleName(string qualifiedName, out string moduleName)
         {
             if (string.IsNullOrEmpty(qualifiedName))
             {
@@ -625,116 +82,64 @@ namespace Sdl.Web.Tridion.Data
             return parts[1];
         }
 
-        private static MvcData GetEntityMvcData(ComponentTemplate ct)
+
+        protected EntityModelData BuildEntityModel(Component component, int expandLinkLevels)
         {
-            string qualifiedViewName = ct.Metadata.GetTextFieldValue("view");
-            string qualifiedControllerName = ct.Metadata.GetTextFieldValue("controller");
-            string controllerAction = ct.Metadata.GetTextFieldValue("action");
+            // We need Keyword XLinks for Keyword field expansion
+            component.Load(LoadFlags.KeywordXlinks);
 
-            string moduleName;
-            string controllerModuleName;
-
-            return new MvcData
+            EntityModelData result = new EntityModelData
             {
-                ViewName = StripModuleName(qualifiedViewName, out moduleName),
-                AreaName = moduleName,
-                ControllerName = StripModuleName(qualifiedControllerName, out controllerModuleName),
-                ControllerAreaName = controllerModuleName,
-                ActionName = controllerAction,
-                Parameters = GetMvcParameters(ct)
+                Id = GetDxaIdentifier(component),
+                SchemaId = GetDxaIdentifier(component.Schema),
+                Content = BuildContentModel(component.Content, expandLinkLevels),
+                Metadata = BuildContentModel(component.Metadata, expandLinkLevels)
             };
-        }
 
-        private static Dictionary<string, string> GetMvcParameters(ComponentTemplate ct)
-        {
-            // TODO: support Key/Value Pair Schema (multi-valued embedded field)
-            string routeValues = ct.Metadata.GetTextFieldValue("routeValues");
-            if (string.IsNullOrEmpty(routeValues))
+            // ECL Stub Components are skipped here; should be processed further on in the pipeline by EclModelBuilder.
+            if (!IsEclItem(component))
             {
-                return null;
-            }
-
-            Dictionary<string, string> result = new Dictionary<string, string>();
-            foreach (string[] keyValuePair in routeValues.Split(',').Select(routeValue => routeValue.Split(':')))
-            {
-                if (keyValuePair.Length != 2)
-                {
-                    throw new DxaException($"Invalid syntax for 'routeValues' field in {ct.FormatIdentifier()}: '{keyValuePair}'");
-                }
-                result.Add(keyValuePair[0].Trim(), keyValuePair[1].Trim());
+                result.BinaryContent = BuildBinaryContentData(component);
             }
 
             return result;
         }
 
-        private static MvcData GetRegionMvcData(ComponentTemplate ct, out string regionName)
+        private BinaryContentData BuildBinaryContentData(Component component)
         {
-            string qualifiedViewName = ct.Metadata.GetTextFieldValue("regionView");
-            regionName = ct.Metadata.GetTextFieldValue("regionName");
-
-            string moduleName;
-            string viewName = StripModuleName(qualifiedViewName, out moduleName) ?? "Main";
-
-            if (string.IsNullOrEmpty(regionName))
-            {
-                regionName = viewName;
-            }
-
-            return new MvcData
-            {
-                ViewName = viewName,
-                AreaName = moduleName
-            };
-        }
-
-        private static MvcData GetPageMvcData(PageTemplate pt)
-        {
-            string qualifiedViewName = pt.Metadata.GetTextFieldValue("view");
-
-            string moduleName;
-
-            return new MvcData
-            {
-                ViewName = StripModuleName(qualifiedViewName, out moduleName),
-                AreaName = moduleName
-            };
-        }
-
-        private Dictionary<string, object> GetXpmMetadata(Component component, ComponentTemplate ct)
-        {
-            if (!Settings.GenerateXpmMetadata)
+            BinaryContent binaryContent = component.BinaryContent;
+            if (binaryContent == null)
             {
                 return null;
             }
 
-            return new Dictionary<string, object>
+            return new BinaryContentData
             {
-                { "ComponentID", GetTcmIdentifier(component) },
-                { "ComponentModified", component.RevisionDate },
-                { "ComponentTemplateID", GetTcmIdentifier(ct) },
-                { "ComponentTemplateModified", ct.RevisionDate },
-                { "IsRepositoryPublished" , ct.IsRepositoryPublishable }
+                Url = Pipeline.RenderedItem.AddBinary(component).Url,
+                FileName = binaryContent.Filename,
+                FileSize = binaryContent.Size,
+                MimeType = binaryContent.MultimediaType.MimeType
             };
         }
 
-
-        private Dictionary<string, object> GetXpmMetadata(Page page)
+        protected KeywordModelData BuildKeywordModel(Keyword keyword, int expandLinkLevels)
         {
-            if (!Settings.GenerateXpmMetadata)
-            {
-                return null;
-            }
+            // We need Keyword XLinks for Keyword field expansion
+            keyword.Load(LoadFlags.KeywordXlinks);
 
-            return new Dictionary<string, object>
+            return new KeywordModelData
             {
-                { "PageID", GetTcmIdentifier(page) },
-                { "PageModified", page.RevisionDate },
-                { "PageTemplateID", GetTcmIdentifier(page.PageTemplate) },
-                { "PageTemplateModified", page.PageTemplate.RevisionDate }
+                Id = GetDxaIdentifier(keyword),
+                Title = keyword.Title,
+                Description = keyword.Description,
+                Key = keyword.Key,
+                TaxonomyId = GetDxaIdentifier(keyword.OrganizationalItem),
+                SchemaId = GetDxaIdentifier(keyword.MetadataSchema),
+                Metadata = BuildContentModel(keyword.Metadata, expandLinkLevels)
             };
         }
 
-        internal ContentModelData BuildContentModel(XmlElement xmlElement, int expandLinkLevels)
+        protected ContentModelData BuildContentModel(XmlElement xmlElement, int expandLinkLevels)
         {
             if (xmlElement == null)
             {
@@ -752,7 +157,7 @@ namespace Sdl.Web.Tridion.Data
                     // New field
                     if (currentFieldName != null)
                     {
-                        result.Add(currentFieldName,  GetTypedFieldValue(currentFieldValues));
+                        result.Add(currentFieldName, GetTypedFieldValue(currentFieldValues));
                     }
                     currentFieldName = childElement.Name;
                     currentFieldValues = new List<object>();
@@ -799,12 +204,12 @@ namespace Sdl.Web.Tridion.Data
                     return xlinkHref;
                 }
 
-                IdentifiableObject linkedItem = Session.GetObject(xmlElement);
+                IdentifiableObject linkedItem = Pipeline.Session.GetObject(xmlElement);
                 string path = xmlElement.GetPath();
                 Logger.Debug($"Encountered XLink '{path}' -> {linkedItem}");
                 if (expandLinkLevels == 0)
                 {
-                    Logger.Debug($"Not expanding link because configured ExpandLinkDepth of {Settings.ExpandLinkDepth} has been reached.");
+                    Logger.Debug($"Not expanding link because configured ExpandLinkDepth of {Pipeline.Settings.ExpandLinkDepth} has been reached.");
                     if (linkedItem is Component)
                     {
                         return new EntityModelData
@@ -841,13 +246,13 @@ namespace Sdl.Web.Tridion.Data
                 return xlinkHref;
             }
 
-            if (xmlElement.SelectSingleNode("xhtml:*", _xmlNamespaceManager) != null)
+            if (xmlElement.SelectSingleElement("xhtml:*") != null)
             {
                 // XHTML field
                 return BuildRichTextModel(xmlElement);
             }
 
-            if (xmlElement.SelectSingleNode("*") != null)
+            if (xmlElement.SelectSingleElement("*") != null)
             {
                 // Embedded field
                 return BuildContentModel(xmlElement, expandLinkLevels);
@@ -857,49 +262,13 @@ namespace Sdl.Web.Tridion.Data
             return xmlElement.InnerText;
         }
 
-
-        private string GetFieldValueAsString(XmlElement xmlElement)
-        {
-            string xlinkHref = xmlElement.GetAttribute("href", Constants.XlinkNamespace);
-            if (!string.IsNullOrEmpty(xlinkHref))
-            {
-                if (!TcmUri.IsValid(xlinkHref))
-                {
-                    // External link field
-                    return xlinkHref;
-                }
-
-                IdentifiableObject linkedItem = Session.GetObject(xmlElement);
-                Keyword keyword = linkedItem as Keyword;
-                if (keyword == null)
-                {
-                    // Component link field or some other linked item (except Keyword)
-                    return xlinkHref;
-                }
-
-                // Keyword link field
-                return string.IsNullOrEmpty(keyword.Description) ? keyword.Title : keyword.Description;
-            }
-
-            if (xmlElement.SelectSingleNode("xhtml:*", _xmlNamespaceManager) != null)
-            {
-                // XHTML field
-                RichTextData richText = BuildRichTextModel(xmlElement);
-                return string.Join("", richText.Fragments.Select(f => f.ToString()));
-            }
-
-            // Text, number or date field
-            // Multi-line text field may use CR+LF to separate lines, but JSON.NET expects LF only.
-            return xmlElement.InnerText.Replace("\r\n", "\n");
-        }
-
-        private RichTextData BuildRichTextModel(XmlElement xhtmlElement)
+        protected RichTextData BuildRichTextModel(XmlElement xhtmlElement)
         {
             XmlDocument xmlDoc = xhtmlElement.OwnerDocument;
             IList<EntityModelData> embeddedEntities = new List<EntityModelData>();
-            foreach (XmlElement xlinkElement in xhtmlElement.SelectElements(".//*[starts-with(@xlink:href, 'tcm:')]", _xmlNamespaceManager))
+            foreach (XmlElement xlinkElement in xhtmlElement.SelectElements(".//*[starts-with(@xlink:href, 'tcm:')]"))
             {
-                Component linkedComponent = Session.GetObject(xlinkElement) as Component;
+                Component linkedComponent = Pipeline.Session.GetObject(xlinkElement) as Component;
 
                 if ((xlinkElement.LocalName == "a") && (linkedComponent != null))
                 {
@@ -946,7 +315,7 @@ namespace Sdl.Web.Tridion.Data
                 else
                 {
                     // Hyperlink to MM Component: add the Binary and set the URL as href
-                    string binaryUrl = RenderedItem.AddBinary(linkedComponent).Url;
+                    string binaryUrl = Pipeline.RenderedItem.AddBinary(linkedComponent).Url;
                     xlinkElement.SetAttribute("href", binaryUrl);
                     xlinkElement.RemoveXlinkAttributes();
                 }
@@ -977,7 +346,83 @@ namespace Sdl.Web.Tridion.Data
 
             return new RichTextData { Fragments = richTextFragments };
         }
-        private static bool IsEclItem(Component component) =>
-            (component.BinaryContent != null) && (component.BinaryContent.MultimediaType.MimeType == EclMimeType);
+
+        protected ContentModelData ExtractCustomMetadata(XmlElement metadata, IEnumerable<string> excludeFields)
+        {
+            if (metadata == null)
+            {
+                return null;
+            }
+
+            XmlElement customMetadata = (XmlElement) metadata.CloneNode(deep: true);
+            string excludeXPathPredicate = string.Join(" or ", excludeFields.Select(name => $"local-name()='{name}'"));
+            XmlElement[] excludeElements = customMetadata.SelectElements($"*[{excludeXPathPredicate}]").ToArray();
+
+            if (customMetadata.SelectElements("*").Count() <= excludeElements.Length)
+            {
+                // No custom metadata found.
+                return null;
+            }
+
+            foreach (XmlElement excludeElement in excludeElements)
+            {
+                customMetadata.RemoveChild(excludeElement);
+            }
+
+            return BuildContentModel(customMetadata, expandLinkLevels: 0);
+        }
+
+        protected static ContentModelData MergeFields(ContentModelData primaryFields, ContentModelData secondaryFields, out string[] duplicateFieldNames)
+        {
+            List<string> duplicates = new List<string>();
+
+            ContentModelData result;
+            if (secondaryFields == null)
+            {
+                result = primaryFields;
+            }
+            else if (primaryFields == null)
+            {
+                result = secondaryFields;
+            }
+            else
+            {
+                result = primaryFields;
+                foreach (KeyValuePair<string, object> field in secondaryFields)
+                {
+                    if (result.ContainsKey(field.Key))
+                    {
+                        duplicates.Add(field.Key);
+                    }
+                    else
+                    {
+                        result.Add(field.Key, field.Value);
+                    }
+                }
+            }
+
+            duplicateFieldNames = duplicates.ToArray();
+            return result;
+        }
+
+        protected static MvcData GetRegionMvcData(ComponentTemplate ct, out string regionName)
+        {
+            string qualifiedViewName = ct.Metadata.GetTextFieldValue("regionView");
+            regionName = ct.Metadata.GetTextFieldValue("regionName");
+
+            string moduleName;
+            string viewName = StripModuleName(qualifiedViewName, out moduleName) ?? "Main";
+
+            if (string.IsNullOrEmpty(regionName))
+            {
+                regionName = viewName;
+            }
+
+            return new MvcData
+            {
+                ViewName = viewName,
+                AreaName = moduleName
+            };
+        }
     }
 }
