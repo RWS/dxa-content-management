@@ -68,12 +68,13 @@ namespace Sdl.Web.Tridion.Data
                 Logger.Debug($"Some custom metadata fields from {pt.FormatIdentifier()} are overridden by Page metadata: {formattedDuplicateFieldNames}");
             }
 
+            string sequencePrefix;
             pageModelData = new PageModelData
             {
                 Id = GetDxaIdentifier(page),
                 SchemaId = GetDxaIdentifier(page.MetadataSchema),
-                Meta = null, // Default Model builder does not set PageModel.Meta; see DefaultPageMetaBuilder.
-                Title = page.Title, // See DefaultPageMetaBuilder
+                Meta = null, // Default Model builder does not set PageModel.Meta; see DefaultPageMetaModelBuilder.
+                Title = StripSequencePrefix(page.Title, out sequencePrefix) , // See DefaultPageMetaModelBuilder
                 Regions = regionModels.Values.ToList(),
                 Metadata = pageModelMetadata,
                 MvcData = GetPageMvcData(pt),

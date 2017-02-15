@@ -108,7 +108,8 @@ namespace Sdl.Web.Tridion.Data
 
             if (title == null)
             {
-                title = Regex.Replace(page.Title, @"^\d{3}\s", string.Empty);
+                string sequencePrefix;
+                title =  StripSequencePrefix(page.Title, out sequencePrefix);
             }
 
             result.Add("twitter:card", "summary");

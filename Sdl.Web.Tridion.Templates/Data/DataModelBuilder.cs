@@ -20,6 +20,7 @@ namespace Sdl.Web.Tridion.Data
         private const string EclMimeType = "application/externalcontentlibrary";
 
         private static readonly Regex _embeddedEntityRegex = new Regex(@"<\?EmbeddedEntity\s\?>", RegexOptions.Compiled);
+        private static readonly Regex _cmTitleRegex = new Regex(@"(?<sequence>\d\d\d)?\s*(?<title>.*)", RegexOptions.Compiled);
 
         /// <summary>
         /// Gets the context <see cref="DataModelBuilderPipeline"/>.
@@ -82,6 +83,18 @@ namespace Sdl.Web.Tridion.Data
             return parts[1];
         }
 
+        /// <summary>
+        /// Strips off the "sequence prefix" (3 digits used for ordering purposes) from the title of a CM Item.
+        /// </summary>
+        /// <param name="title">The title which may contain a sequence prefix.</param>
+        /// <param name="sequencePrefix">The sequence prefix (if any).</param>
+        /// <returns>The title without sequence prefix.</returns>
+        protected static string StripSequencePrefix(string title, out string sequencePrefix)
+        {
+            Match titleMatch = _cmTitleRegex.Match(title);
+            sequencePrefix = titleMatch.Groups["sequence"].Value;
+            return titleMatch.Groups["title"].Value;
+        }
 
         protected EntityModelData BuildEntityModel(Component component, int expandLinkLevels)
         {

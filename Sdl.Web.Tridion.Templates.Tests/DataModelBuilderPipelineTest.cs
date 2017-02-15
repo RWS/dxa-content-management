@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sdl.Web.DataModel;
@@ -41,14 +42,19 @@ namespace Sdl.Web.Tridion.Templates.Tests
             return new RenderedItem(new ResolvedItem(item, template), testRenderInstruction);
         }
 
-        private PageModelData CreatePageModel(Page page, out RenderedItem renderedItem)
+        private PageModelData CreatePageModel(Page page, out RenderedItem renderedItem, IEnumerable<string> modelBuilderTypeNames = null)
         {
             renderedItem = CreateTestRenderedItem(page, page.PageTemplate);
+
+            if (modelBuilderTypeNames == null)
+            {
+                modelBuilderTypeNames = _defaultModelBuilderTypeNames;
+            }
 
             DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
                 renderedItem,
                 _defaultModelBuilderSettings,
-                _defaultModelBuilderTypeNames,
+                modelBuilderTypeNames,
                 new ConsoleLogger()
                 );
 
@@ -60,14 +66,19 @@ namespace Sdl.Web.Tridion.Templates.Tests
             return result;
         }
 
-        private EntityModelData CreateEntityModel(Component component, ComponentTemplate ct, out RenderedItem renderedItem)
+        private EntityModelData CreateEntityModel(Component component, ComponentTemplate ct, out RenderedItem renderedItem, IEnumerable<string> modelBuilderTypeNames = null)
         {
             renderedItem = CreateTestRenderedItem(component, ct);
+
+            if (modelBuilderTypeNames == null)
+            {
+                modelBuilderTypeNames = _defaultModelBuilderTypeNames;
+            }
 
             DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
                 renderedItem,
                 _defaultModelBuilderSettings,
-                _defaultModelBuilderTypeNames,
+                modelBuilderTypeNames,
                 new ConsoleLogger()
                 );
 
@@ -221,6 +232,26 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.AreEqual(6, entitiesWithCxInclude.Length, "entitiesWithCxInclude.Length");
             Assert.AreEqual(4, entitiesWithCxExclude.Length, "entitiesWithCxExclude.Length");
         }
+
+        [TestMethod]
+        public void CreatePageModel_DefaultModelBuilderOnly_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.ArticlePageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModelWithoutMeta = CreatePageModel(testPage, out testRenderedItem, new [] { typeof(DefaultModelBuilder).Name });
+            PageModelData pageModelWithMeta = CreatePageModel(testPage, out testRenderedItem);
+
+            Assert.AreEqual("Test Article Page", pageModelWithoutMeta.Title, "pageModelWithoutMeta.Title");
+            Assert.IsNull(pageModelWithoutMeta.Meta, "pageModelWithoutMeta.Meta");
+
+            Assert.AreEqual("Test Article used for Automated Testing (Sdl.Web.Tridion.Tests)", pageModelWithMeta.Title, "pageModelWithMeta.Title");
+            Assert.IsNotNull(pageModelWithMeta.Meta, "pageModelWithMeta.Meta");
+            string ogTitle;
+            Assert.IsTrue(pageModelWithMeta.Meta.TryGetValue("og:title", out ogTitle));
+            Assert.AreEqual(pageModelWithMeta.Title, ogTitle, "ogTite");
+        }
+
 
         [TestMethod]
         public void CreatePageModel_Tsi811_Success()
