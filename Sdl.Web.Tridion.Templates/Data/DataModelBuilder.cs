@@ -96,46 +96,7 @@ namespace Sdl.Web.Tridion.Data
             return titleMatch.Groups["title"].Value;
         }
 
-        protected EntityModelData BuildEntityModel(Component component, int expandLinkLevels)
-        {
-            // We need Keyword XLinks for Keyword field expansion
-            component.Load(LoadFlags.KeywordXlinks);
-
-            EntityModelData result = new EntityModelData
-            {
-                Id = GetDxaIdentifier(component),
-                SchemaId = GetDxaIdentifier(component.Schema),
-                Content = BuildContentModel(component.Content, expandLinkLevels),
-                Metadata = BuildContentModel(component.Metadata, expandLinkLevels)
-            };
-
-            // ECL Stub Components are skipped here; should be processed further on in the pipeline by EclModelBuilder.
-            if (!IsEclItem(component))
-            {
-                result.BinaryContent = BuildBinaryContentData(component);
-            }
-
-            return result;
-        }
-
-        private BinaryContentData BuildBinaryContentData(Component component)
-        {
-            BinaryContent binaryContent = component.BinaryContent;
-            if (binaryContent == null)
-            {
-                return null;
-            }
-
-            return new BinaryContentData
-            {
-                Url = Pipeline.RenderedItem.AddBinary(component).Url,
-                FileName = binaryContent.Filename,
-                FileSize = binaryContent.Size,
-                MimeType = binaryContent.MultimediaType.MimeType
-            };
-        }
-
-        protected KeywordModelData BuildKeywordModel(Keyword keyword, int expandLinkLevels)
+        protected KeywordModelData BuildKeywordModel(Keyword keyword, int expandLinkDepth)
         {
             // We need Keyword XLinks for Keyword field expansion
             keyword.Load(LoadFlags.KeywordXlinks);
@@ -148,11 +109,11 @@ namespace Sdl.Web.Tridion.Data
                 Key = keyword.Key,
                 TaxonomyId = GetDxaIdentifier(keyword.OrganizationalItem),
                 SchemaId = GetDxaIdentifier(keyword.MetadataSchema),
-                Metadata = BuildContentModel(keyword.Metadata, expandLinkLevels)
+                Metadata = BuildContentModel(keyword.Metadata, expandLinkDepth)
             };
         }
 
-        protected ContentModelData BuildContentModel(XmlElement xmlElement, int expandLinkLevels)
+        protected ContentModelData BuildContentModel(XmlElement xmlElement, int expandLinkDepth)
         {
             if (xmlElement == null)
             {
@@ -175,7 +136,7 @@ namespace Sdl.Web.Tridion.Data
                     currentFieldName = childElement.Name;
                     currentFieldValues = new List<object>();
                 }
-                currentFieldValues.Add(GetFieldValue(childElement, expandLinkLevels));
+                currentFieldValues.Add(GetFieldValue(childElement, expandLinkDepth));
             }
 
             if (currentFieldName != null)
@@ -206,7 +167,7 @@ namespace Sdl.Web.Tridion.Data
         }
 
 
-        private object GetFieldValue(XmlElement xmlElement, int expandLinkLevels)
+        private object GetFieldValue(XmlElement xmlElement, int expandLinkDepth)
         {
             string xlinkHref = xmlElement.GetAttribute("href", Constants.XlinkNamespace);
             if (!string.IsNullOrEmpty(xlinkHref))
@@ -220,7 +181,7 @@ namespace Sdl.Web.Tridion.Data
                 IdentifiableObject linkedItem = Pipeline.Session.GetObject(xmlElement);
                 string path = xmlElement.GetPath();
                 Logger.Debug($"Encountered XLink '{path}' -> {linkedItem}");
-                if (expandLinkLevels == 0)
+                if (expandLinkDepth == 0)
                 {
                     Logger.Debug($"Not expanding link because configured ExpandLinkDepth of {Pipeline.Settings.ExpandLinkDepth} has been reached.");
                     if (linkedItem is Component)
@@ -244,13 +205,13 @@ namespace Sdl.Web.Tridion.Data
                 {
                     if (linkedItem is Component)
                     {
-                        Logger.Debug($"Expanding Component link. expandLinkLevels: {expandLinkLevels}");
-                        return BuildEntityModel((Component) linkedItem, expandLinkLevels - 1);
+                        Logger.Debug($"Expanding Component link. expandLinkDepth: {expandLinkDepth}");
+                        return Pipeline.CreateEntityModel((Component) linkedItem, null, expandLinkDepth - 1);
                     }
                     if (linkedItem is Keyword)
                     {
-                        Logger.Debug($"Expanding Keyword link. expandLinkLevels: {expandLinkLevels}");
-                        return BuildKeywordModel((Keyword) linkedItem, expandLinkLevels - 1);
+                        Logger.Debug($"Expanding Keyword link. expandLinkDepth: {expandLinkDepth}");
+                        return BuildKeywordModel((Keyword) linkedItem, expandLinkDepth - 1);
                     }
                 }
 
@@ -268,7 +229,7 @@ namespace Sdl.Web.Tridion.Data
             if (xmlElement.SelectSingleElement("*") != null)
             {
                 // Embedded field
-                return BuildContentModel(xmlElement, expandLinkLevels);
+                return BuildContentModel(xmlElement, expandLinkDepth);
             }
 
             // Text, number or date field
@@ -301,7 +262,7 @@ namespace Sdl.Web.Tridion.Data
                 if (xlinkElement.LocalName == "img")
                 {
                     // img element pointing to MM Component is expanded to an embedded Entity Model
-                    EntityModelData embeddedEntity = BuildEntityModel(linkedComponent, expandLinkLevels: 0);
+                    EntityModelData embeddedEntity = Pipeline.CreateEntityModel(linkedComponent, ct: null, expandLinkDepth: 0);
                     string htmlClasses = xlinkElement.GetAttribute("class");
                     if (!string.IsNullOrEmpty(htmlClasses))
                     {
@@ -382,7 +343,7 @@ namespace Sdl.Web.Tridion.Data
                 customMetadata.RemoveChild(excludeElement);
             }
 
-            return BuildContentModel(customMetadata, expandLinkLevels: 0);
+            return BuildContentModel(customMetadata, expandLinkDepth: 0);
         }
 
         protected static ContentModelData MergeFields(ContentModelData primaryFields, ContentModelData secondaryFields, out string[] duplicateFieldNames)

@@ -97,9 +97,9 @@ namespace Sdl.Web.Tridion.Data
         }
 
         /// <summary>
-        /// Creates an Entity Data Model from a given CM Component Presentation object.
+        /// Creates an Entity Data Model from a given CM Component Presentation on a Page.
         /// </summary>
-        /// <param name="cp">The CM Component Presentation.</param>
+        /// <param name="cp">The CM Component Presentation (obtained from a Page).</param>
         public EntityModelData CreateEntityModel(ComponentPresentation cp)
         {
             EntityModelData entityModelData = null;
@@ -115,12 +115,21 @@ namespace Sdl.Web.Tridion.Data
         /// </summary>
         /// <param name="component">The CM Component.</param>
         /// <param name="ct">The CM Component Template. Can be <c>null</c>.</param>
-        public EntityModelData CreateEntityModel(Component component, ComponentTemplate ct)
+        /// <param name="expandLinkDepth">The level of Component/Keyword links to expand. If not specified or <c>null</c>, <see cref="DataModelBuilderSettings.ExpandLinkDepth"/> is used.</param>
+        /// <remarks>
+        /// This method is called for Component Presentations on a Page, standalone DCPs and linked Components which are expanded.
+        /// </remarks>
+        public EntityModelData CreateEntityModel(Component component, ComponentTemplate ct, int? expandLinkDepth = null)
         {
+            if (!expandLinkDepth.HasValue)
+            {
+                expandLinkDepth = Settings.ExpandLinkDepth;
+            }
+
             EntityModelData entityModelData = null;
             foreach (IEntityModelDataBuilder entityModelBuilder in _entityModelBuilders)
             {
-                entityModelBuilder.BuildEntityModel(ref entityModelData, component, ct);
+                entityModelBuilder.BuildEntityModel(ref entityModelData, component, ct, expandLinkDepth.Value);
             }
             return entityModelData;
         }

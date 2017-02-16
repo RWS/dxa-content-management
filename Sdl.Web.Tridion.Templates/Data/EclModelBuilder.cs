@@ -19,10 +19,10 @@ namespace Sdl.Web.Tridion.Data
         }
 
         /// <summary>
-        /// Builds an Entity Data Model from a given CM Component Presentation object.
+        /// Builds an Entity Data Model from a given CM Component Presentation on a Page.
         /// </summary>
         /// <param name="entityModelData">The Entity Data Model to build. Is <c>null</c> for the first Model Builder in the pipeline.</param>
-        /// <param name="cp">The CM Component Presentation.</param>
+        /// <param name="cp">The CM Component Presentation (obtained from a Page).</param>
         public void BuildEntityModel(ref EntityModelData entityModelData, ComponentPresentation cp)
         {
             // Nothing to do here
@@ -34,7 +34,13 @@ namespace Sdl.Web.Tridion.Data
         /// <param name="entityModelData">The Entity Data Model to build. Is <c>null</c> for the first Model Builder in the pipeline.</param>
         /// <param name="component">The CM Component.</param>
         /// <param name="ct">The CM Component Template. Can be <c>null</c>.</param>
-        public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct)
+        /// <param name="expandLinkDepth">The level of Component/Keyword links to expand.</param>
+        /// <remarks>
+        /// This method is called for Component Presentations on a Page, standalone DCPs and linked Components which are expanded.
+        /// The <paramref name="expandLinkDepth"/> parameter starts at <see cref="DataModelBuilderSettings.ExpandLinkDepth"/>, 
+        /// but is decremented for expanded Component links (recursively).
+        /// </remarks>
+        public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct, int expandLinkDepth)
         {
             if (!IsEclItem(component))
             {
@@ -45,7 +51,7 @@ namespace Sdl.Web.Tridion.Data
             using (ExternalContentLibrary externalContentLibrary = new ExternalContentLibrary(Pipeline))
             {
                 XmlElement externalMetadata = externalContentLibrary.BuildEntityModel(entityModelData, component);
-                entityModelData.ExternalContent.Metadata = BuildContentModel(externalMetadata, expandLinkLevels:0);
+                entityModelData.ExternalContent.Metadata = BuildContentModel(externalMetadata, expandLinkDepth:0);
             }
         }
     }

@@ -365,6 +365,37 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
+        public void CreatePageModel_Tsi2306_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi2306PageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData article = mainRegion.Entities.LastOrDefault(e => e.MvcData.ViewName == "Article");
+            Assert.IsNotNull(article, "article");
+
+            ContentModelData[] articleBody = (ContentModelData[]) article.Content["articleBody"];
+            RichTextData content = (RichTextData) articleBody[0]["content"];
+            EntityModelData embeddedMediaManagerItem = content.Fragments.OfType<EntityModelData>().FirstOrDefault();
+            Assert.IsNotNull(embeddedMediaManagerItem, "embeddedMediaManagerItem");
+
+            OutputJson(embeddedMediaManagerItem);
+
+            BinaryContentData binaryContent = embeddedMediaManagerItem.BinaryContent;
+            ExternalContentData externalContent = embeddedMediaManagerItem.ExternalContent;
+            Assert.IsNotNull(binaryContent, "binaryContent");
+            Assert.IsNotNull(externalContent, "externalContent");
+            Assert.AreEqual("https://mmecl.dist.sdlmedia.com/distributions/?o=3e5f81f2-c7b3-47f7-8ede-b84b447195b9", binaryContent.Url, "binaryContent.Url");
+            Assert.AreEqual("1065-mm-204-dist-file.ecl", binaryContent.FileName, "binaryContent.FileName");
+            Assert.AreEqual("application/externalcontentlibrary", binaryContent.MimeType, "binaryContent.MimeType");
+            Assert.AreEqual("ecl:1065-mm-204-dist-file", externalContent.Id, "ecl:1065-mm-204-dist-file");
+            Assert.AreEqual("html5dist", externalContent.DisplayTypeId, "externalContent.DisplayTypeId");
+            Assert.IsNotNull(externalContent.Metadata, "externalContent.Metadata");
+        }
+
+        [TestMethod]
         public void CreatePageModel_Tsi1308_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1308PageWebDavUrl);

@@ -83,10 +83,10 @@ namespace Sdl.Web.Tridion.Data
         }
 
         /// <summary>
-        /// Builds an Entity Data Model from a given CM Component Presentation object.
+        /// Builds an Entity Data Model from a given CM Component Presentation on a Page.
         /// </summary>
         /// <param name="entityModelData">The Entity Data Model to build. Is <c>null</c> for the first Model Builder in the pipeline.</param>
-        /// <param name="cp">The CM Component Presentation.</param>
+        /// <param name="cp">The CM Component Presentation (obtained from a Page).</param>
         /// <remarks>
         /// This Model Builder is designed to be the first in the pipeline and hence ignores the <paramref name="entityModelData"/> input value.
         /// </remarks>
@@ -99,12 +99,15 @@ namespace Sdl.Web.Tridion.Data
         /// <param name="entityModelData">The Entity Data Model to build. Is <c>null</c> for the first Model Builder in the pipeline.</param>
         /// <param name="component">The CM Component.</param>
         /// <param name="ct">The CM Component Template. Can be <c>null</c>.</param>
+        /// <param name="expandLinkDepth">The level of Component/Keyword links to expand.</param>
         /// <remarks>
-        /// This Model Builder is designed to be the first in the pipeline and hence ignores the <paramref name="entityModelData"/> input value.
+        /// This method is called for Component Presentations on a Page, standalone DCPs and linked Components which are expanded.
+        /// The <paramref name="expandLinkDepth"/> parameter starts at <see cref="DataModelBuilderSettings.ExpandLinkDepth"/>, 
+        /// but is decremented for expanded Component links (recursively).
         /// </remarks>
-        public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct)
+        public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct, int expandLinkDepth)
         {
-            Logger.Debug($"BuildEntityModel({component}, {ct})");
+            Logger.Debug($"BuildEntityModel({component}, {ct}, {expandLinkDepth})");
 
             if (component == null)
             {
@@ -112,7 +115,22 @@ namespace Sdl.Web.Tridion.Data
                 return;
             }
 
-            entityModelData = BuildEntityModel(component, Pipeline.Settings.ExpandLinkDepth);
+            // We need Keyword XLinks for Keyword field expansion
+            component.Load(LoadFlags.KeywordXlinks);
+
+            entityModelData = new EntityModelData
+            {
+                Id = GetDxaIdentifier(component),
+                SchemaId = GetDxaIdentifier(component.Schema),
+                Content = BuildContentModel(component.Content, expandLinkDepth),
+                Metadata = BuildContentModel(component.Metadata, expandLinkDepth)
+            };
+
+            // ECL Stub Components are skipped here; should be processed further on in the pipeline by EclModelBuilder.
+            if (!IsEclItem(component))
+            {
+                entityModelData.BinaryContent = BuildBinaryContentData(component);
+            }
 
             if (ct == null)
             {
@@ -126,6 +144,23 @@ namespace Sdl.Web.Tridion.Data
             {
                 entityModelData.Id += "-" + GetDxaIdentifier(ct);
             }
+        }
+
+        private BinaryContentData BuildBinaryContentData(Component component)
+        {
+            BinaryContent binaryContent = component.BinaryContent;
+            if (binaryContent == null)
+            {
+                return null;
+            }
+
+            return new BinaryContentData
+            {
+                Url = Pipeline.RenderedItem.AddBinary(component).Url,
+                FileName = binaryContent.Filename,
+                FileSize = binaryContent.Size,
+                MimeType = binaryContent.MultimediaType.MimeType
+            };
         }
 
         private static string GetHtmlClasses(ComponentTemplate ct)
