@@ -67,7 +67,6 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="DD4T\ContextExpressionManager.cs" />
     <Compile Include="DD4T\DxaBuildManager.cs" />
     <Compile Include="DD4T\GenerateDynamicComponent.cs" />
     <Compile Include="DD4T\GenerateDynamicPage.cs" />

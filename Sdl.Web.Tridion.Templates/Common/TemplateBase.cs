@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using Newtonsoft.Json;
 using Sdl.Web.DataModel.Configuration;
+using Sdl.Web.Tridion.Data;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
@@ -234,6 +235,23 @@ namespace Sdl.Web.Tridion.Common
             }
 
             return (Publication) inputItem.ContextRepository;
+        }
+
+        /// <summary>
+        /// Gets the configured Model Builder Type Names
+        /// </summary>
+        /// <returns>The configured Model Builder Type Names</returns>
+        protected string[] GetModelBuilderTypeNames()
+        {
+            string modelBuilderTypeNamesParam;
+            Package.TryGetParameter("modelBuilderTypeNames", out modelBuilderTypeNamesParam);
+            if (string.IsNullOrEmpty(modelBuilderTypeNamesParam))
+            {
+                Logger.Warning("No Model Builder Type Names configured; using Default Model Builder only.");
+                modelBuilderTypeNamesParam = typeof(DefaultModelBuilder).Name;
+            }
+
+            return modelBuilderTypeNamesParam.Split(';');
         }
 
         /// <summary>

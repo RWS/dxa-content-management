@@ -9,10 +9,7 @@ namespace Sdl.Web.Tridion.Common
         {
             string paramValue = package.GetValue(name);
 
-            if (logger != null)
-            {
-                logger.Debug(string.Format("{0}: '{1}'", name, paramValue));
-            }
+            logger?.Debug($"{name}: '{paramValue}'");
 
             if (string.IsNullOrEmpty(paramValue))
             {

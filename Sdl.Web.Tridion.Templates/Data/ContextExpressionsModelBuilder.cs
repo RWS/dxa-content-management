@@ -1,4 +1,4 @@
-﻿using System.Xml;
+﻿using System.Linq;
 using Sdl.Web.DataModel;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
@@ -6,15 +6,15 @@ using Tridion.ContentManager.ContentManagement;
 namespace Sdl.Web.Tridion.Data
 {
     /// <summary>
-    /// Entity Model Builder implementation for ECL Stub Components.
+    /// Entity Model Builder implementation for Context Expressions.
     /// </summary>
-    public class EclModelBuilder : DataModelBuilder, IEntityModelDataBuilder
+    public class ContextExpressionsModelBuilder : DataModelBuilder, IEntityModelDataBuilder
     {
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="pipeline">The context <see cref="DataModelBuilderPipeline"/></param>
-        public EclModelBuilder(DataModelBuilderPipeline pipeline) : base(pipeline)
+        /// <param name="pipeline">The context Model Builder Pipeline.</param>
+        public ContextExpressionsModelBuilder(DataModelBuilderPipeline pipeline) : base(pipeline)
         {
         }
 
@@ -25,7 +25,21 @@ namespace Sdl.Web.Tridion.Data
         /// <param name="cp">The CM Component Presentation (obtained from a Page).</param>
         public void BuildEntityModel(ref EntityModelData entityModelData, ComponentPresentation cp)
         {
-            // Nothing to do here
+            // Add extension data for Context Expressions (if applicable)
+            string[] includeContextExpressions = ContextExpressionUtils.GetContextExpressions(cp.Conditions.Where(c => !c.Negate).Select(c => c.TargetGroup));
+            string[] excludeContextExpressions = ContextExpressionUtils.GetContextExpressions(cp.Conditions.Where(c => c.Negate).Select(c => c.TargetGroup));
+
+            if (includeContextExpressions.Any())
+            {
+                Logger.Debug("Adding Context Expression Conditions (Include): " + string.Join(", ", includeContextExpressions));
+                entityModelData.SetExtensionData("CX.Include", includeContextExpressions);
+            }
+
+            if (excludeContextExpressions.Any())
+            {
+                Logger.Debug("Adding Context Expression Conditions (Exclude): " + string.Join(", ", excludeContextExpressions));
+                entityModelData.SetExtensionData("CX.Exclude", excludeContextExpressions);
+            }
         }
 
         /// <summary>
@@ -42,17 +56,7 @@ namespace Sdl.Web.Tridion.Data
         /// </remarks>
         public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct, int expandLinkDepth)
         {
-            if (!IsEclItem(component))
-            {
-                return;
-            }
-
-            Logger.Debug($"Processing ECL Stub Component {component.FormatIdentifier()}");
-            using (ExternalContentLibrary externalContentLibrary = new ExternalContentLibrary(Pipeline))
-            {
-                XmlElement externalMetadata = externalContentLibrary.BuildEntityModel(entityModelData, component);
-                entityModelData.ExternalContent.Metadata = BuildContentModel(externalMetadata, expandLinkDepth:0);
-            }
+            // Nothing to do here
         }
     }
 }
