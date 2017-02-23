@@ -1,7 +1,7 @@
 ﻿namespace Sdl.Web.DataModel
 {
     /// <summary>
-    /// Represents the External Content of an (ECL Stub) Component.
+    /// Represents the data of the external content of an (ECL Stub) Component.
     /// </summary>
     /// <seealso cref="EntityModelData.ExternalContent"/>
     public class ExternalContentData
@@ -17,7 +17,7 @@
         public string DisplayTypeId { get; set; }
 
         /// <summary>
-        /// Gets or sets the template fragment provided by the ECL Provider.
+        /// Gets or sets the template fragment provided by the ECL Provider (if any).
         /// </summary>
         public string TemplateFragment { get; set; }
 

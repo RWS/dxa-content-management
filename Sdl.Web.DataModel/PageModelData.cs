@@ -2,6 +2,9 @@
 
 namespace Sdl.Web.DataModel
 {
+    /// <summary>
+    /// Represents the data for a Page Model.
+    /// </summary>
     public class PageModelData : ViewModelData
     {
         /// <summary>
@@ -10,7 +13,7 @@ namespace Sdl.Web.DataModel
         public string Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the Title of the Page which is typically rendered as HTML title tag.
+        /// Gets or sets the title of the Page which is typically rendered as HTML title tag.
         /// </summary>
         public string Title { get; set; }
 
@@ -20,7 +23,7 @@ namespace Sdl.Web.DataModel
         public Dictionary<string, string> Meta { get; set; }
 
         /// <summary>
-        /// Gets the Page Regions.
+        /// Gets or sets the Page Regions.
         /// </summary>
         public List<RegionModelData> Regions { get; set; }
     }

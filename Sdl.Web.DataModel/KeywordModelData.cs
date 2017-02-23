@@ -1,5 +1,8 @@
 ﻿namespace Sdl.Web.DataModel
 {
+    /// <summary>
+    /// Represents the data of a Keyword Model
+    /// </summary>
     public class KeywordModelData : ViewModelData
     {
         /// <summary>
@@ -23,7 +26,7 @@
         public string Key { get; set; }
 
         /// <summary>
-        /// Gets or sets the Taxonomy identifier
+        /// Gets or sets the Taxonomy/Category identifier
         /// </summary>
         public string TaxonomyId { get; set; }
     }
