@@ -1,5 +1,12 @@
 ﻿namespace Sdl.Web.DataModel
 {
+    /// <summary>
+    /// Represents the data of an Entity Model (Component Presentation or Component)
+    /// </summary>
+    /// <remarks>
+    /// Entity Models for Component Presentations have <see cref="EntityModelData.MvcData"/> representing the MVC data obtained from the Component Template.
+    /// Entity Models for (linked) Components do not have <see cref="EntityModelData.MvcData"/>.
+    /// </remarks>
     public class EntityModelData : ViewModelData
     {
         /// <summary>
@@ -11,8 +18,19 @@
         /// </remarks>
         public string Id { get; set; }
 
+        /// <summary>
+        /// Gets or sets the custom content.
+        /// </summary>
         public ContentModelData Content { get; set; }
+
+        /// <summary>
+        /// Gets or sets the binary content of a Multimedia Component.
+        /// </summary>
         public BinaryContentData BinaryContent { get; set; }
+
+        /// <summary>
+        /// Gets or sets the external content of an ECL Item.
+        /// </summary>
         public ExternalContentData ExternalContent { get; set; }
 
         /// <summary>

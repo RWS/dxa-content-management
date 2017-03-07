@@ -2,10 +2,13 @@
 
 namespace Sdl.Web.DataModel
 {
+    /// <summary>
+    /// Abstract base class for the data of View Models.
+    /// </summary>
     public abstract class ViewModelData
     {
         /// <summary>
-        /// Gets or sets MVC data used to determine which View to use.
+        /// Gets or sets MVC data used to determine which View (and Controller) to use.
         /// </summary>
         public MvcData MvcData { get; set; }
 
@@ -23,7 +26,7 @@ namespace Sdl.Web.DataModel
         /// Gets or sets extension data (additional properties which can be used by custom Model Builders, Controllers and/or Views)
         /// </summary>
         /// <value>
-        /// The value is <c>null</c> if no extension data has been set.
+        /// The value is <c>null</c> (i.e. not included in the serialized JSON) if no extension data has been set.
         /// </value>
         public Dictionary<string, object> ExtensionData { get; set; }
 
