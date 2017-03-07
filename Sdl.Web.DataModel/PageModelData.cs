@@ -18,6 +18,15 @@ namespace Sdl.Web.DataModel
         public string Title { get; set; }
 
         /// <summary>
+        /// Gets or sets the canonical URL path (unencoded) of the Page.
+        /// </summary>
+        /// <remarks>
+        /// The canonical URL path does not have a file extension, but does contain "index" for index Pages.
+        /// This is not set on CM-side, but in the DXA Model Service.
+        /// </remarks>
+        public string UrlPath { get; set; }
+
+        /// <summary>
         /// Gets or sets the Page metadata which is typically rendered as HTML meta tags (name/value pairs).
         /// </summary>
         public Dictionary<string, string> Meta { get; set; }
