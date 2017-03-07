@@ -123,14 +123,9 @@ namespace Sdl.Web.Tridion.Data
                 Id = GetDxaIdentifier(component),
                 SchemaId = GetDxaIdentifier(component.Schema),
                 Content = BuildContentModel(component.Content, expandLinkDepth),
-                Metadata = BuildContentModel(component.Metadata, expandLinkDepth)
+                Metadata = BuildContentModel(component.Metadata, expandLinkDepth),
+                BinaryContent = BuildBinaryContentData(component)
             };
-
-            // ECL Stub Components are skipped here; should be processed further on in the pipeline by EclModelBuilder.
-            if (!IsEclItem(component))
-            {
-                entityModelData.BinaryContent = BuildBinaryContentData(component);
-            }
 
             if (ct == null)
             {
@@ -151,6 +146,13 @@ namespace Sdl.Web.Tridion.Data
             BinaryContent binaryContent = component.BinaryContent;
             if (binaryContent == null)
             {
+                // Not a Multimedia Component
+                return null;
+            }
+
+            if (IsEclItem(component))
+            {
+                // ECL Stub Component should be processed further on in the pipeline by EclModelBuilder.
                 return null;
             }
 
