@@ -138,6 +138,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
             object altText;
             Assert.IsTrue(image.Metadata.TryGetValue("altText", out altText));
             Assert.AreEqual("calculator", altText, "altText");
+
+            RegionModelData[] includePageRegions = pageModel.Regions.Where(r => r.IncludePageUrl != null).ToArray();
+            Assert.AreEqual(3, includePageRegions.Length, "includePageRegions.Length");
+            foreach (RegionModelData includePageRegion in includePageRegions)
+            {
+                StringAssert.Contains(includePageRegion.IncludePageUrl, "system/include/", "includePageRegion.IncludePageUrl");
+            }
         }
 
         [TestMethod]
