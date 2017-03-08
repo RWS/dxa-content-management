@@ -11,6 +11,20 @@
     <xsd:element name="Parameters">
         <xsd:complexType>
             <xsd:sequence>
+                <xsd:element name="includeComponentTemplateData" minOccurs="0" maxOccurs="1">
+                  <xsd:annotation>
+                    <xsd:appinfo>
+                      <tcm:Size xmlns:tcm="http://www.tridion.com/ContentManager/5.0">1</tcm:Size>
+                      <tcm:listtype xmlns:tcm="http://www.tridion.com/ContentManager/5.0">select</tcm:listtype>
+                    </xsd:appinfo>
+                  </xsd:annotation>
+                  <xsd:simpleType>
+                    <xsd:restriction base="xsd:normalizedString">
+                      <xsd:enumeration value="true"></xsd:enumeration>
+                      <xsd:enumeration value="false"></xsd:enumeration>
+                    </xsd:restriction>
+                  </xsd:simpleType>
+                </xsd:element>
                 <xsd:element name="expandLinkDepth" minOccurs="0" maxOccurs="1" type="xsd:integer" />
                 <xsd:element name="modelBuilderTypeNames" minOccurs="0" maxOccurs="1" type="xsd:normalizedString" />
             </xsd:sequence>

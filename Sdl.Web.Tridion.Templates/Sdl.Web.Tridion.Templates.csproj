@@ -132,10 +132,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resources\GenerateDynamicComponentParameters.xsd">
+    <EmbeddedResource Include="Resources\GenerateEntityModelParameters.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\GenerateDynamicPageParameters.xsd">
+    <EmbeddedResource Include="Resources\GeneratePageModelParameters.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\PublishMappingsParameters.xsd">

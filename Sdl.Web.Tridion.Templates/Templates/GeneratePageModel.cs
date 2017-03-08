@@ -13,7 +13,7 @@ namespace Sdl.Web.Tridion.Templates
     /// Generates a DXA R2 Data Model based on the current Page
     /// </summary>
     [TcmTemplateTitle("Generate DXA R2 Page Model")]
-    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.GenerateDynamicPageParameters.xsd")]
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.GeneratePageModelParameters.xsd")]
     public class GeneratePageModel : TemplateBase
     {
         /// <summary>
