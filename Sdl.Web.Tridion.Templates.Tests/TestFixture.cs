@@ -6,6 +6,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
     {
         internal const string ExampleSiteWebDavUrl = "/webdav/400 Example Site";
         internal const string AutoTestParentWebDavUrl = "/webdav/401 Automated Test Parent";
+        internal const string AutoTestChildWebDavUrl = "/webdav/600 DXA R2 Data Model Test Child";
 
         internal const string ExampleSiteHomePageWebDavUrl = ExampleSiteWebDavUrl + "/Home/000 Home.tpg";
         internal const string AutoTestParentHomePageWebDavUrl = AutoTestParentWebDavUrl + "/Home/000 Home.tpg";
@@ -18,6 +19,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         internal const string ContextExpressionsPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Smoke/Context Expression Smoke Test.tpg";
         internal const string Tsi811PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-811 Test Page.tpg";
         internal const string Tsi1278PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/TSI-1278 Internationalized URLs.tpg";
+        internal const string Tsi1278ChildPageWebDavUrl = AutoTestChildWebDavUrl + "/Home/TSI-1278 Internationalized URLs.tpg";
         internal const string Tsi1308PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-1308 Test Page.tpg";
         internal const string Tsi1614PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/TSI-1614 Rich Text Image with HTML class.tpg";
         internal const string Tsi1758PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-1758 Test Page.tpg";

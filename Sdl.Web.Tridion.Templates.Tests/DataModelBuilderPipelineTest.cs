@@ -325,14 +325,17 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void CreatePageModel_Tsi1278_Success()
+        public void CreatePageModel_UrlPath_Success()
         {
-            Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1278PageWebDavUrl);
+            Page testPage1 = (Page) TestSession.GetObject(TestFixture.Tsi1278PageWebDavUrl);
+            Page testPage2 = (Page) TestSession.GetObject(TestFixture.Tsi1278ChildPageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+            PageModelData pageModel1 = CreatePageModel(testPage1, out testRenderedItem);
+            PageModelData pageModel2 = CreatePageModel(testPage2, out testRenderedItem);
 
-            Assert.AreEqual("/autotest-parent/tsi-1278_trådløst", pageModel.UrlPath, "pageModel.UrlPath");
+            Assert.AreEqual("/autotest-parent/tsi-1278_trådløst", pageModel1.UrlPath, "pageModel1.UrlPath");
+            Assert.AreEqual("tsi-1278_trådløst", pageModel2.UrlPath, "pageModel2.UrlPath");
         }
 
         [TestMethod]
