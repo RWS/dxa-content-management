@@ -43,7 +43,7 @@ namespace Sdl.Web.Tridion.Data
             if (pipeline.Logger is TemplatingLoggerAdapter)
             {
                 // If the pipeline uses a TemplatingLogger (default), we also use our own.
-                Logger = new TemplatingLoggerAdapter(TemplatingLogger.GetLogger(this.GetType()));
+                Logger = new TemplatingLoggerAdapter(TemplatingLogger.GetLogger(GetType()));
             }
             else
             {
@@ -179,45 +179,15 @@ namespace Sdl.Web.Tridion.Data
                 }
 
                 IdentifiableObject linkedItem = Pipeline.Session.GetObject(xmlElement);
-                string path = xmlElement.GetPath();
-                Logger.Debug($"Encountered XLink '{path}' -> {linkedItem}");
-                if (expandLinkDepth == 0)
-                {
-                    Logger.Debug($"Not expanding link because configured ExpandLinkDepth of {Pipeline.Settings.ExpandLinkDepth} has been reached.");
-                    if (linkedItem is Component)
-                    {
-                        return new EntityModelData
-                        {
-                            Id = GetDxaIdentifier(linkedItem)
-                        };
-                    }
-                    Keyword keyword = linkedItem as Keyword;
-                    if (keyword != null)
-                    {
-                        return new KeywordModelData
-                        {
-                            Id = GetDxaIdentifier(keyword),
-                            TaxonomyId = GetDxaIdentifier(keyword.OrganizationalItem)
-                        };
-                    }
-                }
-                else
-                {
-                    if (linkedItem is Component)
-                    {
-                        Logger.Debug($"Expanding Component link. expandLinkDepth: {expandLinkDepth}");
-                        return Pipeline.CreateEntityModel((Component) linkedItem, null, expandLinkDepth - 1);
-                    }
-                    if (linkedItem is Keyword)
-                    {
-                        Logger.Debug($"Expanding Keyword link. expandLinkDepth: {expandLinkDepth}");
-                        return BuildKeywordModel((Keyword) linkedItem, expandLinkDepth - 1);
-                    }
-                }
+                Logger.Debug($"Encountered XLink '{xmlElement.GetPath()}' -> {linkedItem}");
 
-                // Not a Component or Keyword link.
-                Logger.Debug($"XLink is not a Component or Keyword link.");
-                return xlinkHref;
+                ViewModelData embeddedViewModel = GetLinkFieldValue(linkedItem, expandLinkDepth);
+                if (embeddedViewModel == null)
+                {
+                    // XLink is not a Component or Keyword link; return the raw URI.
+                    return xlinkHref;
+                }
+                return embeddedViewModel;
             }
 
             if (xmlElement.SelectSingleElement("xhtml:*") != null)
@@ -234,6 +204,53 @@ namespace Sdl.Web.Tridion.Data
 
             // Text, number or date field
             return xmlElement.InnerText;
+        }
+
+        private ViewModelData GetLinkFieldValue(IdentifiableObject linkedItem, int expandLinkDepth)
+        {
+            Component linkedComponent = linkedItem as Component;
+            Keyword linkedKeyword = linkedItem as Keyword;
+            if ((linkedComponent == null) && (linkedKeyword == null))
+            {
+                Logger.Debug("XLink is not a Component or Keyword link.");
+                return null;
+            }
+
+            if (expandLinkDepth == 0)
+            {
+                Logger.Debug($"Not expanding link because configured ExpandLinkDepth of {Pipeline.Settings.ExpandLinkDepth} has been reached.");
+                if (linkedComponent != null)
+                {
+                    return new EntityModelData
+                    {
+                        Id = GetDxaIdentifier(linkedComponent)
+                    };
+                }
+                return new KeywordModelData
+                {
+                    Id = GetDxaIdentifier(linkedKeyword),
+                    TaxonomyId = GetDxaIdentifier(linkedKeyword.OrganizationalItem)
+                };
+            }
+
+            if (linkedComponent != null)
+            {
+                ComponentTemplate dataPresentationTemplate = Pipeline.DataPresentationTemplate;
+                if ((dataPresentationTemplate != null) && dataPresentationTemplate.RelatedSchemas.Contains(linkedComponent.Schema))
+                {
+                    Logger.Debug($"Not expanding Component link because a Data Presentation exists: {linkedComponent.Schema.FormatIdentifier()}");
+                    return new EntityModelData
+                    {
+                        Id = $"{GetDxaIdentifier(linkedComponent)}-{GetDxaIdentifier(Pipeline.DataPresentationTemplate)}"
+                    };
+                }
+
+                Logger.Debug($"Expanding Component link. expandLinkDepth: {expandLinkDepth}");
+                return Pipeline.CreateEntityModel(linkedComponent, null, expandLinkDepth - 1);
+            }
+
+            Logger.Debug($"Expanding Keyword link. expandLinkDepth: {expandLinkDepth}");
+            return BuildKeywordModel(linkedKeyword, expandLinkDepth - 1);
         }
 
         protected RichTextData BuildRichTextModel(XmlElement xhtmlElement)

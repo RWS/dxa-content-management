@@ -18,8 +18,7 @@ namespace Sdl.Web.Tridion.Data
     {
         private readonly IList<IPageModelDataBuilder> _pageModelBuilders = new List<IPageModelDataBuilder>();
         private readonly IList<IEntityModelDataBuilder> _entityModelBuilders = new List<IEntityModelDataBuilder>();
-        private IEnumerable<Schema> _dataPresentationSchemas;
-
+        private ComponentTemplate _dataPresentationTemplate;
 
         /// <summary>
         /// Gets the current CM Session.
@@ -42,36 +41,36 @@ namespace Sdl.Web.Tridion.Data
         public ILogger Logger { get; }
 
         /// <summary>
-        /// Gets the Schemas associated with the "Generate Data Presentation" CT.
+        /// Gets the Component Template used to render "Data Presentations".
         /// </summary>
-        public IEnumerable<Schema> DataPresentationSchemas
+        public ComponentTemplate DataPresentationTemplate
         {
             get
             {
-                if (_dataPresentationSchemas != null)
+                if (_dataPresentationTemplate != null)
                 {
-                    return _dataPresentationSchemas;
+                    return _dataPresentationTemplate;
                 }
 
                 ICache cache = Session.Cache;
                 if (cache == null)
                 {
-                    _dataPresentationSchemas = DetermineDataPresentationSchemas();
-                    return _dataPresentationSchemas;
+                    FindDataPresentationTemplate();
+                    return _dataPresentationTemplate;
                 }
 
                 const string cacheRegion = "DXA";
-                const string cacheKey = "DataPresentationSchemas";
-                _dataPresentationSchemas = (IEnumerable<Schema>) cache.Get(cacheRegion, cacheKey);
-                if (_dataPresentationSchemas != null)
+                const string cacheKey = "DataPresentationTemplate";
+                _dataPresentationTemplate = (ComponentTemplate) cache.Get(cacheRegion, cacheKey);
+                if (_dataPresentationTemplate != null)
                 {
-                    Logger.Debug("Obtained Data Presentation Schemas from cache.");
-                    return _dataPresentationSchemas;
+                    Logger.Debug("Obtained Data Presentation Template from cache.");
+                    return _dataPresentationTemplate;
                 }
 
-                _dataPresentationSchemas = DetermineDataPresentationSchemas();
-                cache.Add(cacheRegion, cacheKey, _dataPresentationSchemas);
-                return _dataPresentationSchemas;
+                FindDataPresentationTemplate();
+                cache.Add(cacheRegion, cacheKey, _dataPresentationTemplate);
+                return _dataPresentationTemplate;
             }
         }
 
@@ -171,9 +170,8 @@ namespace Sdl.Web.Tridion.Data
             return entityModelData;
         }
 
-        private IEnumerable<Schema> DetermineDataPresentationSchemas()
+        private void FindDataPresentationTemplate()
         {
-            // Find the Data Presentation CT.
             RepositoryLocalObject sourceItem = (RepositoryLocalObject) RenderedItem.ResolvedItem.Item;
             Publication contextPublication = (Publication) sourceItem.ContextRepository;
 
@@ -184,23 +182,17 @@ namespace Sdl.Web.Tridion.Data
             };
 
             // TODO: use marker App Data instead of the CTs Title.
-            const string dataPresentationCtTitle = "Generate Data Presentation";
-            ComponentTemplate dataPresentationCt = contextPublication.GetComponentTemplates(ctFilter).FirstOrDefault(ct => ct.Title == dataPresentationCtTitle);
-            if (dataPresentationCt == null)
+            const string dataPresentationTemplateTitle = "Generate Data Presentation";
+            _dataPresentationTemplate = contextPublication.GetComponentTemplates(ctFilter).FirstOrDefault(ct => ct.Title == dataPresentationTemplateTitle);
+
+            if (_dataPresentationTemplate == null)
             {
-                throw new DxaException($"Component Template '{dataPresentationCt}' not found.");
+                Logger.Warning($"Component Template '{dataPresentationTemplateTitle}' not found.");
             }
-
-            IList<Schema> dataPresentationSchemas = dataPresentationCt.RelatedSchemas;
-
-            Logger.Debug($"Found Data Presentation CT: {dataPresentationCt.FormatIdentifier()}");
-            Logger.Debug($"Found {dataPresentationSchemas.Count} associated Schemas:");
-            foreach (Schema schema in dataPresentationSchemas)
+            else
             {
-                Logger.Debug($"    {schema.FormatIdentifier()}");
+                Logger.Debug($"Found Data Presentation Template: {_dataPresentationTemplate.FormatIdentifier()}");
             }
-
-            return dataPresentationSchemas;
         }
     }
 }

@@ -92,7 +92,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
 
         [TestMethod]
-        public void DataPresentationSchemas_Success()
+        public void DataPresentationTemplate_Success()
         {
             Page dummyPage = (Page) TestSession.GetObject(TestFixture.AutoTestParentHomePageWebDavUrl);
 
@@ -105,9 +105,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 new ConsoleLogger()
                 );
 
-            Schema[] dataPresentationSchemas = testModelBuilderPipeline.DataPresentationSchemas.ToArray();
-            Assert.IsNotNull(dataPresentationSchemas, "dataPresentationSchemas");
-            Assert.AreEqual(1, dataPresentationSchemas.Length, "dataPresentationSchemas.Length");
+            ComponentTemplate dataPresentationTemplate = testModelBuilderPipeline.DataPresentationTemplate;
+            Assert.IsNotNull(dataPresentationTemplate, "dataPresentationTemplate");
         }
 
         [TestMethod]
@@ -198,8 +197,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(testEntity.Content, "testEntity.Content");
             EntityModelData linkedEntityModelData = (EntityModelData) testEntity.Content["compLink"];
             Assert.IsNotNull(linkedEntityModelData, "linkedEntityModelData");
-            Assert.AreEqual("9712", linkedEntityModelData.Id, "linkedEntityModelData.Id");
-            Assert.IsNotNull(linkedEntityModelData.Content, "linkedEntityModelData.Content"); // TODO: only if expanded
+            Assert.AreEqual("9712-10247", linkedEntityModelData.Id, "linkedEntityModelData.Id"); // Data Presentation
+            Assert.IsNull(linkedEntityModelData.Content, "linkedEntityModelData.Content"); // Not expanded
         }
 
         [TestMethod]
