@@ -27,7 +27,7 @@ namespace Sdl.Web.Tridion.Templates
             Initialize(engine, package);
 
             bool includeComponentTemplateData;
-            if (!package.TryGetParameter("includeComponentTemplateData", out includeComponentTemplateData))
+            if (!package.TryGetParameter("includeComponentTemplateData", out includeComponentTemplateData, Logger))
             {
                 includeComponentTemplateData = true; // Default
             }
