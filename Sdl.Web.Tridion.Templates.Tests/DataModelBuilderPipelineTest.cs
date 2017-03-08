@@ -92,6 +92,25 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
 
         [TestMethod]
+        public void DataPresentationSchemas_Success()
+        {
+            Page dummyPage = (Page) TestSession.GetObject(TestFixture.AutoTestParentHomePageWebDavUrl);
+
+            RenderedItem renderedItem = CreateTestRenderedItem(dummyPage, dummyPage.PageTemplate);
+
+            DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
+                renderedItem,
+                _defaultModelBuilderSettings,
+                _defaultModelBuilderTypeNames,
+                new ConsoleLogger()
+                );
+
+            Schema[] dataPresentationSchemas = testModelBuilderPipeline.DataPresentationSchemas.ToArray();
+            Assert.IsNotNull(dataPresentationSchemas, "dataPresentationSchemas");
+            Assert.AreEqual(1, dataPresentationSchemas.Length, "dataPresentationSchemas.Length");
+        }
+
+        [TestMethod]
         public void CreatePageModel_ExampleSiteHomePage_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
@@ -162,6 +181,25 @@ namespace Sdl.Web.Tridion.Templates.Tests
             StringAssert.Matches(article.Id, new Regex(@"\d+-\d+"));
 
             // TODO TSI-132: further assertions
+        }
+
+        [TestMethod]
+        public void CreatePageModel_ComponentLinkExpansion_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.ComponentLinkTestPageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData testEntity = mainRegion.Entities[0];
+
+            Assert.IsNotNull(testEntity, "testEntity");
+            Assert.IsNotNull(testEntity.Content, "testEntity.Content");
+            EntityModelData linkedEntityModelData = (EntityModelData) testEntity.Content["compLink"];
+            Assert.IsNotNull(linkedEntityModelData, "linkedEntityModelData");
+            Assert.AreEqual("9712", linkedEntityModelData.Id, "linkedEntityModelData.Id");
+            Assert.IsNotNull(linkedEntityModelData.Content, "linkedEntityModelData.Content"); // TODO: only if expanded
         }
 
         [TestMethod]
@@ -284,6 +322,17 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.AreEqual("999.99", keywordMetadata["numberField"], "keywordMetadata['numberField']");
             KeywordModelData keywordField = keywordMetadata["keywordField"] as KeywordModelData;
             Assert.IsNotNull(keywordField, "keywordField");
+        }
+
+        [TestMethod]
+        public void CreatePageModel_Tsi1278_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1278PageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+
+            Assert.AreEqual("/autotest-parent/tsi-1278_trådløst", pageModel.UrlPath, "pageModel.UrlPath");
         }
 
         [TestMethod]

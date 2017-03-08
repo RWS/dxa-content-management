@@ -22,7 +22,6 @@ namespace Sdl.Web.DataModel
         /// </summary>
         /// <remarks>
         /// The canonical URL path does not have a file extension, but does contain "index" for index Pages.
-        /// This is not set on CM-side, but in the DXA Model Service.
         /// </remarks>
         public string UrlPath { get; set; }
 

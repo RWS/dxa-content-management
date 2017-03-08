@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using Sdl.Web.DataModel;
@@ -75,11 +76,22 @@ namespace Sdl.Web.Tridion.Data
                 SchemaId = GetDxaIdentifier(page.MetadataSchema),
                 Meta = null, // Default Model builder does not set PageModel.Meta; see DefaultPageMetaModelBuilder.
                 Title = StripSequencePrefix(page.Title, out sequencePrefix) , // See DefaultPageMetaModelBuilder
+                UrlPath = GetUrlPath(page),
                 Regions = regionModels.Values.ToList(),
                 Metadata = pageModelMetadata,
                 MvcData = GetPageMvcData(pt),
                 XpmMetadata = GetXpmMetadata(page)
             };
+        }
+
+        private static string GetUrlPath(Page page)
+        {
+            string pageUrl = page.PublishLocationUrl;
+
+            // Remove file extension
+            pageUrl = pageUrl.Substring(0, pageUrl.LastIndexOf(".", StringComparison.Ordinal));
+
+            return Uri.UnescapeDataString(pageUrl);
         }
 
         /// <summary>

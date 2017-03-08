@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sdl.Web.DataModel;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
@@ -17,6 +18,8 @@ namespace Sdl.Web.Tridion.Data
     {
         private readonly IList<IPageModelDataBuilder> _pageModelBuilders = new List<IPageModelDataBuilder>();
         private readonly IList<IEntityModelDataBuilder> _entityModelBuilders = new List<IEntityModelDataBuilder>();
+        private IEnumerable<Schema> _dataPresentationSchemas;
+
 
         /// <summary>
         /// Gets the current CM Session.
@@ -37,6 +40,40 @@ namespace Sdl.Web.Tridion.Data
         /// Gets the logger used by the Model Builder pipeline.
         /// </summary>
         public ILogger Logger { get; }
+
+        /// <summary>
+        /// Gets the Schemas associated with the "Generate Data Presentation" CT.
+        /// </summary>
+        public IEnumerable<Schema> DataPresentationSchemas
+        {
+            get
+            {
+                if (_dataPresentationSchemas != null)
+                {
+                    return _dataPresentationSchemas;
+                }
+
+                ICache cache = Session.Cache;
+                if (cache == null)
+                {
+                    _dataPresentationSchemas = DetermineDataPresentationSchemas();
+                    return _dataPresentationSchemas;
+                }
+
+                const string cacheRegion = "DXA";
+                const string cacheKey = "DataPresentationSchemas";
+                _dataPresentationSchemas = (IEnumerable<Schema>) cache.Get(cacheRegion, cacheKey);
+                if (_dataPresentationSchemas != null)
+                {
+                    Logger.Debug("Obtained Data Presentation Schemas from cache.");
+                    return _dataPresentationSchemas;
+                }
+
+                _dataPresentationSchemas = DetermineDataPresentationSchemas();
+                cache.Add(cacheRegion, cacheKey, _dataPresentationSchemas);
+                return _dataPresentationSchemas;
+            }
+        }
 
         /// <summary>
         /// Constructor.
@@ -132,6 +169,38 @@ namespace Sdl.Web.Tridion.Data
                 entityModelBuilder.BuildEntityModel(ref entityModelData, component, ct, expandLinkDepth.Value);
             }
             return entityModelData;
+        }
+
+        private IEnumerable<Schema> DetermineDataPresentationSchemas()
+        {
+            // Find the Data Presentation CT.
+            RepositoryLocalObject sourceItem = (RepositoryLocalObject) RenderedItem.ResolvedItem.Item;
+            Publication contextPublication = (Publication) sourceItem.ContextRepository;
+
+            ComponentTemplatesFilter ctFilter = new ComponentTemplatesFilter(Session)
+            {
+                AllowedOnPage = false,
+                BaseColumns = ListBaseColumns.IdAndTitle
+            };
+
+            // TODO: use marker App Data instead of the CTs Title.
+            const string dataPresentationCtTitle = "Generate Data Presentation";
+            ComponentTemplate dataPresentationCt = contextPublication.GetComponentTemplates(ctFilter).FirstOrDefault(ct => ct.Title == dataPresentationCtTitle);
+            if (dataPresentationCt == null)
+            {
+                throw new DxaException($"Component Template '{dataPresentationCt}' not found.");
+            }
+
+            IList<Schema> dataPresentationSchemas = dataPresentationCt.RelatedSchemas;
+
+            Logger.Debug($"Found Data Presentation CT: {dataPresentationCt.FormatIdentifier()}");
+            Logger.Debug($"Found {dataPresentationSchemas.Count} associated Schemas:");
+            foreach (Schema schema in dataPresentationSchemas)
+            {
+                Logger.Debug($"    {schema.FormatIdentifier()}");
+            }
+
+            return dataPresentationSchemas;
         }
     }
 }
