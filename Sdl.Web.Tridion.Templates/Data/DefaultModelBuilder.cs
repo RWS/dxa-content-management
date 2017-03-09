@@ -14,7 +14,7 @@ namespace Sdl.Web.Tridion.Data
     /// <summary>
     /// Default Page/Entity Model Builder implementation.
     /// </summary>
-    public class DefaultModelBuilder : DataModelBuilder, IPageModelDataBuilder, IEntityModelDataBuilder
+    public class DefaultModelBuilder : DataModelBuilder, IPageModelDataBuilder, IEntityModelDataBuilder, IKeywordModelDataBuilder
     {
         private const string LegacyIncludePrefix = "system/include/";
 
@@ -122,6 +122,7 @@ namespace Sdl.Web.Tridion.Data
         /// This method is called for Component Presentations on a Page, standalone DCPs and linked Components which are expanded.
         /// The <paramref name="expandLinkDepth"/> parameter starts at <see cref="DataModelBuilderSettings.ExpandLinkDepth"/>, 
         /// but is decremented for expanded Component links (recursively).
+        /// This Model Builder is designed to be the first in the pipeline and hence ignores the <paramref name="entityModelData"/> input value.
         /// </remarks>
         public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct, int expandLinkDepth)
         {
@@ -180,6 +181,37 @@ namespace Sdl.Web.Tridion.Data
                 FileName = binaryContent.Filename,
                 FileSize = binaryContent.Size,
                 MimeType = binaryContent.MultimediaType.MimeType
+            };
+        }
+
+        /// <summary>
+        /// Builds a Keyword Data Model from a given CM Keyword object.
+        /// </summary>
+        /// <param name="keywordModelData">The Keyword Data Model to build. Is <c>null</c> for the first Model Builder in the pipeline.</param>
+        /// <param name="keyword">The CM Page.</param>
+        /// <param name="expandLinkDepth">The level of Component/Keyword links to expand.</param>
+        /// <remarks>
+        /// The <paramref name="expandLinkDepth"/> parameter starts at <see cref="DataModelBuilderSettings.ExpandLinkDepth"/>, 
+        /// but is decremented for expanded Keyword/Component links (recursively).
+        /// This Model Builder is designed to be the first in the pipeline and hence ignores the <paramref name="keywordModelData"/> input value.
+        /// </remarks>
+        public void BuildKeywordModel(ref KeywordModelData keywordModelData, Keyword keyword, int expandLinkDepth)
+        {
+            Logger.Debug($"BuildKeywordModel({keyword}, {expandLinkDepth})");
+
+            // We need Keyword XLinks for Keyword field expansion
+            keyword.Load(LoadFlags.KeywordXlinks);
+
+            string sequencePrefix;
+            keywordModelData = new KeywordModelData
+            {
+                Id = GetDxaIdentifier(keyword),
+                Title = StripSequencePrefix(keyword.Title, out sequencePrefix),
+                Description = keyword.Description.NullIfEmpty(),
+                Key = keyword.Key.NullIfEmpty(),
+                TaxonomyId = GetDxaIdentifier(keyword.OrganizationalItem),
+                SchemaId = GetDxaIdentifier(keyword.MetadataSchema),
+                Metadata = BuildContentModel(keyword.Metadata, expandLinkDepth)
             };
         }
 

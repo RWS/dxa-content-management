@@ -96,23 +96,6 @@ namespace Sdl.Web.Tridion.Data
             return titleMatch.Groups["title"].Value;
         }
 
-        protected KeywordModelData BuildKeywordModel(Keyword keyword, int expandLinkDepth)
-        {
-            // We need Keyword XLinks for Keyword field expansion
-            keyword.Load(LoadFlags.KeywordXlinks);
-
-            return new KeywordModelData
-            {
-                Id = GetDxaIdentifier(keyword),
-                Title = keyword.Title,
-                Description = keyword.Description.NullIfEmpty(),
-                Key = keyword.Key.NullIfEmpty(),
-                TaxonomyId = GetDxaIdentifier(keyword.OrganizationalItem),
-                SchemaId = GetDxaIdentifier(keyword.MetadataSchema),
-                Metadata = BuildContentModel(keyword.Metadata, expandLinkDepth)
-            };
-        }
-
         protected ContentModelData BuildContentModel(XmlElement xmlElement, int expandLinkDepth)
         {
             if (xmlElement == null)
@@ -250,7 +233,7 @@ namespace Sdl.Web.Tridion.Data
             }
 
             Logger.Debug($"Expanding Keyword link. expandLinkDepth: {expandLinkDepth}");
-            return BuildKeywordModel(linkedKeyword, expandLinkDepth - 1);
+            return Pipeline.CreateKeywordModel(linkedKeyword, expandLinkDepth - 1);
         }
 
         protected RichTextData BuildRichTextModel(XmlElement xhtmlElement)

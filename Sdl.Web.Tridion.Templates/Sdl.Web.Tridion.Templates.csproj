@@ -98,6 +98,7 @@
     <Compile Include="Data\DefaultModelBuilder.cs" />
     <Compile Include="Data\EclModelBuilder.cs" />
     <Compile Include="Data\IEntityModelBuilder.cs" />
+    <Compile Include="Data\IKeywordModelBuilder.cs" />
     <Compile Include="Data\IPageModelBuilder.cs" />
     <Compile Include="Data\DataModelBuilder.cs" />
     <Compile Include="Data\DefaultPageMetaModelBuilder.cs" />

@@ -18,6 +18,7 @@ namespace Sdl.Web.Tridion.Data
     {
         private readonly IList<IPageModelDataBuilder> _pageModelBuilders = new List<IPageModelDataBuilder>();
         private readonly IList<IEntityModelDataBuilder> _entityModelBuilders = new List<IEntityModelDataBuilder>();
+        private readonly IList<IKeywordModelDataBuilder> _keywordModelBuilders = new List<IKeywordModelDataBuilder>();
         private ComponentTemplate _dataPresentationTemplate;
 
         /// <summary>
@@ -100,9 +101,10 @@ namespace Sdl.Web.Tridion.Data
                 object modelBuilder = Activator.CreateInstance(modelBuilderType, new object[] { this });
                 IPageModelDataBuilder pageModelBuilder = modelBuilder as IPageModelDataBuilder;
                 IEntityModelDataBuilder entityModelBuilder = modelBuilder as IEntityModelDataBuilder;
-                if ((pageModelBuilder == null) && (entityModelBuilder == null))
+                IKeywordModelDataBuilder keywordModelBuilder = modelBuilder as IKeywordModelDataBuilder;
+                if ((pageModelBuilder == null) && (entityModelBuilder == null) && (keywordModelBuilder == null))
                 {
-                    Logger.Warning($"Configured Model Builder type '{modelBuilderType.FullName}' does not implement IPageModelDataBuilder nor IEntityModelDataBuilder; skipping.");
+                    Logger.Warning($"Configured Model Builder type '{modelBuilderType.FullName}' does not implement IPageModelDataBuilder, IEntityModelDataBuilder nor IKeywordModelDataBuilder; skipping.");
                     continue;
                 }
                 if (pageModelBuilder != null)
@@ -114,6 +116,11 @@ namespace Sdl.Web.Tridion.Data
                 {
                     Logger.Debug($"Using Entity Model Builder type '{modelBuilderType.FullName}'.");
                     _entityModelBuilders.Add(entityModelBuilder);
+                }
+                if (keywordModelBuilder != null)
+                {
+                    Logger.Debug($"Using Keyword Model Builder type '{modelBuilderType.FullName}'.");
+                    _keywordModelBuilders.Add(keywordModelBuilder);
                 }
             }
         }
@@ -168,6 +175,21 @@ namespace Sdl.Web.Tridion.Data
                 entityModelBuilder.BuildEntityModel(ref entityModelData, component, ct, expandLinkDepth.Value);
             }
             return entityModelData;
+        }
+
+        /// <summary>
+        /// Creates a Keyword Data Model from a given CM Keyword object.
+        /// </summary>
+        /// <param name="keyword">The CM Keyword.</param>
+        /// <param name="expandLinkDepth">The level of Component/Keyword links to expand.</param>
+        public KeywordModelData CreateKeywordModel(Keyword keyword, int expandLinkDepth)
+        {
+            KeywordModelData keywordModelData = null;
+            foreach (IKeywordModelDataBuilder keywordModelBuilder in _keywordModelBuilders)
+            {
+                keywordModelBuilder.BuildKeywordModel(ref keywordModelData, keyword, expandLinkDepth);
+            }
+            return keywordModelData;
         }
 
         private void FindDataPresentationTemplate()

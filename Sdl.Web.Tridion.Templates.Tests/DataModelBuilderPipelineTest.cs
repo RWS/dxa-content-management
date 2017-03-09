@@ -121,6 +121,11 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(testRenderedItem, "testRenderedItem");
             Assert.AreEqual(6, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
             Assert.AreEqual(16, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
+
+            Assert.IsNotNull(pageModel.Metadata, "pageModel.Metadata");
+            KeywordModelData sitemapKeyword = (KeywordModelData) pageModel.Metadata["sitemapKeyword"];
+            Assert.AreEqual("Home", sitemapKeyword.Title, "sitemapKeyword.Title");
+
             // TODO TSI-132: further assertions
         }
 
@@ -307,9 +312,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
             Assert.IsNotNull(pageModel.SchemaId, "pageModel.SchemaId");
 
-            PageModelData deserializedPageModel = JsonSerializeDeserialize(pageModel);
-
-            ContentModelData pageMetadata = deserializedPageModel.Metadata;
+            ContentModelData pageMetadata = pageModel.Metadata;
             Assert.IsNotNull(pageMetadata, "pageMetadata");
             KeywordModelData pageKeyword = pageMetadata["pageKeyword"] as KeywordModelData;
             Assert.IsNotNull(pageKeyword, "pageKeyword");
