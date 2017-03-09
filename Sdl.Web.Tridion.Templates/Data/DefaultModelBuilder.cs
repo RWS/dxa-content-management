@@ -88,11 +88,10 @@ namespace Sdl.Web.Tridion.Data
         {
             string pageUrl = page.PublishLocationUrl;
 
-            // Ensure that context-relative URLs do not start with a slash
-            Publication contextPublication = (Publication) page.ContextRepository;
-            if (pageUrl.StartsWith("/", StringComparison.Ordinal) && string.IsNullOrEmpty(contextPublication.PublicationUrl))
+            // Ensure the URL starts with a slash
+            if (!pageUrl.StartsWith("/", StringComparison.Ordinal))
             {
-                pageUrl = pageUrl.Substring(1);
+                pageUrl = "/" + pageUrl;
             }
 
             // Remove file extension

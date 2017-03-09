@@ -101,6 +101,7 @@
     <Compile Include="Data\IPageModelBuilder.cs" />
     <Compile Include="Data\DataModelBuilder.cs" />
     <Compile Include="Data\DefaultPageMetaModelBuilder.cs" />
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="Templates\RenderComponentPresentations.cs" />
     <Compile Include="TemplatingLoggerAdapter.cs" />
     <Compile Include="IdentifiableObjectExtensions.cs" />

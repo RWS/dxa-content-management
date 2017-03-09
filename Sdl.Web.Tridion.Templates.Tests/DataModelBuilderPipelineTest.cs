@@ -333,8 +333,10 @@ namespace Sdl.Web.Tridion.Templates.Tests
             PageModelData pageModel1 = CreatePageModel(testPage1, out testRenderedItem);
             PageModelData pageModel2 = CreatePageModel(testPage2, out testRenderedItem);
 
+            // pageModel2 is in a Publication with empty PublicationURL (context-relative). 
+            // This leads to a context-relative UrlPath when testing, but it will be server-relative when publishing.
             Assert.AreEqual("/autotest-parent/tsi-1278_trådløst", pageModel1.UrlPath, "pageModel1.UrlPath");
-            Assert.AreEqual("tsi-1278_trådløst", pageModel2.UrlPath, "pageModel2.UrlPath");
+            Assert.AreEqual("/tsi-1278_trådløst", pageModel2.UrlPath, "pageModel2.UrlPath");
         }
 
         [TestMethod]

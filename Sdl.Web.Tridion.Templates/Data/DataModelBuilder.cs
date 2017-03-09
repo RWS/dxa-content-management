@@ -105,8 +105,8 @@ namespace Sdl.Web.Tridion.Data
             {
                 Id = GetDxaIdentifier(keyword),
                 Title = keyword.Title,
-                Description = keyword.Description,
-                Key = keyword.Key,
+                Description = keyword.Description.NullIfEmpty(),
+                Key = keyword.Key.NullIfEmpty(),
                 TaxonomyId = GetDxaIdentifier(keyword.OrganizationalItem),
                 SchemaId = GetDxaIdentifier(keyword.MetadataSchema),
                 Metadata = BuildContentModel(keyword.Metadata, expandLinkDepth)
