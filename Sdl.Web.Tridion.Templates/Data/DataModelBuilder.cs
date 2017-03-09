@@ -149,7 +149,6 @@ namespace Sdl.Web.Tridion.Data
             return typedArray;
         }
 
-
         private object GetFieldValue(XmlElement xmlElement, int expandLinkDepth)
         {
             string xlinkHref = xmlElement.GetAttribute("href", Constants.XlinkNamespace);
@@ -230,6 +229,17 @@ namespace Sdl.Web.Tridion.Data
 
                 Logger.Debug($"Expanding Component link. expandLinkDepth: {expandLinkDepth}");
                 return Pipeline.CreateEntityModel(linkedComponent, null, expandLinkDepth - 1);
+            }
+
+            Category category = (Category) linkedKeyword.OrganizationalItem;
+            if (category.UseForNavigation)
+            {
+                Logger.Debug($"Not expanding Keyword link because its Category is publishable: {category.FormatIdentifier()}");
+                return new KeywordModelData
+                {
+                    Id = GetDxaIdentifier(linkedKeyword),
+                    TaxonomyId = GetDxaIdentifier(linkedKeyword.OrganizationalItem)
+                };
             }
 
             Logger.Debug($"Expanding Keyword link. expandLinkDepth: {expandLinkDepth}");

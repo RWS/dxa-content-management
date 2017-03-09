@@ -124,7 +124,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
             Assert.IsNotNull(pageModel.Metadata, "pageModel.Metadata");
             KeywordModelData sitemapKeyword = (KeywordModelData) pageModel.Metadata["sitemapKeyword"];
-            Assert.AreEqual("Home", sitemapKeyword.Title, "sitemapKeyword.Title");
+            Assert.IsNull(sitemapKeyword.Title, "sitemapKeyword.Title"); // Should not be expanded because Category is publishable
 
             // TODO TSI-132: further assertions
         }

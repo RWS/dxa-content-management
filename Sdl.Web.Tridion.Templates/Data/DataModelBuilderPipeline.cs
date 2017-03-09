@@ -20,6 +20,7 @@ namespace Sdl.Web.Tridion.Data
         private readonly IList<IEntityModelDataBuilder> _entityModelBuilders = new List<IEntityModelDataBuilder>();
         private readonly IList<IKeywordModelDataBuilder> _keywordModelBuilders = new List<IKeywordModelDataBuilder>();
         private ComponentTemplate _dataPresentationTemplate;
+        private bool _dataPresentationTemplateNotFound;
 
         /// <summary>
         /// Gets the current CM Session.
@@ -48,7 +49,7 @@ namespace Sdl.Web.Tridion.Data
         {
             get
             {
-                if (_dataPresentationTemplate != null)
+                if ((_dataPresentationTemplate != null) || _dataPresentationTemplateNotFound)
                 {
                     return _dataPresentationTemplate;
                 }
@@ -210,6 +211,7 @@ namespace Sdl.Web.Tridion.Data
             if (_dataPresentationTemplate == null)
             {
                 Logger.Warning($"Component Template '{dataPresentationTemplateTitle}' not found.");
+                _dataPresentationTemplateNotFound = true;
             }
             else
             {
