@@ -310,8 +310,7 @@ namespace Sdl.Web.Tridion.Data
                         ViewName = regionViewName,
                         AreaName = moduleName
                     },
-                    IncludePageUrl = includePage.PublishLocationUrl,
-                    Regions = ExpandIncludePage(includePage) // TODO TSI-24: We expand the include Page here for now (until we have a Model Service to do it).
+                    IncludePageId = GetDxaIdentifier(includePage)
                 };
 
                 if (Pipeline.Settings.GenerateXpmMetadata)
@@ -325,15 +324,6 @@ namespace Sdl.Web.Tridion.Data
                 }
                 regionModels.Add(regionName, includePageRegion);
             }
-        }
-
-        private List<RegionModelData> ExpandIncludePage(Page includePage)
-        {
-            Logger.Debug($"Expanding Include Page '{includePage.Title}' for now (until we have a Model Service).");
-
-            PageModelData includePageModel = null;
-            BuildPageModel(ref includePageModel, includePage); // NOTE: Not using the entire Model Builder Pipeline here.
-            return includePageModel.Regions;
         }
 
         private void AddComponentPresentationRegions(IDictionary<string, RegionModelData> regionModels, Page page)

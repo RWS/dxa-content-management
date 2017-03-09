@@ -119,8 +119,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
             Assert.AreEqual("Home", pageModel.Title, "pageModel.Title");
             Assert.IsNotNull(testRenderedItem, "testRenderedItem");
-            Assert.AreEqual(6, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
-            Assert.AreEqual(16, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
+            Assert.AreEqual(5, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
+            Assert.AreEqual(5, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
 
             Assert.IsNotNull(pageModel.Metadata, "pageModel.Metadata");
             KeywordModelData sitemapKeyword = (KeywordModelData) pageModel.Metadata["sitemapKeyword"];
@@ -162,11 +162,11 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsTrue(image.Metadata.TryGetValue("altText", out altText));
             Assert.AreEqual("calculator", altText, "altText");
 
-            RegionModelData[] includePageRegions = pageModel.Regions.Where(r => r.IncludePageUrl != null).ToArray();
+            RegionModelData[] includePageRegions = pageModel.Regions.Where(r => r.IncludePageId != null).ToArray();
             Assert.AreEqual(3, includePageRegions.Length, "includePageRegions.Length");
             foreach (RegionModelData includePageRegion in includePageRegions)
             {
-                StringAssert.Contains(includePageRegion.IncludePageUrl, "system/include/", "includePageRegion.IncludePageUrl");
+                StringAssert.Matches(includePageRegion.IncludePageId, new Regex(@"\d+"), "includePageRegion.IncludePageId");
             }
         }
 

@@ -94,7 +94,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 Name = name,
                 Entities = new List<EntityModelData> { CreateTestEntityModel(testId + "_Entity1") },
                 Metadata = CreateTestContentModel(testId, false, false),
-                IncludePageUrl = "/system/include/page"
+                IncludePageId = "666"
             };
         }
 
