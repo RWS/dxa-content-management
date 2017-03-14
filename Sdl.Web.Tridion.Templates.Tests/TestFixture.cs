@@ -27,6 +27,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         internal const string Tsi2277Page1WebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-2277 Test Page 1.tpg";
         internal const string Tsi2277Page2WebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-2277 Test Page 2.tpg";
         internal const string Tsi2306PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Smoke/Media Manager Smoke Test.tpg";
+        internal const string Tsi2316PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-2316 Test Page.tpg";
         internal const string PredefinedRegionsTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/RegionsTest/Predefined Regions - Empty.tpg";
 
         internal const string ArticleDcpId = "tcm:1065-9712/tcm:1065-9711-32";

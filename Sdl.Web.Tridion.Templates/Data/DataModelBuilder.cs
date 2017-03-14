@@ -211,7 +211,7 @@ namespace Sdl.Web.Tridion.Data
                 return new KeywordModelData
                 {
                     Id = GetDxaIdentifier(linkedKeyword),
-                    TaxonomyId = GetDxaIdentifier(linkedKeyword.OrganizationalItem)
+                    SchemaId = GetDxaIdentifier(linkedKeyword.MetadataSchema)
                 };
             }
 
@@ -223,7 +223,7 @@ namespace Sdl.Web.Tridion.Data
                     Logger.Debug($"Not expanding Component link because a Data Presentation exists: {linkedComponent.Schema.FormatIdentifier()}");
                     return new EntityModelData
                     {
-                        Id = $"{GetDxaIdentifier(linkedComponent)}-{GetDxaIdentifier(Pipeline.DataPresentationTemplate)}"
+                        Id = $"{GetDxaIdentifier(linkedComponent)}-{GetDxaIdentifier(dataPresentationTemplate)}"
                     };
                 }
 
@@ -238,7 +238,7 @@ namespace Sdl.Web.Tridion.Data
                 return new KeywordModelData
                 {
                     Id = GetDxaIdentifier(linkedKeyword),
-                    TaxonomyId = GetDxaIdentifier(linkedKeyword.OrganizationalItem)
+                    SchemaId = GetDxaIdentifier(linkedKeyword.MetadataSchema)
                 };
             }
 

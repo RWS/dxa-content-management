@@ -124,7 +124,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
             Assert.IsNotNull(pageModel.Metadata, "pageModel.Metadata");
             KeywordModelData sitemapKeyword = (KeywordModelData) pageModel.Metadata["sitemapKeyword"];
-            Assert.IsNull(sitemapKeyword.Title, "sitemapKeyword.Title"); // Should not be expanded because Category is publishable
+            AssertNotExpanded(sitemapKeyword, false, "sitemapKeyword"); // Keyword Should not be expanded because Category is publishable
 
             // TODO TSI-132: further assertions
         }
@@ -467,6 +467,56 @@ namespace Sdl.Web.Tridion.Templates.Tests
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             // TODO TSI-132: further assertions
+        }
+
+        [TestMethod]
+        public void CreatePageModel_Tsi2316_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi2316PageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData testEntity = mainRegion.Entities[0];
+            KeywordModelData notPublishedKeyword = (KeywordModelData) testEntity.Content["notPublishedKeyword"];
+            KeywordModelData publishedKeyword = (KeywordModelData) testEntity.Content["publishedKeyword"];
+
+            AssertExpanded(notPublishedKeyword, false, "notPublishedKeyword");
+            AssertNotExpanded(publishedKeyword, true, "publishedKeyword");
+        }
+
+        private static void AssertExpanded(KeywordModelData keywordModelData, bool hasMetadata, string subject)
+        {
+            Assert.IsNotNull(keywordModelData.Id, subject + ".Id");
+            Assert.IsNotNull(keywordModelData.Title, subject + ".Title");
+            Assert.IsNotNull(keywordModelData.TaxonomyId, subject + ".TaxonomyId");
+            if (hasMetadata)
+            {
+                Assert.IsNotNull(keywordModelData.SchemaId, subject + ".SchemaId");
+                Assert.IsNotNull(keywordModelData.Metadata, subject + ".Metadata");
+            }
+            else
+            {
+                Assert.IsNull(keywordModelData.SchemaId, subject + ".SchemaId");
+                Assert.IsNull(keywordModelData.Metadata, subject + ".Metadata");
+            }
+        }
+
+        private static void AssertNotExpanded(KeywordModelData keywordModelData, bool hasMetadata, string subject)
+        {
+            Assert.IsNotNull(keywordModelData.Id, subject + ".Id");
+            Assert.IsNull(keywordModelData.Title, subject + ".Title");
+            Assert.IsNull(keywordModelData.TaxonomyId, subject + ".TaxonomyId");
+            if (hasMetadata)
+            {
+                Assert.IsNotNull(keywordModelData.SchemaId, subject + ".SchemaId");
+            }
+            else
+            {
+                Assert.IsNull(keywordModelData.SchemaId, subject + ".SchemaId");
+            }
+            Assert.IsNull(keywordModelData.Metadata, subject + ".Metadata");
         }
 
 
