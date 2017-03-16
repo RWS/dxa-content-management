@@ -140,7 +140,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             RegionModelData mainRegion = GetMainRegion(pageModel);
             EntityModelData article = mainRegion.Entities[0];
 
-            Assert.IsNotNull(article);
+            AssertExpanded(article, true, "article");
             StringAssert.Matches(article.Id, new Regex(@"\d+"));
 
             ContentModelData articleBody = (ContentModelData) article.Content["articleBody"];
@@ -181,10 +181,32 @@ namespace Sdl.Web.Tridion.Templates.Tests
             RegionModelData mainRegion = GetMainRegion(pageModel);
             EntityModelData article = mainRegion.Entities[0];
 
-            Assert.IsNotNull(article);
-            StringAssert.Matches(article.Id, new Regex(@"\d+-\d+"));
+            AssertNotExpanded(article, "article");
+        }
 
-            // TODO TSI-132: further assertions
+        private static void AssertExpanded(EntityModelData entityModelData, bool hasContent, string subject)
+        {
+            Assert.IsNotNull(entityModelData, subject);
+            Assert.IsNotNull(entityModelData.Id, subject + ".Id");
+            Assert.IsNotNull(entityModelData.SchemaId, subject + ".SchemaId");
+            if (hasContent)
+            {
+                Assert.IsNotNull(entityModelData.Content, subject + ".Content");
+            }
+            else
+            {
+                Assert.IsNull(entityModelData.Content, subject + ".Content");
+            }
+        }
+
+        private static void AssertNotExpanded(EntityModelData entityModelData, string subject)
+        {
+            Assert.IsNotNull(entityModelData, subject);
+            Assert.IsNotNull(entityModelData.Id, subject + ".Id");
+            StringAssert.Matches(entityModelData.Id, new Regex(@"\d+-\d+"), subject + ".Id");
+            Assert.IsNull(entityModelData.SchemaId, subject + ".SchemaId");
+            Assert.IsNull(entityModelData.Content, subject + ".Content");
+            Assert.IsNull(entityModelData.Metadata, subject + ".Metadata");
         }
 
         [TestMethod]

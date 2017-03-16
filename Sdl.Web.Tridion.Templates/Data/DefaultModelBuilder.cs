@@ -336,15 +336,19 @@ namespace Sdl.Web.Tridion.Data
                 RenderedItem childRenderedItem = new RenderedItem(new ResolvedItem(cp.Component, ct), Pipeline.RenderedItem.RenderInstruction);
                 Pipeline.RenderedItem.AddRenderedItem(childRenderedItem);
 
-                // TODO TSI-24: For DCPs we should output only a minimal Entity Model containing the Component and Template ID, so it can be retrieved dynamically.
-                //EntityModelData entityModel = cp.ComponentTemplate.IsRepositoryPublishable ?
-                //    new EntityModelData { Id = GetDxaIdentifier(cp.Component, cp.ComponentTemplate) } :
-                //    BuildEntityModel(cp.Component, cp.ComponentTemplate);
+                EntityModelData entityModel;
                 if (ct.IsRepositoryPublishable)
                 {
-                    Logger.Debug($"Expanding DCP ({cp.Component}, {ct}) for now (until we have a Model Service).");
+                    Logger.Debug($"Not expanding DCP ({cp.Component}, {ct})");
+                    entityModel = new EntityModelData
+                    {
+                        Id = $"{GetDxaIdentifier(cp.Component)}-{GetDxaIdentifier(ct)}"
+                    };
                 }
-                EntityModelData entityModel = Pipeline.CreateEntityModel(cp);
+                else
+                {
+                    entityModel = Pipeline.CreateEntityModel(cp);
+                }
 
                 string regionName;
                 MvcData regionMvcData = GetRegionMvcData(cp.ComponentTemplate, out regionName);
