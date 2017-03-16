@@ -47,11 +47,12 @@ namespace Sdl.Web.DataModel
         /// <returns></returns>
         public override Type BindToType(string assemblyName, string typeName)
         {
-            if (typeName == "Float")
+            // Unfortunately, type System.Float does not exist (it's called System.Single), hence we have special handling here
+            if (typeName.StartsWith("Float"))
             {
-                // Unfortunately, type System.Float does not exist (it's called System.Single), hence we have special handling here
-                return typeof(float);
+                typeName = typeName.Replace("Float", "Single");
             }
+
             return Type.GetType($"Sdl.Web.DataModel.{typeName}") ?? Type.GetType($"System.{typeName}", throwOnError: true);
         }
         #endregion
