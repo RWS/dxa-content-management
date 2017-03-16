@@ -200,10 +200,21 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
             Assert.IsNotNull(testEntity, "testEntity");
             Assert.IsNotNull(testEntity.Content, "testEntity.Content");
-            EntityModelData linkedEntityModelData = (EntityModelData) testEntity.Content["compLink"];
-            Assert.IsNotNull(linkedEntityModelData, "linkedEntityModelData");
-            Assert.AreEqual("9712-10247", linkedEntityModelData.Id, "linkedEntityModelData.Id"); // Data Presentation
-            Assert.IsNull(linkedEntityModelData.Content, "linkedEntityModelData.Content"); // Not expanded
+            EntityModelData[] compLinkField = (EntityModelData[]) testEntity.Content["compLink"];
+            Assert.AreEqual(2, compLinkField.Length, "compLinkField.Length");
+
+            EntityModelData notExpandedCompLink = compLinkField[0]; // Has Data Presentation
+            Assert.IsNotNull(notExpandedCompLink, "notExpandedCompLink");
+            Assert.AreEqual("9712-10247", notExpandedCompLink.Id, "notExpandedCompLink.Id");
+            Assert.IsNull(notExpandedCompLink.SchemaId, "notExpandedCompLink.SchemaId");
+            Assert.IsNull(notExpandedCompLink.Content, "notExpandedCompLink.Content");
+
+            EntityModelData expandedCompLink = compLinkField[1]; // Has no Data Presentation
+            Assert.IsNotNull(expandedCompLink, "expandedCompLink");
+            Assert.AreEqual("9710", expandedCompLink.Id, "expandedCompLink.Id");
+            Assert.AreEqual("9709", expandedCompLink.SchemaId, "9710");
+            Assert.IsNotNull(expandedCompLink.Content, "expandedCompLink.Content");
+
         }
 
         [TestMethod]
