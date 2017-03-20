@@ -50,7 +50,9 @@ namespace Sdl.Web.DataModel
             // Unfortunately, type System.Float does not exist (it's called System.Single), hence we have special handling here
             if (typeName.StartsWith("Float"))
             {
-                typeName = typeName.Replace("Float", "Single");
+                // Note: we switch from Float to Double here instead so deserialization of json produces doubles instead
+                // to prevent potential upcasts later that will produce extra noise
+                typeName = typeName.Replace("Float", "Double");
             }
 
             return Type.GetType($"Sdl.Web.DataModel.{typeName}") ?? Type.GetType($"System.{typeName}", throwOnError: true);
