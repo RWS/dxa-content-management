@@ -47,6 +47,14 @@ namespace Sdl.Web.DataModel
         /// <returns></returns>
         public override Type BindToType(string assemblyName, string typeName)
         {
+            // Unfortunately, type System.Float does not exist (it's called System.Single), hence we have special handling here
+            if (typeName.StartsWith("Float"))
+            {
+                // Note: Switch from Float to Double so deserialization of json produces doubles instead of floats to
+                // help prevent potential upcasts of floats to doubles later that may produce extra noise.
+                typeName = typeName.Replace("Float", "Double");
+            }
+
             return Type.GetType($"Sdl.Web.DataModel.{typeName}") ?? Type.GetType($"System.{typeName}", throwOnError: true);
         }
         #endregion

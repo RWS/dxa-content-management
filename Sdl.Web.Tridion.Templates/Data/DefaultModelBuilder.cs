@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using Sdl.Web.DataModel;
@@ -13,7 +14,7 @@ namespace Sdl.Web.Tridion.Data
     /// <summary>
     /// Default Page/Entity Model Builder implementation.
     /// </summary>
-    public class DefaultModelBuilder : DataModelBuilder, IPageModelDataBuilder, IEntityModelDataBuilder
+    public class DefaultModelBuilder : DataModelBuilder, IPageModelDataBuilder, IEntityModelDataBuilder, IKeywordModelDataBuilder
     {
         private const string LegacyIncludePrefix = "system/include/";
 
@@ -75,11 +76,28 @@ namespace Sdl.Web.Tridion.Data
                 SchemaId = GetDxaIdentifier(page.MetadataSchema),
                 Meta = null, // Default Model builder does not set PageModel.Meta; see DefaultPageMetaModelBuilder.
                 Title = StripSequencePrefix(page.Title, out sequencePrefix) , // See DefaultPageMetaModelBuilder
+                UrlPath = GetUrlPath(page),
                 Regions = regionModels.Values.ToList(),
                 Metadata = pageModelMetadata,
                 MvcData = GetPageMvcData(pt),
                 XpmMetadata = GetXpmMetadata(page)
             };
+        }
+
+        private static string GetUrlPath(Page page)
+        {
+            string pageUrl = page.PublishLocationUrl;
+
+            // Ensure the URL starts with a slash
+            if (!pageUrl.StartsWith("/", StringComparison.Ordinal))
+            {
+                pageUrl = "/" + pageUrl;
+            }
+
+            // Remove file extension
+            pageUrl = pageUrl.Substring(0, pageUrl.LastIndexOf(".", StringComparison.Ordinal));
+
+            return Uri.UnescapeDataString(pageUrl);
         }
 
         /// <summary>
@@ -104,6 +122,7 @@ namespace Sdl.Web.Tridion.Data
         /// This method is called for Component Presentations on a Page, standalone DCPs and linked Components which are expanded.
         /// The <paramref name="expandLinkDepth"/> parameter starts at <see cref="DataModelBuilderSettings.ExpandLinkDepth"/>, 
         /// but is decremented for expanded Component links (recursively).
+        /// This Model Builder is designed to be the first in the pipeline and hence ignores the <paramref name="entityModelData"/> input value.
         /// </remarks>
         public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct, int expandLinkDepth)
         {
@@ -123,14 +142,9 @@ namespace Sdl.Web.Tridion.Data
                 Id = GetDxaIdentifier(component),
                 SchemaId = GetDxaIdentifier(component.Schema),
                 Content = BuildContentModel(component.Content, expandLinkDepth),
-                Metadata = BuildContentModel(component.Metadata, expandLinkDepth)
+                Metadata = BuildContentModel(component.Metadata, expandLinkDepth),
+                BinaryContent = BuildBinaryContentData(component)
             };
-
-            // ECL Stub Components are skipped here; should be processed further on in the pipeline by EclModelBuilder.
-            if (!IsEclItem(component))
-            {
-                entityModelData.BinaryContent = BuildBinaryContentData(component);
-            }
 
             if (ct == null)
             {
@@ -151,6 +165,13 @@ namespace Sdl.Web.Tridion.Data
             BinaryContent binaryContent = component.BinaryContent;
             if (binaryContent == null)
             {
+                // Not a Multimedia Component
+                return null;
+            }
+
+            if (IsEclItem(component))
+            {
+                // ECL Stub Component should be processed further on in the pipeline by EclModelBuilder.
                 return null;
             }
 
@@ -160,6 +181,37 @@ namespace Sdl.Web.Tridion.Data
                 FileName = binaryContent.Filename,
                 FileSize = binaryContent.Size,
                 MimeType = binaryContent.MultimediaType.MimeType
+            };
+        }
+
+        /// <summary>
+        /// Builds a Keyword Data Model from a given CM Keyword object.
+        /// </summary>
+        /// <param name="keywordModelData">The Keyword Data Model to build. Is <c>null</c> for the first Model Builder in the pipeline.</param>
+        /// <param name="keyword">The CM Page.</param>
+        /// <param name="expandLinkDepth">The level of Component/Keyword links to expand.</param>
+        /// <remarks>
+        /// The <paramref name="expandLinkDepth"/> parameter starts at <see cref="DataModelBuilderSettings.ExpandLinkDepth"/>, 
+        /// but is decremented for expanded Keyword/Component links (recursively).
+        /// This Model Builder is designed to be the first in the pipeline and hence ignores the <paramref name="keywordModelData"/> input value.
+        /// </remarks>
+        public void BuildKeywordModel(ref KeywordModelData keywordModelData, Keyword keyword, int expandLinkDepth)
+        {
+            Logger.Debug($"BuildKeywordModel({keyword}, {expandLinkDepth})");
+
+            // We need Keyword XLinks for Keyword field expansion
+            keyword.Load(LoadFlags.KeywordXlinks);
+
+            string sequencePrefix;
+            keywordModelData = new KeywordModelData
+            {
+                Id = GetDxaIdentifier(keyword),
+                Title = StripSequencePrefix(keyword.Title, out sequencePrefix),
+                Description = keyword.Description.NullIfEmpty(),
+                Key = keyword.Key.NullIfEmpty(),
+                TaxonomyId = GetDxaIdentifier(keyword.OrganizationalItem),
+                SchemaId = GetDxaIdentifier(keyword.MetadataSchema),
+                Metadata = BuildContentModel(keyword.Metadata, expandLinkDepth)
             };
         }
 
@@ -258,8 +310,7 @@ namespace Sdl.Web.Tridion.Data
                         ViewName = regionViewName,
                         AreaName = moduleName
                     },
-                    IncludePageUrl = includePage.PublishLocationUrl,
-                    Regions = ExpandIncludePage(includePage) // TODO TSI-24: We expand the include Page here for now (until we have a Model Service to do it).
+                    IncludePageId = GetDxaIdentifier(includePage)
                 };
 
                 if (Pipeline.Settings.GenerateXpmMetadata)
@@ -275,15 +326,6 @@ namespace Sdl.Web.Tridion.Data
             }
         }
 
-        private List<RegionModelData> ExpandIncludePage(Page includePage)
-        {
-            Logger.Debug($"Expanding Include Page '{includePage.Title}' for now (until we have a Model Service).");
-
-            PageModelData includePageModel = null;
-            BuildPageModel(ref includePageModel, includePage); // NOTE: Not using the entire Model Builder Pipeline here.
-            return includePageModel.Regions;
-        }
-
         private void AddComponentPresentationRegions(IDictionary<string, RegionModelData> regionModels, Page page)
         {
             foreach (ComponentPresentation cp in page.ComponentPresentations)
@@ -294,15 +336,19 @@ namespace Sdl.Web.Tridion.Data
                 RenderedItem childRenderedItem = new RenderedItem(new ResolvedItem(cp.Component, ct), Pipeline.RenderedItem.RenderInstruction);
                 Pipeline.RenderedItem.AddRenderedItem(childRenderedItem);
 
-                // TODO TSI-24: For DCPs we should output only a minimal Entity Model containing the Component and Template ID, so it can be retrieved dynamically.
-                //EntityModelData entityModel = cp.ComponentTemplate.IsRepositoryPublishable ?
-                //    new EntityModelData { Id = GetDxaIdentifier(cp.Component, cp.ComponentTemplate) } :
-                //    BuildEntityModel(cp.Component, cp.ComponentTemplate);
+                EntityModelData entityModel;
                 if (ct.IsRepositoryPublishable)
                 {
-                    Logger.Debug($"Expanding DCP ({cp.Component}, {ct}) for now (until we have a Model Service).");
+                    Logger.Debug($"Not expanding DCP ({cp.Component}, {ct})");
+                    entityModel = new EntityModelData
+                    {
+                        Id = $"{GetDxaIdentifier(cp.Component)}-{GetDxaIdentifier(ct)}"
+                    };
                 }
-                EntityModelData entityModel = Pipeline.CreateEntityModel(cp);
+                else
+                {
+                    entityModel = Pipeline.CreateEntityModel(cp);
+                }
 
                 string regionName;
                 MvcData regionMvcData = GetRegionMvcData(cp.ComponentTemplate, out regionName);

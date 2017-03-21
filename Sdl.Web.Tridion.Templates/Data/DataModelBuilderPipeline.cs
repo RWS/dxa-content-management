@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sdl.Web.DataModel;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
@@ -17,6 +18,9 @@ namespace Sdl.Web.Tridion.Data
     {
         private readonly IList<IPageModelDataBuilder> _pageModelBuilders = new List<IPageModelDataBuilder>();
         private readonly IList<IEntityModelDataBuilder> _entityModelBuilders = new List<IEntityModelDataBuilder>();
+        private readonly IList<IKeywordModelDataBuilder> _keywordModelBuilders = new List<IKeywordModelDataBuilder>();
+        private ComponentTemplate _dataPresentationTemplate;
+        private bool _dataPresentationTemplateNotFound;
 
         /// <summary>
         /// Gets the current CM Session.
@@ -37,6 +41,40 @@ namespace Sdl.Web.Tridion.Data
         /// Gets the logger used by the Model Builder pipeline.
         /// </summary>
         public ILogger Logger { get; }
+
+        /// <summary>
+        /// Gets the Component Template used to render "Data Presentations".
+        /// </summary>
+        public ComponentTemplate DataPresentationTemplate
+        {
+            get
+            {
+                if ((_dataPresentationTemplate != null) || _dataPresentationTemplateNotFound)
+                {
+                    return _dataPresentationTemplate;
+                }
+
+                ICache cache = Session.Cache;
+                if (cache == null)
+                {
+                    FindDataPresentationTemplate();
+                    return _dataPresentationTemplate;
+                }
+
+                const string cacheRegion = "DXA";
+                const string cacheKey = "DataPresentationTemplate";
+                _dataPresentationTemplate = (ComponentTemplate) cache.Get(cacheRegion, cacheKey);
+                if (_dataPresentationTemplate != null)
+                {
+                    Logger.Debug("Obtained Data Presentation Template from cache.");
+                    return _dataPresentationTemplate;
+                }
+
+                FindDataPresentationTemplate();
+                cache.Add(cacheRegion, cacheKey, _dataPresentationTemplate);
+                return _dataPresentationTemplate;
+            }
+        }
 
         /// <summary>
         /// Constructor.
@@ -64,9 +102,10 @@ namespace Sdl.Web.Tridion.Data
                 object modelBuilder = Activator.CreateInstance(modelBuilderType, new object[] { this });
                 IPageModelDataBuilder pageModelBuilder = modelBuilder as IPageModelDataBuilder;
                 IEntityModelDataBuilder entityModelBuilder = modelBuilder as IEntityModelDataBuilder;
-                if ((pageModelBuilder == null) && (entityModelBuilder == null))
+                IKeywordModelDataBuilder keywordModelBuilder = modelBuilder as IKeywordModelDataBuilder;
+                if ((pageModelBuilder == null) && (entityModelBuilder == null) && (keywordModelBuilder == null))
                 {
-                    Logger.Warning($"Configured Model Builder type '{modelBuilderType.FullName}' does not implement IPageModelDataBuilder nor IEntityModelDataBuilder; skipping.");
+                    Logger.Warning($"Configured Model Builder type '{modelBuilderType.FullName}' does not implement IPageModelDataBuilder, IEntityModelDataBuilder nor IKeywordModelDataBuilder; skipping.");
                     continue;
                 }
                 if (pageModelBuilder != null)
@@ -78,6 +117,11 @@ namespace Sdl.Web.Tridion.Data
                 {
                     Logger.Debug($"Using Entity Model Builder type '{modelBuilderType.FullName}'.");
                     _entityModelBuilders.Add(entityModelBuilder);
+                }
+                if (keywordModelBuilder != null)
+                {
+                    Logger.Debug($"Using Keyword Model Builder type '{modelBuilderType.FullName}'.");
+                    _keywordModelBuilders.Add(keywordModelBuilder);
                 }
             }
         }
@@ -132,6 +176,47 @@ namespace Sdl.Web.Tridion.Data
                 entityModelBuilder.BuildEntityModel(ref entityModelData, component, ct, expandLinkDepth.Value);
             }
             return entityModelData;
+        }
+
+        /// <summary>
+        /// Creates a Keyword Data Model from a given CM Keyword object.
+        /// </summary>
+        /// <param name="keyword">The CM Keyword.</param>
+        /// <param name="expandLinkDepth">The level of Component/Keyword links to expand.</param>
+        public KeywordModelData CreateKeywordModel(Keyword keyword, int expandLinkDepth)
+        {
+            KeywordModelData keywordModelData = null;
+            foreach (IKeywordModelDataBuilder keywordModelBuilder in _keywordModelBuilders)
+            {
+                keywordModelBuilder.BuildKeywordModel(ref keywordModelData, keyword, expandLinkDepth);
+            }
+            return keywordModelData;
+        }
+
+        private void FindDataPresentationTemplate()
+        {
+            RepositoryLocalObject sourceItem = (RepositoryLocalObject) RenderedItem.ResolvedItem.Item;
+            Publication contextPublication = (Publication) sourceItem.ContextRepository;
+
+            ComponentTemplatesFilter ctFilter = new ComponentTemplatesFilter(Session)
+            {
+                AllowedOnPage = false,
+                BaseColumns = ListBaseColumns.IdAndTitle
+            };
+
+            // TODO: use marker App Data instead of the CTs Title.
+            const string dataPresentationTemplateTitle = "Generate Data Presentation";
+            _dataPresentationTemplate = contextPublication.GetComponentTemplates(ctFilter).FirstOrDefault(ct => ct.Title == dataPresentationTemplateTitle);
+
+            if (_dataPresentationTemplate == null)
+            {
+                Logger.Warning($"Component Template '{dataPresentationTemplateTitle}' not found.");
+                _dataPresentationTemplateNotFound = true;
+            }
+            else
+            {
+                Logger.Debug($"Found Data Presentation Template: {_dataPresentationTemplate.FormatIdentifier()}");
+            }
         }
     }
 }

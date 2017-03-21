@@ -26,11 +26,11 @@ namespace Sdl.Web.DataModel
         public List<RegionModelData> Regions { get; set; }
 
         /// <summary>
-        /// Gets or sets the URL of the Include Page which this Region represents (if any).
+        /// Gets or sets the Identifier of the Include Page which this Region represents (if any).
         /// </summary>
         /// <value>
         /// Is <c>null</c> (i.e. not included in the serialized JSON) for "regular" Regions.
         /// </value>
-        public string IncludePageUrl { get; set; }
+        public string IncludePageId { get; set; }
     }
 }

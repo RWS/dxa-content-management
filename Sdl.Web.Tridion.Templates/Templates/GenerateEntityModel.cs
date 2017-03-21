@@ -14,7 +14,7 @@ namespace Sdl.Web.Tridion.Templates
     /// Generates a DXA R2 Data Model based on the current Component (Presentation)
     /// </summary>
     [TcmTemplateTitle("Generate DXA R2 Entity Model")]
-    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.GenerateDynamicComponentParameters.xsd")]
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.GenerateEntityModelParameters.xsd")]
     public class GenerateEntityModel : TemplateBase
     {
         /// <summary>
@@ -25,6 +25,12 @@ namespace Sdl.Web.Tridion.Templates
             Logger.Debug("Transform");
 
             Initialize(engine, package);
+
+            bool includeComponentTemplateData;
+            if (!package.TryGetParameter("includeComponentTemplateData", out includeComponentTemplateData, Logger))
+            {
+                includeComponentTemplateData = true; // Default
+            }
 
             int expandLinkDepth;
             package.TryGetParameter("expandLinkDepth", out expandLinkDepth, Logger);
@@ -44,7 +50,7 @@ namespace Sdl.Web.Tridion.Templates
                 };
 
                 DataModelBuilderPipeline modelBuilderPipeline = new DataModelBuilderPipeline(renderedItem, settings, modelBuilderTypeNames);
-                EntityModelData entityModel = modelBuilderPipeline.CreateEntityModel(component, ct);
+                EntityModelData entityModel = modelBuilderPipeline.CreateEntityModel(component, includeComponentTemplateData ? ct : null);
 
                 string entityModelJson = JsonSerialize(entityModel, IsPreview, DataModelBinder.SerializerSettings);
                 Item outputItem = Package.CreateStringItem(ContentType.Text, entityModelJson);

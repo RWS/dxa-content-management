@@ -98,9 +98,11 @@
     <Compile Include="Data\DefaultModelBuilder.cs" />
     <Compile Include="Data\EclModelBuilder.cs" />
     <Compile Include="Data\IEntityModelBuilder.cs" />
+    <Compile Include="Data\IKeywordModelBuilder.cs" />
     <Compile Include="Data\IPageModelBuilder.cs" />
     <Compile Include="Data\DataModelBuilder.cs" />
     <Compile Include="Data\DefaultPageMetaModelBuilder.cs" />
+    <Compile Include="StringExtensions.cs" />
     <Compile Include="Templates\RenderComponentPresentations.cs" />
     <Compile Include="TemplatingLoggerAdapter.cs" />
     <Compile Include="IdentifiableObjectExtensions.cs" />
@@ -132,10 +134,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <EmbeddedResource Include="Resources\GenerateDynamicComponentParameters.xsd">
+    <EmbeddedResource Include="Resources\GenerateEntityModelParameters.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\GenerateDynamicPageParameters.xsd">
+    <EmbeddedResource Include="Resources\GeneratePageModelParameters.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\PublishMappingsParameters.xsd">

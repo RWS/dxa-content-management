@@ -92,6 +92,24 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
 
         [TestMethod]
+        public void DataPresentationTemplate_Success()
+        {
+            Page dummyPage = (Page) TestSession.GetObject(TestFixture.AutoTestParentHomePageWebDavUrl);
+
+            RenderedItem renderedItem = CreateTestRenderedItem(dummyPage, dummyPage.PageTemplate);
+
+            DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
+                renderedItem,
+                _defaultModelBuilderSettings,
+                _defaultModelBuilderTypeNames,
+                new ConsoleLogger()
+                );
+
+            ComponentTemplate dataPresentationTemplate = testModelBuilderPipeline.DataPresentationTemplate;
+            Assert.IsNotNull(dataPresentationTemplate, "dataPresentationTemplate");
+        }
+
+        [TestMethod]
         public void CreatePageModel_ExampleSiteHomePage_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
@@ -101,8 +119,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
             Assert.AreEqual("Home", pageModel.Title, "pageModel.Title");
             Assert.IsNotNull(testRenderedItem, "testRenderedItem");
-            Assert.AreEqual(6, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
-            Assert.AreEqual(16, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
+            Assert.AreEqual(5, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
+            Assert.AreEqual(5, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
+
+            Assert.IsNotNull(pageModel.Metadata, "pageModel.Metadata");
+            KeywordModelData sitemapKeyword = (KeywordModelData) pageModel.Metadata["sitemapKeyword"];
+            AssertNotExpanded(sitemapKeyword, false, "sitemapKeyword"); // Keyword Should not be expanded because Category is publishable
+
             // TODO TSI-132: further assertions
         }
 
@@ -117,7 +140,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             RegionModelData mainRegion = GetMainRegion(pageModel);
             EntityModelData article = mainRegion.Entities[0];
 
-            Assert.IsNotNull(article);
+            AssertExpanded(article, true, "article");
             StringAssert.Matches(article.Id, new Regex(@"\d+"));
 
             ContentModelData articleBody = (ContentModelData) article.Content["articleBody"];
@@ -138,6 +161,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
             object altText;
             Assert.IsTrue(image.Metadata.TryGetValue("altText", out altText));
             Assert.AreEqual("calculator", altText, "altText");
+
+            RegionModelData[] includePageRegions = pageModel.Regions.Where(r => r.IncludePageId != null).ToArray();
+            Assert.AreEqual(3, includePageRegions.Length, "includePageRegions.Length");
+            foreach (RegionModelData includePageRegion in includePageRegions)
+            {
+                StringAssert.Matches(includePageRegion.IncludePageId, new Regex(@"\d+"), "includePageRegion.IncludePageId");
+            }
         }
 
         [TestMethod]
@@ -151,10 +181,62 @@ namespace Sdl.Web.Tridion.Templates.Tests
             RegionModelData mainRegion = GetMainRegion(pageModel);
             EntityModelData article = mainRegion.Entities[0];
 
-            Assert.IsNotNull(article);
-            StringAssert.Matches(article.Id, new Regex(@"\d+-\d+"));
+            AssertNotExpanded(article, "article");
+        }
 
-            // TODO TSI-132: further assertions
+        private static void AssertExpanded(EntityModelData entityModelData, bool hasContent, string subject)
+        {
+            Assert.IsNotNull(entityModelData, subject);
+            Assert.IsNotNull(entityModelData.Id, subject + ".Id");
+            Assert.IsNotNull(entityModelData.SchemaId, subject + ".SchemaId");
+            if (hasContent)
+            {
+                Assert.IsNotNull(entityModelData.Content, subject + ".Content");
+            }
+            else
+            {
+                Assert.IsNull(entityModelData.Content, subject + ".Content");
+            }
+        }
+
+        private static void AssertNotExpanded(EntityModelData entityModelData, string subject)
+        {
+            Assert.IsNotNull(entityModelData, subject);
+            Assert.IsNotNull(entityModelData.Id, subject + ".Id");
+            StringAssert.Matches(entityModelData.Id, new Regex(@"\d+-\d+"), subject + ".Id");
+            Assert.IsNull(entityModelData.SchemaId, subject + ".SchemaId");
+            Assert.IsNull(entityModelData.Content, subject + ".Content");
+            Assert.IsNull(entityModelData.Metadata, subject + ".Metadata");
+        }
+
+        [TestMethod]
+        public void CreatePageModel_ComponentLinkExpansion_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.ComponentLinkTestPageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData testEntity = mainRegion.Entities[0];
+
+            Assert.IsNotNull(testEntity, "testEntity");
+            Assert.IsNotNull(testEntity.Content, "testEntity.Content");
+            EntityModelData[] compLinkField = (EntityModelData[]) testEntity.Content["compLink"];
+            Assert.AreEqual(2, compLinkField.Length, "compLinkField.Length");
+
+            EntityModelData notExpandedCompLink = compLinkField[0]; // Has Data Presentation
+            Assert.IsNotNull(notExpandedCompLink, "notExpandedCompLink");
+            Assert.AreEqual("9712-10247", notExpandedCompLink.Id, "notExpandedCompLink.Id");
+            Assert.IsNull(notExpandedCompLink.SchemaId, "notExpandedCompLink.SchemaId");
+            Assert.IsNull(notExpandedCompLink.Content, "notExpandedCompLink.Content");
+
+            EntityModelData expandedCompLink = compLinkField[1]; // Has no Data Presentation
+            Assert.IsNotNull(expandedCompLink, "expandedCompLink");
+            Assert.AreEqual("9710", expandedCompLink.Id, "expandedCompLink.Id");
+            Assert.AreEqual("9709", expandedCompLink.SchemaId, "9710");
+            Assert.IsNotNull(expandedCompLink.Content, "expandedCompLink.Content");
+
         }
 
         [TestMethod]
@@ -263,9 +345,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
             Assert.IsNotNull(pageModel.SchemaId, "pageModel.SchemaId");
 
-            PageModelData deserializedPageModel = JsonSerializeDeserialize(pageModel);
-
-            ContentModelData pageMetadata = deserializedPageModel.Metadata;
+            ContentModelData pageMetadata = pageModel.Metadata;
             Assert.IsNotNull(pageMetadata, "pageMetadata");
             KeywordModelData pageKeyword = pageMetadata["pageKeyword"] as KeywordModelData;
             Assert.IsNotNull(pageKeyword, "pageKeyword");
@@ -277,6 +357,22 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.AreEqual("999.99", keywordMetadata["numberField"], "keywordMetadata['numberField']");
             KeywordModelData keywordField = keywordMetadata["keywordField"] as KeywordModelData;
             Assert.IsNotNull(keywordField, "keywordField");
+        }
+
+        [TestMethod]
+        public void CreatePageModel_UrlPath_Success()
+        {
+            Page testPage1 = (Page) TestSession.GetObject(TestFixture.Tsi1278PageWebDavUrl);
+            Page testPage2 = (Page) TestSession.GetObject(TestFixture.Tsi1278ChildPageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel1 = CreatePageModel(testPage1, out testRenderedItem);
+            PageModelData pageModel2 = CreatePageModel(testPage2, out testRenderedItem);
+
+            // pageModel2 is in a Publication with empty PublicationURL (context-relative). 
+            // This leads to a context-relative UrlPath when testing, but it will be server-relative when publishing.
+            Assert.AreEqual("/autotest-parent/tsi-1278_trådløst", pageModel1.UrlPath, "pageModel1.UrlPath");
+            Assert.AreEqual("/tsi-1278_trådløst", pageModel2.UrlPath, "pageModel2.UrlPath");
         }
 
         [TestMethod]
@@ -404,6 +500,56 @@ namespace Sdl.Web.Tridion.Templates.Tests
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             // TODO TSI-132: further assertions
+        }
+
+        [TestMethod]
+        public void CreatePageModel_Tsi2316_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi2316PageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData testEntity = mainRegion.Entities[0];
+            KeywordModelData notPublishedKeyword = (KeywordModelData) testEntity.Content["notPublishedKeyword"];
+            KeywordModelData publishedKeyword = (KeywordModelData) testEntity.Content["publishedKeyword"];
+
+            AssertExpanded(notPublishedKeyword, false, "notPublishedKeyword");
+            AssertNotExpanded(publishedKeyword, true, "publishedKeyword");
+        }
+
+        private static void AssertExpanded(KeywordModelData keywordModelData, bool hasMetadata, string subject)
+        {
+            Assert.IsNotNull(keywordModelData.Id, subject + ".Id");
+            Assert.IsNotNull(keywordModelData.Title, subject + ".Title");
+            Assert.IsNotNull(keywordModelData.TaxonomyId, subject + ".TaxonomyId");
+            if (hasMetadata)
+            {
+                Assert.IsNotNull(keywordModelData.SchemaId, subject + ".SchemaId");
+                Assert.IsNotNull(keywordModelData.Metadata, subject + ".Metadata");
+            }
+            else
+            {
+                Assert.IsNull(keywordModelData.SchemaId, subject + ".SchemaId");
+                Assert.IsNull(keywordModelData.Metadata, subject + ".Metadata");
+            }
+        }
+
+        private static void AssertNotExpanded(KeywordModelData keywordModelData, bool hasMetadata, string subject)
+        {
+            Assert.IsNotNull(keywordModelData.Id, subject + ".Id");
+            Assert.IsNull(keywordModelData.Title, subject + ".Title");
+            Assert.IsNull(keywordModelData.TaxonomyId, subject + ".TaxonomyId");
+            if (hasMetadata)
+            {
+                Assert.IsNotNull(keywordModelData.SchemaId, subject + ".SchemaId");
+            }
+            else
+            {
+                Assert.IsNull(keywordModelData.SchemaId, subject + ".SchemaId");
+            }
+            Assert.IsNull(keywordModelData.Metadata, subject + ".Metadata");
         }
 
 

@@ -74,6 +74,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 ExtensionData = CreateTestExtensionData(testId),
                 Id = testId,
                 Title = "Test Page Model for " + testId,
+                UrlPath = "/test/url/path",
                 Meta = new Dictionary<string, string>
                 {
                     { "og:type", "test" }
@@ -93,7 +94,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 Name = name,
                 Entities = new List<EntityModelData> { CreateTestEntityModel(testId + "_Entity1") },
                 Metadata = CreateTestContentModel(testId, false, false),
-                IncludePageUrl = "/system/include/page"
+                IncludePageId = "666"
             };
         }
 
