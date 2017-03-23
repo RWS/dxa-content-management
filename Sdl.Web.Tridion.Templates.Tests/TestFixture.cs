@@ -6,7 +6,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
     {
         internal const string ExampleSiteWebDavUrl = "/webdav/400 Example Site";
         internal const string AutoTestParentWebDavUrl = "/webdav/401 Automated Test Parent";
-        internal const string AutoTestChildWebDavUrl = "/webdav/600 DXA R2 Data Model Test Child";
+        internal const string AutoTestChildWebDavUrl = "/webdav/500 Automated Test Child";
 
         internal const string ExampleSiteHomePageWebDavUrl = ExampleSiteWebDavUrl + "/Home/000 Home.tpg";
         internal const string AutoTestParentHomePageWebDavUrl = AutoTestParentWebDavUrl + "/Home/000 Home.tpg";

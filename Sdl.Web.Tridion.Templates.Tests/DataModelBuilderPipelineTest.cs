@@ -223,7 +223,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(testEntity, "testEntity");
             Assert.IsNotNull(testEntity.Content, "testEntity.Content");
             EntityModelData[] compLinkField = (EntityModelData[]) testEntity.Content["compLink"];
-            Assert.AreEqual(2, compLinkField.Length, "compLinkField.Length");
+            Assert.AreEqual(4, compLinkField.Length, "compLinkField.Length");
 
             EntityModelData notExpandedCompLink = compLinkField[0]; // Has Data Presentation
             Assert.IsNotNull(notExpandedCompLink, "notExpandedCompLink");
@@ -362,17 +362,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void CreatePageModel_UrlPath_Success()
         {
-            Page testPage1 = (Page) TestSession.GetObject(TestFixture.Tsi1278PageWebDavUrl);
-            Page testPage2 = (Page) TestSession.GetObject(TestFixture.Tsi1278ChildPageWebDavUrl);
+            Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1278PageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel1 = CreatePageModel(testPage1, out testRenderedItem);
-            PageModelData pageModel2 = CreatePageModel(testPage2, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
-            // pageModel2 is in a Publication with empty PublicationURL (context-relative). 
-            // This leads to a context-relative UrlPath when testing, but it will be server-relative when publishing.
-            Assert.AreEqual("/autotest-parent/tsi-1278_trådløst", pageModel1.UrlPath, "pageModel1.UrlPath");
-            Assert.AreEqual("/tsi-1278_trådløst", pageModel2.UrlPath, "pageModel2.UrlPath");
+            Assert.AreEqual("/autotest-parent/tsi-1278_trådløst", pageModel.UrlPath, "pageModel.UrlPath");
         }
 
         [TestMethod]
