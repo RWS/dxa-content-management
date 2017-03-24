@@ -26,6 +26,8 @@
         <MsBuildExe>C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe</MsBuildExe>
         <CmToolsDir>C:\_cm_tools</CmToolsDir>
     
+        <MsTestExe Condition="'$(MsTestExe)'=='' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio 14.0\Common7\IDE\MSTest.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio 14.0\Common7\IDE\MSTest.exe</MsTestExe>
+        <MsTestExe Condition="'$(MsTestExe)'=='' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio 12.0\Common7\IDE\MSTest.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio 12.0\Common7\IDE\MSTest.exe</MsTestExe>
   </PropertyGroup>
 
 
@@ -35,6 +37,7 @@
         
         <CallTarget Targets="PrepareBuild"/>
         <CallTarget Targets="RunBuild"/>
+        <CallTarget Targets="Test"/>
         <CallTarget Targets="CreatePackages"/>
         <CallTarget Targets="PublishPackages" Condition="'$(NuGetRepositoryUrl)' != ''"/>
         <!-- NOTE: Not calling DeployOutput here; should be called separately by Jenkins build -->
@@ -90,4 +93,12 @@
         <Exec Command="TcmUploadAssembly.exe $(CmsTargetDefinitionFile) /folder:tcm:2-17-2 /verbose &quot;$(TemplatesDll)&quot;" WorkingDirectory="$(CmToolsDir)" />
     </Target>
  
+    <!-- =============================================================================================================================================  -->
+    <Target Name="Test" Condition="'$(BuildConfiguration)' == 'Release'">
+        <Message Text="Running unit tests..." />
+    
+        <Exec Command='packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user "-target:$(MsTestExe)" "-targetargs:/testcontainer:Sdl.Web.Tridion.Templates.Tests\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.Tests.dll /resultsfile:TestResults.trx" "-filter:+[Sdl.*]* -[*Test*]*" -output:CoverageReports\Coverage.xml"'/>      
+
+        <Exec Command='packages\ReportGenerator.2.4.4.0\tools\ReportGenerator.exe "-reports:CoverageReports\Coverage.xml" "-targetdir:CoverageReports"'/>
+    </Target>
 </Project>
