@@ -29,6 +29,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
             internal string TestStripTcdlComponentPresentationTag(string input) => StripTcdlComponentPresentationTag(input);
         }
 
+        [ClassInitialize]
+        public static void Initialize(TestContext testContext)
+        {
+            DefaultInitialize(testContext);
+        }
+
         [TestMethod]
         public void GetCulture_WithLocalizationConfigComponent_Success()
         {

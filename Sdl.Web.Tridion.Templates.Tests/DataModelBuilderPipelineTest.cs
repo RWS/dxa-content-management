@@ -32,6 +32,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
             typeof(ContextExpressionsModelBuilder).FullName // Both unqualified and qualified type names should work.
         };
 
+        [ClassInitialize]
+        public static void Initialize(TestContext testContext)
+        {
+            DefaultInitialize(testContext);
+        }
+
         private RenderedItem CreateTestRenderedItem(IdentifiableObject item, Template template)
         {
             RenderInstruction testRenderInstruction = new RenderInstruction(item.Session)

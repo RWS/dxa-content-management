@@ -13,11 +13,20 @@ namespace Sdl.Web.Tridion.Templates.Tests
     /// </summary>
     public abstract class TestClass
     {
-        protected static Session TestSession { get; } = new Session();
+        protected static Session TestSession { get; private set; }
 
         protected static void DefaultInitialize(TestContext testContext)
         {
-            // TODO: Log.Info("==== {0} ====", testContext.FullyQualifiedTestClassName);
+            Console.WriteLine("==== {0} ====", testContext.FullyQualifiedTestClassName);
+            try
+            {
+                TestSession = new Session();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Unable to initialize TOM.NET Session:\n{0}", ex);
+                throw new ApplicationException($"Unable to initialize TOM.NET Session: {ex.Message}");
+            }
         }
 
         protected void OutputJson(object objectToSerialize, JsonSerializerSettings serializerSettings = null)

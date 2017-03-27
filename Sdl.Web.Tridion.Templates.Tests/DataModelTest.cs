@@ -9,6 +9,11 @@ namespace Sdl.Web.Tridion.Templates.Tests
     [TestClass]
     public class DataModelTest : TestClass
     {
+        [ClassInitialize]
+        public static void Initialize(TestContext testContext)
+        {
+            DefaultInitialize(testContext);
+        }
 
         [TestMethod]
         public void PageModelData_SerializeDeserialize_Success()
