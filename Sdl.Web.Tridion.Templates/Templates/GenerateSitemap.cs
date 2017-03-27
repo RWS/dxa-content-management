@@ -17,7 +17,7 @@ using TcmComponentPresentation = Tridion.ContentManager.CommunicationManagement.
 namespace Sdl.Web.Tridion.Templates
 {
     /// <summary>
-    /// Generates Sitemap JSON based on Structure Groups (for Static Navigation). 
+    /// Generates Sitemap JSON based on Structure Groups (for Static Navigation).
     /// </summary>
     /// <remarks>
     /// Should be used in a Component Template.
@@ -28,6 +28,7 @@ namespace Sdl.Web.Tridion.Templates
         private NavigationConfig _config;
 
         #region Nested Classes
+
         private enum NavigationType
         {
             Simple,
@@ -58,7 +59,8 @@ namespace Sdl.Web.Tridion.Templates
             public DateTime? PublishedDate { get; set; }
             public bool Visible { get; set; }
         }
-        #endregion
+
+        #endregion Nested Classes
 
         public override void Transform(Engine engine, Package package)
         {
@@ -131,7 +133,7 @@ namespace Sdl.Web.Tridion.Templates
                 }
                 else
                 {
-                    childSitemapItem = GenerateStructureGroupNavigation((StructureGroup) item);
+                    childSitemapItem = GenerateStructureGroupNavigation((StructureGroup)item);
                 }
 
                 result.Items.Add(childSitemapItem);
@@ -149,9 +151,10 @@ namespace Sdl.Web.Tridion.Templates
             return Regex.Replace(title, @"^\d{3}\s", string.Empty);
         }
 
-        private static DateTime? GetPublishedDate(Page page, TargetType targetType )
+        private static DateTime? GetPublishedDate(Page page, TargetType targetType)
         {
-            PublishInfo publishInfo = PublishEngine.GetPublishInfo(page).FirstOrDefault(pi => pi.TargetType == targetType);
+            PublishInfo publishInfo = PublishEngine.GetPublishInfo(page)
+                                                .FirstOrDefault(pi => pi.TargetType == targetType && pi.Publication.Id.ItemId == page.Id.PublicationId);
             if (publishInfo == null)
             {
                 return null;
@@ -265,4 +268,3 @@ namespace Sdl.Web.Tridion.Templates
         }
     }
 }
-
