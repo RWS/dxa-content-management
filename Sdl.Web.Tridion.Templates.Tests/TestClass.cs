@@ -86,6 +86,41 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 Assert.IsNotNull(actual, subjectName);
                 Assert.AreNotSame(expected, actual, subjectName);
                 Assert.AreEqual(expected.Count(), actual.Count(), subjectName + ".Count()");
+                // TODO: check individual elements
+            }
+        }
+
+        protected static void AssertEqualDictionaries<T>(IDictionary<string, T> expected, IDictionary<string, T> actual, string subject)
+        {
+            if (expected == null)
+            {
+                Assert.IsNull(actual, subject);
+            }
+            else
+            {
+                Assert.IsNotNull(actual, subject);
+                foreach (KeyValuePair<string, T> kvp in expected)
+                {
+                    T actualValue;
+                    if (!actual.TryGetValue(kvp.Key, out actualValue))
+                    {
+                        Assert.Fail($"Expected key '{kvp.Key}' not found in {subject}.");
+                    }
+
+                    Array expectedArray = kvp.Value as Array;
+                    if (expectedArray != null)
+                    {
+                        Array actualArray = actualValue as Array;
+                        Assert.IsNotNull(actualArray, $"Expected an array, but the actual value of {subject}[{kvp.Key}] is not: {actualValue.GetType().Name}");
+                        Assert.AreEqual(expectedArray.Length, actualArray.Length, $"{subject}[{kvp.Key}].Length");
+                        // TODO: check individual elements
+                    }
+                    else
+                    {
+                        Assert.AreEqual(kvp.Value, actualValue, $"{subject}['{kvp.Key}']");
+                    }
+                }
+                Assert.AreEqual(expected.Count, actual.Count, subject + ".Count");
             }
         }
     }
