@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sdl.Web.DataModel;
 using Sdl.Web.Tridion.Data;
 using Tridion.ContentManager;
+using Tridion.ContentManager.Caching;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Publishing;
@@ -39,21 +40,72 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void DataPresentationTemplate_Success()
+        public void DataPresentationTemplate_FoundAndCached_Success()
         {
-            Page dummyPage = (Page) TestSession.GetObject(TestFixture.AutoTestParentHomePageWebDavUrl);
+            using (Session testSessionWithCache = new Session())
+            {
+                SimpleCache testCache = new SimpleCache();
+                testSessionWithCache.Cache = testCache;
+
+                Page dummyPage = (Page) testSessionWithCache.GetObject(TestFixture.AutoTestParentHomePageWebDavUrl);
+
+                RenderedItem renderedItem = CreateTestRenderedItem(dummyPage, dummyPage.PageTemplate);
+                TestLogger testLogger = new TestLogger();
+
+                DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
+                    renderedItem,
+                    _defaultModelBuilderSettings,
+                    _defaultModelBuilderTypeNames,
+                    testLogger
+                    );
+
+                ComponentTemplate dataPresentationTemplate = testModelBuilderPipeline.DataPresentationTemplate;
+                Assert.IsNotNull(dataPresentationTemplate, "dataPresentationTemplate");
+
+                SimpleCacheRegion dxaCacheRegion;
+                Assert.IsTrue(testCache.Regions.TryGetValue("DXA", out dxaCacheRegion), "DXA Cache Region not found.");
+                ComponentTemplate cachedComponentTemplate = dxaCacheRegion.Get("DataPresentationTemplate") as ComponentTemplate;
+                Assert.AreEqual(dataPresentationTemplate, cachedComponentTemplate, "cachedComponentTemplate");
+
+                // Create new DataModelBuilderPipeline for same Session; DataPresentationTemplate should be obtained from cache.
+                testModelBuilderPipeline = new DataModelBuilderPipeline(
+                    renderedItem,
+                    _defaultModelBuilderSettings,
+                    _defaultModelBuilderTypeNames,
+                    testLogger
+                    );
+
+                ComponentTemplate dataPresentationTemplate2 = testModelBuilderPipeline.DataPresentationTemplate;
+                Assert.AreEqual(dataPresentationTemplate, dataPresentationTemplate2, "dataPresentationTemplate2");
+
+                Assert.IsTrue(
+                    testLogger.LoggedMessages.Contains(new LogMessage(LogLevel.Debug, "Obtained Data Presentation Template from cache.")),
+                    "Expected Log message not found."
+                    );
+            }
+        }
+
+        [TestMethod]
+        public void DataPresentationTemplate_NotFound_Success()
+        {
+            Page dummyPage = (Page) TestSession.GetObject(TestFixture.AutoTestChildHomePageWebDavUrl);
 
             RenderedItem renderedItem = CreateTestRenderedItem(dummyPage, dummyPage.PageTemplate);
+            TestLogger testLogger = new TestLogger();
 
             DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
                 renderedItem,
                 _defaultModelBuilderSettings,
                 _defaultModelBuilderTypeNames,
-                new ConsoleLogger()
+                testLogger
                 );
 
             ComponentTemplate dataPresentationTemplate = testModelBuilderPipeline.DataPresentationTemplate;
-            Assert.IsNotNull(dataPresentationTemplate, "dataPresentationTemplate");
+            Assert.IsNull(dataPresentationTemplate, "dataPresentationTemplate");
+            Assert.IsTrue(
+                testLogger.LoggedMessages.Contains(new LogMessage(LogLevel.Warning, "Component Template 'Generate Data Presentation' not found.")),
+                "Expected Log message not found."
+                );
         }
 
         [TestMethod]
@@ -554,7 +606,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 renderedItem,
                 _defaultModelBuilderSettings,
                 modelBuilderTypeNames,
-                new ConsoleLogger()
+                new TestLogger()
                 );
 
             PageModelData result = testModelBuilderPipeline.CreatePageModel(page);
@@ -578,7 +630,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 renderedItem,
                 _defaultModelBuilderSettings,
                 modelBuilderTypeNames,
-                new ConsoleLogger()
+                new TestLogger()
                 );
 
             EntityModelData result = testModelBuilderPipeline.CreateEntityModel(component, ct);

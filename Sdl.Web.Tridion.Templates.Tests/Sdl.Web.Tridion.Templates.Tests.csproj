@@ -70,7 +70,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ConsoleLogger.cs" />
+    <Compile Include="TestLogger.cs" />
     <Compile Include="DataModelBuilderPipelineTest.cs" />
     <Compile Include="DataModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
