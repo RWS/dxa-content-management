@@ -57,7 +57,6 @@ namespace Sdl.Web.Tridion.Data
             AddComponentPresentationRegions(regionModels, page);
             AddIncludePageRegions(regionModels, pt);
 
-
             // Merge Page metadata and PT custom metadata
             ContentModelData ptCustomMetadata = ExtractCustomMetadata(pt.Metadata, excludeFields: _standardPageTemplateMetadataFields);
             ContentModelData pageMetadata = BuildContentModel(page.Metadata, Pipeline.Settings.ExpandLinkDepth);
@@ -295,23 +294,25 @@ namespace Sdl.Web.Tridion.Data
                 string regionViewName = StripModuleName(includePage.Title, out moduleName);
                 string regionName = regionViewName;
 
-                if (regionModels.ContainsKey(regionName))
+                RegionModelData includePageRegion;
+                if (regionModels.TryGetValue(regionName, out includePageRegion))
                 {
-                    // TODO: log this? Throw exception? Promote Region to Include Page Region?
-                    Logger.Debug("TODO: merge include Page Region '{regionName}'");
-                    continue;
+                    Logger.Debug($"Promoting Region '{regionName}' to Include Page Region.");
                 }
-
-                RegionModelData includePageRegion = new RegionModelData
+                else
                 {
-                    Name = regionName,
-                    MvcData = new MvcData
+                    includePageRegion = new RegionModelData
                     {
-                        ViewName = regionViewName,
-                        AreaName = moduleName
-                    },
-                    IncludePageId = GetDxaIdentifier(includePage)
-                };
+                        Name = regionName,
+                        MvcData = new MvcData
+                        {
+                            ViewName = regionViewName,
+                            AreaName = moduleName
+                        }
+                    };
+                    regionModels.Add(regionName, includePageRegion);
+                }
+                includePageRegion.IncludePageId = GetDxaIdentifier(includePage);
 
                 if (Pipeline.Settings.GenerateXpmMetadata)
                 {
@@ -322,7 +323,6 @@ namespace Sdl.Web.Tridion.Data
                         {"IncludedFromPageFileName", includePage.FileName}
                     };
                 }
-                regionModels.Add(regionName, includePageRegion);
             }
         }
 

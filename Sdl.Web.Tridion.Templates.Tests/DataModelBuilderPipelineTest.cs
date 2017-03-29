@@ -559,6 +559,17 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
+        public void CreatePageModel_R2PageIncludes_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.R2PageIncludesPageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+
+            AssertExpectedIncludePageRegions(pageModel.Regions, new [] { "Header" }, allowEntities: true);
+        }
+
+        [TestMethod]
         public void CreateEntityModel_ArticleDcp_Success()
         {
             string[] articleDcpIds = TestFixture.ArticleDcpId.Split('/');
@@ -680,7 +691,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             return mainRegion;
         }
 
-        private static void AssertExpectedIncludePageRegions(IEnumerable<RegionModelData> regions, string[] expectedRegionNames)
+        private static void AssertExpectedIncludePageRegions(IEnumerable<RegionModelData> regions, string[] expectedRegionNames, bool allowEntities = false)
         {
             RegionModelData[] includePageRegions = regions.Where(r => r.IncludePageId != null).ToArray();
             Assert.AreEqual(expectedRegionNames.Length, includePageRegions.Length, "includePageRegions.Length");
@@ -691,7 +702,10 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 Assert.IsNotNull(includePageRegion.Name, "includePageRegion.Name");
                 Assert.IsTrue(expectedRegionNames.Contains(includePageRegion.Name), "Unexpected Include Page Region name: " + includePageRegion.Name);
                 Assert.IsNull(includePageRegion.Regions, "includePageRegion.Regions");
-                Assert.IsNull(includePageRegion.Entities, "includePageRegion.Entities");
+                if (!allowEntities)
+                {
+                    Assert.IsNull(includePageRegion.Entities, "includePageRegion.Entities");
+                }
                 Assert.IsNotNull(includePageRegion.XpmMetadata, "includePageRegion.XpmMetadata");
                 object includedFromPageId;
                 Assert.IsTrue(includePageRegion.XpmMetadata.TryGetValue("IncludedFromPageID", out includedFromPageId), "includePageRegion.XpmMetadata['IncludedFromPageID']");
