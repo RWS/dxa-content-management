@@ -310,6 +310,23 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
+        public void CreatePageModel_MetadataMerge_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.SmartTargetMetadataOverridePageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+
+            ContentModelData pageModelMetadata = pageModel.Metadata;
+            Assert.IsNotNull(pageModelMetadata, "pageModelMetadata");
+            object allowDups;
+            Assert.IsTrue(pageModelMetadata.TryGetValue("allowDuplicationOnSamePage", out allowDups), "pageModelMetadata['allowDuplicationOnSamePage']");
+            Assert.AreEqual("True", allowDups, "allowDups"); // PT metadata overridden by Page metadata
+
+            Assert.AreEqual("metadata merge test", pageModelMetadata["htmlClasses"], "pageModelMetadata['htmlClasses']");
+        }
+
+        [TestMethod]
         public void CreatePageModel_ContextExpressions_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.ContextExpressionsPageWebDavUrl);
@@ -582,6 +599,21 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.AreEqual(2, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
             Assert.AreEqual(0, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
         }
+
+        [TestMethod]
+        public void CreateEntityModel_WithCategoryLink_Success()
+        {
+            Component testComponent = (Component) TestSession.GetObject(TestFixture.TestComponentWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            EntityModelData testEntity = CreateEntityModel(testComponent, null, out testRenderedItem);
+
+            string[] externalLinkField = (string[]) testEntity.Content["ExternalLink"];
+            Assert.AreEqual(2, externalLinkField.Length, "externalLinkField.Length");
+            Assert.AreEqual("http://www.sdl.com", externalLinkField[0], "externalLinkField[0]");
+            Assert.AreEqual("tcm:1065-2702-512", externalLinkField[1], "externalLinkField[1]"); // NOTE: This is a (managed) Category link (!)
+        }
+
 
         private RenderedItem CreateTestRenderedItem(IdentifiableObject item, Template template)
         {

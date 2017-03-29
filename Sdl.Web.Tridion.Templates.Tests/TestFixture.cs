@@ -17,6 +17,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         internal const string MediaManagerPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/MediaManager.tpg";
         internal const string FlickrTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/Flickr Test.tpg";
         internal const string SmartTargetPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Smoke/Smart Target Smoke Test.tpg";
+        internal const string SmartTargetMetadataOverridePageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Smoke/Smart Target PT metadata override.tpg";
         internal const string ContextExpressionsPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Smoke/Context Expression Smoke Test.tpg";
         internal const string Tsi811PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-811 Test Page.tpg";
         internal const string Tsi1278PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/TSI-1278 Internationalized URLs.tpg";
@@ -33,5 +34,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
         internal const string ArticleDcpId = "tcm:1065-9712/tcm:1065-9711-32";
 
         internal const string BullsEyeComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Images/Large/bulls-eye.jpg";
+        internal const string TestComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Test/Test Component.xml";
     }
 }
