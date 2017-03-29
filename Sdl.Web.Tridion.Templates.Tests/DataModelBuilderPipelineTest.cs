@@ -559,7 +559,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void CreatePageModel_R2PageIncludes_Success()
+        public void CreatePageModel_HybridRegion_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.R2PageIncludesPageWebDavUrl);
 
@@ -567,6 +567,20 @@ namespace Sdl.Web.Tridion.Templates.Tests
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
             AssertExpectedIncludePageRegions(pageModel.Regions, new [] { "Header" }, allowEntities: true);
+
+            // Header (Include Page) Region should also contain an Entity Model for the Test CP.
+            RegionModelData header = pageModel.Regions.First(r => r.Name == "Header");
+            Assert.IsNotNull(header.Entities, "header.Entities");
+            Assert.AreEqual(1, header.Entities.Count, "header.Entities.Count");
+            EntityModelData testEntity = header.Entities[0];
+
+            MvcData mvcData = testEntity.MvcData;
+            Assert.IsNotNull(mvcData, "mvcData");
+            Assert.IsNotNull(mvcData.Parameters, "mvcData.Parameters");
+            Assert.AreEqual(2, mvcData.Parameters.Count, "mvcData.Parameters.Count");
+            string name;
+            Assert.IsTrue(mvcData.Parameters.TryGetValue("name", out name), "mvcData.Parameters['name']");
+            Assert.AreEqual("value", name, "name");
         }
 
         [TestMethod]
