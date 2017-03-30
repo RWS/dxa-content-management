@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Sdl.Web.DataModel;
 using Sdl.Web.Tridion.Common;
-using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.Templating;
 
@@ -31,9 +28,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
         [ClassInitialize]
         public static void Initialize(TestContext testContext)
-        {
-            DefaultInitialize(testContext);
-        }
+            => DefaultInitialize(testContext);
 
         [TestMethod]
         public void GetCulture_WithLocalizationConfigComponent_Success()

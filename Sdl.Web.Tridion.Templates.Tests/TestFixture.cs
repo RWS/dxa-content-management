@@ -36,5 +36,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
         internal const string BullsEyeComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Images/Large/bulls-eye.jpg";
         internal const string TestComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Test/Test Component.xml";
+        internal const string NavConfigurationComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Settings/Core/Site Manager/Navigation Configuration.xml";
     }
 }

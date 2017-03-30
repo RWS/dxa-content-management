@@ -11,9 +11,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
     {
         [ClassInitialize]
         public static void Initialize(TestContext testContext)
-        {
-            DefaultInitialize(testContext);
-        }
+            => DefaultInitialize(testContext);
 
         [TestMethod]
         public void PageModelData_SerializeDeserialize_Success()

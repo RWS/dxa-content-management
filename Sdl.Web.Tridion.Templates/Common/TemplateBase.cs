@@ -200,7 +200,7 @@ namespace Sdl.Web.Tridion.Common
         public Page GetPage()
         {
             //first try to get from the render context
-            RenderContext renderContext = Engine.PublishingContext.RenderContext;
+            RenderContext renderContext = Engine.PublishingContext?.RenderContext;
             if (renderContext != null)
             {
                 Page contextPage = renderContext.ContextItem as Page;

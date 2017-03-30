@@ -5,6 +5,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Sdl.Web.DataModel;
 using Tridion.ContentManager;
+using Tridion.ContentManager.CommunicationManagement;
+using Tridion.ContentManager.Publishing;
+using Tridion.ContentManager.Publishing.Rendering;
+using Tridion.ContentManager.Publishing.Resolving;
 
 namespace Sdl.Web.Tridion.Templates.Tests
 {
@@ -122,6 +126,16 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 }
                 Assert.AreEqual(expected.Count, actual.Count, subject + ".Count");
             }
+        }
+
+        protected RenderedItem CreateTestRenderedItem(IdentifiableObject item, Template template)
+        {
+            RenderInstruction testRenderInstruction = new RenderInstruction(item.Session)
+            {
+                BinaryStoragePath = @"C:\Temp\DXA\Test",
+                RenderMode = RenderMode.PreviewDynamic
+            };
+            return new RenderedItem(new ResolvedItem(item, template), testRenderInstruction);
         }
     }
 }

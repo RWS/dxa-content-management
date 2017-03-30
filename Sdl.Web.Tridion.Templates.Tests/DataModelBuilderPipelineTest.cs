@@ -8,9 +8,7 @@ using Tridion.ContentManager;
 using Tridion.ContentManager.Caching;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
-using Tridion.ContentManager.Publishing;
 using Tridion.ContentManager.Publishing.Rendering;
-using Tridion.ContentManager.Publishing.Resolving;
 
 namespace Sdl.Web.Tridion.Templates.Tests
 {
@@ -35,9 +33,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
         [ClassInitialize]
         public static void Initialize(TestContext testContext)
-        {
-            DefaultInitialize(testContext);
-        }
+            => DefaultInitialize(testContext);
 
         [TestMethod]
         public void DataPresentationTemplate_FoundAndCached_Success()
@@ -639,16 +635,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.AreEqual("tcm:1065-2702-512", externalLinkField[1], "externalLinkField[1]"); // NOTE: This is a (managed) Category link (!)
         }
 
-
-        private RenderedItem CreateTestRenderedItem(IdentifiableObject item, Template template)
-        {
-            RenderInstruction testRenderInstruction = new RenderInstruction(item.Session)
-            {
-                BinaryStoragePath = @"C:\Temp\DXA\Test",
-                RenderMode = RenderMode.PreviewDynamic
-            };
-            return new RenderedItem(new ResolvedItem(item, template), testRenderInstruction);
-        }
 
         private PageModelData CreatePageModel(Page page, out RenderedItem renderedItem, IEnumerable<string> modelBuilderTypeNames = null)
         {

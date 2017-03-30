@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
+using Sdl.Web.DataModel;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
@@ -40,24 +41,6 @@ namespace Sdl.Web.Tridion.Templates
             public NavigationType NavType { get; set; }
             public string ExternalUrlTemplate { get; set; }
         }
-
-        private class SitemapItem
-        {
-            public SitemapItem()
-            {
-                Items = new List<SitemapItem>();
-            }
-
-            public string Title { get; set; }
-
-            public string Url { get; set; }
-
-            public string Id { get; set; }
-            public string Type { get; set; }
-            public List<SitemapItem> Items { get; set; }
-            public DateTime? PublishedDate { get; set; }
-            public bool Visible { get; set; }
-        }
         #endregion
 
         public override void Transform(Engine engine, Package package)
@@ -66,7 +49,7 @@ namespace Sdl.Web.Tridion.Templates
 
             _config = GetNavigationConfiguration(GetComponent());
 
-            SitemapItem sitemap = GenerateStructureGroupNavigation(Publication.RootStructureGroup);
+            SitemapItemData sitemap = GenerateStructureGroupNavigation(Publication.RootStructureGroup);
             string sitemapJson = JsonSerialize(sitemap, IsPreview);
 
             package.PushItem(Package.OutputName, package.CreateStringItem(ContentType.Text, sitemapJson));
@@ -97,9 +80,9 @@ namespace Sdl.Web.Tridion.Templates
             return result;
         }
 
-        private SitemapItem GenerateStructureGroupNavigation(StructureGroup structureGroup)
+        private SitemapItemData GenerateStructureGroupNavigation(StructureGroup structureGroup)
         {
-            SitemapItem result = new SitemapItem
+            SitemapItemData result = new SitemapItemData
             {
                 Id = structureGroup.Id,
                 Title = GetNavigationTitle(structureGroup),
@@ -110,7 +93,7 @@ namespace Sdl.Web.Tridion.Templates
 
             foreach (RepositoryLocalObject item in structureGroup.GetItems().Where(i => !i.Title.StartsWith("_")).OrderBy(i => i.Title))
             {
-                SitemapItem childSitemapItem;
+                SitemapItemData childSitemapItem;
                 Page page = item as Page;
                 if (page != null)
                 {
@@ -119,13 +102,13 @@ namespace Sdl.Web.Tridion.Templates
                         continue;
                     }
 
-                    childSitemapItem = new SitemapItem
+                    childSitemapItem = new SitemapItemData
                     {
                         Id = page.Id,
                         Title = GetNavigationTitle(page),
                         Url = GetUrl(page),
                         Type = ItemType.Page.ToString(),
-                        PublishedDate = GetPublishedDate(page, Engine.PublishingContext.TargetType),
+                        PublishedDate = GetPublishedDate(page, Engine.PublishingContext?.TargetType),
                         Visible = IsVisible(page.Title)
                     };
                 }
@@ -255,7 +238,7 @@ namespace Sdl.Web.Tridion.Templates
         private bool IsPublished(Page page)
         {
             //For preview we always return true - to help debugging
-            return Engine.PublishingContext.PublicationTarget == null || PublishEngine.IsPublished(page, Engine.PublishingContext.PublicationTarget);
+            return (Engine.PublishingContext?.PublicationTarget == null) || PublishEngine.IsPublished(page, Engine.PublishingContext.PublicationTarget);
         }
 
         private static bool IsVisible(string title)
