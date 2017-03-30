@@ -58,6 +58,11 @@ namespace Sdl.Web.Tridion.Common
                 }
                 return _package;
             }
+            set
+            {
+                // Allows dependency injection for unit test purposes.
+                _package = value;
+            }
         }
 
         /// <summary>
@@ -115,7 +120,7 @@ namespace Sdl.Web.Tridion.Common
 
 
         /// <summary>
-        /// Initializes the engine and package to use in this TemplateBase object.
+        /// Initializes the Engine and Package to use in this TemplateBase object.
         /// </summary>
         /// <param name="engine">The engine to use in calls to the other methods of this TemplateBase object</param>
         /// <param name="package">The package to use in calls to the other methods of this TemplateBase object</param>
@@ -126,14 +131,6 @@ namespace Sdl.Web.Tridion.Common
         }
 
         public abstract void Transform(Engine engine, Package package);
-
-        /// <summary>
-        /// Checks whether the TemplateBase object has been initialized correctly.
-        /// </summary>
-        [Obsolete("Deprecated in DXA 1.7. No need to call this anymore.")]
-        protected void CheckInitialized()
-        {
-        }
 
         /// <summary>
         /// Update the (JSON) summary in the Output item.
@@ -268,16 +265,6 @@ namespace Sdl.Web.Tridion.Common
                 return _isXpmEnabled.Value;
             }
         }
-
-        /// <summary>
-        /// Determines if current action is publishing to a XPM enabled target.
-        /// </summary>
-        /// <returns>True if publishing to a target which is XPM enabled.</returns>
-        [Obsolete("Deprecated in DXA 1.7. Use IsXpmEnabled instead.")]
-        protected bool IsPublishingToStaging() => IsXpmEnabled;
-
-        [Obsolete("Deprecated in DXA 2.0. Use IsPreview property instead.")]
-        protected bool IsPreviewMode() => IsPreview;
 
         /// <summary>
         /// Gets whether the item is being rendered as part of CM Preview.
@@ -454,49 +441,6 @@ namespace Sdl.Web.Tridion.Common
             return source;
         }
 
-        [Obsolete("Deprecated in DXA 1.7. Use AddJsonBinary instead.")]
-        protected List<string> PublishJsonData(Dictionary<string, List<string>> settings, Component relatedComponent, string variantName, StructureGroup sg, bool isArray = false)
-        {
-            List<string> files = new List<string>();
-            foreach (string key in settings.Keys)
-            {
-                files.Add(PublishJsonData(settings[key], relatedComponent, key, variantName+key, sg, isArray));
-            }
-            return files;
-        }
-
-        [Obsolete("Deprecated in DXA 1.7. Use AddJsonBinary instead.")]
-        protected string PublishJsonData(Dictionary<string,string> data, Component relatedComponent, string filename, string variantName, StructureGroup sg, bool isArray = false)
-        {
-            return PublishJsonData(data.Select(i => String.Format("{0}:{1}", JsonEncode(i.Key), JsonEncode(i.Value))).ToList(), relatedComponent, filename, variantName, sg, isArray);
-        }
-
-        [Obsolete("Deprecated in DXA 1.7. Use AddJsonBinary instead.")]
-        protected string PublishJsonData(List<string> settings, Component relatedComponent, string filename, string variantName, StructureGroup sg, bool isArray = false)
-        {
-            if (settings.Count > 0)
-            {
-                string json;
-                if (isArray)
-                {
-                    json = String.Format("[{0}]", String.Join(",\n", settings));
-                }
-                else
-                {
-                    json = String.Format("{{{0}}}", String.Join(",\n", settings));
-                }
-                return PublishJson(json, relatedComponent, sg, filename, variantName);
-            }
-            return null;
-        }
-
-        [Obsolete("Deprecated in DXA 1.7. Use AddBootstrapJsonBinary instead.")]
-        protected string PublishBootstrapJson(List<string> filesCreated, Component relatedComponent, StructureGroup sg, string variantName = null, List<string> additionalData = null)
-        {
-            string extras = additionalData != null && additionalData.Count > 0 ? String.Join(",", additionalData) + "," : "";
-            return PublishJson(String.Format("{{{0}\"files\":[{1}]}}", extras, String.Join(",", filesCreated.Where(i=>!String.IsNullOrEmpty(i)).ToList())), relatedComponent, sg, BootstrapFilename, variantName + "bootstrap");
-        }
-
         protected void AddBootstrapJsonBinary(IList<Binary> binaries, Component relatedComponent, StructureGroup sg, string variantName)
         {
             BootstrapData bootstrapData = new BootstrapData
@@ -504,16 +448,6 @@ namespace Sdl.Web.Tridion.Common
                 Files = binaries.Where(b => b != null).Select(b => b.Url).ToArray()
             };
             binaries.Add(AddJsonBinary(bootstrapData, relatedComponent, sg, BootstrapFilename, variantName + "-bootstrap"));
-        }
-
-        [Obsolete("Deprecated in DXA 1.7. Use AddJsonBinary instead.")]
-        protected string PublishJson(string json, Component relatedComponent, StructureGroup sg, string filename, string variantName)
-        {
-            Item jsonItem = Package.CreateStringItem(ContentType.Text, json);
-            Binary binary = Engine.PublishingContext.RenderedItem.AddBinary(jsonItem.GetAsStream(), filename + JsonExtension, sg, variantName, relatedComponent, JsonMimetype);
-            jsonItem.Properties[Item.ItemPropertyPublishedPath] = binary.Url;
-            Package.PushItem(binary.Url, jsonItem);
-            return JsonEncode(binary.Url);
         }
 
         protected Binary AddJsonBinary(object objectToSerialize, Component relatedComponent, StructureGroup structureGroup, string name, string variantId = null)
@@ -573,12 +507,6 @@ namespace Sdl.Web.Tridion.Common
             return keyValuePairs;
         }
 
-        [Obsolete("Deprecated in DXA 1.7. Use JsonSerialize instead.")]
-        protected string JsonEncode(object json)
-        {
-            return JsonSerialize(json);
-        }
-
         protected string JsonSerialize(object objectToSerialize, bool prettyPrint = false, JsonSerializerSettings settings = null)
         {
             if (settings == null)
@@ -611,12 +539,6 @@ namespace Sdl.Web.Tridion.Common
                 throw new DxaException(string.Format("Cannot find Structure Group with WebDAV URL '{0}'", webDavUrl));
             }
             return result;
-        }
-
-        [Obsolete("Deprecated in DXA 1.6. There is no need to pass in a coreConfigComponent; use the parameterless overload instead.")]
-        protected Dictionary<string, Component> GetActiveModules(Component coreConfigComponent)
-        {
-            return GetActiveModules();
         }
 
         protected Dictionary<string, Component> GetActiveModules()
@@ -668,23 +590,6 @@ namespace Sdl.Web.Tridion.Common
             return schemas.First();
         }
 
-        [Obsolete("Deprecated in DXA 1.7.")]
-        protected string GetModuleNameFromItem(RepositoryLocalObject item, string moduleRoot)
-        {
-            //The module name is the name of the folder within the first level of the module root folder 
-            //in which the item lives
-            string fullItemWebdavUrl = item.WebDavUrl;
-            if (fullItemWebdavUrl.StartsWith(moduleRoot))
-            {
-                Logger.Debug(fullItemWebdavUrl + ":" + moduleRoot);
-                string res = fullItemWebdavUrl.Substring(moduleRoot.Length + 1);
-                int pos = res.IndexOf("/", StringComparison.Ordinal);
-                Logger.Debug(res);
-                return res.Substring(0, pos).ToLower();
-            }
-            return null;
-        }
-        
         protected static string GetRegionName(ComponentTemplate template)
         {
             // check CT metadata
