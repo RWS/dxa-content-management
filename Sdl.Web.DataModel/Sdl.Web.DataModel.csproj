@@ -68,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionModelData.cs" />
     <Compile Include="RichTextData.cs" />
+    <Compile Include="SitemapItemData.cs" />
     <Compile Include="ViewModelData.cs" />
   </ItemGroup>
   <ItemGroup>

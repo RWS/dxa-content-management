@@ -9,16 +9,48 @@ namespace Sdl.Web.Tridion.Templates.Tests
     [TestClass]
     public class DataModelTest : TestClass
     {
+        [ClassInitialize]
+        public static void Initialize(TestContext testContext)
+            => DefaultInitialize(testContext);
 
         [TestMethod]
         public void PageModelData_SerializeDeserialize_Success()
         {
-            PageModelData testPageModel = CreateTestPageModelData("PageModelData_SerializeDeserialize_Success");
+            PageModelData testPageModel = CreateTestPageModel("PageModelData_SerializeDeserialize_Success");
 
             PageModelData deserializedPageModel = JsonSerializeDeserialize(testPageModel);
 
-            Assert.AreEqual(deserializedPageModel.MvcData, testPageModel.MvcData, "testPageModel.MvcData");
-            // TODO TSI-132: further assertions
+            AssertEqualPageModels(testPageModel, deserializedPageModel, "deserializedPageModel");
+        }
+
+        [TestMethod]
+        public void RegionModelData_SerializeDeserialize_Success()
+        {
+            RegionModelData testRegionModel = CreateTestRegionModel("RegionModelData_SerializeDeserialize_Success");
+
+            RegionModelData deserializedRegionModel = JsonSerializeDeserialize(testRegionModel);
+
+            AssertEqualRegionModels(testRegionModel, deserializedRegionModel, "deserializedRegionModel");
+        }
+
+        [TestMethod]
+        public void EntityModelData_SerializeDeserialize_Success()
+        {
+            EntityModelData testEntityModel = CreateTestEntityModel("EntityModelData_SerializeDeserialize_Success");
+
+            EntityModelData deserializedEntityModel = JsonSerializeDeserialize(testEntityModel);
+
+            AssertEqualEntityModels(testEntityModel, deserializedEntityModel, "deserializedEntityModel");
+        }
+
+        [TestMethod]
+        public void KeywordModelData_SerializeDeserialize_Success()
+        {
+            KeywordModelData testKeywordModel = CreateTestKeywordModel("KeywordModelData_SerializeDeserialize_Success");
+
+            KeywordModelData deserializedKeywordModel = JsonSerializeDeserialize(testKeywordModel);
+
+            AssertEqualKeywordModels(testKeywordModel, deserializedKeywordModel, "deserializedKeywordModel");
         }
 
         [TestMethod]
@@ -64,7 +96,87 @@ namespace Sdl.Web.Tridion.Templates.Tests
             AssertEqualCollections(testMultiValueKeywordField, deserializedMultiValueKeywordField, "deserializedMultiValueKeywordField");
         }
 
-        private static PageModelData CreateTestPageModelData(string testId)
+        private static void AssertEqualViewModels(ViewModelData expected, ViewModelData actual, string subject)
+        {
+            Assert.AreEqual(expected.MvcData, actual.MvcData, subject + ".MvcData");
+            Assert.AreEqual(expected.HtmlClasses, actual.HtmlClasses, subject + ".HtmlClasses");
+            AssertEqualDictionaries(expected.XpmMetadata, actual.XpmMetadata, subject + ".XpmMetadata");
+            AssertEqualDictionaries(expected.ExtensionData, actual.ExtensionData, subject + ".ExtensionData");
+            Assert.AreEqual(expected.SchemaId, actual.SchemaId, subject + ".SchemaId");
+            // TODO: AssertEqualDictionaries(expected.Metadata, actual.Metadata, subject + ".Metadata");
+        }
+
+        private static void AssertEqualPageModels(PageModelData expected, PageModelData actual, string subject)
+        {
+            AssertEqualViewModels(expected, actual, subject);
+            Assert.AreEqual(expected.Id, actual.Id, subject + ".Id");
+            Assert.AreEqual(expected.Title, actual.Title, subject + ".Title");
+            Assert.AreEqual(expected.UrlPath, actual.UrlPath, subject + ".UrlPath");
+            AssertEqualDictionaries(expected.Meta, actual.Meta, subject + ".Meta");
+            AssertEqualCollections(expected.Regions, actual.Regions, subject + ".Regions");
+        }
+
+        private static void AssertEqualRegionModels(RegionModelData expected, RegionModelData actual, string subject)
+        {
+            AssertEqualViewModels(expected, actual, subject);
+            Assert.AreEqual(expected.Name, actual.Name, subject + ".Name");
+            AssertEqualCollections(expected.Entities, actual.Entities, subject + ".Entities");
+            AssertEqualCollections(expected.Regions, actual.Regions, subject + ".Regions");
+            Assert.AreEqual(expected.IncludePageId, actual.IncludePageId, subject + ".IncludePageId");
+        }
+
+        private void AssertEqualEntityModels(EntityModelData expected, EntityModelData actual, string subject)
+        {
+            AssertEqualViewModels(expected, actual, subject);
+            Assert.AreEqual(expected.Id, actual.Id, subject + ".Id");
+            // TODO: AssertEqualDictionaries(expected.Content, actual.Content, subject + ".Content");
+            AssertEqualBinaryContent(expected.BinaryContent, actual.BinaryContent, subject + ".BinaryContent");
+            AssertEqualExternalContent(expected.ExternalContent, actual.ExternalContent, subject + ".ExternalContent");
+            Assert.AreEqual(expected.LinkUrl, actual.LinkUrl, subject + ".LinkUrl");
+        }
+        private void AssertEqualKeywordModels(KeywordModelData expected, KeywordModelData actual, string subject)
+        {
+            AssertEqualViewModels(expected, actual, subject);
+            Assert.AreEqual(expected.Id, actual.Id, subject + ".Id");
+            Assert.AreEqual(expected.Title, actual.Title, subject + ".Title");
+            Assert.AreEqual(expected.Description, actual.Description, subject + ".Description");
+            Assert.AreEqual(expected.Key, actual.Key, subject + ".Key");
+            Assert.AreEqual(expected.TaxonomyId, actual.TaxonomyId, subject + ".TaxonomyId");
+        }
+
+        private static void AssertEqualBinaryContent(BinaryContentData expected, BinaryContentData actual, string subject)
+        {
+            if (expected == null)
+            {
+                Assert.IsNull(actual, subject);
+            }
+            else
+            {
+                Assert.IsNotNull(actual, subject);
+                Assert.AreEqual(expected.Url, actual.Url, subject + ".Url");
+                Assert.AreEqual(expected.FileName, actual.FileName, subject + ".FileName");
+                Assert.AreEqual(expected.FileSize, actual.FileSize, subject + ".FileSize");
+                Assert.AreEqual(expected.MimeType, actual.MimeType, subject + ".MimeType");
+            }
+        }
+
+        private void AssertEqualExternalContent(ExternalContentData expected, ExternalContentData actual, string subject)
+        {
+            if (expected == null)
+            {
+                Assert.IsNull(actual, subject);
+            }
+            else
+            {
+                Assert.IsNotNull(actual, subject);
+                Assert.AreEqual(expected.Id, actual.Id, subject + ".Id");
+                Assert.AreEqual(expected.DisplayTypeId, actual.DisplayTypeId, subject + ".DisplayTypeId");
+                Assert.AreEqual(expected.TemplateFragment, actual.TemplateFragment, subject + ".TemplateFragment");
+                // TODO: AssertEqualDictionaries(expected.Metadata, actual.Metadata, subject + ".Metadata");
+            }
+        }
+
+        private static PageModelData CreateTestPageModel(string testId)
         {
             return new PageModelData
             {
@@ -195,8 +307,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
             {
                 { "ext1", testId },
                 { "ext2", 666.666 },
-                { "ext3", 666 },
-                { "ext4", new DateTimeOffset(1970, 12, 16, 12, 34, 56, TimeSpan.Zero) },
+                { "ext3", (long) 666 },
+                { "ext4", new DateTime(1970, 12, 16, 12, 34, 56) },
                 { "ext5", true }
             };
         }
@@ -207,7 +319,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             {
                 { "TestID", testId },
                 { "IsTest", true },
-                { "Modified", DateTimeOffset.Now }
+                { "Modified", DateTime.Now }
             };
         }
     }

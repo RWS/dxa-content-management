@@ -5,11 +5,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sdl.Web.DataModel;
 using Sdl.Web.Tridion.Data;
 using Tridion.ContentManager;
+using Tridion.ContentManager.Caching;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
-using Tridion.ContentManager.Publishing;
 using Tridion.ContentManager.Publishing.Rendering;
-using Tridion.ContentManager.Publishing.Resolving;
 
 namespace Sdl.Web.Tridion.Templates.Tests
 {
@@ -32,81 +31,77 @@ namespace Sdl.Web.Tridion.Templates.Tests
             typeof(ContextExpressionsModelBuilder).FullName // Both unqualified and qualified type names should work.
         };
 
-        private RenderedItem CreateTestRenderedItem(IdentifiableObject item, Template template)
-        {
-            RenderInstruction testRenderInstruction = new RenderInstruction(item.Session)
-            {
-                BinaryStoragePath = @"C:\Temp\DXA\Test",
-                RenderMode = RenderMode.PreviewDynamic
-            };
-            return new RenderedItem(new ResolvedItem(item, template), testRenderInstruction);
-        }
-
-        private PageModelData CreatePageModel(Page page, out RenderedItem renderedItem, IEnumerable<string> modelBuilderTypeNames = null)
-        {
-            renderedItem = CreateTestRenderedItem(page, page.PageTemplate);
-
-            if (modelBuilderTypeNames == null)
-            {
-                modelBuilderTypeNames = _defaultModelBuilderTypeNames;
-            }
-
-            DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
-                renderedItem,
-                _defaultModelBuilderSettings,
-                modelBuilderTypeNames,
-                new ConsoleLogger()
-                );
-
-            PageModelData result = testModelBuilderPipeline.CreatePageModel(page);
-
-            Assert.IsNotNull(result);
-            OutputJson(result, DataModelBinder.SerializerSettings);
-
-            return result;
-        }
-
-        private EntityModelData CreateEntityModel(Component component, ComponentTemplate ct, out RenderedItem renderedItem, IEnumerable<string> modelBuilderTypeNames = null)
-        {
-            renderedItem = CreateTestRenderedItem(component, ct);
-
-            if (modelBuilderTypeNames == null)
-            {
-                modelBuilderTypeNames = _defaultModelBuilderTypeNames;
-            }
-
-            DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
-                renderedItem,
-                _defaultModelBuilderSettings,
-                modelBuilderTypeNames,
-                new ConsoleLogger()
-                );
-
-            EntityModelData result = testModelBuilderPipeline.CreateEntityModel(component, ct);
-
-            Assert.IsNotNull(result);
-            OutputJson(result, DataModelBinder.SerializerSettings);
-
-            return result;
-        }
-
+        [ClassInitialize]
+        public static void Initialize(TestContext testContext)
+            => DefaultInitialize(testContext);
 
         [TestMethod]
-        public void DataPresentationTemplate_Success()
+        public void DataPresentationTemplate_FoundAndCached_Success()
         {
-            Page dummyPage = (Page) TestSession.GetObject(TestFixture.AutoTestParentHomePageWebDavUrl);
+            using (Session testSessionWithCache = new Session())
+            {
+                SimpleCache testCache = new SimpleCache();
+                testSessionWithCache.Cache = testCache;
+
+                Page dummyPage = (Page) testSessionWithCache.GetObject(TestFixture.AutoTestParentHomePageWebDavUrl);
+
+                RenderedItem renderedItem = CreateTestRenderedItem(dummyPage, dummyPage.PageTemplate);
+                TestLogger testLogger = new TestLogger();
+
+                DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
+                    renderedItem,
+                    _defaultModelBuilderSettings,
+                    _defaultModelBuilderTypeNames,
+                    testLogger
+                    );
+
+                ComponentTemplate dataPresentationTemplate = testModelBuilderPipeline.DataPresentationTemplate;
+                Assert.IsNotNull(dataPresentationTemplate, "dataPresentationTemplate");
+
+                SimpleCacheRegion dxaCacheRegion;
+                Assert.IsTrue(testCache.Regions.TryGetValue("DXA", out dxaCacheRegion), "DXA Cache Region not found.");
+                ComponentTemplate cachedComponentTemplate = dxaCacheRegion.Get("DataPresentationTemplate") as ComponentTemplate;
+                Assert.AreEqual(dataPresentationTemplate, cachedComponentTemplate, "cachedComponentTemplate");
+
+                // Create new DataModelBuilderPipeline for same Session; DataPresentationTemplate should be obtained from cache.
+                testModelBuilderPipeline = new DataModelBuilderPipeline(
+                    renderedItem,
+                    _defaultModelBuilderSettings,
+                    _defaultModelBuilderTypeNames,
+                    testLogger
+                    );
+
+                ComponentTemplate dataPresentationTemplate2 = testModelBuilderPipeline.DataPresentationTemplate;
+                Assert.AreEqual(dataPresentationTemplate, dataPresentationTemplate2, "dataPresentationTemplate2");
+
+                Assert.IsTrue(
+                    testLogger.LoggedMessages.Contains(new LogMessage(LogLevel.Debug, "Obtained Data Presentation Template from cache.")),
+                    "Expected Log message not found."
+                    );
+            }
+        }
+
+        [TestMethod]
+        public void DataPresentationTemplate_NotFound_Success()
+        {
+            Page dummyPage = (Page) TestSession.GetObject(TestFixture.AutoTestChildHomePageWebDavUrl);
 
             RenderedItem renderedItem = CreateTestRenderedItem(dummyPage, dummyPage.PageTemplate);
+            TestLogger testLogger = new TestLogger();
 
             DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
                 renderedItem,
                 _defaultModelBuilderSettings,
                 _defaultModelBuilderTypeNames,
-                new ConsoleLogger()
+                testLogger
                 );
 
             ComponentTemplate dataPresentationTemplate = testModelBuilderPipeline.DataPresentationTemplate;
-            Assert.IsNotNull(dataPresentationTemplate, "dataPresentationTemplate");
+            Assert.IsNull(dataPresentationTemplate, "dataPresentationTemplate");
+            Assert.IsTrue(
+                testLogger.LoggedMessages.Contains(new LogMessage(LogLevel.Warning, "Component Template 'Generate Data Presentation' not found.")),
+                "Expected Log message not found."
+                );
         }
 
         [TestMethod]
@@ -117,16 +112,27 @@ namespace Sdl.Web.Tridion.Templates.Tests
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
-            Assert.AreEqual("Home", pageModel.Title, "pageModel.Title");
-            Assert.IsNotNull(testRenderedItem, "testRenderedItem");
-            Assert.AreEqual(5, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
-            Assert.AreEqual(5, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
-
+            Assert.IsNotNull(pageModel.MvcData, "pageModel.MvcData");
+            Assert.IsNull(pageModel.HtmlClasses, "pageModel.HtmlClasses");
+            Assert.IsNotNull(pageModel.XpmMetadata, "pageModel.XpmMetadata");
+            Assert.IsNull(pageModel.ExtensionData, "pageModel.ExtensionData");
+            Assert.AreEqual("10015", pageModel.SchemaId, "pageModel.SchemaId");
             Assert.IsNotNull(pageModel.Metadata, "pageModel.Metadata");
+            Assert.AreEqual("640", pageModel.Id, "pageModel.Id");
+            Assert.AreEqual("Home", pageModel.Title, "pageModel.Title");
+            Assert.AreEqual("/index", pageModel.UrlPath, "pageModel.UrlPath");
+            Assert.IsNotNull(pageModel.Meta, "pageModel.Meta");
+            Assert.AreEqual(7, pageModel.Meta.Count, "pageModel.Meta.Count");
+            Assert.IsNotNull(pageModel.Regions, "pageModel.Regions");
+            Assert.AreEqual(5, pageModel.Regions.Count, "pageModel.Regions.Count");
+            AssertExpectedIncludePageRegions(pageModel.Regions, new [] { "Header", "Footer" });
+
             KeywordModelData sitemapKeyword = (KeywordModelData) pageModel.Metadata["sitemapKeyword"];
             AssertNotExpanded(sitemapKeyword, false, "sitemapKeyword"); // Keyword Should not be expanded because Category is publishable
 
-            // TODO TSI-132: further assertions
+            Assert.IsNotNull(testRenderedItem, "testRenderedItem");
+            Assert.AreEqual(5, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
+            Assert.AreEqual(5, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
         }
 
         [TestMethod]
@@ -137,9 +143,30 @@ namespace Sdl.Web.Tridion.Templates.Tests
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
+            // First assert the Page Model itself looks OK
+            Assert.IsNotNull(pageModel.MvcData, "pageModel.MvcData");
+            Assert.IsNull(pageModel.HtmlClasses, "pageModel.HtmlClasses");
+            Assert.IsNotNull(pageModel.XpmMetadata, "pageModel.XpmMetadata");
+            Assert.IsNull(pageModel.ExtensionData, "pageModel.ExtensionData");
+            Assert.IsNull(pageModel.SchemaId, "pageModel.SchemaId");
+            Assert.IsNull(pageModel.Metadata, "pageModel.Metadata");
+            Assert.AreEqual("9786", pageModel.Id, "pageModel.Id");
+            Assert.AreEqual("Test Article used for Automated Testing (Sdl.Web.Tridion.Tests)", pageModel.Title, "pageModel.Title");
+            Assert.AreEqual("/autotest-parent/test_article_page", pageModel.UrlPath, "pageModel.UrlPath");
+            Assert.IsNotNull(pageModel.Meta, "pageModel.Meta");
+            Assert.AreEqual(5, pageModel.Meta.Count, "pageModel.Meta.Count");
+            Assert.IsNotNull(pageModel.Regions, "pageModel.Regions");
+            Assert.AreEqual(4, pageModel.Regions.Count, "pageModel.Regions.Count");
+            AssertExpectedIncludePageRegions(pageModel.Regions, new[] { "Header", "Footer", "Content Tools" });
+
+            // Assert the output RenderedItem looks OK
+            Assert.IsNotNull(testRenderedItem, "testRenderedItem");
+            Assert.AreEqual(2, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
+            Assert.AreEqual(1, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
+
+            // Assert the Article EntityModelData looks OK
             RegionModelData mainRegion = GetMainRegion(pageModel);
             EntityModelData article = mainRegion.Entities[0];
-
             AssertExpanded(article, true, "article");
             StringAssert.Matches(article.Id, new Regex(@"\d+"));
 
@@ -161,13 +188,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
             object altText;
             Assert.IsTrue(image.Metadata.TryGetValue("altText", out altText));
             Assert.AreEqual("calculator", altText, "altText");
-
-            RegionModelData[] includePageRegions = pageModel.Regions.Where(r => r.IncludePageId != null).ToArray();
-            Assert.AreEqual(3, includePageRegions.Length, "includePageRegions.Length");
-            foreach (RegionModelData includePageRegion in includePageRegions)
-            {
-                StringAssert.Matches(includePageRegion.IncludePageId, new Regex(@"\d+"), "includePageRegion.IncludePageId");
-            }
         }
 
         [TestMethod]
@@ -184,31 +204,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
             AssertNotExpanded(article, "article");
         }
 
-        private static void AssertExpanded(EntityModelData entityModelData, bool hasContent, string subject)
-        {
-            Assert.IsNotNull(entityModelData, subject);
-            Assert.IsNotNull(entityModelData.Id, subject + ".Id");
-            Assert.IsNotNull(entityModelData.SchemaId, subject + ".SchemaId");
-            if (hasContent)
-            {
-                Assert.IsNotNull(entityModelData.Content, subject + ".Content");
-            }
-            else
-            {
-                Assert.IsNull(entityModelData.Content, subject + ".Content");
-            }
-        }
-
-        private static void AssertNotExpanded(EntityModelData entityModelData, string subject)
-        {
-            Assert.IsNotNull(entityModelData, subject);
-            Assert.IsNotNull(entityModelData.Id, subject + ".Id");
-            StringAssert.Matches(entityModelData.Id, new Regex(@"\d+-\d+"), subject + ".Id");
-            Assert.IsNull(entityModelData.SchemaId, subject + ".SchemaId");
-            Assert.IsNull(entityModelData.Content, subject + ".Content");
-            Assert.IsNull(entityModelData.Metadata, subject + ".Metadata");
-        }
-
         [TestMethod]
         public void CreatePageModel_ComponentLinkExpansion_Success()
         {
@@ -223,7 +218,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(testEntity, "testEntity");
             Assert.IsNotNull(testEntity.Content, "testEntity.Content");
             EntityModelData[] compLinkField = (EntityModelData[]) testEntity.Content["compLink"];
-            Assert.AreEqual(2, compLinkField.Length, "compLinkField.Length");
+            Assert.AreEqual(4, compLinkField.Length, "compLinkField.Length");
 
             EntityModelData notExpandedCompLink = compLinkField[0]; // Has Data Presentation
             Assert.IsNotNull(notExpandedCompLink, "notExpandedCompLink");
@@ -236,7 +231,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.AreEqual("9710", expandedCompLink.Id, "expandedCompLink.Id");
             Assert.AreEqual("9709", expandedCompLink.SchemaId, "9710");
             Assert.IsNotNull(expandedCompLink.Content, "expandedCompLink.Content");
-
         }
 
         [TestMethod]
@@ -273,7 +267,21 @@ namespace Sdl.Web.Tridion.Templates.Tests
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
-            // TODO TSI-132: further assertions
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData flickrImage = mainRegion.Entities[0];
+            BinaryContentData binaryContent = flickrImage.BinaryContent;
+            ExternalContentData externalContent = flickrImage.ExternalContent;
+
+            Assert.IsNotNull(binaryContent, "binaryContent");
+            StringAssert.Matches(binaryContent.Url, new Regex(@"/Preview/Images/.*\.jpg"), "binaryContent.Url");
+            Assert.AreEqual("image/jpeg", binaryContent.MimeType, "binaryContent.MimeType");
+            Assert.IsNotNull(externalContent, "externalContent");
+            Assert.AreEqual("ecl:1065-flickr-5606989559_6b62b3c3fc_72157626470204584-img-file", externalContent.Id, "externalContent.Id");
+            Assert.AreEqual("img", externalContent.DisplayTypeId, "externalContent.DisplayTypeId");
+            Assert.IsNotNull(externalContent.Metadata, "externalContent.Metadata");
+            object width;
+            Assert.IsTrue(externalContent.Metadata.TryGetValue("Width", out width), "externalContent.Metadata['Width']");
+            Assert.AreEqual("1024", width, "width");
         }
 
         [TestMethod]
@@ -295,6 +303,23 @@ namespace Sdl.Web.Tridion.Templates.Tests
             object maxItems;
             Assert.IsTrue(example1Region.Metadata.TryGetValue("maxItems", out maxItems), "example1Region.Metadata[maxItems]");
             Assert.AreEqual("3", maxItems, "maxItems");
+        }
+
+        [TestMethod]
+        public void CreatePageModel_MetadataMerge_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.SmartTargetMetadataOverridePageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+
+            ContentModelData pageModelMetadata = pageModel.Metadata;
+            Assert.IsNotNull(pageModelMetadata, "pageModelMetadata");
+            object allowDups;
+            Assert.IsTrue(pageModelMetadata.TryGetValue("allowDuplicationOnSamePage", out allowDups), "pageModelMetadata['allowDuplicationOnSamePage']");
+            Assert.AreEqual("True", allowDups, "allowDups"); // PT metadata overridden by Page metadata
+
+            Assert.AreEqual("metadata merge test", pageModelMetadata["htmlClasses"], "pageModelMetadata['htmlClasses']");
         }
 
         [TestMethod]
@@ -336,7 +361,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
 
         [TestMethod]
-        public void CreatePageModel_Tsi811_Success()
+        public void CreatePageModel_KeywordModel_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi811PageWebDavUrl);
 
@@ -360,23 +385,18 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void CreatePageModel_UrlPath_Success()
+        public void CreatePageModel_InternationalizedUrlPath_Success()
         {
-            Page testPage1 = (Page) TestSession.GetObject(TestFixture.Tsi1278PageWebDavUrl);
-            Page testPage2 = (Page) TestSession.GetObject(TestFixture.Tsi1278ChildPageWebDavUrl);
+            Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1278PageWebDavUrl);
 
             RenderedItem testRenderedItem;
-            PageModelData pageModel1 = CreatePageModel(testPage1, out testRenderedItem);
-            PageModelData pageModel2 = CreatePageModel(testPage2, out testRenderedItem);
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
-            // pageModel2 is in a Publication with empty PublicationURL (context-relative). 
-            // This leads to a context-relative UrlPath when testing, but it will be server-relative when publishing.
-            Assert.AreEqual("/autotest-parent/tsi-1278_trådløst", pageModel1.UrlPath, "pageModel1.UrlPath");
-            Assert.AreEqual("/tsi-1278_trådløst", pageModel2.UrlPath, "pageModel2.UrlPath");
+            Assert.AreEqual("/autotest-parent/tsi-1278_trådløst", pageModel.UrlPath, "pageModel.UrlPath");
         }
 
         [TestMethod]
-        public void CreatePageModel_Tsi1614_Success()
+        public void CreatePageModel_HtmlClasses_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1614PageWebDavUrl);
 
@@ -397,29 +417,24 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void CreatePageModel_Tsi1758_Success()
+        public void CreatePageModel_EmbeddedFields_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1758PageWebDavUrl);
 
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
-            // TODO TSI-132: further assertions
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData testEntity = mainRegion.Entities[0];
+            ContentModelData[] topLevelEmbedField1 = (ContentModelData[]) testEntity.Content["embedField1"];
+            ContentModelData nestedEmbedField1 = (ContentModelData) topLevelEmbedField1[0]["embedField1"];
+
+            Assert.AreEqual("This is the textField of the first embedField1", topLevelEmbedField1[0]["textField"], "topLevelEmbedField1['textField']");
+            Assert.AreEqual("This is the link text of embedField1 within the first embedField1", nestedEmbedField1["linkText"], "nestedEmbedField1['linkText']");
         }
 
         [TestMethod]
-        public void CreatePageModel_Tsi1946_Success()
-        {
-            Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1946PageWebDavUrl);
-
-            RenderedItem testRenderedItem;
-            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
-
-            // TODO TSI-132: further assertions
-        }
-
-        [TestMethod]
-        public void CreatePageModel_Tsi2265_Success()
+        public void CreatePageModel_RichTextComponentLinks_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.ArticlePageWebDavUrl);
 
@@ -436,7 +451,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void CreatePageModel_Tsi2277_Success()
+        public void CreatePageModel_PageMetaModelBuilder_Success()
         {
             Page testPage1 = (Page) TestSession.GetObject(TestFixture.Tsi2277Page1WebDavUrl);
             Page testPage2 = (Page) TestSession.GetObject(TestFixture.Tsi2277Page2WebDavUrl);
@@ -461,7 +476,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void CreatePageModel_Tsi2306_Success()
+        public void CreatePageModel_RichTextEmbeddedMediaManagerItems_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi2306PageWebDavUrl);
 
@@ -492,18 +507,29 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void CreatePageModel_Tsi1308_Success()
+        public void CreatePageModel_PageMetaForCustomFields_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1308PageWebDavUrl);
 
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
-            // TODO TSI-132: further assertions
+            Dictionary<string, string> pageMeta = pageModel.Meta;
+            Assert.IsNotNull(pageMeta, "pageMeta");
+            Assert.AreEqual("This is single line text", pageMeta["singleLineText"], "pageMeta['singleLineText']");
+            Assert.AreEqual("This is multi line text line 1\nAnd line 2\n", pageMeta["multiLineText"], "pageMeta['multiLineText']");
+            Assert.AreEqual("This is <strong>rich</strong> text with a <a title=\"Test Article\" href=\"tcm:1065-9712\">Component Link</a><!--CompLink tcm:1065-9712-->", pageMeta["richText"], "pageMeta['richText']");
+            Assert.AreEqual("News Article", pageMeta["keyword"], "pageMeta['keyword']");
+            Assert.AreEqual("tcm:1065-9712", pageMeta["componentLink"], "pageMeta['componentLink']");
+            Assert.AreEqual("tcm:1065-4480", pageMeta["mmComponentLink"], "pageMeta['mmComponentLink']");
+            Assert.AreEqual("1970-12-16T12:34:56.000", pageMeta["date"], "pageMeta['date']");
+            Assert.AreEqual("2016-11-23T13:11:40.000", pageMeta["dateCreated"], "pageMeta['dateCreated']");
+            Assert.AreEqual("Rick Pannekoek", pageMeta["author"], "pageMeta['author']");
+            Assert.AreEqual("666.666", pageMeta["number"], "pageMeta['number']");
         }
 
         [TestMethod]
-        public void CreatePageModel_Tsi2316_Success()
+        public void CreatePageModel_KeywordModelExpansion_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi2316PageWebDavUrl);
 
@@ -517,6 +543,199 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
             AssertExpanded(notPublishedKeyword, false, "notPublishedKeyword");
             AssertNotExpanded(publishedKeyword, true, "publishedKeyword");
+        }
+
+        [TestMethod]
+        public void CreatePageModel_DuplicatePredefinedRegions_Exception()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.PredefinedRegionsTestPageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            AssertThrowsException<DxaException>(() => CreatePageModel(testPage, out testRenderedItem));
+        }
+
+        [TestMethod]
+        public void CreatePageModel_HybridRegion_Success()
+        {
+            Page testPage = (Page) TestSession.GetObject(TestFixture.R2PageIncludesPageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+
+            AssertExpectedIncludePageRegions(pageModel.Regions, new [] { "Header" }, allowEntities: true);
+
+            // Header (Include Page) Region should also contain an Entity Model for the Test CP.
+            RegionModelData header = pageModel.Regions.First(r => r.Name == "Header");
+            Assert.IsNotNull(header.Entities, "header.Entities");
+            Assert.AreEqual(1, header.Entities.Count, "header.Entities.Count");
+            EntityModelData testEntity = header.Entities[0];
+
+            MvcData mvcData = testEntity.MvcData;
+            Assert.IsNotNull(mvcData, "mvcData");
+            Assert.IsNotNull(mvcData.Parameters, "mvcData.Parameters");
+            Assert.AreEqual(2, mvcData.Parameters.Count, "mvcData.Parameters.Count");
+            string name;
+            Assert.IsTrue(mvcData.Parameters.TryGetValue("name", out name), "mvcData.Parameters['name']");
+            Assert.AreEqual("value", name, "name");
+        }
+
+        [TestMethod]
+        public void CreateEntityModel_ArticleDcp_Success()
+        {
+            string[] articleDcpIds = TestFixture.ArticleDcpId.Split('/');
+            Component testComponent = (Component) TestSession.GetObject(articleDcpIds[0]);
+            ComponentTemplate ct = (ComponentTemplate) TestSession.GetObject(articleDcpIds[1]);
+
+            RenderedItem testRenderedItem;
+            EntityModelData article = CreateEntityModel(testComponent, ct, out testRenderedItem);
+
+            AssertExpanded(article, true, "article");
+            StringAssert.Matches(article.Id, new Regex(@"\d+-\d+"), "article.Id");
+            Assert.IsNotNull(article.MvcData, "article.MvcData");
+            Assert.AreEqual("Article", article.MvcData.ViewName, "article.MvcData.ViewName");
+            Assert.IsNotNull(article.XpmMetadata, "article.XpmMetadata");
+            Assert.AreEqual(testComponent.Id.ToString(), article.XpmMetadata["ComponentID"], "article.XpmMetadata['ComponentID']");
+            Assert.AreEqual(ct.Id.ToString(), article.XpmMetadata["ComponentTemplateID"], "article.XpmMetadata['ComponentTemplateID']");
+
+            Assert.IsNotNull(testRenderedItem, "testRenderedItem");
+            Assert.AreEqual(2, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
+            Assert.AreEqual(0, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
+        }
+
+        [TestMethod]
+        public void CreateEntityModel_WithoutComponentTemplate_Success()
+        {
+            string[] articleDcpIds = TestFixture.ArticleDcpId.Split('/');
+            Component testComponent = (Component) TestSession.GetObject(articleDcpIds[0]);
+
+            RenderedItem testRenderedItem;
+            EntityModelData article = CreateEntityModel(testComponent, null, out testRenderedItem);
+
+            AssertExpanded(article, true, "article");
+            StringAssert.Matches(article.Id, new Regex(@"\d+"), "article.Id");
+            Assert.IsNull(article.MvcData, "article.MvcData");
+            Assert.IsNull(article.XpmMetadata, "article.XpmMetadata");
+
+            Assert.IsNotNull(testRenderedItem, "testRenderedItem");
+            Assert.AreEqual(2, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
+            Assert.AreEqual(0, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
+        }
+
+        [TestMethod]
+        public void CreateEntityModel_WithCategoryLink_Success()
+        {
+            Component testComponent = (Component) TestSession.GetObject(TestFixture.TestComponentWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            EntityModelData testEntity = CreateEntityModel(testComponent, null, out testRenderedItem);
+
+            string[] externalLinkField = (string[]) testEntity.Content["ExternalLink"];
+            Assert.AreEqual(2, externalLinkField.Length, "externalLinkField.Length");
+            Assert.AreEqual("http://www.sdl.com", externalLinkField[0], "externalLinkField[0]");
+            Assert.AreEqual("tcm:1065-2702-512", externalLinkField[1], "externalLinkField[1]"); // NOTE: This is a (managed) Category link (!)
+        }
+
+
+        private PageModelData CreatePageModel(Page page, out RenderedItem renderedItem, IEnumerable<string> modelBuilderTypeNames = null)
+        {
+            renderedItem = CreateTestRenderedItem(page, page.PageTemplate);
+
+            if (modelBuilderTypeNames == null)
+            {
+                modelBuilderTypeNames = _defaultModelBuilderTypeNames;
+            }
+
+            DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
+                renderedItem,
+                _defaultModelBuilderSettings,
+                modelBuilderTypeNames,
+                new TestLogger()
+                );
+
+            PageModelData result = testModelBuilderPipeline.CreatePageModel(page);
+
+            Assert.IsNotNull(result);
+            OutputJson(result, DataModelBinder.SerializerSettings);
+
+            return result;
+        }
+
+        private EntityModelData CreateEntityModel(Component component, ComponentTemplate ct, out RenderedItem renderedItem, IEnumerable<string> modelBuilderTypeNames = null)
+        {
+            renderedItem = CreateTestRenderedItem(component, ct);
+
+            if (modelBuilderTypeNames == null)
+            {
+                modelBuilderTypeNames = _defaultModelBuilderTypeNames;
+            }
+
+            DataModelBuilderPipeline testModelBuilderPipeline = new DataModelBuilderPipeline(
+                renderedItem,
+                _defaultModelBuilderSettings,
+                modelBuilderTypeNames,
+                new TestLogger()
+                );
+
+            EntityModelData result = testModelBuilderPipeline.CreateEntityModel(component, ct);
+
+            Assert.IsNotNull(result);
+            OutputJson(result, DataModelBinder.SerializerSettings);
+
+            return result;
+        }
+
+        private static RegionModelData GetMainRegion(PageModelData pageModelData)
+        {
+            RegionModelData mainRegion = pageModelData.Regions.FirstOrDefault(r => r.Name == "Main");
+            Assert.IsNotNull(mainRegion, "No 'Main' Region found in Page Model.");
+            return mainRegion;
+        }
+
+        private static void AssertExpectedIncludePageRegions(IEnumerable<RegionModelData> regions, string[] expectedRegionNames, bool allowEntities = false)
+        {
+            RegionModelData[] includePageRegions = regions.Where(r => r.IncludePageId != null).ToArray();
+            Assert.AreEqual(expectedRegionNames.Length, includePageRegions.Length, "includePageRegions.Length");
+
+            foreach (RegionModelData includePageRegion in includePageRegions)
+            {
+                StringAssert.Matches(includePageRegion.IncludePageId, new Regex(@"\d+"), "includePageRegion.IncludePageId");
+                Assert.IsNotNull(includePageRegion.Name, "includePageRegion.Name");
+                Assert.IsTrue(expectedRegionNames.Contains(includePageRegion.Name), "Unexpected Include Page Region name: " + includePageRegion.Name);
+                Assert.IsNull(includePageRegion.Regions, "includePageRegion.Regions");
+                if (!allowEntities)
+                {
+                    Assert.IsNull(includePageRegion.Entities, "includePageRegion.Entities");
+                }
+                Assert.IsNotNull(includePageRegion.XpmMetadata, "includePageRegion.XpmMetadata");
+                object includedFromPageId;
+                Assert.IsTrue(includePageRegion.XpmMetadata.TryGetValue("IncludedFromPageID", out includedFromPageId), "includePageRegion.XpmMetadata['IncludedFromPageID']");
+                StringAssert.Contains((string) includedFromPageId, includePageRegion.IncludePageId, "includedFromPageId");
+            }
+        }
+
+        private static void AssertExpanded(EntityModelData entityModelData, bool hasContent, string subject)
+        {
+            Assert.IsNotNull(entityModelData, subject);
+            Assert.IsNotNull(entityModelData.Id, subject + ".Id");
+            Assert.IsNotNull(entityModelData.SchemaId, subject + ".SchemaId");
+            if (hasContent)
+            {
+                Assert.IsNotNull(entityModelData.Content, subject + ".Content");
+            }
+            else
+            {
+                Assert.IsNull(entityModelData.Content, subject + ".Content");
+            }
+        }
+
+        private static void AssertNotExpanded(EntityModelData entityModelData, string subject)
+        {
+            Assert.IsNotNull(entityModelData, subject);
+            Assert.IsNotNull(entityModelData.Id, subject + ".Id");
+            StringAssert.Matches(entityModelData.Id, new Regex(@"\d+-\d+"), subject + ".Id");
+            Assert.IsNull(entityModelData.SchemaId, subject + ".SchemaId");
+            Assert.IsNull(entityModelData.Content, subject + ".Content");
+            Assert.IsNull(entityModelData.Metadata, subject + ".Metadata");
         }
 
         private static void AssertExpanded(KeywordModelData keywordModelData, bool hasMetadata, string subject)
@@ -552,46 +771,5 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNull(keywordModelData.Metadata, subject + ".Metadata");
         }
 
-
-        [TestMethod]
-        public void CreatePageModel_DuplicatePredefinedRegions_Exception()
-        {
-            Page testPage = (Page) TestSession.GetObject(TestFixture.PredefinedRegionsTestPageWebDavUrl);
-
-            RenderedItem testRenderedItem;
-            AssertThrowsException<DxaException>(() => CreatePageModel(testPage, out testRenderedItem));
-        }
-
-        [TestMethod]
-        public void CreateEntityModel_ArticleDcp_Success()
-        {
-            string[] articleDcpIds = TestFixture.ArticleDcpId.Split('/');
-            Component article = (Component) TestSession.GetObject(articleDcpIds[0]);
-            ComponentTemplate ct = (ComponentTemplate) TestSession.GetObject(articleDcpIds[1]);
-
-            RenderedItem testRenderedItem;
-            EntityModelData entityModel = CreateEntityModel(article, ct, out testRenderedItem);
-
-            // TODO TSI-132: further assertions
-        }
-
-        [TestMethod]
-        public void CreateEntityModel_WithoutComponentTemplate_Success()
-        {
-            string[] articleDcpIds = TestFixture.ArticleDcpId.Split('/');
-            Component article = (Component) TestSession.GetObject(articleDcpIds[0]);
-
-            RenderedItem testRenderedItem;
-            EntityModelData entityModel = CreateEntityModel(article, null, out testRenderedItem);
-
-            // TODO TSI-132: further assertions
-        }
-
-        private static RegionModelData GetMainRegion(PageModelData pageModelData)
-        {
-            RegionModelData mainRegion = pageModelData.Regions.FirstOrDefault(r => r.Name == "Main");
-            Assert.IsNotNull(mainRegion, "No 'Main' Region found in Page Model.");
-            return mainRegion;
-        }
     }
 }

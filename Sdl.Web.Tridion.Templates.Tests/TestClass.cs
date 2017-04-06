@@ -5,6 +5,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Sdl.Web.DataModel;
 using Tridion.ContentManager;
+using Tridion.ContentManager.CommunicationManagement;
+using Tridion.ContentManager.Publishing;
+using Tridion.ContentManager.Publishing.Rendering;
+using Tridion.ContentManager.Publishing.Resolving;
 
 namespace Sdl.Web.Tridion.Templates.Tests
 {
@@ -13,11 +17,20 @@ namespace Sdl.Web.Tridion.Templates.Tests
     /// </summary>
     public abstract class TestClass
     {
-        protected static Session TestSession { get; } = new Session();
+        protected static Session TestSession { get; private set; }
 
         protected static void DefaultInitialize(TestContext testContext)
         {
-            // TODO: Log.Info("==== {0} ====", testContext.FullyQualifiedTestClassName);
+            Console.WriteLine("==== {0} ====", testContext.FullyQualifiedTestClassName);
+            try
+            {
+                TestSession = new Session();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Unable to initialize TOM.NET Session:\n{0}", ex);
+                throw new ApplicationException($"Unable to initialize TOM.NET Session: {ex.Message}");
+            }
         }
 
         protected void OutputJson(object objectToSerialize, JsonSerializerSettings serializerSettings = null)
@@ -77,7 +90,52 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 Assert.IsNotNull(actual, subjectName);
                 Assert.AreNotSame(expected, actual, subjectName);
                 Assert.AreEqual(expected.Count(), actual.Count(), subjectName + ".Count()");
+                // TODO: check individual elements
             }
+        }
+
+        protected static void AssertEqualDictionaries<T>(IDictionary<string, T> expected, IDictionary<string, T> actual, string subject)
+        {
+            if (expected == null)
+            {
+                Assert.IsNull(actual, subject);
+            }
+            else
+            {
+                Assert.IsNotNull(actual, subject);
+                foreach (KeyValuePair<string, T> kvp in expected)
+                {
+                    T actualValue;
+                    if (!actual.TryGetValue(kvp.Key, out actualValue))
+                    {
+                        Assert.Fail($"Expected key '{kvp.Key}' not found in {subject}.");
+                    }
+
+                    Array expectedArray = kvp.Value as Array;
+                    if (expectedArray != null)
+                    {
+                        Array actualArray = actualValue as Array;
+                        Assert.IsNotNull(actualArray, $"Expected an array, but the actual value of {subject}[{kvp.Key}] is not: {actualValue.GetType().Name}");
+                        Assert.AreEqual(expectedArray.Length, actualArray.Length, $"{subject}[{kvp.Key}].Length");
+                        // TODO: check individual elements
+                    }
+                    else
+                    {
+                        Assert.AreEqual(kvp.Value, actualValue, $"{subject}['{kvp.Key}']");
+                    }
+                }
+                Assert.AreEqual(expected.Count, actual.Count, subject + ".Count");
+            }
+        }
+
+        protected RenderedItem CreateTestRenderedItem(IdentifiableObject item, Template template)
+        {
+            RenderInstruction testRenderInstruction = new RenderInstruction(item.Session)
+            {
+                BinaryStoragePath = @"C:\Temp\DXA\Test",
+                RenderMode = RenderMode.PreviewDynamic
+            };
+            return new RenderedItem(new ResolvedItem(item, template), testRenderInstruction);
         }
     }
 }
