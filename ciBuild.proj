@@ -68,6 +68,7 @@
     <Target Name="RunBuild">
         <Message Text="Running build commands..." Importance="high" />
 
+        <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.CustomResolver\Sdl.Web.Tridion.CustomResolver.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates\Sdl.Web.Tridion.Templates.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Legacy\Sdl.Web.Tridion.Templates.Legacy.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Tests\Sdl.Web.Tridion.Templates.Tests.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
