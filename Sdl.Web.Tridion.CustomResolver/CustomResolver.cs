@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Configuration;
+using System.Linq;
 using Tridion.Collections;
+using Tridion.Configuration;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
@@ -14,6 +17,12 @@ namespace Sdl.Web.Tridion
     /// Usage:
     ///   1) Add this assembly to the GAC on the machine hosting the CME
     ///   2) Modify the \config\Tridion.ContentManager.config file and add the following to the resolving/mappings section:
+    ///         <section name="Sdl.Web.Tridion.CustomResolver" type="System.Configuration.AppSettingsSection" />
+    ///         ...
+    ///         <Sdl.Web.Tridion.CustomResolver>
+    ///             <add key = "dataPresentationTemplate" value="Generate Data Presentation" />
+    ///         </Sdl.Web.Tridion.CustomResolver>
+    ///         ...
     ///         <resolving>
     ///             <mappings>
     ///                 ...
@@ -28,6 +37,28 @@ namespace Sdl.Web.Tridion
     /// </summary>
     public class CustomResolver : IResolver
     {
+        private readonly string _dataPresentationTemplateTitle;
+
+        public CustomResolver()
+        {
+            var tcmConfigSections = (ConfigurationSections)ConfigurationManager.GetSection(ConfigurationSections.SectionName);
+            var tcmSectionElem = tcmConfigSections.Sections.Cast<SectionElement>().FirstOrDefault(s => !string.IsNullOrEmpty(s.FilePath) && s.FilePath.EndsWith("tridion.contentmanager.config", StringComparison.InvariantCultureIgnoreCase));
+            if (tcmSectionElem != null)
+            {
+                var tcmConfigFilePath = tcmSectionElem.FilePath;
+                var map = new ExeConfigurationFileMap {ExeConfigFilename = tcmConfigFilePath};
+                var config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+                var resolverSettings =
+                    ((AppSettingsSection) config.GetSection("Sdl.Web.Tridion.CustomResolver")).Settings;
+                _dataPresentationTemplateTitle = resolverSettings["dataPresentationTemplate"].Value.ToString();
+            }
+            else
+            {
+                // default value for component
+                _dataPresentationTemplateTitle = "Generate Data Presentation";
+            }
+        }
+
         public void Resolve(IdentifiableObject item, ResolveInstruction instruction, PublishContext context,
             ISet<ResolvedItem> resolvedItems)
         {
@@ -48,10 +79,8 @@ namespace Sdl.Web.Tridion
                     AllowedOnPage = false,
                     BaseColumns = ListBaseColumns.IdAndTitle
                 };
-                // hard-coded title of template, how else should we identify it?
-                const string dataPresentationTemplateTitle = "Generate Data Presentation";
                 var dataPresentationTemplate = contextPublication.GetComponentTemplates(filter).FirstOrDefault(
-                    ct => ct.Title == dataPresentationTemplateTitle);
+                    ct => ct.Title == _dataPresentationTemplateTitle);
                 // for each component lets resolve it with our data presentation template
                 foreach (var cp in page.ComponentPresentations.Where(
                     cp =>
