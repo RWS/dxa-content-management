@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="CustomResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\CommonAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DXACustomResolver.snk" />
