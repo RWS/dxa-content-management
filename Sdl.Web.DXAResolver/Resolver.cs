@@ -9,7 +9,7 @@ using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Publishing;
 using Tridion.ContentManager.Publishing.Resolving;
 
-namespace Sdl.Web.Tridion
+namespace Sdl.Web.DXAResolver
 {
     /// <summary>
     /// DXA Custom Resolver to publish components added to a page with the 'Generate Data Presentation' template.
@@ -17,11 +17,11 @@ namespace Sdl.Web.Tridion
     /// Usage:
     ///   1) Add this assembly to the GAC on the machine hosting the CME
     ///   2) Modify the \config\Tridion.ContentManager.config file and add the following to the resolving/mappings section:
-    ///         <section name="Sdl.Web.Tridion.CustomResolver" type="System.Configuration.AppSettingsSection" />
+    ///         <section name="Sdl.Web.DXAResolver" type="System.Configuration.AppSettingsSection" />
     ///         ...
-    ///         <Sdl.Web.Tridion.CustomResolver>
+    ///         <Sdl.Web.Tridion.Resolver>
     ///             <add key = "dataPresentationTemplate" value="Generate Data Presentation" />
-    ///         </Sdl.Web.Tridion.CustomResolver>
+    ///         </Sdl.Web.Tridion.Resolver>
     ///         ...
     ///         <resolving>
     ///             <mappings>
@@ -29,17 +29,17 @@ namespace Sdl.Web.Tridion
     ///                 <add itemType="Tridion.ContentManager.CommunicationManagement.Page">
     ///                     <resolvers>
     ///                         ...
-    ///                         <add type="Sdl.Web.Tridion.CustomResolver" assembly="Sdl.Web.Tridion.CustomResolver, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b9a30ebcbde732e4" />
+    ///                         <add type="Sdl.Web.DXAResolver.Resolver" assembly="Sdl.Web.DXAResolver, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b9a30ebcbde732e4" />
     ///                     </resolvers>
     ///                 </add>
     ///             </mappings>
     ///         </resolving>
     /// </summary>
-    public class CustomResolver : IResolver
+    public class Resolver : IResolver
     {
         private readonly string _dataPresentationTemplateTitle;
 
-        public CustomResolver()
+        public Resolver()
         {
             var tcmConfigSections = (ConfigurationSections)ConfigurationManager.GetSection(ConfigurationSections.SectionName);
             var tcmSectionElem = tcmConfigSections.Sections.Cast<SectionElement>().FirstOrDefault(s => !string.IsNullOrEmpty(s.FilePath) && s.FilePath.EndsWith("tridion.contentmanager.config", StringComparison.InvariantCultureIgnoreCase));
@@ -49,7 +49,7 @@ namespace Sdl.Web.Tridion
                 var map = new ExeConfigurationFileMap {ExeConfigFilename = tcmConfigFilePath};
                 var config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
                 var resolverSettings =
-                    ((AppSettingsSection) config.GetSection("Sdl.Web.Tridion.CustomResolver")).Settings;
+                    ((AppSettingsSection) config.GetSection("Sdl.Web.DXAResolver")).Settings;
                 _dataPresentationTemplateTitle = resolverSettings["dataPresentationTemplate"].Value.ToString();
             }
             else

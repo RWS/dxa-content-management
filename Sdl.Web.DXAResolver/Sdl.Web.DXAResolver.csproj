@@ -7,8 +7,8 @@
     <ProjectGuid>{620C3C17-F612-4759-A461-FBD7FCD9ADEE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Sdl.Web.Tridion</RootNamespace>
-    <AssemblyName>Sdl.Web.Tridion.CustomResolver</AssemblyName>
+    <RootNamespace>Sdl.Web.DXAResolver</RootNamespace>
+    <AssemblyName>Sdl.Web.DXAResolver</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -33,7 +33,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>DXACustomResolver.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>DXAResolver.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -59,12 +59,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CustomResolver.cs" />
+    <Compile Include="Resolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="DXACustomResolver.snk" />
+    <None Include="DXAResolver.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
