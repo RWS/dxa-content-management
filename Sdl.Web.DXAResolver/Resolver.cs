@@ -64,23 +64,21 @@ namespace Sdl.Web.DXAResolver
         {
             if (instruction.Purpose != ResolvePurpose.Publish && instruction.Purpose != ResolvePurpose.RePublish)
                 return;
+            var sourceItem = (RepositoryLocalObject)item;
+            var contextPublication = (Publication)sourceItem.ContextRepository;
+            var filter = new ComponentTemplatesFilter(item.Session)
+            {
+                AllowedOnPage = false,
+                BaseColumns = ListBaseColumns.IdAndTitle
+            };
+            var dataPresentationTemplate = contextPublication.GetComponentTemplates(filter).FirstOrDefault(
+                ct => ct.Title == _dataPresentationTemplateTitle);
             var resolvedItemList = resolvedItems.ToArray();
-            resolvedItems.Clear();
             foreach (var resolvedItem in resolvedItemList)
             {
-                resolvedItems.Add(resolvedItem);
                 if (!(resolvedItem.Item is Page)) continue;
                 var page = (Page)resolvedItem.Item;
-                if (page.ComponentPresentations.Count <= 0) continue;
-                var sourceItem = (RepositoryLocalObject)resolvedItem.Item;
-                var contextPublication = (Publication)sourceItem.ContextRepository;
-                var filter = new ComponentTemplatesFilter(item.Session)
-                {
-                    AllowedOnPage = false,
-                    BaseColumns = ListBaseColumns.IdAndTitle
-                };
-                var dataPresentationTemplate = contextPublication.GetComponentTemplates(filter).FirstOrDefault(
-                    ct => ct.Title == _dataPresentationTemplateTitle);
+                if (page.ComponentPresentations.Count <= 0) continue;              
                 // for each component lets resolve it with our data presentation template
                 foreach (var cp in page.ComponentPresentations.Where(
                     cp =>
