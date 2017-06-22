@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Sdl.Web.DataModel
 {
@@ -50,5 +51,8 @@ namespace Sdl.Web.DataModel
             }
             ExtensionData[key] = value;
         }
+
+        [JsonIgnore]
+        public uint SerializationHashCode { get; set; }
     }
 }
