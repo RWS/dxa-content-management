@@ -136,7 +136,7 @@ namespace Sdl.Web.Tridion.Templates
             };
             const string dataPresentationTemplateTitle = "Generate Data Presentation";
             ComponentTemplate dataPresentationTemplate = Publication.GetComponentTemplates(ctFilter).FirstOrDefault(ct => ct.Title == dataPresentationTemplateTitle);
-            string dataPresentationId = dataPresentationTemplate?.Id ?? string.Empty;
+            string dataPresentationUri = dataPresentationTemplate?.Id ?? string.Empty;
 
             string localizationId = Publication.Id.ItemId.ToString();
             
@@ -149,7 +149,7 @@ namespace Sdl.Web.Tridion.Templates
                 MediaRoot = Publication.MultimediaUrl,
                 SiteLocalizations = siteLocalizations.ToArray(),
                 ConfigStaticContentUrls = binaries.Select(b => b.Url).ToArray(),
-                DataPresentationTemplateId = dataPresentationId
+                DataPresentationTemplateUri = dataPresentationUri
             };
 
             return AddJsonBinary(localizationData, relatedComponent, _configStructureGroup, "_all", variantId: "config-bootstrap");

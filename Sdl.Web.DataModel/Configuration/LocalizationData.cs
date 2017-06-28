@@ -22,8 +22,8 @@ namespace Sdl.Web.DataModel.Configuration
         [JsonProperty("files")]
         public string[] ConfigStaticContentUrls { get; set; }
 
-        [JsonProperty("dataPresentationTemplateId")]
-        public string DataPresentationTemplateId { get; set; }
+        [JsonProperty("dataPresentationTemplateUri")]
+        public string DataPresentationTemplateUri { get; set; }
     }
 
     public class SiteLocalizationData
