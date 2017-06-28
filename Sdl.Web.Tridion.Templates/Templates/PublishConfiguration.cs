@@ -126,11 +126,20 @@ namespace Sdl.Web.Tridion.Templates
 
             return configSettings.Count == 0 ? null : AddJsonBinary(configSettings, moduleConfigComponent, _configStructureGroup, moduleName, "config");
         }
-
-
+      
         private Binary PublishLocalizationData(IEnumerable<Binary> binaries, Component relatedComponent)
         {
+            ComponentTemplatesFilter ctFilter = new ComponentTemplatesFilter(Session)
+            {
+                AllowedOnPage = false,
+                BaseColumns = ListBaseColumns.IdAndTitle
+            };
+            const string dataPresentationTemplateTitle = "Generate Data Presentation";
+            ComponentTemplate dataPresentationTemplate = Publication.GetComponentTemplates(ctFilter).FirstOrDefault(ct => ct.Title == dataPresentationTemplateTitle);
+            string dataPresentationId = dataPresentationTemplate?.Id ?? string.Empty;
+
             string localizationId = Publication.Id.ItemId.ToString();
+            
             List<SiteLocalizationData> siteLocalizations = DetermineSiteLocalizations(Publication);
  
             LocalizationData localizationData = new LocalizationData
@@ -139,7 +148,8 @@ namespace Sdl.Web.Tridion.Templates
                 IsXpmEnabled = IsXpmEnabled,
                 MediaRoot = Publication.MultimediaUrl,
                 SiteLocalizations = siteLocalizations.ToArray(),
-                ConfigStaticContentUrls = binaries.Select(b => b.Url).ToArray()
+                ConfigStaticContentUrls = binaries.Select(b => b.Url).ToArray(),
+                DataPresentationTemplateId = dataPresentationId
             };
 
             return AddJsonBinary(localizationData, relatedComponent, _configStructureGroup, "_all", variantId: "config-bootstrap");
