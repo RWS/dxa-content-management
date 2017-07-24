@@ -19,7 +19,7 @@
         <VersionMinor>$(Version.Split('.')[1])</VersionMinor>
         <VersionPatch>$(Version.Split('.')[2])</VersionPatch>
         <VersionBuild>$(Version.Split('.')[3])</VersionBuild>
-        <PreReleaseLabel Condition="'$(IsPreRelease)' == 'true'">-alpha-$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</PreReleaseLabel>
+        <PreReleaseLabel Condition="'$(IsPreRelease)' == 'true'">-beta-$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</PreReleaseLabel>
         <PackageVersion>$(VersionMajor).$(VersionMinor).$(VersionPatch)$(PreReleaseLabel)</PackageVersion>
         
         <!--Tools-->
@@ -68,6 +68,7 @@
     <Target Name="RunBuild">
         <Message Text="Running build commands..." Importance="high" />
 
+        <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.DXAResolver\Sdl.Web.DXAResolver.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates\Sdl.Web.Tridion.Templates.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Legacy\Sdl.Web.Tridion.Templates.Legacy.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Tests\Sdl.Web.Tridion.Templates.Tests.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
