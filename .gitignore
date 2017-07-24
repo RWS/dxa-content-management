@@ -5,3 +5,5 @@ bin
 packages/
 TestResults/
 CoverageReports/
+TestResults.trx
+_NuGet/
