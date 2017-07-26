@@ -93,7 +93,7 @@
     </Target>
 
     <!-- =============================================================================================================================================  -->
-    <Target Name="CreatePackages">
+    <Target Name="CreatePackages" Condition="'$(BuildConfiguration)' == 'Release'">
         <Message Text="Creating NuGet packages in '$(NuGetPackageDirectory)' ..." Importance="high" />
 
         <Message Text="Package Version: $(PackageVersion)" />
@@ -102,7 +102,7 @@
     </Target>
 
     <!-- =============================================================================================================================================  -->
-    <Target Name="PublishPackages">
+    <Target Name="PublishPackages" Condition="'$(BuildConfiguration)' == 'Release'">
         <Message Text="Publishing NuGet packages to '$(NuGetRepositoryUrl)' ..." Importance="high" />
 
         <Exec Command="$(NuGet) push Sdl.Dxa.DataModel.$(PackageVersion).nupkg -Source $(NuGetRepositoryUrl)" WorkingDirectory="$(NuGetPackageDirectory)" />
