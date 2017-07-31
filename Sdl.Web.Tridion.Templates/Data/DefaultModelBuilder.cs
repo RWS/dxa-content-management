@@ -72,6 +72,7 @@ namespace Sdl.Web.Tridion.Data
             pageModelData = new PageModelData
             {
                 Id = GetDxaIdentifier(page),
+                PageTemplate = GetPageTemplateData(pt),
                 SchemaId = GetDxaIdentifier(page.MetadataSchema),
                 Meta = null, // Default Model builder does not set PageModel.Meta; see DefaultPageMetaModelBuilder.
                 Title = StripSequencePrefix(page.Title, out sequencePrefix) , // See DefaultPageMetaModelBuilder
@@ -150,6 +151,7 @@ namespace Sdl.Web.Tridion.Data
                 return;
             }
 
+            entityModelData.ComponentTemplateId = GetTcmIdentifier(ct);
             entityModelData.MvcData = GetEntityMvcData(ct);
             entityModelData.HtmlClasses = GetHtmlClasses(ct);
             entityModelData.XpmMetadata = GetXpmMetadata(component, ct);
@@ -462,6 +464,21 @@ namespace Sdl.Web.Tridion.Data
                 { "PageTemplateID", GetTcmIdentifier(page.PageTemplate) },
                 { "PageTemplateModified", page.PageTemplate.RevisionDate }
             };
+        }
+
+        private PageTemplateData GetPageTemplateData(PageTemplate pt)
+        {
+            var pageTemplateData = new PageTemplateData
+            {
+                Id = pt.Id.ToString(),
+                Title = pt.Title,
+                FileExtension = pt.FileExtension,
+                RevisionDate = pt.RevisionDate
+            };
+
+            if (pt.Metadata == null || pt.MetadataSchema == null) return pageTemplateData;
+            pageTemplateData.Metadata = BuildContentModel(pt.Metadata, Pipeline.Settings.ExpandLinkDepth); ;
+            return pageTemplateData;
         }
     }
 }

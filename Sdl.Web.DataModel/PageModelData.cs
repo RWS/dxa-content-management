@@ -17,6 +17,8 @@ namespace Sdl.Web.DataModel
         /// </summary>
         public string Title { get; set; }
 
+        public PageTemplateData PageTemplate { get; set; }
+
         /// <summary>
         /// Gets or sets the canonical URL path (unencoded) of the Page.
         /// </summary>
