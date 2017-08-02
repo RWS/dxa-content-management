@@ -77,7 +77,7 @@ namespace Sdl.Web.Tridion.Data
                 Meta = null, // Default Model builder does not set PageModel.Meta; see DefaultPageMetaModelBuilder.
                 Title = StripSequencePrefix(page.Title, out sequencePrefix) , // See DefaultPageMetaModelBuilder
                 UrlPath = GetUrlPath(page),
-                Regions = regionModels.Values.ToList(),
+                Regions = regionModels.Values.ToList(),                
                 Metadata = pageModelMetadata,
                 MvcData = GetPageMvcData(pt),
                 XpmMetadata = GetXpmMetadata(page)
@@ -151,7 +151,7 @@ namespace Sdl.Web.Tridion.Data
                 return;
             }
 
-            entityModelData.ComponentTemplateId = GetTcmIdentifier(ct);
+            entityModelData.ComponentTemplateId = GetDxaIdentifier(ct);
             entityModelData.MvcData = GetEntityMvcData(ct);
             entityModelData.HtmlClasses = GetHtmlClasses(ct);
             entityModelData.XpmMetadata = GetXpmMetadata(component, ct);
