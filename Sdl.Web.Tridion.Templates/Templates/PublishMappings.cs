@@ -42,6 +42,20 @@ namespace Sdl.Web.Tridion.Templates
             {"mapping", "http://www.sdl.com/tridion/SemanticMapping"}
         };
 
+        private static readonly IDictionary<Type, FieldType> _fieldTypes = new Dictionary<Type, FieldType>
+        {
+            {typeof (SingleLineTextFieldDefinition), FieldType.Text},
+            {typeof (MultiLineTextFieldDefinition), FieldType.MultiLineText},
+            {typeof (XhtmlFieldDefinition), FieldType.Xhtml},
+            {typeof (NumberFieldDefinition), FieldType.Number},
+            {typeof (DateFieldDefinition), FieldType.Date},
+            {typeof (MultimediaLinkFieldDefinition), FieldType.MultiMediaLink},
+            {typeof (ComponentLinkFieldDefinition), FieldType.ComponentLink},
+            {typeof (ExternalLinkFieldDefinition), FieldType.ExternalLink},
+            {typeof (EmbeddedSchemaFieldDefinition), FieldType.Embedded},
+            {typeof (KeywordFieldDefinition), FieldType.Keyword}
+        };
+
         private bool _retrofitMode;
         private Schema _currentSchema;
 
@@ -276,10 +290,10 @@ namespace Sdl.Web.Tridion.Templates
                 EmbeddedSchemaFieldDefinition embeddedSchemaField = schemaField as EmbeddedSchemaFieldDefinition;
                 SemanticSchemaFieldData semanticSchemaField = (embeddedSchemaField == null) ? new SemanticSchemaFieldData() : new EmbeddedSemanticSchemaFieldData();
                 semanticSchemaField.Name = schemaField.Name;
-                semanticSchemaField.Path = string.Format("{0}/{1}", contextPath, schemaField.Name);
+                semanticSchemaField.Path = $"{contextPath}/{schemaField.Name}";
                 semanticSchemaField.IsMultiValue = schemaField.MaxOccurs != 1;
                 semanticSchemaField.Semantics = GetSemanticProperties(schemaField, semanticTypes, schema).ToArray();
-
+                semanticSchemaField.FieldType = GetFieldType(schemaField);
                 if (embeddedSchemaField == null)
                 {
                     semanticSchemaField.Fields = new SemanticSchemaFieldData[0];
@@ -304,6 +318,8 @@ namespace Sdl.Web.Tridion.Templates
 
             return semanticSchemaFields;
         }
+
+        private static FieldType GetFieldType(ItemFieldDefinition field) => _fieldTypes[field.GetType()];
 
         private IEnumerable<SemanticPropertyData> GetSemanticProperties(ItemFieldDefinition schemaField, IEnumerable<SemanticTypeData> semanticTypes, Schema schema)
         {
