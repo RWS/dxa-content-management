@@ -17,6 +17,9 @@ namespace Sdl.Web.DataModel
         /// </summary>
         public string Title { get; set; }
 
+        /// <summary>
+        /// Gets or sets the template used by this Page.
+        /// </summary>
         public PageTemplateData PageTemplate { get; set; }
 
         /// <summary>

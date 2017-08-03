@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Sdl.Web.DataModel
 {
@@ -13,6 +12,6 @@ namespace Sdl.Web.DataModel
 
         public DateTime RevisionDate { get; set; }
 
-        public Dictionary<string, object> Metadata { get; set; }
+        public ContentModelData Metadata { get; set; }
     }
 }

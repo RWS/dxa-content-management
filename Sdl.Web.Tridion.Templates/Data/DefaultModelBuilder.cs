@@ -470,7 +470,7 @@ namespace Sdl.Web.Tridion.Data
         {
             var pageTemplateData = new PageTemplateData
             {
-                Id = pt.Id.ToString(),
+                Id = GetDxaIdentifier(pt),
                 Title = pt.Title,
                 FileExtension = pt.FileExtension,
                 RevisionDate = pt.RevisionDate
