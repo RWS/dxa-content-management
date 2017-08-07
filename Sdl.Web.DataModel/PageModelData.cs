@@ -23,6 +23,11 @@ namespace Sdl.Web.DataModel
         public PageTemplateData PageTemplate { get; set; }
 
         /// <summary>
+        /// Gets or sets the structure group id for this page.
+        /// </summary>
+        public string StructureGroupId { get; set; }
+
+        /// <summary>
         /// Gets or sets the canonical URL path (unencoded) of the Page.
         /// </summary>
         /// <remarks>

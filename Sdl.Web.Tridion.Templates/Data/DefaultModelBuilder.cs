@@ -50,6 +50,8 @@ namespace Sdl.Web.Tridion.Data
             // We need Keyword XLinks for Keyword field expansion
             page.Load(LoadFlags.KeywordXlinks);
 
+            StructureGroup structureGroup = (StructureGroup)page.OrganizationalItem;
+
             PageTemplate pt = page.PageTemplate;
 
             IDictionary<string, RegionModelData> regionModels = new Dictionary<string, RegionModelData>();
@@ -73,6 +75,7 @@ namespace Sdl.Web.Tridion.Data
             {
                 Id = GetDxaIdentifier(page),
                 PageTemplate = GetPageTemplateData(pt),
+                StructureGroupId = GetDxaIdentifier(structureGroup),
                 SchemaId = GetDxaIdentifier(page.MetadataSchema),
                 Meta = null, // Default Model builder does not set PageModel.Meta; see DefaultPageMetaModelBuilder.
                 Title = StripSequencePrefix(page.Title, out sequencePrefix) , // See DefaultPageMetaModelBuilder
