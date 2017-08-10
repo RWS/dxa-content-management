@@ -19,9 +19,9 @@
         public string Id { get; set; }
 
         /// <summary>
-        /// Gets or sets the component template identifier.
+        /// Gets or sets the component template.
         /// </summary>
-        public string ComponentTemplateId { get; set; }
+        public ComponentTemplateData ComponentTemplate { get; set; }
 
         /// <summary>
         /// Gets or sets the custom content.

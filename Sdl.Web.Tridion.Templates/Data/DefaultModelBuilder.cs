@@ -153,7 +153,7 @@ namespace Sdl.Web.Tridion.Data
             if (ct == null) return;
 
             // We always want the component templaye id
-            entityModelData.ComponentTemplateId = GetDxaIdentifier(ct);
+            entityModelData.ComponentTemplate = GetComponentTemplateData(ct);
 
             if (includeComponentTemplateDetails)
             {
@@ -485,6 +485,17 @@ namespace Sdl.Web.Tridion.Data
             if (pt.Metadata == null || pt.MetadataSchema == null) return pageTemplateData;
             pageTemplateData.Metadata = BuildContentModel(pt.Metadata, Pipeline.Settings.ExpandLinkDepth); ;
             return pageTemplateData;
+        }
+
+        private ComponentTemplateData GetComponentTemplateData(ComponentTemplate ct)
+        {
+            var componentTemplateData = new ComponentTemplateData
+            {
+                Id = GetDxaIdentifier(ct)
+            };
+            if (!ct.IsRepositoryPublishable || ct.Metadata == null || ct.MetadataSchema == null) return componentTemplateData;
+            componentTemplateData.Metadata = BuildContentModel(ct.Metadata, Pipeline.Settings.ExpandLinkDepth);
+            return componentTemplateData;
         }
     }
 }
