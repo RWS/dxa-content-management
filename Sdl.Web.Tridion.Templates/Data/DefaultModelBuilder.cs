@@ -493,7 +493,7 @@ namespace Sdl.Web.Tridion.Data
             {
                 Id = GetDxaIdentifier(ct)
             };
-            if (!ct.IsRepositoryPublishable || ct.Metadata == null || ct.MetadataSchema == null) return componentTemplateData;
+            if (ct.Metadata == null || ct.MetadataSchema == null) return componentTemplateData;
             componentTemplateData.Metadata = BuildContentModel(ct.Metadata, Pipeline.Settings.ExpandLinkDepth);
             return componentTemplateData;
         }
