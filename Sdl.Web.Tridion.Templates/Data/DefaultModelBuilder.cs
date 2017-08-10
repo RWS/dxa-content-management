@@ -494,6 +494,9 @@ namespace Sdl.Web.Tridion.Data
                 Id = GetDxaIdentifier(ct)
             };
             if (ct.Metadata == null || ct.MetadataSchema == null) return componentTemplateData;
+            componentTemplateData.Title = ct.Title;
+            componentTemplateData.RevisionDate = ct.RevisionDate;
+            componentTemplateData.OutputFormat = ct.OutputFormat;
             componentTemplateData.Metadata = BuildContentModel(ct.Metadata, Pipeline.Settings.ExpandLinkDepth);
             return componentTemplateData;
         }
