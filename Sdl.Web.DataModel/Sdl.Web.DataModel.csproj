@@ -63,6 +63,7 @@
     <Compile Include="DataModelBinder.cs" />
     <Compile Include="EntityModelData.cs" />
     <Compile Include="ExternalContentData.cs" />
+    <Compile Include="FolderData.cs" />
     <Compile Include="KeywordModelData.cs" />
     <Compile Include="MvcData.cs" />
     <Compile Include="PageModelData.cs" />

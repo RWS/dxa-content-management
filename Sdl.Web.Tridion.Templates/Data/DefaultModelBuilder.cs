@@ -147,7 +147,8 @@ namespace Sdl.Web.Tridion.Data
                 SchemaId = GetDxaIdentifier(component.Schema),
                 Content = BuildContentModel(component.Content, expandLinkDepth),
                 Metadata = BuildContentModel(component.Metadata, expandLinkDepth),
-                BinaryContent = BuildBinaryContentData(component)
+                BinaryContent = BuildBinaryContentData(component),
+                Folder = GetFolderData(component)
             };
 
             if (ct == null) return;
@@ -493,12 +494,23 @@ namespace Sdl.Web.Tridion.Data
             {
                 Id = GetDxaIdentifier(ct)
             };
+           
             if (ct.Metadata == null || ct.MetadataSchema == null) return componentTemplateData;
             componentTemplateData.Title = ct.Title;
             componentTemplateData.RevisionDate = ct.RevisionDate;
             componentTemplateData.OutputFormat = ct.OutputFormat;
             componentTemplateData.Metadata = BuildContentModel(ct.Metadata, Pipeline.Settings.ExpandLinkDepth);
             return componentTemplateData;
+        }
+
+        private FolderData GetFolderData(Component component)
+        {
+            Folder folder = (Folder) component.OrganizationalItem;
+            return new FolderData
+            {
+                Id = folder.Id?.ItemId.ToString(),
+                Title = folder.Title
+            };
         }
     }
 }
