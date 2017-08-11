@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using Sdl.Web.DataModel;
+using Sdl.Web.Tridion.Common;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
+using Tridion.ContentManager.CommunicationManagement.Regions;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Publishing.Resolving;
@@ -56,6 +58,12 @@ namespace Sdl.Web.Tridion.Data
             AddPredefinedRegions(regionModels, pt);
             AddComponentPresentationRegions(regionModels, page);
             AddIncludePageRegions(regionModels, pt);
+
+            var nativeRegionModels = AddNativeRegions(page.GetPropertyValue<IList<IRegion>>("Regions"));
+            foreach (var nativeRegion in nativeRegionModels)
+            {
+                regionModels.Add(nativeRegion.Name, nativeRegion);
+            }
 
             // Merge Page metadata and PT custom metadata
             ContentModelData ptCustomMetadata = ExtractCustomMetadata(pt.Metadata, excludeFields: _standardPageTemplateMetadataFields);
@@ -375,6 +383,60 @@ namespace Sdl.Web.Tridion.Data
             }
         }
 
+        private List<RegionModelData> AddNativeRegions(IList<IRegion> regions)
+        {
+            List<RegionModelData> regionModelDatas = new List<RegionModelData>();
+            foreach (IRegion region in regions)
+            {
+                string regionName = region.RegionName;
+                var regionModelData = new RegionModelData
+                {
+                    Name = regionName,
+                    MvcData = new MvcData
+                    {
+                        ViewName = regionName
+                    },
+                    Entities = new List<EntityModelData>()
+                };
+
+                foreach (var cp in region.ComponentPresentations)
+                {
+                    ComponentTemplate ct = cp.ComponentTemplate;
+
+                    // Create a Child Rendered Item for the CP in order to make Component linking work.
+                    RenderedItem childRenderedItem = new RenderedItem(new ResolvedItem(cp.Component, ct),
+                        Pipeline.RenderedItem.RenderInstruction);
+                    Pipeline.RenderedItem.AddRenderedItem(childRenderedItem);
+
+                    EntityModelData entityModel;
+                    if (ct.IsRepositoryPublishable)
+                    {
+                        Logger.Debug($"Not expanding DCP ({cp.Component}, {ct})");
+                        entityModel = new EntityModelData
+                        {
+                            Id = $"{GetDxaIdentifier(cp.Component)}-{GetDxaIdentifier(ct)}"
+                        };
+                    }
+                    else
+                    {
+                        entityModel = Pipeline.CreateEntityModel(cp);
+                    }
+
+                    regionModelData.Entities.Add(entityModel);
+                }
+
+                IList<IRegion> nestedRegions = region.GetPropertyValue<IList<IRegion>>("Regions");
+                if (nestedRegions != null)
+                {
+                    regionModelData.Regions = AddNativeRegions(nestedRegions);
+                }
+
+                regionModelDatas.Add(regionModelData);
+            }
+
+            return regionModelDatas;
+        }
+
         private static MvcData GetEntityMvcData(ComponentTemplate ct)
         {
             string qualifiedViewName = ct.Metadata.GetTextFieldValue("view");
@@ -463,5 +525,6 @@ namespace Sdl.Web.Tridion.Data
                 { "PageTemplateModified", page.PageTemplate.RevisionDate }
             };
         }
+
     }
 }
