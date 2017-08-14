@@ -62,7 +62,25 @@ namespace Sdl.Web.Tridion.Data
             var nativeRegionModels = AddNativeRegions(page.GetPropertyValue<IList<IRegion>>("Regions"));
             foreach (var nativeRegion in nativeRegionModels)
             {
-                regionModels.Add(nativeRegion.Name, nativeRegion);
+                if (!regionModels.ContainsKey(nativeRegion.Name))
+                {
+                    regionModels.Add(nativeRegion.Name, nativeRegion);
+                }
+                else
+                {
+                    var dxaRegion = regionModels[nativeRegion.Name];
+                    if (dxaRegion.Entities == null)
+                    {
+                        dxaRegion.Entities = new List<EntityModelData>();
+                    }
+                    dxaRegion.Entities.AddRange(nativeRegion.Entities);
+
+                    if (nativeRegion.Metadata != null && nativeRegion.Metadata.Any())
+                    {
+                        regionModels[nativeRegion.Name].Metadata = nativeRegion.Metadata;
+                    }
+                    dxaRegion.Regions = nativeRegion.Regions;
+                }
             }
 
             // Merge Page metadata and PT custom metadata
@@ -389,14 +407,17 @@ namespace Sdl.Web.Tridion.Data
             foreach (IRegion region in regions)
             {
                 string regionName = region.RegionName;
+                string viewName = region.RegionSchema != null && string.IsNullOrEmpty(region.RegionSchema.Title) ? region.RegionSchema.Title : regionName;
+                ContentModelData metadata = ExtractCustomMetadata(region.Metadata, null);
                 var regionModelData = new RegionModelData
                 {
                     Name = regionName,
                     MvcData = new MvcData
                     {
-                        ViewName = regionName
+                        ViewName = viewName
                     },
-                    Entities = new List<EntityModelData>()
+                    Entities = new List<EntityModelData>(),
+                    Metadata = metadata
                 };
 
                 foreach (var cp in region.ComponentPresentations)
@@ -420,6 +441,11 @@ namespace Sdl.Web.Tridion.Data
                     else
                     {
                         entityModel = Pipeline.CreateEntityModel(cp);
+                    }
+
+                    if (entityModel.MvcData.ViewName != regionName)
+                    {
+                        Logger.Warning($"Component Template {cp.ComponentTemplate.Title} Metadata's Region {entityModel.MvcData.ViewName} mismatch with current Region {regionName}");
                     }
 
                     regionModelData.Entities.Add(entityModel);
