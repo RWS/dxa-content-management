@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sdl.Web.DataModel;
 using Sdl.Web.Tridion.Common;
@@ -141,6 +142,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
         }
 
+        #region Native Region tests
+
         /// <summary>
         /// CM Page contains native region hierarcy (with nested regions and CP).
         /// Check that generated PageModel reflects that hierarcy.
@@ -153,12 +156,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
             if (!IsCmHasNativeRegions(testPage)) return;
             IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
 
-            //TODO ensure some cm regions exist
-
-            //testPage.Checkout();
-            //var newRegion = new Region("testRegion", testPage, testPage);
-            //propValue.Add(newRegion);
-            //testPage.Save(true);
+            var newRegion = new Region("testRegion", testPage, testPage);
+            cmRegions.Add(newRegion);
 
             // Act
             RenderedItem testRenderedItem;
@@ -199,25 +198,27 @@ namespace Sdl.Web.Tridion.Templates.Tests
             // Assign
             Page testPage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
             if (!IsCmHasNativeRegions(testPage)) return;
-            IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
 
             // Act
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
+            //need to read Regions property second time, otherwise adding region to list will not work
+            IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
             const string regionName = "Hero";
-            cmRegions.Add(new Region(regionName, testPage, testPage));
+            var region = new Region(regionName, testPage, testPage);
+            cmRegions.Add(region);
 
             PageModelData pageModelWithNativeRegion = CreatePageModel(testPage, out testRenderedItem);
 
             // Assert
-            Assert.Equals(pageModel.Regions.Count(r => r.Name == regionName), 1);
-            Assert.Equals(pageModelWithNativeRegion.Regions.Count(r => r.Name == regionName), 1);
+            Assert.AreEqual(pageModel.Regions.Count(r => r.Name == regionName), 1);
+            Assert.AreEqual(pageModelWithNativeRegion.Regions.Count(r => r.Name == regionName), 1);
 
             RegionModelData regionModelData = pageModel.Regions.First(r => r.Name == regionName);
             RegionModelData regionModelDataNative = pageModelWithNativeRegion.Regions.First(r => r.Name == regionName);
 
-            Assert.Equals(regionModelDataNative.Entities.First().Id, regionModelData.Entities.First().Id);
+            Assert.AreEqual(regionModelDataNative.Entities.First().Id, regionModelData.Entities.First().Id);
         }
 
         /// <summary>
@@ -250,7 +251,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
             // Assert
             RegionModelData regionModelData = pageModelData.Regions.First(r => r.Name == regionNameHero);
-            Assert.Equals(regionModelData.Entities.Count(e => e.Id == DataModelBuilder.GetDxaIdentifier(componentPresentation.Component)), 2);
+            Assert.AreEqual(regionModelData.Entities.Count(e => e.Id == DataModelBuilder.GetDxaIdentifier(componentPresentation.Component)), 2);
         }
 
         /// <summary>
@@ -261,13 +262,36 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_MetadataConflict_Success()
         {
             // Assign
-            Page testPage = (Page) TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
+            var xml = new XmlDocument();
+            Page testPage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
             if (!IsCmHasNativeRegions(testPage)) return;
-            IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
 
+            var region = new Region("Hero", testPage, testPage);
+
+            var nativeRegionMetadataXml = "<Metadata xmlns=\"uuid:a94a82b5-5a3e-4256-a75d-52b6014dbf22\"><RegionMetadataField1>nativeValue1</RegionMetadataField1><RegionMetadataField2>nativeValue2</RegionMetadataField2></Metadata>";
+            xml.LoadXml(nativeRegionMetadataXml);
+            region.Metadata = xml.DocumentElement;
+
+            var dxaPTMetadataXML =
+                "<Metadata xmlns=\"uuid:a94a82b5-5a3e-4256-a75d-52b6014dbf22\"><regions><name>Hero</name><view></view><RegionMetadataField1>dxaValue1</RegionMetadataField1><RegionMetadataField2>dxaValue2</RegionMetadataField2></regions></Metadata>";
+            xml.LoadXml(dxaPTMetadataXML);
+
+            //testPage.PageTemplate.SetPropertyValue("Metadata", xml.DocumentElement);
+            testPage.PageTemplate.Metadata = xml.DocumentElement;
+
+            IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
+            cmRegions.Add(region);
+
+            // Act
             RenderedItem testRenderedItem;
             PageModelData pageModelData = CreatePageModel(testPage, out testRenderedItem);
+
+            // Assert
+
+            Assert.AreEqual(nativeRegionMetadataXml, pageModelData.Metadata);
         }
+
+        #endregion Native Region tests
 
         [TestMethod]
         public void CreatePageModel_Article_Success()
@@ -492,7 +516,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsTrue(pageModelWithMeta.Meta.TryGetValue("og:title", out ogTitle));
             Assert.AreEqual(pageModelWithMeta.Title, ogTitle, "ogTite");
         }
-
 
         [TestMethod]
         public void CreatePageModel_KeywordModel_Success()
