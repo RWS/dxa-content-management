@@ -14,6 +14,7 @@ using Tridion.ContentManager.Caching;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.CommunicationManagement.Regions;
 using Tridion.ContentManager.ContentManagement;
+using Tridion.ContentManager.ContentManagement.Fields;
 using Tridion.ContentManager.Publishing.Rendering;
 
 namespace Sdl.Web.Tridion.Templates.Tests
@@ -175,7 +176,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 RegionModelData regionModelData = regionsModelDatas.FirstOrDefault(r => r.Name == cmRegion.RegionName);
 
                 Assert.IsNotNull(regionModelData);
-                Assert.Equals(regionModelData.MvcData.ViewName, cmRegion.RegionSchema.Title);
+                Assert.AreEqual(regionModelData.MvcData.ViewName, cmRegion.RegionSchema == null ? cmRegion.RegionName : cmRegion.RegionSchema.Title);
 
                 foreach (var componentPresentation in cmRegion.ComponentPresentations)
                 {
@@ -203,10 +204,9 @@ namespace Sdl.Web.Tridion.Templates.Tests
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
-            //need to read Regions property second time, otherwise adding region to list will not work
-            IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
             const string regionName = "Hero";
             var region = new Region(regionName, testPage, testPage);
+            IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
             cmRegions.Add(region);
 
             PageModelData pageModelWithNativeRegion = CreatePageModel(testPage, out testRenderedItem);
@@ -231,10 +231,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             // Assign
             Page testPage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
             if (!IsCmHasNativeRegions(testPage)) return;
-            IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
 
-            // Act
-            RenderedItem testRenderedItem;
             const string regionNameHero = "Hero";
 
             Region region = new Region(regionNameHero, testPage, testPage);
@@ -245,13 +242,17 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 return regionName == regionNameHero;
             });
             region.ComponentPresentations.Add(componentPresentation);
+            IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
             cmRegions.Add(region);
+            IList<IRegion> cmRegions2 = testPage.GetPropertyValue<IList<IRegion>>("Regions");
 
+            // Act
+            RenderedItem testRenderedItem;
             PageModelData pageModelData = CreatePageModel(testPage, out testRenderedItem);
 
             // Assert
             RegionModelData regionModelData = pageModelData.Regions.First(r => r.Name == regionNameHero);
-            Assert.AreEqual(regionModelData.Entities.Count(e => e.Id == DataModelBuilder.GetDxaIdentifier(componentPresentation.Component)), 2);
+            Assert.AreEqual(2, regionModelData.Entities.Count(e => e.Id == DataModelBuilder.GetDxaIdentifier(componentPresentation.Component)));
         }
 
         /// <summary>
@@ -262,33 +263,99 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_MetadataConflict_Success()
         {
             // Assign
-            var xml = new XmlDocument();
-            Page testPage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            if (!IsCmHasNativeRegions(testPage)) return;
+            Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
+            if (!IsCmHasNativeRegions(samplePage)) return;
 
-            var region = new Region("Hero", testPage, testPage);
+            Schema embSchema = null;
+            Schema metadataSchema = null;
+            PageTemplate template = null;
+            Page page = null;
 
-            var nativeRegionMetadataXml = "<Metadata xmlns=\"uuid:a94a82b5-5a3e-4256-a75d-52b6014dbf22\"><RegionMetadataField1>nativeValue1</RegionMetadataField1><RegionMetadataField2>nativeValue2</RegionMetadataField2></Metadata>";
-            xml.LoadXml(nativeRegionMetadataXml);
-            region.Metadata = xml.DocumentElement;
+            try
+            {
+                // Create embeddebed schema
+                embSchema = new Schema(TestSession, samplePage.PageTemplate.OrganizationalItem.Id);
+                embSchema.Title = embSchema.Description = "_EmbSchemaTest";
 
-            var dxaPTMetadataXML =
-                "<Metadata xmlns=\"uuid:a94a82b5-5a3e-4256-a75d-52b6014dbf22\"><regions><name>Hero</name><view></view><RegionMetadataField1>dxaValue1</RegionMetadataField1><RegionMetadataField2>dxaValue2</RegionMetadataField2></regions></Metadata>";
-            xml.LoadXml(dxaPTMetadataXML);
+                var embFields = new SchemaFields(embSchema);
+                embFields.Fields.Add(new SingleLineTextFieldDefinition("name") { Description = "Name"});
+                embFields.Fields.Add(new SingleLineTextFieldDefinition("view") { Description = "View", DefaultValue = "Hero" });
+                embFields.Fields.Add(new SingleLineTextFieldDefinition("RegionMetadataField1") { Description = "MF1", DefaultValue = "DXA Region Metadata Field 1" });
+                embFields.Fields.Add(new SingleLineTextFieldDefinition("RegionMetadataField2") { Description = "MF2", DefaultValue = "DXA Region Metadata Field 2" });
+                embFields.Fields.Add(new SingleLineTextFieldDefinition("RegionMetadataField3") { Description = "MF3", DefaultValue = "DXA Region Metadata Field 3" });
+                embFields.NamespaceUri = String.Empty;
+                embFields.RootElementName = "EmbedMe";
+                embSchema.Xsd = embFields.ToXsd();
+                embSchema.Purpose = SchemaPurpose.Embedded;
+                embSchema.RootElementName = "EmbedMe";
+                embSchema.Save(true);
 
-            //testPage.PageTemplate.SetPropertyValue("Metadata", xml.DocumentElement);
-            testPage.PageTemplate.Metadata = xml.DocumentElement;
+                // Create metadata schema with embedded
+                metadataSchema = new Schema(TestSession, samplePage.PageTemplate.OrganizationalItem.Id);
+                metadataSchema.Title = metadataSchema.Description = "_MetaDataSchemaTest";
+                metadataSchema.Purpose = SchemaPurpose.Metadata;
 
-            IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
-            cmRegions.Add(region);
+                var metadataFields = new SchemaFields(metadataSchema);
+                var embFieldDefinition = new EmbeddedSchemaFieldDefinition("regions") { Description = "regions", EmbeddedSchema = embSchema };
+                metadataFields.MetadataFields.Add(embFieldDefinition);
+                metadataSchema.Xsd = metadataFields.ToXsd();
+                metadataSchema.Save(true);
 
-            // Act
-            RenderedItem testRenderedItem;
-            PageModelData pageModelData = CreatePageModel(testPage, out testRenderedItem);
+                // Create Page Template
+                template =
+                    new PageTemplate(TestSession, samplePage.PageTemplate.OrganizationalItem.Id)
+                    {
+                        Title = "_TestTemplate",
+                        MetadataSchema = metadataSchema
+                    };
+                var embItemFields = new ItemFields(embSchema);
+                ((SingleLineTextField)embItemFields["view"]).Value = "Hero";
+                ((SingleLineTextField)embItemFields["RegionMetadataField1"]).Value = "DXA meta";
+                ((SingleLineTextField)embItemFields["RegionMetadataField2"]).Value = "DXA meta 2";
+                ((SingleLineTextField)embItemFields["RegionMetadataField3"]).Value = "DXA meta 3";
 
-            // Assert
+                var metadataItemFields = new ItemFields(metadataSchema);
+                ((EmbeddedSchemaField)metadataItemFields["regions"]).Value = embItemFields;
+                template.Metadata = metadataItemFields.ToXml();
+                template.Save(true);
 
-            Assert.AreEqual(nativeRegionMetadataXml, pageModelData.Metadata);
+                // Create Page
+                page = new Page(TestSession, samplePage.OrganizationalItem.Id)
+                {
+                    FileName = "testPage.html",
+                    Title = "Test Page",
+                    PageTemplate = template
+                };
+                page.Save(true);
+
+                // Add dummy region
+                var xml = new XmlDocument();
+                xml.LoadXml("<Metadata xmlns=\"uuid:a94a82b5-5a3e-4256-a75d-52b6014dbf22\"><RegionMetadataField1>Native1</RegionMetadataField1><RegionMetadataField4>Native4</RegionMetadataField4></Metadata>");
+                var region = new Region("Hero", samplePage, samplePage) {Metadata = xml.DocumentElement};
+
+                IList<IRegion> cmRegions = samplePage.GetPropertyValue<IList<IRegion>>("Regions");
+                cmRegions.Add(region);
+
+                //Act
+                RenderedItem testRenderedItem;
+                PageModelData pageModelData = CreatePageModel(page, out testRenderedItem);
+
+                //Assert
+                Assert.AreEqual(1, pageModelData.Regions.Count);
+                Assert.AreEqual(2, pageModelData.Regions[0].Metadata.Count);
+                Assert.AreEqual(true, pageModelData.Regions[0].Metadata.ContainsKey("RegionMetadataField1"));
+                Assert.AreEqual("Native1", pageModelData.Regions[0].Metadata["RegionMetadataField1"]);
+                Assert.AreEqual(true, pageModelData.Regions[0].Metadata.ContainsKey("RegionMetadataField4"));
+                Assert.AreEqual("Native4", pageModelData.Regions[0].Metadata["RegionMetadataField4"]);
+            }
+            finally
+            {
+                // Cleanup
+                page?.Delete();
+                template?.Delete();
+                metadataSchema?.Delete();
+                embSchema?.Delete();
+            }
         }
 
         #endregion Native Region tests
