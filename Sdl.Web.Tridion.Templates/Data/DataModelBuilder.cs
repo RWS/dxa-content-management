@@ -55,7 +55,7 @@ namespace Sdl.Web.Tridion.Data
         protected static bool IsEclItem(Component component) =>
             (component.BinaryContent != null) && (component.BinaryContent.MultimediaType.MimeType == EclMimeType);
 
-        protected static string GetDxaIdentifier(IdentifiableObject tcmItem)
+        public static string GetDxaIdentifier(IdentifiableObject tcmItem)
             => tcmItem?.Id.ItemId.ToString();
 
         protected static string GetTcmIdentifier(IdentifiableObject tcmItem)
@@ -389,7 +389,7 @@ namespace Sdl.Web.Tridion.Data
             return result;
         }
 
-        protected static MvcData GetRegionMvcData(ComponentTemplate ct, out string regionName)
+        public static MvcData GetRegionMvcData(ComponentTemplate ct, out string regionName)
         {
             string qualifiedViewName = ct.Metadata.GetTextFieldValue("regionView");
             regionName = ct.Metadata.GetTextFieldValue("regionName");

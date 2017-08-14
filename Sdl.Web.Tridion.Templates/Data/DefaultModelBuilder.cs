@@ -56,14 +56,16 @@ namespace Sdl.Web.Tridion.Data
 
             IDictionary<string, RegionModelData> regionModels = new Dictionary<string, RegionModelData>();
             AddPredefinedRegions(regionModels, pt);
-            AddComponentPresentationRegions(regionModels, page);
-            AddIncludePageRegions(regionModels, pt);
 
             var nativeRegionModels = AddNativeRegions(page.GetPropertyValue<IList<IRegion>>("Regions"));
             foreach (var nativeRegion in nativeRegionModels)
             {
                 regionModels.Add(nativeRegion.Name, nativeRegion);
             }
+
+            AddComponentPresentationRegions(regionModels, page);
+            AddIncludePageRegions(regionModels, pt);
+
 
             // Merge Page metadata and PT custom metadata
             ContentModelData ptCustomMetadata = ExtractCustomMetadata(pt.Metadata, excludeFields: _standardPageTemplateMetadataFields);
