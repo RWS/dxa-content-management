@@ -49,6 +49,8 @@ namespace Sdl.Web.Tridion.Data
                 return;
             }
 
+            var nativeRegionModels = AddNativeRegions(page.GetPropertyValue<IList<IRegion>>("Regions"));
+
             // We need Keyword XLinks for Keyword field expansion
             page.Load(LoadFlags.KeywordXlinks);
 
@@ -57,7 +59,6 @@ namespace Sdl.Web.Tridion.Data
             IDictionary<string, RegionModelData> regionModels = new Dictionary<string, RegionModelData>();
             AddPredefinedRegions(regionModels, pt);
 
-            var nativeRegionModels = AddNativeRegions(page.GetPropertyValue<IList<IRegion>>("Regions"));
             foreach (var nativeRegion in nativeRegionModels)
             {
                 regionModels.Add(nativeRegion.Name, nativeRegion);
