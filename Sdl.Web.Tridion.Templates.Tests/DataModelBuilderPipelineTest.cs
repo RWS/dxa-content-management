@@ -374,10 +374,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 // Add dummy region
                 var xml = new XmlDocument();
                 xml.LoadXml("<Metadata xmlns=\"uuid:a94a82b5-5a3e-4256-a75d-52b6014dbf22\"><RegionMetadataField1>Native1</RegionMetadataField1><RegionMetadataField4>Native4</RegionMetadataField4></Metadata>");
-                var region = new Region("Hero", samplePage, samplePage) {Metadata = xml.DocumentElement};
 
-                IList<IRegion> cmRegions = samplePage.GetPropertyValue<IList<IRegion>>("Regions");
+                page.CheckOut();
+                var region = new Region("Hero", page, page) {Metadata = xml.DocumentElement};
+                IList<IRegion> cmRegions = page.GetPropertyValue<IList<IRegion>>("Regions");
                 cmRegions.Add(region);
+                page.Save(true);
 
                 //Act
                 RenderedItem testRenderedItem;

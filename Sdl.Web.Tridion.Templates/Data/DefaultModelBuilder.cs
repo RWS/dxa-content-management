@@ -410,7 +410,7 @@ namespace Sdl.Web.Tridion.Data
             {
                 string regionName = region.RegionName;
                 string viewName = region.RegionSchema != null && string.IsNullOrEmpty(region.RegionSchema.Title) ? region.RegionSchema.Title : regionName;
-                ContentModelData metadata = ExtractCustomMetadata(region.Metadata, null);
+                ContentModelData metadata = ExtractCustomMetadata(region.Metadata, excludeFields: _standardRegionMetadataFields);
                 var regionModelData = new RegionModelData
                 {
                     Name = regionName,
