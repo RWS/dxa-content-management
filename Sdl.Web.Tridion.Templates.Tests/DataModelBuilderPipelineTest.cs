@@ -153,20 +153,36 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_Success()
         {
             // Assign
-            Page testPage = (Page) TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            if (!IsCmHasNativeRegions(testPage)) return;
-            IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
+            Page samplePage = (Page) TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
+            if (!IsCmHasNativeRegions(samplePage)) return;
 
-            var newRegion = new Region("testRegion", testPage, testPage);
-            cmRegions.Add(newRegion);
+            Page testPage = null;
+            try
+            {
+                // Create copy of existing page to do not disturb environment
+                testPage = (Page) samplePage.Copy(samplePage.OrganizationalItem, true);
+                testPage.CheckOut();
 
-            // Act
-            RenderedItem testRenderedItem;
-            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+                IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
 
-            // Assert
-            Assert.IsTrue(cmRegions.Count > 0);
-            AssertCmRegions(cmRegions, pageModel.Regions);
+                var region = new Region("testRegion", testPage, testPage);
+                region.ComponentPresentations.Add(testPage.ComponentPresentations.First());
+                cmRegions.Add(region);
+
+                testPage.Save(true);
+
+                // Act
+                RenderedItem testRenderedItem;
+                PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+
+                // Assert
+                AssertCmRegions(cmRegions, pageModel.Regions);
+            }
+            finally
+            {
+                //cleanup
+                testPage?.Delete();
+            }
         }
 
         private void AssertCmRegions(IList<IRegion> cmRegions, List<RegionModelData> regionsModelDatas)
@@ -197,28 +213,42 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_ConflictWithDXACPRegions_Success()
         {
             // Assign
-            Page testPage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            if (!IsCmHasNativeRegions(testPage)) return;
+            Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
+            if (!IsCmHasNativeRegions(samplePage)) return;
 
-            // Act
-            RenderedItem testRenderedItem;
-            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+            Page testPage = null;
+            try
+            {
+                // Create copy of existing page to do not disturb environment
+                testPage = (Page)samplePage.Copy(samplePage.OrganizationalItem, true);
 
-            const string regionName = "Hero";
-            var region = new Region(regionName, testPage, testPage);
-            IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
-            cmRegions.Add(region);
+                // Act
+                RenderedItem testRenderedItem;
+                PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
-            PageModelData pageModelWithNativeRegion = CreatePageModel(testPage, out testRenderedItem);
+                testPage.CheckOut();
+                const string regionName = "Hero";
+                var region = new Region(regionName, testPage, testPage);
+                IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
+                cmRegions.Add(region);
+                testPage.Save(true);
 
-            // Assert
-            Assert.AreEqual(pageModel.Regions.Count(r => r.Name == regionName), 1);
-            Assert.AreEqual(pageModelWithNativeRegion.Regions.Count(r => r.Name == regionName), 1);
+                PageModelData pageModelWithNativeRegion = CreatePageModel(testPage, out testRenderedItem);
 
-            RegionModelData regionModelData = pageModel.Regions.First(r => r.Name == regionName);
-            RegionModelData regionModelDataNative = pageModelWithNativeRegion.Regions.First(r => r.Name == regionName);
+                // Assert
+                Assert.AreEqual(pageModel.Regions.Count(r => r.Name == regionName), 1);
+                Assert.AreEqual(pageModelWithNativeRegion.Regions.Count(r => r.Name == regionName), 1);
 
-            Assert.AreEqual(regionModelDataNative.Entities.First().Id, regionModelData.Entities.First().Id);
+                RegionModelData regionModelData = pageModel.Regions.First(r => r.Name == regionName);
+                RegionModelData regionModelDataNative = pageModelWithNativeRegion.Regions.First(r => r.Name == regionName);
+
+                Assert.AreEqual(regionModelDataNative.Entities.First().Id, regionModelData.Entities.First().Id);
+            }
+            finally
+            {
+                //cleanup
+                testPage?.Delete();
+            }
         }
 
         /// <summary>
@@ -229,30 +259,43 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_DXARegions_SameCP_Success()
         {
             // Assign
-            Page testPage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            if (!IsCmHasNativeRegions(testPage)) return;
+            Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
+            if (!IsCmHasNativeRegions(samplePage)) return;
 
-            const string regionNameHero = "Hero";
-
-            Region region = new Region(regionNameHero, testPage, testPage);
-            ComponentPresentation componentPresentation = testPage.ComponentPresentations.First(cp =>
+            Page testPage = null;
+            try
             {
-                string regionName;
-                DataModelBuilder.GetRegionMvcData(cp.ComponentTemplate, out regionName);
-                return regionName == regionNameHero;
-            });
-            region.ComponentPresentations.Add(componentPresentation);
-            IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
-            cmRegions.Add(region);
-            IList<IRegion> cmRegions2 = testPage.GetPropertyValue<IList<IRegion>>("Regions");
+                // Create copy of existing page to do not disturb environment
+                testPage = (Page)samplePage.Copy(samplePage.OrganizationalItem, true);
+                const string regionNameHero = "Hero";
 
-            // Act
-            RenderedItem testRenderedItem;
-            PageModelData pageModelData = CreatePageModel(testPage, out testRenderedItem);
+                testPage.CheckOut();
+                Region region = new Region(regionNameHero, testPage, testPage);
+                ComponentPresentation componentPresentation = testPage.ComponentPresentations.First(cp =>
+                {
+                    string regionName;
+                    DataModelBuilder.GetRegionMvcData(cp.ComponentTemplate, out regionName);
+                    return regionName == regionNameHero;
+                });
+                region.ComponentPresentations.Add(componentPresentation);
+                IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
+                cmRegions.Add(region);
 
-            // Assert
-            RegionModelData regionModelData = pageModelData.Regions.First(r => r.Name == regionNameHero);
-            Assert.AreEqual(2, regionModelData.Entities.Count(e => e.Id == DataModelBuilder.GetDxaIdentifier(componentPresentation.Component)));
+                testPage.Save(true);
+
+                // Act
+                RenderedItem testRenderedItem;
+                PageModelData pageModelData = CreatePageModel(testPage, out testRenderedItem);
+
+                // Assert
+                RegionModelData regionModelData = pageModelData.Regions.First(r => r.Name == regionNameHero);
+                Assert.AreEqual(2, regionModelData.Entities.Count(e => e.Id == DataModelBuilder.GetDxaIdentifier(componentPresentation.Component)));
+            }
+            finally
+            {
+                //cleanup
+                testPage?.Delete();
+            }
         }
 
         /// <summary>
