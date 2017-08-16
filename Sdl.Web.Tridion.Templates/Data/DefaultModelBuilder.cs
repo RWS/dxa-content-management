@@ -58,32 +58,10 @@ namespace Sdl.Web.Tridion.Data
             AddPredefinedRegions(regionModels, pt);
 
             var nativeRegionModels = AddNativeRegions(page.GetPropertyValue<IList<IRegion>>("Regions"));
-            foreach (var nativeRegion in nativeRegionModels)
-            {
-                if (!regionModels.ContainsKey(nativeRegion.Name))
-                {
-                    regionModels.Add(nativeRegion.Name, nativeRegion);
-                }
-                else
-                {
-                    var dxaRegion = regionModels[nativeRegion.Name];
-                    if (dxaRegion.Entities == null)
-                    {
-                        dxaRegion.Entities = new List<EntityModelData>();
-                    }
-                    dxaRegion.Entities.AddRange(nativeRegion.Entities);
-
-                    if (nativeRegion.Metadata != null && nativeRegion.Metadata.Any())
-                    {
-                        regionModels[nativeRegion.Name].Metadata = nativeRegion.Metadata;
-                    }
-                    dxaRegion.Regions = nativeRegion.Regions;
-                }
-            }
+            ApplyNativeRegions(regionModels, nativeRegionModels);
 
             AddComponentPresentationRegions(regionModels, page);
             AddIncludePageRegions(regionModels, pt);
-
 
             // Merge Page metadata and PT custom metadata
             ContentModelData ptCustomMetadata = ExtractCustomMetadata(pt.Metadata, excludeFields: _standardPageTemplateMetadataFields);
@@ -518,6 +496,35 @@ namespace Sdl.Web.Tridion.Data
                 ViewName = StripModuleName(qualifiedViewName, out moduleName),
                 AreaName = moduleName
             };
+        }
+
+        private static void ApplyNativeRegions(IDictionary<string, RegionModelData> dxaRegions, List<RegionModelData> nativeRegionModels)
+        {
+            foreach (var nativeRegion in nativeRegionModels)
+            {
+                // Add native Region if it is not present in DXA region collection
+                if (!dxaRegions.ContainsKey(nativeRegion.Name))
+                {
+                    dxaRegions.Add(nativeRegion.Name, nativeRegion);
+                }
+                else
+                {
+                    // Transform native Region members to fit into DXA Region model 
+                    var dxaRegion = dxaRegions[nativeRegion.Name];
+                    if (dxaRegion.Entities == null)
+                    {
+                        dxaRegion.Entities = new List<EntityModelData>();
+                    }
+                    dxaRegion.Entities.AddRange(nativeRegion.Entities);
+
+                    // Override Metadata of DXA taken from native Region with the same name
+                    if (nativeRegion.Metadata != null && nativeRegion.Metadata.Any())
+                    {
+                        dxaRegions[nativeRegion.Name].Metadata = nativeRegion.Metadata;
+                    }
+                    dxaRegion.Regions = nativeRegion.Regions;
+                }
+            }
         }
 
         private Dictionary<string, object> GetXpmMetadata(Component component, ComponentTemplate ct)
