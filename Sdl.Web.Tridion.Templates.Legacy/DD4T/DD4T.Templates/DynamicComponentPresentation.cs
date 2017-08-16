@@ -14,7 +14,7 @@ namespace DD4T.Templates
     /// of DD4T, do NOT use this template, but use Generate dynamic component instead.
     /// </remarks>
     [TcmTemplateTitle("Generate dynamic component presentation")]
-    [TcmTemplateParameterSchema("resource:DD4T.Templates.Resources.Schemas.Dynamic Delivery Parameters.xsd")]
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Templates.Legacy.Resources.Schemas.Dynamic Delivery Parameters.xsd")]
     public partial class DynamicComponentPresentation : BaseComponentTemplate
     {
 

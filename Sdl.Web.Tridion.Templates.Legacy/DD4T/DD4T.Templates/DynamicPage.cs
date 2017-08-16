@@ -11,7 +11,7 @@ namespace DD4T.Templates
     /// Generates a DD4T data model based on the current page
     /// </summary>    
     [TcmTemplateTitle("Generate dynamic page")]
-    [TcmTemplateParameterSchema("resource:DD4T.Templates.Resources.Schemas.Dynamic Delivery Parameters.xsd")]
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Templates.Legacy.Resources.Schemas.Dynamic Delivery Parameters.xsd")]
     [TcmDefaultTemplate]
     public partial class DynamicPage : BasePageTemplate
     {

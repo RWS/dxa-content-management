@@ -16,7 +16,7 @@ namespace DD4T.Templates
     /// Adds metadata of the structrue group containing the page, or one of its parents, to the current page
     /// </summary>
     [TcmTemplateTitle("Add inherited metadata to page")]
-    [TcmTemplateParameterSchema("resource:DD4T.Templates.Resources.Schemas.Dynamic Delivery Parameters.xsd")]
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Templates.Legacy.Resources.Schemas.Dynamic Delivery Parameters.xsd")]
     public partial class InheritMetadataPage : BasePageTemplate
     {
 

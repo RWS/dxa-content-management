@@ -9,7 +9,7 @@ namespace DD4T.Templates
 {
     [Obsolete("Binaries are published by the default DynamicComponent template")]
     [TcmTemplateTitle("Publish binaries for component")]
-    [TcmTemplateParameterSchema("resource:DD4T.Templates.Resources.Schemas.Dynamic Delivery Parameters.xsd")]
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Templates.Legacy.Resources.Schemas.Dynamic Delivery Parameters.xsd")]
     public class PublishBinariesComponent : BaseComponentTemplate
     {
         private BinaryPublisher _binaryPublisher = null;

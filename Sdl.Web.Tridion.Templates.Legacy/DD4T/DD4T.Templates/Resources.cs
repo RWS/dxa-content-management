@@ -19,7 +19,7 @@ namespace DD4T.Templates
     /// This factory consumes the generated XML from the Tridion broker database.
     /// </remarks>
     [TcmTemplateTitle("Generate Resources")]
-    [TcmTemplateParameterSchema("resource:DD4T.Templates.Resources.Schemas.Resources Parameters.xsd")]
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Templates.Legacy.Resources.Schemas.Resources Parameters.xsd")]
     public class Resources : DefaultTemplate
     {
         private string _embeddedFieldName;

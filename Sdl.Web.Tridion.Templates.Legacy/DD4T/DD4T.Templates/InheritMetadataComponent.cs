@@ -15,7 +15,7 @@ namespace DD4T.Templates
     /// Adds metadata of the folder containing the component, or one of its parents, to the current component
     /// </summary>
     [TcmTemplateTitle("Add inherited metadata to component")]
-    [TcmTemplateParameterSchema("resource:DD4T.Templates.Resources.Schemas.Dynamic Delivery Parameters.xsd")]
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Templates.Legacy.Resources.Schemas.Dynamic Delivery Parameters.xsd")]
     public partial class InheritMetadataComponent : BaseComponentTemplate
     {
         protected Dynamic.MergeAction defaultMergeAction = Dynamic.MergeAction.Skip;

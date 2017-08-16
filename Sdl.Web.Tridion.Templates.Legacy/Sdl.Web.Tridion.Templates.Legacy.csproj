@@ -122,6 +122,12 @@
     <Compile Include="ResolveRichText.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Schemas\Dynamic Delivery Parameters.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Schemas\Resources Parameters.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -132,12 +138,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\GenerateDynamicComponentParameters.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Schemas\Dynamic Delivery Parameters.xsd">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Schemas\Resources Parameters.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

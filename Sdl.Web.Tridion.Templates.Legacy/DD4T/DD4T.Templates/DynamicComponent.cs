@@ -10,7 +10,7 @@ namespace DD4T.Templates
     /// Generates a DD4T data model based on the current component
     /// </summary>
     [TcmTemplateTitle("Generate dynamic component")]
-    [TcmTemplateParameterSchema("resource:DD4T.Templates.Resources.Schemas.Dynamic Delivery Parameters.xsd")]
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Templates.Legacy.Resources.Schemas.Dynamic Delivery Parameters.xsd")]
     public partial class DynamicComponent : BaseComponentTemplate
     {
 
