@@ -128,6 +128,42 @@ namespace Sdl.Web.Tridion.Templates
             return AddJsonBinary(semanticSchemas, relatedComponent, structureGroup, "schemas", variantId: "semantic-schemas");
         }
 
+        private Dictionary<string, XpmRegionData> CollectNativeRegions()
+        {
+            Dictionary<string, XpmRegionData> nativeRegions = new Dictionary<string, XpmRegionData>();
+            
+            RepositoryItemsFilter filter = new RepositoryItemsFilter(Session)
+            {
+                SchemaPurposes = new[] { SchemaPurpose.Region },
+                ItemTypes = new[] { ItemType.Schema },
+                Recursive = true
+            };   
+            
+            IEnumerable<Schema> regionSchemas = Publication.GetItems(filter).Cast<Schema>();
+            foreach (Schema schema in regionSchemas)
+            {
+                Dictionary<string, Schema> nestedRegions = schema.RegionDefinition?.NestedRegions;
+                if (nestedRegions != null)
+                {
+                    foreach (KeyValuePair<string, Schema> region in nestedRegions)
+                    {
+                        if (!nativeRegions.ContainsKey(region.Key))
+                        {
+                            XpmRegionData nativeRegion = new XpmRegionData { Region = region.Key, ComponentTypes = new List<XpmComponentTypeData>() };
+                            nativeRegions.Add(region.Key, nativeRegion);
+                        }
+                        else
+                        {
+                            // TODO : Should be revisited in context of the story CMF1-259
+                            Logger.Debug($"Region {region.Key} has already been added. Skipping.");
+                        }
+                    }
+                }
+            }
+
+            return nativeRegions;
+        }
+
         private Binary PublishXpmRegionConfiguration(StructureGroup structureGroup, Component relatedComponent)
         {
             IDictionary<string, XpmRegionData> xpmRegions = new Dictionary<string, XpmRegionData>();
@@ -154,6 +190,15 @@ namespace Sdl.Web.Tridion.Templates
                     );
 
                 xpmRegion.ComponentTypes.AddRange(allowedComponentTypes);
+            }
+
+            Dictionary<string, XpmRegionData> nativeRegions = CollectNativeRegions();
+            foreach (KeyValuePair<string, XpmRegionData> nativeRegion in nativeRegions)
+            {
+                if (!xpmRegions.ContainsKey(nativeRegion.Key))
+                {
+                    xpmRegions.Add(nativeRegion);
+                }
             }
 
             return AddJsonBinary(xpmRegions.Values, relatedComponent, structureGroup, "regions");
