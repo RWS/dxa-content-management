@@ -73,7 +73,7 @@ namespace Sdl.Web.Tridion.Templates
 
             AddBootstrapJsonBinary(binaries, inputComponent, mappingsStructureGroup, "mapping");
 
-            OutputSummary("Publish Mappings", binaries.Select(b => b.Url));
+            OutputSummary("Publish Mappings", binaries.Select(b => b?.Url));
         }
 
         private Binary PublishSemanticVocabularies(StructureGroup structureGroup, Component relatedComponent)
