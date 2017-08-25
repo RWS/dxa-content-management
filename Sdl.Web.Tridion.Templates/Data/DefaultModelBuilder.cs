@@ -57,8 +57,11 @@ namespace Sdl.Web.Tridion.Data
             IDictionary<string, RegionModelData> regionModels = new Dictionary<string, RegionModelData>();
             AddPredefinedRegions(regionModels, pt);
 
-            var nativeRegionModels = AddNativeRegions(page.GetPropertyValue<IList<IRegion>>("Regions"));
-            ApplyNativeRegions(regionModels, nativeRegionModels);
+            if (Utility.IsNativeRegionsAvailable(page))
+            {
+                var nativeRegionModels = AddNativeRegions(page.GetPropertyValue<IList<IRegion>>("Regions"));
+                ApplyNativeRegions(regionModels, nativeRegionModels);
+            }
 
             AddComponentPresentationRegions(regionModels, page);
             AddIncludePageRegions(regionModels, pt);
