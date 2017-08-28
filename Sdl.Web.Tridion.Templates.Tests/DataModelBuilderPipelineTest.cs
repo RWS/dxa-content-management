@@ -154,7 +154,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         {
             // Assign
             Page samplePage = (Page) TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            if (!IsCmHasNativeRegions(samplePage)) return;
+            if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return;}
 
             Page testPage = null;
             try
@@ -214,7 +214,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         {
             // Assign
             Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            if (!IsCmHasNativeRegions(samplePage)) return;
+            if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return; }
 
             Page testPage = null;
             try
@@ -260,7 +260,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         {
             // Assign
             Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            if (!IsCmHasNativeRegions(samplePage)) return;
+            if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return; }
 
             Page testPage = null;
             try
@@ -307,7 +307,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         {
             // Assign
             Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            if (!IsCmHasNativeRegions(samplePage)) return;
+            if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return; }
 
             Schema embSchema = null;
             Schema metadataSchema = null;
@@ -1039,23 +1039,5 @@ namespace Sdl.Web.Tridion.Templates.Tests
             }
             Assert.IsNull(keywordModelData.Metadata, subject + ".Metadata");
         }
-
-        #region
-
-        private bool IsCmHasNativeRegions(Page page)
-        {
-            try
-            {
-                var propValue = page.GetPropertyValue("Regions");
-                var isCmHasNativeRegions = propValue is IList<IRegion>;
-                if (!isCmHasNativeRegions) Console.Out.WriteLine("CM model does not support native regions");
-                return isCmHasNativeRegions;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-        #endregion
     }
 }
