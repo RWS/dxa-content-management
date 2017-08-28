@@ -389,15 +389,18 @@ namespace Sdl.Web.Tridion.Data
             List<RegionModelData> regionModelDatas = new List<RegionModelData>();
             foreach (IRegion region in regions)
             {
+                string moduleName;
                 string regionName = region.RegionName;
-                string viewName = region.RegionSchema != null && !string.IsNullOrEmpty(region.RegionSchema.Title) ? region.RegionSchema.Title : regionName;
+                string viewName = region.RegionSchema != null ? region.RegionSchema.Title : regionName;
+                viewName = StripModuleName(viewName, out moduleName);
                 ContentModelData metadata = ExtractCustomMetadata(region.Metadata, excludeFields: _standardRegionMetadataFields);
                 var regionModelData = new RegionModelData
                 {
                     Name = regionName,
                     MvcData = new MvcData
                     {
-                        ViewName = viewName
+                        ViewName = viewName,
+                        AreaName = moduleName
                     },
                     Entities = new List<EntityModelData>(),
                     Metadata = metadata
