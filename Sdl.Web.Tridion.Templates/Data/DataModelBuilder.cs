@@ -389,13 +389,13 @@ namespace Sdl.Web.Tridion.Data
             return result;
         }
 
-        public static MvcData GetRegionMvcData(ComponentTemplate ct, out string regionName)
+        public static MvcData GetRegionMvcData(ComponentTemplate ct, out string regionName, string defaultViewName = "Main")
         {
             string qualifiedViewName = ct.Metadata.GetTextFieldValue("regionView");
             regionName = ct.Metadata.GetTextFieldValue("regionName");
 
             string moduleName;
-            string viewName = StripModuleName(qualifiedViewName, out moduleName) ?? "Main";
+            string viewName = StripModuleName(qualifiedViewName, out moduleName) ?? defaultViewName;
 
             if (string.IsNullOrEmpty(regionName))
             {
