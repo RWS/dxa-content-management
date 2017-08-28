@@ -426,9 +426,12 @@ namespace Sdl.Web.Tridion.Data
                         entityModel = Pipeline.CreateEntityModel(cp);
                     }
 
-                    if (entityModel.MvcData.ViewName != regionName)
+                    string dxaRegionName;
+                    GetRegionMvcData(cp.ComponentTemplate, out dxaRegionName, string.Empty);
+
+                    if (!string.IsNullOrEmpty(dxaRegionName) && dxaRegionName != regionName)
                     {
-                        Logger.Warning($"Component Template {cp.ComponentTemplate.Title} Metadata's Region {entityModel.MvcData.ViewName} mismatch with current Region {regionName}");
+                        Logger.Warning($"Component Template '{cp.ComponentTemplate.Title}' is placed inside Region '{regionName}', but Region name in Component Template Metadata is '{dxaRegionName}'");
                     }
 
                     regionModelData.Entities.Add(entityModel);
