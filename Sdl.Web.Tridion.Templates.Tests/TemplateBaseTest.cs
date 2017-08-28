@@ -33,10 +33,10 @@ namespace Sdl.Web.Tridion.Templates.Tests
             => DefaultInitialize(testContext);
 
         [TestMethod]
-        public void PublishMappings_Success()
+        public void AddNativeRegionUniqueName_Success()
         {
-            // Assign
-
+            const string regionShemaTitle = "AddNativeRegionUniqueNameSuccess_R";
+            const string nestedRegionSchemaTitle = "AddNativeRegionUniqueNameSuccess_N";
             //init engine
             Component inputItem = (Component)TestSession.GetObject("/webdav/400 Example Site/Building Blocks/Content/Sitemap.xml");
             RenderedItem testRenderedItem = CreateTestRenderedItem(inputItem, null);
@@ -49,13 +49,178 @@ namespace Sdl.Web.Tridion.Templates.Tests
             ContentType inputItemContentType = new ContentType($"tridion/{inputItemType.Name.ToLower()}");
             testPackage.PushItem(inputItemName, testPackage.CreateTridionItem(inputItemContentType, inputItem));
 
-            //init publish mappings
+            // Create TestData Regions
+            Publication testPublication = (Publication)inputItem.ContextRepository;
+
+            Schema nestedRegionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
+            {
+                Purpose = SchemaPurpose.Region,
+                Title = nestedRegionSchemaTitle,
+                Description = nestedRegionSchemaTitle
+            };
+            nestedRegionSchema.Save(true);
+
+            Schema regionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
+            {
+                Purpose = SchemaPurpose.Region,
+                Title = regionShemaTitle,
+                Description = regionShemaTitle,
+                RegionDefinition = { NestedRegions = { { regionShemaTitle, nestedRegionSchema } } }
+            };
+            regionSchema.Save(true);
+            
             var publishMappings = new PublishMappings();
+
+            // Region addition done as a part of Transform. No exception thown => Success
             publishMappings.Transform(testEngine, testPackage);
 
-            // Act
+            //Cleanup
+            regionSchema.Delete();
+            nestedRegionSchema.Delete();
+        }
 
-            // Assert
+        [TestMethod]
+        public void AddNoNativeRegions_Success()
+        {
+            const string regionShemaTitle = "RegionSchema";
+            
+            //init engine
+            Component inputItem = (Component)TestSession.GetObject("/webdav/400 Example Site/Building Blocks/Content/Sitemap.xml");
+            RenderedItem testRenderedItem = CreateTestRenderedItem(inputItem, null);
+            var testEngine = new TestEngine(testRenderedItem);
+            
+            //init package
+            var testPackage = new Package(testEngine);
+            Type inputItemType = inputItem.GetType();
+            string inputItemName = inputItemType.Name;
+            ContentType inputItemContentType = new ContentType($"tridion/{inputItemType.Name.ToLower()}");
+            testPackage.PushItem(inputItemName, testPackage.CreateTridionItem(inputItemContentType, inputItem));
+
+            // Create TestData Regions
+            Publication testPublication = (Publication)inputItem.ContextRepository;
+            
+            Schema regionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
+            {
+                Purpose = SchemaPurpose.Region,
+                Title = regionShemaTitle,
+                Description = regionShemaTitle
+            };
+            regionSchema.Save(true);
+
+            var publishMappings = new PublishMappings();
+
+            // Region addition done as a part of Transform. No exception thown => Success
+            publishMappings.Transform(testEngine, testPackage);
+
+            //Cleanup
+            regionSchema.Delete();
+        }
+
+        [TestMethod]
+        public void AddNativeRegionNotUniqueName_Success()
+        {
+            const string regionShemaTitle = "Main"; // Region with this name already exists in DXA Templates 
+            const string nestedRegionSchemaTitle = "AddNativeRegionUniqueNameSuccess_R";
+            
+            //init engine
+            Component inputItem = (Component)TestSession.GetObject("/webdav/400 Example Site/Building Blocks/Content/Sitemap.xml");
+            RenderedItem testRenderedItem = CreateTestRenderedItem(inputItem, null);
+            var testEngine = new TestEngine(testRenderedItem);
+
+            //init package
+            var testPackage = new Package(testEngine);
+            Type inputItemType = inputItem.GetType();
+            string inputItemName = inputItemType.Name;
+            ContentType inputItemContentType = new ContentType($"tridion/{inputItemType.Name.ToLower()}");
+            testPackage.PushItem(inputItemName, testPackage.CreateTridionItem(inputItemContentType, inputItem));
+
+            // Create TestData Regions
+            Publication testPublication = (Publication)inputItem.ContextRepository;
+
+            Schema nestedRegionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
+            {
+                Purpose = SchemaPurpose.Region,
+                Title = nestedRegionSchemaTitle,
+                Description = nestedRegionSchemaTitle
+            };
+            nestedRegionSchema.Save(true);
+
+            Schema regionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
+            {
+                Purpose = SchemaPurpose.Region,
+                Title = regionShemaTitle,
+                Description = regionShemaTitle,
+                RegionDefinition = { NestedRegions = { { regionShemaTitle, nestedRegionSchema } } }
+            };
+            regionSchema.Save(true);
+
+            var publishMappings = new PublishMappings();
+
+            // Region addition done as a part of Transform. No exception thown => Success
+            publishMappings.Transform(testEngine, testPackage);
+
+            //Cleanup
+            regionSchema.Delete();
+            nestedRegionSchema.Delete();
+        }
+
+        [TestMethod]
+        public void AddNestedRegionSchemas_Success()
+        {
+            const string regionShemaTitle = "Main"; // Region with this name already exists in DXA Templates 
+            const string nestedRegionSchemaTitle = "AddNativeRegionUniqueNameSuccess_R";
+            const string superNestedRegionSchemaTitle = "superNestedRegionSchemaTitle";
+            
+            //init engine
+            Component inputItem = (Component)TestSession.GetObject("/webdav/400 Example Site/Building Blocks/Content/Sitemap.xml");
+            RenderedItem testRenderedItem = CreateTestRenderedItem(inputItem, null);
+            var testEngine = new TestEngine(testRenderedItem);
+
+            //init package
+            var testPackage = new Package(testEngine);
+            Type inputItemType = inputItem.GetType();
+            string inputItemName = inputItemType.Name;
+            ContentType inputItemContentType = new ContentType($"tridion/{inputItemType.Name.ToLower()}");
+            testPackage.PushItem(inputItemName, testPackage.CreateTridionItem(inputItemContentType, inputItem));
+
+            // Create TestData Regions
+            Publication testPublication = (Publication)inputItem.ContextRepository;
+
+            Schema superNestedRegionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
+            {
+                Purpose = SchemaPurpose.Region,
+                Title = superNestedRegionSchemaTitle,
+                Description = superNestedRegionSchemaTitle
+            };
+            superNestedRegionSchema.Save(true);
+
+            Schema nestedRegionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
+            {
+                Purpose = SchemaPurpose.Region,
+                Title = nestedRegionSchemaTitle,
+                Description = nestedRegionSchemaTitle,
+                RegionDefinition = { NestedRegions = { { regionShemaTitle, superNestedRegionSchema } } }
+            };
+            nestedRegionSchema.Save(true);
+
+            Schema regionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
+            {
+                Purpose = SchemaPurpose.Region,
+                Title = regionShemaTitle,
+                Description = regionShemaTitle,
+                RegionDefinition = { NestedRegions = { { regionShemaTitle, nestedRegionSchema } } }
+            };
+            regionSchema.Save(true);
+
+            var publishMappings = new PublishMappings();
+           
+            // Region addition done as a part of Transform. No exception thown => Success
+            publishMappings.Transform(testEngine, testPackage);
+            
+            //Cleanup
+            regionSchema.Delete();
+            nestedRegionSchema.Delete();
+            superNestedRegionSchema.Delete();
         }
 
         [TestMethod]
