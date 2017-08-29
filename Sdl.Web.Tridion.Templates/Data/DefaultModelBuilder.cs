@@ -434,7 +434,7 @@ namespace Sdl.Web.Tridion.Data
 
                     if (!string.IsNullOrEmpty(dxaRegionName) && dxaRegionName != regionName)
                     {
-                        Logger.Warning($"Component Template '{cp.ComponentTemplate.Title}' is placed inside Region '{regionName}', but Region name in Component Template Metadata is '{dxaRegionName}'");
+                        Logger.Warning($"Component Template '{cp.ComponentTemplate.Title}' is placed inside Region '{regionName}', but Region name in Component Template Metadata is '{dxaRegionName}'.");
                     }
 
                     regionModelData.Entities.Add(entityModel);
