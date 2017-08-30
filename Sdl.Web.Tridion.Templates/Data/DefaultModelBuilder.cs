@@ -56,14 +56,14 @@ namespace Sdl.Web.Tridion.Data
 
             IDictionary<string, RegionModelData> regionModels = new Dictionary<string, RegionModelData>();
             AddPredefinedRegions(regionModels, pt);
+            AddComponentPresentationRegions(regionModels, page);
 
             if (Utility.IsNativeRegionsAvailable(page))
             {
-                var nativeRegionModels = AddNativeRegions(page.GetPropertyValue<IList<IRegion>>("Regions"));
-                ApplyNativeRegions(regionModels, nativeRegionModels);
+                var nativeRegionModels = GetNativeRegions(page.GetPropertyValue<IList<IRegion>>("Regions"));
+                MergeNativeRegions(regionModels, nativeRegionModels);
             }
 
-            AddComponentPresentationRegions(regionModels, page);
             AddIncludePageRegions(regionModels, pt);
 
             // Merge Page metadata and PT custom metadata
@@ -339,26 +339,7 @@ namespace Sdl.Web.Tridion.Data
         {
             foreach (ComponentPresentation cp in page.ComponentPresentations)
             {
-                ComponentTemplate ct = cp.ComponentTemplate;
-
-                // Create a Child Rendered Item for the CP in order to make Component linking work.
-                RenderedItem childRenderedItem = new RenderedItem(new ResolvedItem(cp.Component, ct), Pipeline.RenderedItem.RenderInstruction);
-                Pipeline.RenderedItem.AddRenderedItem(childRenderedItem);
-
-                EntityModelData entityModel;
-                if (ct.IsRepositoryPublishable)
-                {
-                    Logger.Debug($"Not expanding DCP ({cp.Component}, {ct})");
-                    entityModel = new EntityModelData
-                    {
-                        Id = $"{GetDxaIdentifier(cp.Component)}-{GetDxaIdentifier(ct)}"
-                    };
-                }
-                else
-                {
-                    entityModel = Pipeline.CreateEntityModel(cp);
-                }
-
+                var entityModel = GetEntityModelData(cp);
                 string regionName;
                 MvcData regionMvcData = GetRegionMvcData(cp.ComponentTemplate, out regionName);
 
@@ -384,7 +365,7 @@ namespace Sdl.Web.Tridion.Data
             }
         }
 
-        private List<RegionModelData> AddNativeRegions(IList<IRegion> regions)
+        private List<RegionModelData> GetNativeRegions(IList<IRegion> regions)
         {
             List<RegionModelData> regionModelDatas = new List<RegionModelData>();
             foreach (IRegion region in regions)
@@ -393,7 +374,7 @@ namespace Sdl.Web.Tridion.Data
                 string regionName = region.RegionName;
                 string viewName = region.RegionSchema != null ? region.RegionSchema.Title : regionName;
                 viewName = StripModuleName(viewName, out moduleName);
-                ContentModelData metadata = ExtractCustomMetadata(region.Metadata, excludeFields: _standardRegionMetadataFields);
+                ContentModelData metadata = BuildContentModel(region.Metadata, expandLinkDepth: 0);
                 var regionModelData = new RegionModelData
                 {
                     Name = regionName,
@@ -408,26 +389,7 @@ namespace Sdl.Web.Tridion.Data
 
                 foreach (var cp in region.ComponentPresentations)
                 {
-                    ComponentTemplate ct = cp.ComponentTemplate;
-
-                    // Create a Child Rendered Item for the CP in order to make Component linking work.
-                    RenderedItem childRenderedItem = new RenderedItem(new ResolvedItem(cp.Component, ct),
-                        Pipeline.RenderedItem.RenderInstruction);
-                    Pipeline.RenderedItem.AddRenderedItem(childRenderedItem);
-
-                    EntityModelData entityModel;
-                    if (ct.IsRepositoryPublishable)
-                    {
-                        Logger.Debug($"Not expanding DCP ({cp.Component}, {ct})");
-                        entityModel = new EntityModelData
-                        {
-                            Id = $"{GetDxaIdentifier(cp.Component)}-{GetDxaIdentifier(ct)}"
-                        };
-                    }
-                    else
-                    {
-                        entityModel = Pipeline.CreateEntityModel(cp);
-                    }
+                    var entityModel = GetEntityModelData(cp);
 
                     string dxaRegionName;
                     GetRegionMvcData(cp.ComponentTemplate, out dxaRegionName, string.Empty);
@@ -443,13 +405,38 @@ namespace Sdl.Web.Tridion.Data
                 IList<IRegion> nestedRegions = region.GetPropertyValue<IList<IRegion>>("Regions");
                 if (nestedRegions != null)
                 {
-                    regionModelData.Regions = AddNativeRegions(nestedRegions);
+                    regionModelData.Regions = GetNativeRegions(nestedRegions);
                 }
 
                 regionModelDatas.Add(regionModelData);
             }
 
             return regionModelDatas;
+        }
+
+        private EntityModelData GetEntityModelData(ComponentPresentation cp)
+        {
+            ComponentTemplate ct = cp.ComponentTemplate;
+
+            // Create a Child Rendered Item for the CP in order to make Component linking work.
+            RenderedItem childRenderedItem = new RenderedItem(new ResolvedItem(cp.Component, ct),
+                Pipeline.RenderedItem.RenderInstruction);
+            Pipeline.RenderedItem.AddRenderedItem(childRenderedItem);
+
+            EntityModelData entityModel;
+            if (ct.IsRepositoryPublishable)
+            {
+                Logger.Debug($"Not expanding DCP ({cp.Component}, {ct})");
+                entityModel = new EntityModelData
+                {
+                    Id = $"{GetDxaIdentifier(cp.Component)}-{GetDxaIdentifier(ct)}"
+                };
+            }
+            else
+            {
+                entityModel = Pipeline.CreateEntityModel(cp);
+            }
+            return entityModel;
         }
 
         private static MvcData GetEntityMvcData(ComponentTemplate ct)
@@ -507,19 +494,20 @@ namespace Sdl.Web.Tridion.Data
             };
         }
 
-        private static void ApplyNativeRegions(IDictionary<string, RegionModelData> dxaRegions, List<RegionModelData> nativeRegionModels)
+        private void MergeNativeRegions(IDictionary<string, RegionModelData> dxaRegions, List<RegionModelData> nativeRegionModels)
         {
             foreach (var nativeRegion in nativeRegionModels)
             {
                 // Add native Region if it is not present in DXA region collection
-                if (!dxaRegions.ContainsKey(nativeRegion.Name))
+                string regionName = nativeRegion.Name;
+                if (!dxaRegions.ContainsKey(regionName))
                 {
-                    dxaRegions.Add(nativeRegion.Name, nativeRegion);
+                    dxaRegions.Add(regionName, nativeRegion);
                 }
                 else
                 {
                     // Transform native Region members to fit into DXA Region model 
-                    var dxaRegion = dxaRegions[nativeRegion.Name];
+                    var dxaRegion = dxaRegions[regionName];
                     if (dxaRegion.Entities == null)
                     {
                         dxaRegion.Entities = new List<EntityModelData>();
@@ -529,7 +517,13 @@ namespace Sdl.Web.Tridion.Data
                     // Override Metadata of DXA taken from native Region with the same name
                     if (nativeRegion.Metadata != null && nativeRegion.Metadata.Any())
                     {
-                        dxaRegions[nativeRegion.Name].Metadata = nativeRegion.Metadata;
+                        string[] duplicateFieldNames;
+                        dxaRegions[regionName].Metadata = MergeFields(nativeRegion.Metadata, dxaRegions[regionName].Metadata, out duplicateFieldNames);
+                        if (duplicateFieldNames.Length > 0)
+                        {
+                            string formattedDuplicateFieldNames = string.Join(", ", duplicateFieldNames);
+                            Logger.Debug($"Some custom metadata fields from DXA Region '{regionName}' are overridden by TCM Region: {formattedDuplicateFieldNames}");
+                        }
                     }
                     dxaRegion.Regions = nativeRegion.Regions;
                 }

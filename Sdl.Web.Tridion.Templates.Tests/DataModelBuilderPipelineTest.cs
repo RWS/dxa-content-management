@@ -144,13 +144,11 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         #region Native Region tests
-
         [Ignore]
         [Description("Ignore until DXA unit tests use at least 8.7 TCM version")]
         [TestMethod]
         public void CreatePageModel_InvalidTitle_Exception()
         {
-            string invalidTitle = ":";
             string schemaDescription = "RegionSchema";
             // Assign
             Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
@@ -174,8 +172,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 nestedRegionSchema = new Schema(TestSession, testPage.ContextRepository.RootFolder.Id)
                 {
                     Purpose = SchemaPurpose.Region,
-                    Title = invalidTitle,
-                    Description = invalidTitle
+                    Title = "AreaName:",
+                    Description = "Description"
                 };
                 nestedRegionSchema.Save(true);
 
@@ -194,12 +192,31 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
                 testPage.IsPageTemplateInherited = false;
                 testPage.PageTemplate = defaultPageTemplateCopy;
+                testPage.Metadata = null;
                 dynamic dynamicPage = testPage;
                 dynamicPage.Regions.Add(region);
                 testPage.Save(true);
                 
+                // Check 1: 
                 RenderedItem testRenderedItem;
                 AssertThrowsException<DxaException>(() => CreatePageModel(testPage, out testRenderedItem));
+
+                nestedRegionSchema.CheckOut();
+                nestedRegionSchema.Title = ":ViewName";
+                nestedRegionSchema.Save(true);
+                AssertThrowsException<DxaException>(() => CreatePageModel(testPage, out testRenderedItem));
+
+                // Check couple of invalid characters
+                nestedRegionSchema.CheckOut();
+                nestedRegionSchema.Title = "AreaName:ViewName:";
+                nestedRegionSchema.Save(true);
+                AssertThrowsException<DxaException>(() => CreatePageModel(testPage, out testRenderedItem));
+                
+                // Check valid format
+                nestedRegionSchema.CheckOut();
+                nestedRegionSchema.Title = "AreaName:ViewName";
+                nestedRegionSchema.Save(true);
+                CreatePageModel(testPage, out testRenderedItem);
             }
             finally
             {
