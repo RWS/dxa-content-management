@@ -85,11 +85,11 @@ namespace Sdl.Web.Tridion.Data
 
             if (string.IsNullOrEmpty(moduleName))
             {
-                throw new DxaException($"Invalid Module name: '{parts[0]}' in the qualified name '{qualifiedName}'");
+                throw new DxaException($"Invalid Area name: '{parts[0]}' in the qualified name '{qualifiedName}'");
             }
             if (string.IsNullOrEmpty(viewName))
             {
-                throw new DxaException($"Invalid ViewName name: '{parts[1]}' in the qualified name '{qualifiedName}'");
+                throw new DxaException($"Invalid View name: '{parts[1]}' in the qualified name '{qualifiedName}'");
             }
 
             return viewName;
