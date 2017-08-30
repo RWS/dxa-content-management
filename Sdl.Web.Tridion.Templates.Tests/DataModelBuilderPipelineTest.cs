@@ -150,6 +150,75 @@ namespace Sdl.Web.Tridion.Templates.Tests
         /// Check that generated PageModel reflects that hierarcy.
         /// </summary>
         [TestMethod]
+        public void CreatePageModel_InvalidTitle_Exception()
+        {
+            string invalidTitle = ":";
+            string schemaDescription = "RegionSchema";
+            // Assign
+            Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
+            Publication parentPublication = (Publication)TestSession.GetObject(samplePage.ContextRepository.Id);
+            PageTemplate defaultPageTemplate = (PageTemplate)TestSession.GetObject(parentPublication.DefaultPageTemplate.Id);
+            if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return; }
+
+            Page testPage = null;
+            PageTemplate defaultPageTemplateCopy = null;
+            Schema nestedRegionSchema = null;
+            Schema regionSchema = null;
+            try
+            {
+                // Create copy of existing page to do not disturb environment
+                testPage = (Page)samplePage.Copy(samplePage.OrganizationalItem, true);
+                defaultPageTemplateCopy = (PageTemplate)defaultPageTemplate.Copy(defaultPageTemplate.OrganizationalItem, true);
+                testPage.CheckOut();
+
+                Region region = new Region(schemaDescription, testPage, testPage);
+
+                nestedRegionSchema = new Schema(TestSession, testPage.ContextRepository.RootFolder.Id)
+                {
+                    Purpose = SchemaPurpose.Region,
+                    Title = invalidTitle,
+                    Description = invalidTitle
+                };
+                nestedRegionSchema.Save(true);
+
+                regionSchema = new Schema(TestSession, testPage.ContextRepository.RootFolder.Id)
+                {
+                    Purpose = SchemaPurpose.Region,
+                    Title = schemaDescription,
+                    Description = schemaDescription,
+                    RegionDefinition = { NestedRegions = { { schemaDescription, nestedRegionSchema } } }
+                };
+                regionSchema.Save(true);
+
+                defaultPageTemplateCopy.CheckOut();
+                defaultPageTemplateCopy.PageSchema = regionSchema;
+                defaultPageTemplateCopy.Save(true);
+
+                testPage.IsPageTemplateInherited = false;
+                testPage.PageTemplate = defaultPageTemplateCopy;
+                dynamic dynamicPage = testPage;
+                dynamicPage.Regions.Add(region);
+                testPage.Save(true);
+                
+                RenderedItem testRenderedItem;
+                AssertThrowsException<DxaException>(() => CreatePageModel(testPage, out testRenderedItem));
+            }
+            finally
+            {
+                //cleanup
+                testPage?.Delete();
+                defaultPageTemplateCopy?.Delete();
+                regionSchema?.Delete();
+                nestedRegionSchema?.Delete();
+            }
+        }
+
+
+        /// <summary>
+        /// CM Page contains native region hierarcy (with nested regions and CP).
+        /// Check that generated PageModel reflects that hierarcy.
+        /// </summary>
+        [TestMethod]
         public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_Success()
         {
             // Assign

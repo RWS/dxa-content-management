@@ -77,10 +77,22 @@ namespace Sdl.Web.Tridion.Data
             if (parts.Length == 1)
             {
                 moduleName = null;
-                return parts[0];
+                return parts[0];    // qualifiedName == viewName
             }
-            moduleName = parts[0];
-            return parts[1];
+
+            moduleName = parts[0].Trim();
+            string viewName = parts[1].Trim();
+
+            if (string.IsNullOrEmpty(moduleName))
+            {
+                throw new DxaException($"Invalid Module name: '{parts[0]}' in the qualified name '{qualifiedName}'");
+            }
+            if (string.IsNullOrEmpty(viewName))
+            {
+                throw new DxaException($"Invalid ViewName name: '{parts[1]}' in the qualified name '{qualifiedName}'");
+            }
+
+            return viewName;
         }
 
         /// <summary>
