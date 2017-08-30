@@ -240,7 +240,7 @@ namespace Sdl.Web.Tridion.Data
                 }
 
                 Logger.Debug($"Expanding Component link. expandLinkDepth: {expandLinkDepth}");
-                return Pipeline.CreateEntityModel(linkedComponent, null, expandLinkDepth - 1);
+                return Pipeline.CreateEntityModel(linkedComponent, dataPresentationTemplate, false, expandLinkDepth - 1);
             }
 
             Category category = (Category) linkedKeyword.OrganizationalItem;

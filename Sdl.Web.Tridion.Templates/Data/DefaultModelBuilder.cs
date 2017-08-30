@@ -52,6 +52,8 @@ namespace Sdl.Web.Tridion.Data
             // We need Keyword XLinks for Keyword field expansion
             page.Load(LoadFlags.KeywordXlinks);
 
+            StructureGroup structureGroup = (StructureGroup)page.OrganizationalItem;
+
             PageTemplate pt = page.PageTemplate;
 
             IDictionary<string, RegionModelData> regionModels = new Dictionary<string, RegionModelData>();
@@ -81,11 +83,13 @@ namespace Sdl.Web.Tridion.Data
             pageModelData = new PageModelData
             {
                 Id = GetDxaIdentifier(page),
+                PageTemplate = GetPageTemplateData(pt),
+                StructureGroupId = GetDxaIdentifier(structureGroup),
                 SchemaId = GetDxaIdentifier(page.MetadataSchema),
                 Meta = null, // Default Model builder does not set PageModel.Meta; see DefaultPageMetaModelBuilder.
                 Title = StripSequencePrefix(page.Title, out sequencePrefix) , // See DefaultPageMetaModelBuilder
                 UrlPath = GetUrlPath(page),
-                Regions = regionModels.Values.ToList(),
+                Regions = regionModels.Values.ToList(),                
                 Metadata = pageModelMetadata,
                 MvcData = GetPageMvcData(pt),
                 XpmMetadata = GetXpmMetadata(page)
@@ -125,6 +129,7 @@ namespace Sdl.Web.Tridion.Data
         /// <param name="entityModelData">The Entity Data Model to build. Is <c>null</c> for the first Model Builder in the pipeline.</param>
         /// <param name="component">The CM Component.</param>
         /// <param name="ct">The CM Component Template. Can be <c>null</c>.</param>
+        /// <param name="includeComponentTemplateDetails">Include component template details.</param>
         /// <param name="expandLinkDepth">The level of Component/Keyword links to expand.</param>
         /// <remarks>
         /// This method is called for Component Presentations on a Page, standalone DCPs and linked Components which are expanded.
@@ -132,7 +137,7 @@ namespace Sdl.Web.Tridion.Data
         /// but is decremented for expanded Component links (recursively).
         /// This Model Builder is designed to be the first in the pipeline and hence ignores the <paramref name="entityModelData"/> input value.
         /// </remarks>
-        public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct, int expandLinkDepth)
+        public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct, bool includeComponentTemplateDetails, int expandLinkDepth)
         {
             Logger.Debug($"BuildEntityModel({component}, {ct}, {expandLinkDepth})");
 
@@ -151,20 +156,24 @@ namespace Sdl.Web.Tridion.Data
                 SchemaId = GetDxaIdentifier(component.Schema),
                 Content = BuildContentModel(component.Content, expandLinkDepth),
                 Metadata = BuildContentModel(component.Metadata, expandLinkDepth),
-                BinaryContent = BuildBinaryContentData(component)
+                BinaryContent = BuildBinaryContentData(component),
+                Folder = GetFolderData(component)
             };
 
-            if (ct == null)
-            {
-                return;
-            }
+            if (ct == null) return;
 
-            entityModelData.MvcData = GetEntityMvcData(ct);
-            entityModelData.HtmlClasses = GetHtmlClasses(ct);
-            entityModelData.XpmMetadata = GetXpmMetadata(component, ct);
-            if (ct.IsRepositoryPublishable)
+            // We always want the component templaye id
+            entityModelData.ComponentTemplate = GetComponentTemplateData(ct);
+
+            if (includeComponentTemplateDetails)
             {
-                entityModelData.Id += "-" + GetDxaIdentifier(ct);
+                entityModelData.MvcData = GetEntityMvcData(ct);
+                entityModelData.HtmlClasses = GetHtmlClasses(ct);
+                entityModelData.XpmMetadata = GetXpmMetadata(component, ct);
+                if (ct.IsRepositoryPublishable)
+                {
+                    entityModelData.Id += "-" + GetDxaIdentifier(ct);
+                }
             }
         }
 
@@ -564,5 +573,44 @@ namespace Sdl.Web.Tridion.Data
             };
         }
 
+        private PageTemplateData GetPageTemplateData(PageTemplate pt)
+        {
+            var pageTemplateData = new PageTemplateData
+            {
+                Id = GetDxaIdentifier(pt),
+                Title = pt.Title,
+                FileExtension = pt.FileExtension,
+                RevisionDate = pt.RevisionDate
+            };
+
+            if (pt.Metadata == null || pt.MetadataSchema == null) return pageTemplateData;
+            pageTemplateData.Metadata = BuildContentModel(pt.Metadata, Pipeline.Settings.ExpandLinkDepth); ;
+            return pageTemplateData;
+        }
+
+        private ComponentTemplateData GetComponentTemplateData(ComponentTemplate ct)
+        {
+            var componentTemplateData = new ComponentTemplateData
+            {
+                Id = GetDxaIdentifier(ct)
+            };
+           
+            if (ct.Metadata == null || ct.MetadataSchema == null) return componentTemplateData;
+            componentTemplateData.Title = ct.Title;
+            componentTemplateData.RevisionDate = ct.RevisionDate;
+            componentTemplateData.OutputFormat = ct.OutputFormat;
+            componentTemplateData.Metadata = BuildContentModel(ct.Metadata, Pipeline.Settings.ExpandLinkDepth);
+            return componentTemplateData;
+        }
+
+        private FolderData GetFolderData(Component component)
+        {
+            Folder folder = (Folder) component.OrganizationalItem;
+            return new FolderData
+            {
+                Id = folder.Id?.ItemId.ToString(),
+                Title = folder.Title
+            };
+        }
     }
 }

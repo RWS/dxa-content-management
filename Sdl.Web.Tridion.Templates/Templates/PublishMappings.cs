@@ -42,6 +42,20 @@ namespace Sdl.Web.Tridion.Templates
             {"mapping", "http://www.sdl.com/tridion/SemanticMapping"}
         };
 
+        private static readonly IDictionary<Type, FieldType> _fieldTypes = new Dictionary<Type, FieldType>
+        {
+            {typeof (SingleLineTextFieldDefinition), FieldType.Text},
+            {typeof (MultiLineTextFieldDefinition), FieldType.MultiLineText},
+            {typeof (XhtmlFieldDefinition), FieldType.Xhtml},
+            {typeof (NumberFieldDefinition), FieldType.Number},
+            {typeof (DateFieldDefinition), FieldType.Date},
+            {typeof (MultimediaLinkFieldDefinition), FieldType.MultiMediaLink},
+            {typeof (ComponentLinkFieldDefinition), FieldType.ComponentLink},
+            {typeof (ExternalLinkFieldDefinition), FieldType.ExternalLink},
+            {typeof (EmbeddedSchemaFieldDefinition), FieldType.Embedded},
+            {typeof (KeywordFieldDefinition), FieldType.Keyword}
+        };
+
         private bool _retrofitMode;
         private Schema _currentSchema;
 
@@ -118,8 +132,8 @@ namespace Sdl.Web.Tridion.Templates
             RepositoryItemsFilter schemasFilter = new RepositoryItemsFilter(Session)
             {
                 Recursive = true,
-                ItemTypes = new [] { ItemType.Schema },
-                SchemaPurposes = new [] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata }
+                ItemTypes = new[] { ItemType.Schema },
+                SchemaPurposes = new[] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata }
             };
 
             IEnumerable<Schema> schemas = Publication.GetItems(schemasFilter).Cast<Schema>();
@@ -131,14 +145,14 @@ namespace Sdl.Web.Tridion.Templates
         private Dictionary<string, XpmRegionData> CollectNativeRegions()
         {
             Dictionary<string, XpmRegionData> nativeRegions = new Dictionary<string, XpmRegionData>();
-            
+
             RepositoryItemsFilter filter = new RepositoryItemsFilter(Session)
             {
                 SchemaPurposes = new[] { SchemaPurpose.Region },
                 ItemTypes = new[] { ItemType.Schema },
                 Recursive = true
-            };   
-            
+            };
+
             IEnumerable<Schema> regionSchemas = Publication.GetItems(filter).Cast<Schema>();
             foreach (Schema schema in regionSchemas)
             {
@@ -187,7 +201,7 @@ namespace Sdl.Web.Tridion.Templates
                         Schema = schema.Id.GetVersionlessUri().ToString(),
                         Template = templateId
                     }
-                    );
+                );
 
                 xpmRegion.ComponentTypes.AddRange(allowedComponentTypes);
             }
@@ -210,7 +224,7 @@ namespace Sdl.Web.Tridion.Templates
 
             RepositoryItemsFilter pageTemplatesFilter = new RepositoryItemsFilter(Session)
             {
-                ItemTypes = new [] { ItemType.PageTemplate },
+                ItemTypes = new[] { ItemType.PageTemplate },
                 Recursive = true
             };
 
@@ -253,7 +267,7 @@ namespace Sdl.Web.Tridion.Templates
                 throw new DxaException(
                     string.Format("An error occurred while generating the semantic schema for Schema '{0}' ({1}).", schema.Title, schema.Id),
                     ex
-                    );
+                );
             }
         }
 
@@ -298,39 +312,32 @@ namespace Sdl.Web.Tridion.Templates
                 else
                 {
                     Logger.Warning(
-                        string.Format("Invalid format for semantic typeOf application data for Schema '{0}' ({1}): '{2}'.  Format must be <prefix>:<entity>.", 
-                        schema.Title, schema.Id, typeOf)
-                        );
+                        string.Format("Invalid format for semantic typeOf application data for Schema '{0}' ({1}): '{2}'.  Format must be <prefix>:<entity>.",
+                            schema.Title, schema.Id, typeOf)
+                    );
                 }
             }
 
             return semanticTypes;
         }
-
         private IEnumerable<SemanticSchemaFieldData> GetSemanticSchemaFields(
-            IEnumerable<ItemFieldDefinition> schemaFields, 
+            IEnumerable<ItemFieldDefinition> schemaFields,
             SemanticTypeData[] semanticTypes,
-            Schema schema, 
+            Schema schema,
             string contextPath
-            )
+        )
         {
             List<SemanticSchemaFieldData> semanticSchemaFields = new List<SemanticSchemaFieldData>();
-            if (schemaFields == null)
-            {
-                return semanticSchemaFields;
-            }
-
+            if (schemaFields == null) return semanticSchemaFields;
             foreach (ItemFieldDefinition schemaField in schemaFields)
             {
-                SemanticSchemaFieldData semanticSchemaField = new SemanticSchemaFieldData
-                {
-                    Name = schemaField.Name,
-                    Path = string.Format("{0}/{1}", contextPath, schemaField.Name),
-                    IsMultiValue = schemaField.MaxOccurs != 1,
-                    Semantics = GetSemanticProperties(schemaField, semanticTypes, schema).ToArray()
-                };
-
                 EmbeddedSchemaFieldDefinition embeddedSchemaField = schemaField as EmbeddedSchemaFieldDefinition;
+                SemanticSchemaFieldData semanticSchemaField = (embeddedSchemaField == null) ? new SemanticSchemaFieldData() : new EmbeddedSemanticSchemaFieldData();
+                semanticSchemaField.Name = schemaField.Name;
+                semanticSchemaField.Path = $"{contextPath}/{schemaField.Name}";
+                semanticSchemaField.IsMultiValue = schemaField.MaxOccurs != 1;
+                semanticSchemaField.Semantics = GetSemanticProperties(schemaField, semanticTypes, schema).ToArray();
+                semanticSchemaField.FieldType = GetFieldType(schemaField);
                 if (embeddedSchemaField == null)
                 {
                     semanticSchemaField.Fields = new SemanticSchemaFieldData[0];
@@ -338,12 +345,16 @@ namespace Sdl.Web.Tridion.Templates
                 else
                 {
                     Schema embeddedSchema = embeddedSchemaField.EmbeddedSchema;
+                    EmbeddedSemanticSchemaFieldData fieldData = (EmbeddedSemanticSchemaFieldData)semanticSchemaField;
+                    fieldData.Id = embeddedSchema.Id.ItemId;
+                    fieldData.Title = embeddedSchema.Title;
+                    fieldData.RootElementName = embeddedSchema.RootElementName;
                     semanticSchemaField.Fields = GetSemanticSchemaFields(
-                        embeddedSchemaField.EmbeddedFields, 
+                        embeddedSchemaField.EmbeddedFields,
                         semanticTypes.Concat(GetSemanticTypes(embeddedSchema)).ToArray(),
-                        embeddedSchema, 
+                        embeddedSchema,
                         semanticSchemaField.Path
-                        ).ToArray();
+                    ).ToArray();
                 }
 
                 semanticSchemaFields.Add(semanticSchemaField);
@@ -352,6 +363,8 @@ namespace Sdl.Web.Tridion.Templates
             return semanticSchemaFields;
         }
 
+        private static FieldType GetFieldType(ItemFieldDefinition field) => _fieldTypes[field.GetType()];
+
         private IEnumerable<SemanticPropertyData> GetSemanticProperties(ItemFieldDefinition schemaField, IEnumerable<SemanticTypeData> semanticTypes, Schema schema)
         {
             XmlElement typeOfExtensionElement = null;
@@ -359,12 +372,12 @@ namespace Sdl.Web.Tridion.Templates
             XmlElement extensionElement = schemaField.ExtensionXml;
             if (extensionElement != null)
             {
-                typeOfExtensionElement = (XmlElement) extensionElement.SelectSingleNode("mapping:typeof", _namespaceManager);
-                propertyExtensionElement = (XmlElement) extensionElement.SelectSingleNode("mapping:property", _namespaceManager);
+                typeOfExtensionElement = (XmlElement)extensionElement.SelectSingleNode("mapping:typeof", _namespaceManager);
+                propertyExtensionElement = (XmlElement)extensionElement.SelectSingleNode("mapping:property", _namespaceManager);
             }
 
             // Create a set of distinct semantic types for this field.
-            List<SemanticTypeData> fieldSemanticTypes =  new List<SemanticTypeData>(semanticTypes);
+            List<SemanticTypeData> fieldSemanticTypes = new List<SemanticTypeData>(semanticTypes);
             if (typeOfExtensionElement != null)
             {
                 foreach (string typeOf in typeOfExtensionElement.InnerText.Split(','))

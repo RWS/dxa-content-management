@@ -1,0 +1,36 @@
+﻿<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tcmi="http://www.tridion.com/ContentManager/5.0/Instance" xmlns="DD4T.Templates.Schemas.DynamicDeliveryParameters" targetNamespace="DD4T.Templates.Schemas.DynamicDeliveryParameters" elementFormDefault="qualified">
+  <xsd:annotation>
+    <xsd:appinfo>
+      <tcm:Labels xmlns:tcm="http://www.tridion.com/ContentManager/5.0">
+        <tcm:Label ElementName="EmbeddedFieldName" Metadata="false">Name of embedded field</tcm:Label>
+        <tcm:Label ElementName="KeyFieldName" Metadata="false">Name of the field containing the key of the resource</tcm:Label>
+        <tcm:Label ElementName="ValueFieldName" Metadata="false">Name of the field containing the value of the resource</tcm:Label>
+      </tcm:Labels>
+    </xsd:appinfo>
+  </xsd:annotation>
+  <xsd:import namespace="http://www.tridion.com/ContentManager/5.0/Instance"></xsd:import>
+  <xsd:element name="Parameters">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="EmbeddedFieldName" minOccurs="1" maxOccurs="1" type="xsd:normalizedString">
+          <xsd:annotation>
+            <xsd:appinfo>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="KeydFieldName" minOccurs="1" maxOccurs="1" type="xsd:normalizedString">
+          <xsd:annotation>
+            <xsd:appinfo>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="ValueFieldName" minOccurs="1" maxOccurs="1" type="xsd:normalizedString">
+          <xsd:annotation>
+            <xsd:appinfo>
+            </xsd:appinfo>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

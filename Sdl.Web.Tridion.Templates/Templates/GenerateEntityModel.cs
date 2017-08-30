@@ -50,7 +50,7 @@ namespace Sdl.Web.Tridion.Templates
                 };
 
                 DataModelBuilderPipeline modelBuilderPipeline = new DataModelBuilderPipeline(renderedItem, settings, modelBuilderTypeNames);
-                EntityModelData entityModel = modelBuilderPipeline.CreateEntityModel(component, includeComponentTemplateData ? ct : null);
+                EntityModelData entityModel = modelBuilderPipeline.CreateEntityModel(component, ct, includeComponentTemplateData);
 
                 string entityModelJson = JsonSerialize(entityModel, IsPreview, DataModelBinder.SerializerSettings);
                 Item outputItem = Package.CreateStringItem(ContentType.Text, entityModelJson);

@@ -48,13 +48,14 @@ namespace Sdl.Web.Tridion.Data
         /// <param name="entityModelData">The Entity Data Model to build. Is <c>null</c> for the first Model Builder in the pipeline.</param>
         /// <param name="component">The CM Component.</param>
         /// <param name="ct">The CM Component Template. Can be <c>null</c>.</param>
+        /// <param name="includeComponentTemplateDetails">Include component template details.</param>
         /// <param name="expandLinkDepth">The level of Component/Keyword links to expand.</param>
         /// <remarks>
         /// This method is called for Component Presentations on a Page, standalone DCPs and linked Components which are expanded.
         /// The <paramref name="expandLinkDepth"/> parameter starts at <see cref="DataModelBuilderSettings.ExpandLinkDepth"/>, 
         /// but is decremented for expanded Component links (recursively).
         /// </remarks>
-        public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct, int expandLinkDepth)
+        public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct, bool includeComponentTemplateDetails, int expandLinkDepth)
         {
             // Nothing to do here
         }

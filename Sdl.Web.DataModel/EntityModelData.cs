@@ -19,6 +19,16 @@
         public string Id { get; set; }
 
         /// <summary>
+        /// Gets or sets the component template.
+        /// </summary>
+        public ComponentTemplateData ComponentTemplate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the folder.
+        /// </summary>
+        public FolderData Folder { get; set; }
+
+        /// <summary>
         /// Gets or sets the custom content.
         /// </summary>
         public ContentModelData Content { get; set; }

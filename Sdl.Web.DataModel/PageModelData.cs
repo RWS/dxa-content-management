@@ -18,6 +18,16 @@ namespace Sdl.Web.DataModel
         public string Title { get; set; }
 
         /// <summary>
+        /// Gets or sets the template used by this Page.
+        /// </summary>
+        public PageTemplateData PageTemplate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the structure group id for this page.
+        /// </summary>
+        public string StructureGroupId { get; set; }
+
+        /// <summary>
         /// Gets or sets the canonical URL path (unencoded) of the Page.
         /// </summary>
         /// <remarks>
