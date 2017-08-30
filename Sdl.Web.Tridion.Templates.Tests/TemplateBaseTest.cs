@@ -32,6 +32,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public static void Initialize(TestContext testContext)
             => DefaultInitialize(testContext);
 
+        [Ignore]
+        [Description("Ignore until DXA unit tests use at least 8.7 TCM version")]
         [TestMethod]
         public void AddNativeRegionUniqueName_Success()
         {
@@ -79,6 +81,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
             nestedRegionSchema.Delete();
         }
 
+        [Ignore]
+        [Description("Ignore until DXA unit tests use at least 8.7 TCM version")]
         [TestMethod]
         public void AddNoNativeRegions_Success()
         {
@@ -116,6 +120,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
             regionSchema.Delete();
         }
 
+        [Ignore]
+        [Description("Ignore until DXA unit tests use at least 8.7 TCM version")]
         [TestMethod]
         public void AddNativeRegionNotUniqueName_Success()
         {
@@ -164,6 +170,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
             nestedRegionSchema.Delete();
         }
 
+        [Ignore]
+        [Description("Ignore until DXA unit tests use at least 8.7 TCM version")]
         [TestMethod]
         public void AddNestedRegionSchemas_Success()
         {

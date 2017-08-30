@@ -145,10 +145,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
         #region Native Region tests
 
-        /// <summary>
-        /// CM Page contains native region hierarcy (with nested regions and CP).
-        /// Check that generated PageModel reflects that hierarcy.
-        /// </summary>
+        [Ignore]
+        [Description("Ignore until DXA unit tests use at least 8.7 TCM version")]
         [TestMethod]
         public void CreatePageModel_InvalidTitle_Exception()
         {
