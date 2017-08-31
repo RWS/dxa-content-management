@@ -123,9 +123,9 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNull(pageModel.HtmlClasses, "pageModel.HtmlClasses");
             Assert.IsNotNull(pageModel.XpmMetadata, "pageModel.XpmMetadata");
             Assert.IsNull(pageModel.ExtensionData, "pageModel.ExtensionData");
-            //Assert.AreEqual("10015", pageModel.SchemaId, "pageModel.SchemaId");
+            Assert.AreEqual("10015", pageModel.SchemaId, "pageModel.SchemaId");
             Assert.IsNotNull(pageModel.Metadata, "pageModel.Metadata");
-            //Assert.AreEqual("640", pageModel.Id, "pageModel.Id");
+            Assert.AreEqual("640", pageModel.Id, "pageModel.Id");
             Assert.AreEqual("Home", pageModel.Title, "pageModel.Title");
             Assert.AreEqual("/index", pageModel.UrlPath, "pageModel.UrlPath");
             Assert.IsNotNull(pageModel.Meta, "pageModel.Meta");
