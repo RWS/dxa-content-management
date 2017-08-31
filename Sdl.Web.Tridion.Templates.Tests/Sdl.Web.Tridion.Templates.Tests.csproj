@@ -76,6 +76,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="GenerateSitemapTest.cs" />
+    <Compile Include="PublishMappingsTest.cs" />
     <Compile Include="TestEngine.cs" />
     <Compile Include="TemplateTest.cs" />
     <Compile Include="TestLogger.cs" />
