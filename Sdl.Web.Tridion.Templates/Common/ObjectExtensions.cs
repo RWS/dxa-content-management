@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Sdl.Web.Tridion.Common
 {
@@ -25,6 +26,37 @@ namespace Sdl.Web.Tridion.Common
             {
                 action(value);
             }
+        }
+
+        public static object GetPropertyValue(this object obj, string name)
+        {
+            foreach (string part in name.Split('.'))
+            {
+                if (obj == null)
+                {
+                    return null;
+                }
+
+                Type type = obj.GetType();
+                PropertyInfo info = type.GetProperty(part);
+                if (info == null)
+                {
+                    return null;
+                }
+
+                obj = info.GetValue(obj, null);
+            }
+            return obj;
+        }
+
+        public static T GetPropertyValue<T>(this object obj, string name)
+        {
+            object retval = GetPropertyValue(obj, name);
+            if (retval == null)
+            {
+                return default(T);
+            }
+            return (T)retval;
         }
     }
 }

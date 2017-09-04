@@ -452,6 +452,9 @@ namespace Sdl.Web.Tridion.Common
 
         protected Binary AddJsonBinary(object objectToSerialize, Component relatedComponent, StructureGroup structureGroup, string name, string variantId = null)
         {
+            //In unittest there may not be a PublishingContext
+            if (Engine.PublishingContext == null) return null;
+
             if (string.IsNullOrEmpty(variantId))
             {
                 variantId = name;

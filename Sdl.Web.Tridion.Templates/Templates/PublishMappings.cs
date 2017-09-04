@@ -87,7 +87,7 @@ namespace Sdl.Web.Tridion.Templates
 
             AddBootstrapJsonBinary(binaries, inputComponent, mappingsStructureGroup, "mapping");
 
-            OutputSummary("Publish Mappings", binaries.Select(b => b.Url));
+            OutputSummary("Publish Mappings", binaries.Select(b => b?.Url));
         }
 
         private Binary PublishSemanticVocabularies(StructureGroup structureGroup, Component relatedComponent)
@@ -132,14 +132,50 @@ namespace Sdl.Web.Tridion.Templates
             RepositoryItemsFilter schemasFilter = new RepositoryItemsFilter(Session)
             {
                 Recursive = true,
-                ItemTypes = new [] { ItemType.Schema },
-                SchemaPurposes = new [] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata }
+                ItemTypes = new[] { ItemType.Schema },
+                SchemaPurposes = new[] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata }
             };
 
             IEnumerable<Schema> schemas = Publication.GetItems(schemasFilter).Cast<Schema>();
             SemanticSchemaData[] semanticSchemas = schemas.Select(GetSemanticSchema).ToArray();
 
             return AddJsonBinary(semanticSchemas, relatedComponent, structureGroup, "schemas", variantId: "semantic-schemas");
+        }
+
+        private Dictionary<string, XpmRegionData> CollectNativeRegions()
+        {
+            Dictionary<string, XpmRegionData> nativeRegions = new Dictionary<string, XpmRegionData>();
+
+            RepositoryItemsFilter filter = new RepositoryItemsFilter(Session)
+            {
+                SchemaPurposes = new[] { SchemaPurpose.Region },
+                ItemTypes = new[] { ItemType.Schema },
+                Recursive = true
+            };
+
+            IEnumerable<Schema> regionSchemas = Publication.GetItems(filter).Cast<Schema>();
+            foreach (Schema schema in regionSchemas)
+            {
+                Dictionary<string, Schema> nestedRegions = schema.RegionDefinition?.NestedRegions;
+                if (nestedRegions != null)
+                {
+                    foreach (KeyValuePair<string, Schema> region in nestedRegions)
+                    {
+                        if (!nativeRegions.ContainsKey(region.Key))
+                        {
+                            XpmRegionData nativeRegion = new XpmRegionData { Region = region.Key, ComponentTypes = new List<XpmComponentTypeData>() };
+                            nativeRegions.Add(region.Key, nativeRegion);
+                        }
+                        else
+                        {
+                            // TODO : Should be revisited in context of the story CMF1-259
+                            Logger.Debug($"Region {region.Key} has already been added. Skipping.");
+                        }
+                    }
+                }
+            }
+
+            return nativeRegions;
         }
 
         private Binary PublishXpmRegionConfiguration(StructureGroup structureGroup, Component relatedComponent)
@@ -165,9 +201,18 @@ namespace Sdl.Web.Tridion.Templates
                         Schema = schema.Id.GetVersionlessUri().ToString(),
                         Template = templateId
                     }
-                    );
+                );
 
                 xpmRegion.ComponentTypes.AddRange(allowedComponentTypes);
+            }
+
+            Dictionary<string, XpmRegionData> nativeRegions = CollectNativeRegions();
+            foreach (KeyValuePair<string, XpmRegionData> nativeRegion in nativeRegions)
+            {
+                if (!xpmRegions.ContainsKey(nativeRegion.Key))
+                {
+                    xpmRegions.Add(nativeRegion);
+                }
             }
 
             return AddJsonBinary(xpmRegions.Values, relatedComponent, structureGroup, "regions");
@@ -179,7 +224,7 @@ namespace Sdl.Web.Tridion.Templates
 
             RepositoryItemsFilter pageTemplatesFilter = new RepositoryItemsFilter(Session)
             {
-                ItemTypes = new [] { ItemType.PageTemplate },
+                ItemTypes = new[] { ItemType.PageTemplate },
                 Recursive = true
             };
 
@@ -222,7 +267,7 @@ namespace Sdl.Web.Tridion.Templates
                 throw new DxaException(
                     string.Format("An error occurred while generating the semantic schema for Schema '{0}' ({1}).", schema.Title, schema.Id),
                     ex
-                    );
+                );
             }
         }
 
@@ -267,21 +312,20 @@ namespace Sdl.Web.Tridion.Templates
                 else
                 {
                     Logger.Warning(
-                        string.Format("Invalid format for semantic typeOf application data for Schema '{0}' ({1}): '{2}'.  Format must be <prefix>:<entity>.", 
-                        schema.Title, schema.Id, typeOf)
-                        );
+                        string.Format("Invalid format for semantic typeOf application data for Schema '{0}' ({1}): '{2}'.  Format must be <prefix>:<entity>.",
+                            schema.Title, schema.Id, typeOf)
+                    );
                 }
             }
 
             return semanticTypes;
         }
-
         private IEnumerable<SemanticSchemaFieldData> GetSemanticSchemaFields(
-          IEnumerable<ItemFieldDefinition> schemaFields,
-          SemanticTypeData[] semanticTypes,
-          Schema schema,
-          string contextPath
-          )
+            IEnumerable<ItemFieldDefinition> schemaFields,
+            SemanticTypeData[] semanticTypes,
+            Schema schema,
+            string contextPath
+        )
         {
             List<SemanticSchemaFieldData> semanticSchemaFields = new List<SemanticSchemaFieldData>();
             if (schemaFields == null) return semanticSchemaFields;
@@ -310,7 +354,7 @@ namespace Sdl.Web.Tridion.Templates
                         semanticTypes.Concat(GetSemanticTypes(embeddedSchema)).ToArray(),
                         embeddedSchema,
                         semanticSchemaField.Path
-                        ).ToArray();
+                    ).ToArray();
                 }
 
                 semanticSchemaFields.Add(semanticSchemaField);
@@ -328,12 +372,12 @@ namespace Sdl.Web.Tridion.Templates
             XmlElement extensionElement = schemaField.ExtensionXml;
             if (extensionElement != null)
             {
-                typeOfExtensionElement = (XmlElement) extensionElement.SelectSingleNode("mapping:typeof", _namespaceManager);
-                propertyExtensionElement = (XmlElement) extensionElement.SelectSingleNode("mapping:property", _namespaceManager);
+                typeOfExtensionElement = (XmlElement)extensionElement.SelectSingleNode("mapping:typeof", _namespaceManager);
+                propertyExtensionElement = (XmlElement)extensionElement.SelectSingleNode("mapping:property", _namespaceManager);
             }
 
             // Create a set of distinct semantic types for this field.
-            List<SemanticTypeData> fieldSemanticTypes =  new List<SemanticTypeData>(semanticTypes);
+            List<SemanticTypeData> fieldSemanticTypes = new List<SemanticTypeData>(semanticTypes);
             if (typeOfExtensionElement != null)
             {
                 foreach (string typeOf in typeOfExtensionElement.InnerText.Split(','))
