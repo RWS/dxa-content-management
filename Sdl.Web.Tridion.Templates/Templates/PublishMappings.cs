@@ -154,17 +154,19 @@ namespace Sdl.Web.Tridion.Templates
             };
 
             IEnumerable<Schema> regionSchemas = Publication.GetItems(filter).Cast<Schema>();
+
             foreach (Schema schema in regionSchemas)
             {
-                Dictionary<string, Schema> nestedRegions = schema.RegionDefinition?.NestedRegions;
-                if (nestedRegions != null)
+                dynamic schemasNestedRegions = schema.RegionDefinition.GetType().GetProperty("NestedRegions")?.GetValue(schema.RegionDefinition);
+               
+                if (schemasNestedRegions != null)
                 {
-                    foreach (KeyValuePair<string, Schema> region in nestedRegions)
+                    foreach (dynamic region in schemasNestedRegions)
                     {
-                        if (!nativeRegions.ContainsKey(region.Key))
+                        if (nativeRegions.All(nr => nr.Key != region.RegionName))
                         {
-                            XpmRegionData nativeRegion = new XpmRegionData { Region = region.Key, ComponentTypes = new List<XpmComponentTypeData>() };
-                            nativeRegions.Add(region.Key, nativeRegion);
+                            XpmRegionData nativeRegion = new XpmRegionData { Region = region.RegionName, ComponentTypes = new List<XpmComponentTypeData>() };
+                            nativeRegions.Add(region.RegionName, nativeRegion);
                         }
                         else
                         {
@@ -174,7 +176,6 @@ namespace Sdl.Web.Tridion.Templates
                     }
                 }
             }
-
             return nativeRegions;
         }
 
