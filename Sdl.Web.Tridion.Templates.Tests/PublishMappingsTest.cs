@@ -228,16 +228,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
         private void SaveRegionSchemaWithRegionList(Schema schema, params object[] args)
         {
-            var listOfRegionDefinitionType = schema.RegionDefinition?.GetType().GetProperty("NestedRegions");
-            if (listOfRegionDefinitionType != null)
-            {
-                var nestedRegionDefinitionType = listOfRegionDefinitionType.PropertyType.GenericTypeArguments.First();
-
-                dynamic nestedRegion = Activator.CreateInstance(nestedRegionDefinitionType, args);
-                dynamic list = schema.RegionDefinition.GetType().GetProperty("NestedRegions").GetValue(schema.RegionDefinition);
-                list.Add(nestedRegion);
-                schema.Save(true);
-            }
+            dynamic regionDefinition = schema.RegionDefinition;
+            dynamic nestedRegions = regionDefinition.NestedRegions;
+            dynamic nestedRegionDefinitionType = nestedRegions.GetType().GenericTypeArguments[0];
+            dynamic nestedRegion = Activator.CreateInstance(nestedRegionDefinitionType, args);
+            nestedRegions.Add(nestedRegion);
+            schema.Save(true);
         }
 
         private class RegionDefinitionTest
