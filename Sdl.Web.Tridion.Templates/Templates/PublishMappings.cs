@@ -154,27 +154,30 @@ namespace Sdl.Web.Tridion.Templates
             };
 
             IEnumerable<Schema> regionSchemas = Publication.GetItems(filter).Cast<Schema>();
+
             foreach (Schema schema in regionSchemas)
             {
-                Dictionary<string, Schema> nestedRegions = schema.RegionDefinition?.NestedRegions;
-                if (nestedRegions != null)
+                dynamic regionDefinition = schema.RegionDefinition;
+                dynamic schemasNestedRegions = regionDefinition.NestedRegions;
+               
+                if (schemasNestedRegions != null)
                 {
-                    foreach (KeyValuePair<string, Schema> region in nestedRegions)
+                    foreach (dynamic nestedRegionDefinition in schemasNestedRegions)
                     {
-                        if (!nativeRegions.ContainsKey(region.Key))
+                        string regionName = nestedRegionDefinition.RegionName;
+                        if (nativeRegions.All(nr => nr.Key != regionName))
                         {
-                            XpmRegionData nativeRegion = new XpmRegionData { Region = region.Key, ComponentTypes = new List<XpmComponentTypeData>() };
-                            nativeRegions.Add(region.Key, nativeRegion);
+                            XpmRegionData nativeRegion = new XpmRegionData { Region = regionName, ComponentTypes = new List<XpmComponentTypeData>() };
+                            nativeRegions.Add(regionName, nativeRegion);
                         }
                         else
                         {
                             // TODO : Should be revisited in context of the story CMF1-259
-                            Logger.Debug($"Region {region.Key} has already been added. Skipping.");
+                            Logger.Debug($"Region {regionName} has already been added. Skipping.");
                         }
                     }
                 }
             }
-
             return nativeRegions;
         }
 

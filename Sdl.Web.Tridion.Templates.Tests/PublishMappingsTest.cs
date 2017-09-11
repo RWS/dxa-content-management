@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -44,15 +45,14 @@ namespace Sdl.Web.Tridion.Templates.Tests
                     Description = nestedRegionSchemaTitle
                 };
                 nestedRegionSchema.Save(true);
-
+                
                 regionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
                 {
                     Purpose = SchemaPurpose.Region,
                     Title = regionShemaTitle,
                     Description = regionShemaTitle,
-                    RegionDefinition = { NestedRegions = { { regionShemaTitle, nestedRegionSchema } } }
                 };
-                regionSchema.Save(true);
+                SaveRegionSchemaWithRegionList(regionSchema, new object[] { regionShemaTitle, nestedRegionSchema, true });
 
                 RenderedItem testRenderedItem;
                 Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
@@ -101,10 +101,9 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 {
                     Purpose = SchemaPurpose.Region,
                     Title = regionShemaTitle,
-                    Description = regionShemaTitle,
-                    RegionDefinition = { NestedRegions = { { regionShemaTitle, nestedRegionSchema } } }
+                    Description = regionShemaTitle
                 };
-                regionSchema.Save(true);
+                SaveRegionSchemaWithRegionList(regionSchema, new object[] { regionShemaTitle, nestedRegionSchema, true});
 
                 RenderedItem testRenderedItem;
                 Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
@@ -146,7 +145,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                     Description = regionShemaTitle
                 };
                 regionSchema.Save(true);
-
+                
                 RenderedItem testRenderedItem;
                 Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
                 Item testItem = testPackage.GetByName("/Preview/system/mappings/regions.json");
@@ -161,13 +160,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
                regionSchema?.Delete();
             }
         }
-
+        
         [Ignore]
         [Description("Ignore until DXA unit tests use at least 8.7 TCM version")]
         [TestMethod]
         public void AddNotUniqueRegions_Success()
         {
-            const string regionShemaTitle = "AddNotUniqueRegions_Success1"; // Region with this name already exists in DXA Templates 
+            const string regionShemaTitle = "AddNotUniqueRegions_Success1"; 
             const string nestedRegionSchemaTitle = "AddNotUniqueRegions_Success2";
             const string superNestedRegionSchemaTitle = "AddNotUniqueRegions_Success3";
             Schema regionSchema = null;
@@ -194,20 +193,18 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 {
                     Purpose = SchemaPurpose.Region,
                     Title = nestedRegionSchemaTitle,
-                    Description = nestedRegionSchemaTitle,
-                    RegionDefinition = { NestedRegions = { { regionShemaTitle, superNestedRegionSchema } } }
+                    Description = nestedRegionSchemaTitle
                 };
-                nestedRegionSchema.Save(true);
-
+                SaveRegionSchemaWithRegionList(nestedRegionSchema, new object[] { regionShemaTitle, superNestedRegionSchema, true});
+                
                 regionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
                 {
                     Purpose = SchemaPurpose.Region,
                     Title = regionShemaTitle,
-                    Description = regionShemaTitle,
-                    RegionDefinition = { NestedRegions = { { nestedRegionSchemaTitle, nestedRegionSchema } } }
+                    Description = regionShemaTitle
                 };
-                regionSchema.Save(true);
-
+                SaveRegionSchemaWithRegionList(regionSchema, new object[] { regionShemaTitle, nestedRegionSchema, true });
+                
                 RenderedItem testRenderedItem;
                 Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
                 Item testItem =  testPackage.GetByName(RegionJsonFile);
@@ -225,6 +222,17 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 superNestedRegionSchema?.Delete();
             }
         }
+
+        private void SaveRegionSchemaWithRegionList(Schema schema, params object[] args)
+        {
+            dynamic regionDefinition = schema.RegionDefinition;
+            dynamic nestedRegions = regionDefinition.NestedRegions;
+            dynamic nestedRegionDefinitionType = nestedRegions.GetType().GenericTypeArguments[0];
+            dynamic nestedRegion = Activator.CreateInstance(nestedRegionDefinitionType, args);
+            nestedRegions.Add(nestedRegion);
+            schema.Save(true);
+        }
+
         private class RegionDefinitionTest
         {
             [JsonProperty("Region")]
