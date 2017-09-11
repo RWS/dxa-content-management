@@ -160,13 +160,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
                regionSchema?.Delete();
             }
         }
-
+        
         [Ignore]
         [Description("Ignore until DXA unit tests use at least 8.7 TCM version")]
         [TestMethod]
         public void AddNotUniqueRegions_Success()
         {
-            const string regionShemaTitle = "AddNotUniqueRegions_Success1"; // Region with this name already exists in DXA Templates 
+            const string regionShemaTitle = "AddNotUniqueRegions_Success1"; 
             const string nestedRegionSchemaTitle = "AddNotUniqueRegions_Success2";
             const string superNestedRegionSchemaTitle = "AddNotUniqueRegions_Success3";
             Schema regionSchema = null;
@@ -203,7 +203,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                     Title = regionShemaTitle,
                     Description = regionShemaTitle
                 };
-                SaveRegionSchemaWithRegionList(regionSchema, new object[] { nestedRegionSchemaTitle, nestedRegionSchema, true });
+                SaveRegionSchemaWithRegionList(regionSchema, new object[] { regionShemaTitle, nestedRegionSchema, true });
                 
                 RenderedItem testRenderedItem;
                 Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
