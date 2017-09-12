@@ -7,6 +7,7 @@ using Tridion.Configuration;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
+using Tridion.ContentManager.ContentManagement.Fields;
 using Tridion.ContentManager.Publishing;
 using Tridion.ContentManager.Publishing.Resolving;
 
@@ -39,7 +40,7 @@ namespace Sdl.Web.DXAResolver
     public class Resolver : IResolver
     {
         private readonly int _recurseDepth = 2;
-
+               
         public Resolver()
         {
             try
@@ -53,52 +54,86 @@ namespace Sdl.Web.DXAResolver
                                 !string.IsNullOrEmpty(s.FilePath) &&
                                 s.FilePath.EndsWith("tridion.contentmanager.config",
                                     StringComparison.InvariantCultureIgnoreCase));
-                if (tcmSectionElem != null)
-                {
-                    var tcmConfigFilePath = tcmSectionElem.FilePath;
-                    var map = new ExeConfigurationFileMap {ExeConfigFilename = tcmConfigFilePath};
-                    var config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
-                    var resolverSettings =
-                        ((AppSettingsSection) config.GetSection("Sdl.Web.DXAResolver")).Settings;
-                    _recurseDepth = Convert.ToInt32(resolverSettings["recurseDepth"].Value);
-                    //Log($"recurseDepth={_recurseDepth}");
-                }
+                if (tcmSectionElem == null) return;
+                var tcmConfigFilePath = tcmSectionElem.FilePath;
+                var map = new ExeConfigurationFileMap {ExeConfigFilename = tcmConfigFilePath};
+                var config = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+                var resolverSettings =
+                    ((AppSettingsSection) config.GetSection("Sdl.Web.DXAResolver")).Settings;
+                _recurseDepth = Convert.ToInt32(resolverSettings["recurseDepth"].Value);
             }
             catch
             {
                 // failed to load from config
-                //Log($"Failed to load from config. Using default recurseDepth={_recurseDepth}");
             }
         }
-      
+
+        private List<ResolvedItem> Resolve(ItemField itemField, ComponentTemplate template,
+            HashSet<IdentifiableObject> resolved, int recurseLevel)
+        {
+            List<ResolvedItem> toResolve = new List<ResolvedItem>();
+            if (itemField == null) return toResolve;
+            if (itemField is ComponentLinkField)
+            {
+                ComponentLinkField linkField = (ComponentLinkField) itemField;
+                if (linkField.Values != null)
+                {
+                    foreach (var linkedComponent in linkField.Values)
+                    {
+                        toResolve.AddRange(Resolve(linkedComponent, template, resolved, recurseLevel + 1));
+                    }
+                }
+            }
+
+            if (itemField is EmbeddedSchemaField)
+            {
+                EmbeddedSchemaField linkField = (EmbeddedSchemaField)itemField;
+                EmbeddedSchemaFieldDefinition linksFieldDefinition =
+                               linkField.Definition as EmbeddedSchemaFieldDefinition;
+
+                if (linksFieldDefinition?.EmbeddedSchema != null)
+                {
+                    TcmUri id = linksFieldDefinition.EmbeddedSchema.Id; // force schema load
+                    foreach (ItemFields embeddedFields in linkField.Values)
+                    {
+                        toResolve.AddRange(Resolve(embeddedFields, template, resolved, recurseLevel));
+                    }
+                }
+            }
+
+            return toResolve;
+        }
+
+        private List<ResolvedItem> Resolve(ItemFields itemFields, ComponentTemplate template,
+            HashSet<IdentifiableObject> resolved, int recurseLevel)
+        {
+            List<ResolvedItem> toResolve = new List<ResolvedItem>();
+            foreach (var field in itemFields)
+            {
+                toResolve.AddRange(Resolve(field, template, resolved, recurseLevel));
+            }
+            return toResolve;
+        }
+
         private List<ResolvedItem> Resolve(Component component, ComponentTemplate template, HashSet<IdentifiableObject> resolved, int recurseLevel)
         {   
-            // if we already resolved this component then skip       
-            if(resolved.Contains(component)) return new List<ResolvedItem>();
-
-            //Log($"Looking at component {component.Title} to see if we should resolve it...");
-            //Log($"Component Schema = {component.Schema.Id}");
-
             List<ResolvedItem> toResolve = new List<ResolvedItem>();
+            if (recurseLevel > _recurseDepth || resolved.Contains(component)) return toResolve;
             TcmUri schemaId = component.Schema.Id; // force load of schema!
             if (template.RelatedSchemas.Contains(component.Schema))
             {
-                //Log($"Resolving Component: '{component.Title}'.");
                 toResolve.Add(new ResolvedItem(component, template));
                 resolved.Add(component);
+            }          
+            if (component.Content != null)
+            {
+                ItemFields fields = new ItemFields(component.Content, component.Schema);
+                toResolve.AddRange(Resolve(fields, template, resolved, recurseLevel));
             }
-
-            var filter = new UsedItemsFilter(component.Session)
+            if (component.Metadata != null)
             {
-                // only interested in linked components
-                ItemTypes = new ItemType[] {ItemType.Component},
-                BaseColumns = ListBaseColumns.Extended
-            };
-
-            var items = component.GetUsedItems(filter);
-            foreach (var item in items)
-            {
-                toResolve.AddRange(Resolve(item, template, resolved, recurseLevel));
+                ItemFields fields = new ItemFields(component.Metadata, component.MetadataSchema);
+                toResolve.AddRange(Resolve(fields, template, resolved, recurseLevel));
             }
             return toResolve;            
         }
@@ -106,13 +141,11 @@ namespace Sdl.Web.DXAResolver
         private List<ResolvedItem> Resolve(Page page, ComponentTemplate template, HashSet<IdentifiableObject> resolved, int recurseLevel)
         {
             List<ResolvedItem> toResolve = new List<ResolvedItem>();
-
-            // if we already resolved this page then skip
-            if (resolved.Contains(page)) return toResolve;
-            if (page.ComponentPresentations.Count <= 0) return toResolve;
+            if (resolved.Contains(page) || page.ComponentPresentations.Count <= 0) return toResolve;
             foreach (var cp in page.ComponentPresentations)
             {
                 toResolve.AddRange(Resolve((IdentifiableObject)cp.Component, template, resolved, recurseLevel));
+                resolved.Add(page);
             }
             return toResolve;
         }
@@ -120,7 +153,6 @@ namespace Sdl.Web.DXAResolver
         private List<ResolvedItem> Resolve(IdentifiableObject item,
             ComponentTemplate template, HashSet<IdentifiableObject> resolved, int recurseLevel)
         {
-            //Log($"Current recurse level={recurseLevel}");
             List<ResolvedItem> toResolve = new List<ResolvedItem>();
             if (recurseLevel > _recurseDepth) return toResolve;
             if (item is Component)
@@ -132,7 +164,6 @@ namespace Sdl.Web.DXAResolver
 
         public void Resolve(IdentifiableObject item, ResolveInstruction instruction, PublishContext context, Tridion.Collections.ISet<ResolvedItem> resolvedItems)
         {
-            //Log("Attempting to resolve items..");
             if (instruction.Purpose != ResolvePurpose.Publish && instruction.Purpose != ResolvePurpose.RePublish)
                 return;
             var sourceItem = (RepositoryLocalObject)item;
@@ -146,17 +177,11 @@ namespace Sdl.Web.DXAResolver
             var dataPresentationTemplate = contextPublication.GetComponentTemplates(filter).FirstOrDefault(
                 ct => ct.Title == dataPresentationTemplateTitle);
             if (dataPresentationTemplate == null) return;
-            var resolvedItemList = resolvedItems.ToList();
             var resolved = new HashSet<IdentifiableObject>();
             foreach (var x in Resolve(item, dataPresentationTemplate, resolved, 0))
             {
                 resolvedItems.Add(x);
             }
-            foreach (var x in resolvedItemList.SelectMany(resolvedItem => Resolve(resolvedItem.Item, dataPresentationTemplate, resolved, 0)))
-            {
-                resolvedItems.Add(x);
-            }
-            //Log("Finished resolve items..");
         }
     }
 }
