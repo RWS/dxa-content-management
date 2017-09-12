@@ -167,7 +167,14 @@ namespace Sdl.Web.Tridion.Templates
                         string regionName = nestedRegionDefinition.RegionName;
                         if (nativeRegions.All(nr => nr.Key != regionName))
                         {
-                            XpmRegionData nativeRegion = new XpmRegionData { Region = regionName, ComponentTypes = new List<XpmComponentTypeData>() };
+                            XpmRegionData nativeRegion = new XpmRegionData
+                            {
+                                Region = regionName,
+                                ComponentTypes = new List<XpmComponentTypeData>
+                                {
+                                    new XpmComponentTypeData {Schema = "*", Template = "*"} // Allow all schemas/templates
+                                }
+                            };
                             nativeRegions.Add(regionName, nativeRegion);
                         }
                         else
@@ -206,8 +213,8 @@ namespace Sdl.Web.Tridion.Templates
                     }
                 );
 
-                xpmRegion.ComponentTypes.AddRange(allowedComponentTypes);
-            }
+                    xpmRegion.ComponentTypes.AddRange(allowedComponentTypes);
+                }
 
             Dictionary<string, XpmRegionData> nativeRegions = CollectNativeRegions();
             foreach (KeyValuePair<string, XpmRegionData> nativeRegion in nativeRegions)
