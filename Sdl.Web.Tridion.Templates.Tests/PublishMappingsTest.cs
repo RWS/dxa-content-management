@@ -59,7 +59,11 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 Item testItem = testPackage.GetByName("/Preview/system/mappings/regions.json");
                 string content = testItem.GetAsString();
                 var definedRegions = JsonConvert.DeserializeObject<List<RegionDefinitionTest>>(content);
-                Assert.IsTrue(definedRegions.Count(x => x.Region == regionShemaTitle && x.ComponentTypes.Any()) == 1,
+                Assert.IsTrue(definedRegions.Count(x => x.Region == regionShemaTitle 
+                                                        && x.ComponentTypes.Any()
+                                                        && x.ComponentTypes[0].Schema != "*"
+                                                        && x.ComponentTypes[0].Template != "*"
+                                                  ) == 1,
                     "DXA 'Main' Region and its ComponentTypes not overridden by TCM Region");
 
             }
@@ -110,7 +114,11 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 Item testItem = testPackage.GetByName("/Preview/system/mappings/regions.json");
                 var content = testItem.GetAsString();
                 var definedRegions = JsonConvert.DeserializeObject<List<RegionDefinitionTest>>(content);
-                Assert.IsTrue(definedRegions.Count(x => x.Region==regionShemaTitle && !x.ComponentTypes.Any()) == 1, 
+                Assert.IsTrue(definedRegions.Count(x => x.Region==regionShemaTitle 
+                                                        && x.ComponentTypes.Count == 1
+                                                        && x.ComponentTypes[0].Schema == "*"
+                                                        && x.ComponentTypes[0].Template == "*"
+                                                  ) == 1, 
                     "TCM Region without any Component Presentations added to Regions.json");
 
             }
