@@ -4,7 +4,7 @@ using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 
 namespace Sdl.Web.Tridion.Data
-{
+{  
     /// <summary>
     /// Entity Model Builder implementation for Context Expressions.
     /// </summary>
@@ -28,17 +28,23 @@ namespace Sdl.Web.Tridion.Data
             // Add extension data for Context Expressions (if applicable)
             string[] includeContextExpressions = ContextExpressionUtils.GetContextExpressions(cp.Conditions.Where(c => !c.Negate).Select(c => c.TargetGroup));
             string[] excludeContextExpressions = ContextExpressionUtils.GetContextExpressions(cp.Conditions.Where(c => c.Negate).Select(c => c.TargetGroup));
+            ContentModelData contextExpressions = new ContentModelData();
 
             if (includeContextExpressions.Any())
             {
-                Logger.Debug("Adding Context Expression Conditions (Include): " + string.Join(", ", includeContextExpressions));
-                entityModelData.SetExtensionData("CX.Include", includeContextExpressions);
+                Logger.Debug("Adding Context Expression Conditions (Include): " + string.Join(", ", includeContextExpressions));                
+                contextExpressions.Add("Include", includeContextExpressions);
             }
 
             if (excludeContextExpressions.Any())
             {
-                Logger.Debug("Adding Context Expression Conditions (Exclude): " + string.Join(", ", excludeContextExpressions));
-                entityModelData.SetExtensionData("CX.Exclude", excludeContextExpressions);
+                Logger.Debug("Adding Context Expression Conditions (Exclude): " + string.Join(", ", excludeContextExpressions));             
+                contextExpressions.Add("Exclude", excludeContextExpressions);
+            }
+
+            if (contextExpressions.Count > 0)
+            {
+                entityModelData.SetExtensionData("ContextExpressions", contextExpressions);
             }
         }
 
