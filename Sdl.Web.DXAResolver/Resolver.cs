@@ -39,8 +39,8 @@ namespace Sdl.Web.DXAResolver
     /// </summary>
     public class Resolver : IResolver
     {
-        private readonly int _recurseDepth = 2;
-               
+        private readonly int _recurseDepth = 2;      
+
         public Resolver()
         {
             try
@@ -178,6 +178,7 @@ namespace Sdl.Web.DXAResolver
                 ct => ct.Title == dataPresentationTemplateTitle);
             if (dataPresentationTemplate == null) return;
             var resolved = new HashSet<IdentifiableObject>();
+            resolvedItems.Clear(); // remove items from default resolving process
             foreach (var x in Resolve(item, dataPresentationTemplate, resolved, 0))
             {
                 resolvedItems.Add(x);
