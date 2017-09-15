@@ -686,8 +686,9 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
             RegionModelData mainRegion = GetMainRegion(pageModel);
             EntityModelData[] entitiesWithExtensionData = mainRegion.Entities.Where(e => e.ExtensionData != null).ToArray();
-            EntityModelData[] entitiesWithCxInclude = entitiesWithExtensionData.Where(e => e.ExtensionData.ContainsKey("CX.Include")).ToArray();
-            EntityModelData[] entitiesWithCxExclude = entitiesWithExtensionData.Where(e => e.ExtensionData.ContainsKey("CX.Exclude")).ToArray();
+            EntityModelData[] entitiesWithContextExpressions = entitiesWithExtensionData.Where(e => e.ExtensionData.ContainsKey("ContextExpressions")).ToArray();
+            EntityModelData[] entitiesWithCxInclude = entitiesWithContextExpressions.Where(e => ((ContentModelData)e.ExtensionData["ContextExpressions"]).ContainsKey("Include")).ToArray();
+            EntityModelData[] entitiesWithCxExclude = entitiesWithContextExpressions.Where(e => ((ContentModelData)e.ExtensionData["ContextExpressions"]).ContainsKey("Exclude")).ToArray();
 
             Assert.AreEqual(8, entitiesWithExtensionData.Length, "entitiesWithExtensionData.Length");
             Assert.AreEqual(6, entitiesWithCxInclude.Length, "entitiesWithCxInclude.Length");

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Linq;
 using Tridion.Configuration;
 using Tridion.ContentManager;
@@ -39,7 +38,7 @@ namespace Sdl.Web.DXAResolver
     /// </summary>
     public class Resolver : IResolver
     {
-        private readonly int _recurseDepth = 2;      
+        private readonly int _recurseDepth = 2;
 
         public Resolver()
         {
@@ -116,7 +115,7 @@ namespace Sdl.Web.DXAResolver
         }
 
         private List<ResolvedItem> Resolve(Component component, ComponentTemplate template, HashSet<IdentifiableObject> resolved, int recurseLevel)
-        {   
+        {
             List<ResolvedItem> toResolve = new List<ResolvedItem>();
             if (recurseLevel > _recurseDepth || resolved.Contains(component)) return toResolve;
             TcmUri schemaId = component.Schema.Id; // force load of schema!
@@ -145,7 +144,6 @@ namespace Sdl.Web.DXAResolver
             foreach (var cp in page.ComponentPresentations)
             {
                 toResolve.AddRange(Resolve((IdentifiableObject)cp.Component, template, resolved, recurseLevel));
-                resolved.Add(page);
             }
             return toResolve;
         }
@@ -163,7 +161,7 @@ namespace Sdl.Web.DXAResolver
         }
 
         public void Resolve(IdentifiableObject item, ResolveInstruction instruction, PublishContext context, Tridion.Collections.ISet<ResolvedItem> resolvedItems)
-        {
+        {           
             if (instruction.Purpose != ResolvePurpose.Publish && instruction.Purpose != ResolvePurpose.RePublish)
                 return;
             var sourceItem = (RepositoryLocalObject)item;
@@ -178,7 +176,6 @@ namespace Sdl.Web.DXAResolver
                 ct => ct.Title == dataPresentationTemplateTitle);
             if (dataPresentationTemplate == null) return;
             var resolved = new HashSet<IdentifiableObject>();
-            resolvedItems.Clear(); // remove items from default resolving process
             foreach (var x in Resolve(item, dataPresentationTemplate, resolved, 0))
             {
                 resolvedItems.Add(x);
