@@ -4,7 +4,7 @@ using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 
 namespace Sdl.Web.Tridion.Data
-{  
+{
     /// <summary>
     /// Entity Model Builder implementation for Context Expressions.
     /// </summary>
@@ -26,19 +26,27 @@ namespace Sdl.Web.Tridion.Data
         public void BuildEntityModel(ref EntityModelData entityModelData, ComponentPresentation cp)
         {
             // Add extension data for Context Expressions (if applicable)
-            string[] includeContextExpressions = ContextExpressionUtils.GetContextExpressions(cp.Conditions.Where(c => !c.Negate).Select(c => c.TargetGroup));
-            string[] excludeContextExpressions = ContextExpressionUtils.GetContextExpressions(cp.Conditions.Where(c => c.Negate).Select(c => c.TargetGroup));
             ContentModelData contextExpressions = new ContentModelData();
+            object includeContextExpressions =
+                GetContextExpressions(
+                    ContextExpressionUtils.GetContextExpressions(
+                        cp.Conditions.Where(c => !c.Negate).Select(c => c.TargetGroup)));
+            object excludeContextExpressions =
+                GetContextExpressions(
+                    ContextExpressionUtils.GetContextExpressions(
+                        cp.Conditions.Where(c => c.Negate).Select(c => c.TargetGroup)));
 
-            if (includeContextExpressions.Any())
+            if (includeContextExpressions != null)
             {
-                Logger.Debug("Adding Context Expression Conditions (Include): " + string.Join(", ", includeContextExpressions));                
+                Logger.Debug("Adding Context Expression Conditions (Include): " +
+                             string.Join(", ", includeContextExpressions));
                 contextExpressions.Add("Include", includeContextExpressions);
             }
 
-            if (excludeContextExpressions.Any())
+            if (excludeContextExpressions != null)
             {
-                Logger.Debug("Adding Context Expression Conditions (Exclude): " + string.Join(", ", excludeContextExpressions));             
+                Logger.Debug("Adding Context Expression Conditions (Exclude): " +
+                             string.Join(", ", excludeContextExpressions));
                 contextExpressions.Add("Exclude", excludeContextExpressions);
             }
 
@@ -64,6 +72,20 @@ namespace Sdl.Web.Tridion.Data
         public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct, bool includeComponentTemplateDetails, int expandLinkDepth)
         {
             // Nothing to do here
+        }
+
+        private static object GetContextExpressions(string[] expressions)
+        {
+            if (expressions == null) return expressions;
+            if (expressions.Length == 0)
+            {
+                return null;
+            }
+            if (expressions.Length == 1)
+            {
+                return expressions[0];
+            }
+            return expressions;
         }
     }
 }
