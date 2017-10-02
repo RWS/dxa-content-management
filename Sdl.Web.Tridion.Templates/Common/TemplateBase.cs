@@ -18,7 +18,7 @@ using Tridion.ContentManager.Templating.Assembly;
 namespace Sdl.Web.Tridion.Common
 {
     /// <summary>
-    /// Base class for common functionality used by TBBs
+    /// Base class for common functionality used by DXA TBBs.
     /// </summary>
     public abstract class TemplateBase : ITemplate
     {
@@ -28,7 +28,8 @@ namespace Sdl.Web.Tridion.Common
         protected const string DxaSchemaNamespaceUri = "http://www.sdl.com/web/schemas/core";
         protected const string ModuleConfigurationSchemaRootElementName = "ModuleConfiguration";
 
-        private static readonly Regex _tcdlComponentPresentationRegex = new Regex("</?tcdl:ComponentPresentation[^>]*>", RegexOptions.Compiled);
+        private static readonly Regex _tcdlComponentPresentationRegex = new Regex(
+            "</?tcdl:ComponentPresentation[^>]*>", RegexOptions.Compiled);
 
         private TemplatingLogger _logger;
         private Session _session;
@@ -48,6 +49,10 @@ namespace Sdl.Web.Tridion.Common
                 return _engine;
             }
         }
+
+        /// <summary>
+        /// Returns the current Package
+        /// </summary>
         protected Package Package
         {
             get
@@ -105,6 +110,9 @@ namespace Sdl.Web.Tridion.Common
             }
         }
 
+        /// <summary>
+        /// Returns the current Logger
+        /// </summary>
         protected TemplatingLogger Logger
         {
             get
@@ -118,6 +126,53 @@ namespace Sdl.Web.Tridion.Common
             }
         }
 
+        /// <summary>
+        /// Attempts to return value of a parameter
+        /// </summary>
+        /// <typeparam name="T">Type of Parameter</typeparam>
+        /// <param name="parameterName">Parameter Name</param>
+        /// <param name="value">Value of Parameter</param>
+        /// <returns></returns>
+        protected bool TryGetParameter<T>(string parameterName, out T value)
+            => Package.TryGetParameter(parameterName, out value, Logger);
+
+        /// <summary>
+        /// Return item to be rendered.
+        /// </summary>
+        protected RenderedItem RenderedItem => Engine.PublishingContext.RenderedItem;
+
+        /// <summary>
+        /// Return default model builder settings.
+        /// </summary>
+        protected DataModelBuilderSettings DefaultDataModelBuilderSettings
+        {
+            get
+            {
+                int expandLinkDepth;
+                TryGetParameter("expandLinkDepth", out expandLinkDepth);
+                return new DataModelBuilderSettings
+                {
+                    ExpandLinkDepth = expandLinkDepth,
+                    GenerateXpmMetadata = IsXpmEnabled || IsPreview,
+                    Locale = GetLocale()
+                };
+            }
+        }
+
+        /// <summary>
+        /// Create data model pipeline with default settings.
+        /// </summary>
+        /// <returns>Data Model Pipeline</returns>
+        protected DataModelBuilderPipeline CreatePipeline()
+            => CreatePipeline(DefaultDataModelBuilderSettings);
+
+        /// <summary>
+        /// Create data model pipeline with specified settings
+        /// </summary>
+        /// <param name="settings">Settings to use when creating data model pipeline</param>
+        /// <returns>Data Model Pipeline</returns>
+        protected DataModelBuilderPipeline CreatePipeline(DataModelBuilderSettings settings) 
+            => new DataModelBuilderPipeline(RenderedItem, settings, GetModelBuilderTypeNames());
 
         /// <summary>
         /// Initializes the Engine and Package to use in this TemplateBase object.
@@ -133,6 +188,23 @@ namespace Sdl.Web.Tridion.Common
         public abstract void Transform(Engine engine, Package package);
 
         /// <summary>
+        /// Output rendered json.
+        /// </summary>
+        /// <param name="json">Json to render</param>
+        protected void OutputJson(string json)
+            => OutputText(json);
+
+        /// <summary>
+        /// Output text.
+        /// </summary>
+        /// <param name="text">Json to render</param>
+        protected void OutputText(string text)
+        {
+            Item outputItem = Package.CreateStringItem(ContentType.Text, text);
+            Package.PushItem(Package.OutputName, outputItem);
+        }
+
+        /// <summary>
         /// Update the (JSON) summary in the Output item.
         /// </summary>
         /// <param name="name">The name of the Template.</param>
@@ -144,11 +216,11 @@ namespace Sdl.Web.Tridion.Common
             Item outputItem = Package.GetByName(Package.OutputName);
             if (outputItem != null)
             {
-                summaries = JsonConvert.DeserializeObject <List<SummaryData>>(outputItem.GetAsString());
+                summaries = JsonConvert.DeserializeObject<List<SummaryData>>(outputItem.GetAsString());
                 Package.Remove(outputItem);
             }
 
-            SummaryData summary = new SummaryData { Name = name, Status = "Success", Files = files };
+            SummaryData summary = new SummaryData {Name = name, Status = "Success", Files = files};
             summaries.Add(summary);
 
             string summariesJson = JsonSerialize(summaries, IsPreview);
@@ -178,7 +250,7 @@ namespace Sdl.Web.Tridion.Common
             Item component = Package.GetByName(Package.ComponentName);
             if (component != null)
             {
-                return (Component)Engine.GetObject(component.GetAsSource().GetValue("ID"));
+                return (Component) Engine.GetObject(component.GetAsSource().GetValue("ID"));
             }
 
             return null;
@@ -245,7 +317,7 @@ namespace Sdl.Web.Tridion.Common
             if (string.IsNullOrEmpty(modelBuilderTypeNamesParam))
             {
                 Logger.Warning("No Model Builder Type Names configured; using Default Model Builder only.");
-                modelBuilderTypeNamesParam = typeof(DefaultModelBuilder).Name;
+                modelBuilderTypeNamesParam = typeof (DefaultModelBuilder).Name;
             }
 
             return modelBuilderTypeNamesParam.Split(';');
@@ -269,7 +341,8 @@ namespace Sdl.Web.Tridion.Common
         /// <summary>
         /// Gets whether the item is being rendered as part of CM Preview.
         /// </summary>
-        protected bool IsPreview => (Engine.RenderMode == RenderMode.PreviewDynamic) || (Engine.RenderMode == RenderMode.PreviewStatic);
+        protected bool IsPreview
+            => (Engine.RenderMode == RenderMode.PreviewDynamic) || (Engine.RenderMode == RenderMode.PreviewStatic);
 
         protected bool IsMasterWebPublication(Publication publication)
         {
@@ -297,23 +370,27 @@ namespace Sdl.Web.Tridion.Common
             }
         }
 
-        protected List<KeyValuePair<TcmUri, string>> GetOrganizationalItemContents(OrganizationalItem orgItem, ItemType itemType, bool recursive)
+        protected List<KeyValuePair<TcmUri, string>> GetOrganizationalItemContents(OrganizationalItem orgItem,
+            ItemType itemType, bool recursive)
         {
             OrganizationalItemItemsFilter filter = new OrganizationalItemItemsFilter(orgItem.Session)
-                {
-                    ItemTypes = new List<ItemType> { itemType },
-                    Recursive = recursive
-                };
+            {
+                ItemTypes = new List<ItemType> {itemType},
+                Recursive = recursive
+            };
             return XmlElementToTcmUriList(orgItem.GetListItems(filter));
         }
 
         protected OrganizationalItem GetChildOrganizationalItem(OrganizationalItem root, string title)
         {
-            foreach (KeyValuePair<TcmUri, string> child in GetOrganizationalItemContents(root, root is Folder ? ItemType.Folder : ItemType.StructureGroup, false))
+            foreach (
+                KeyValuePair<TcmUri, string> child in
+                    GetOrganizationalItemContents(root, root is Folder ? ItemType.Folder : ItemType.StructureGroup,
+                        false))
             {
                 if (child.Value.ToLower() == title.ToLower())
                 {
-                    return (OrganizationalItem)Engine.GetObject(child.Key);
+                    return (OrganizationalItem) Engine.GetObject(child.Key);
                 }
             }
             return null;
@@ -322,10 +399,10 @@ namespace Sdl.Web.Tridion.Common
         protected List<KeyValuePair<TcmUri, string>> GetUsingItems(RepositoryLocalObject subject, ItemType itemType)
         {
             UsingItemsFilter filter = new UsingItemsFilter(Engine.GetSession())
-                {
-                    ItemTypes = new List<ItemType> { itemType },
-                    BaseColumns = ListBaseColumns.IdAndTitle
-                };
+            {
+                ItemTypes = new List<ItemType> {itemType},
+                BaseColumns = ListBaseColumns.IdAndTitle
+            };
             return XmlElementToTcmUriList(subject.GetListUsingItems(filter));
         }
 
@@ -389,12 +466,14 @@ namespace Sdl.Web.Tridion.Common
 
             UsingItemsFilter configComponentsFilter = new UsingItemsFilter(Session)
             {
-                ItemTypes = new[] { ItemType.Component },
+                ItemTypes = new[] {ItemType.Component},
                 BaseColumns = ListBaseColumns.IdAndTitle
             };
 
-            IEnumerable<Component> configComponents = generalConfigSchema.GetUsingItems(configComponentsFilter).Cast<Component>();
-            Component localizationConfigComponent = configComponents.FirstOrDefault(c => c.Title == "Localization Configuration");
+            IEnumerable<Component> configComponents =
+                generalConfigSchema.GetUsingItems(configComponentsFilter).Cast<Component>();
+            Component localizationConfigComponent =
+                configComponents.FirstOrDefault(c => c.Title == "Localization Configuration");
             if (localizationConfigComponent == null)
             {
                 Logger.Warning("No Localization Configuration Component found.");
@@ -410,7 +489,8 @@ namespace Sdl.Web.Tridion.Common
             const string cultureSetting = "culture";
             if (!settings.TryGetValue(cultureSetting, out result))
             {
-                Logger.Warning($"No '{cultureSetting}' setting found in Localization Configuration {localizationConfigComponent.FormatIdentifier()}.");
+                Logger.Warning(
+                    $"No '{cultureSetting}' setting found in Localization Configuration {localizationConfigComponent.FormatIdentifier()}.");
             }
 
             return result;
@@ -425,7 +505,9 @@ namespace Sdl.Web.Tridion.Common
             => _tcdlComponentPresentationRegex.Replace(renderedComponentPresentation, string.Empty);
 
         #region Json Data Processing
-        protected Dictionary<string, string> MergeData(Dictionary<string, string> source, Dictionary<string, string> mergeData)
+
+        protected Dictionary<string, string> MergeData(Dictionary<string, string> source,
+            Dictionary<string, string> mergeData)
         {
             foreach (string key in mergeData.Keys)
             {
@@ -435,23 +517,31 @@ namespace Sdl.Web.Tridion.Common
                 }
                 else
                 {
-                    Logger.Warning(String.Format("Duplicate key ('{0}') found when merging data. The second value will be skipped.", key));
+                    Logger.Warning(
+                        String.Format(
+                            "Duplicate key ('{0}') found when merging data. The second value will be skipped.", key));
                 }
             }
             return source;
         }
 
-        protected void AddBootstrapJsonBinary(IList<Binary> binaries, Component relatedComponent, StructureGroup sg, string variantName)
+        protected void AddBootstrapJsonBinary(IList<Binary> binaries, Component relatedComponent, StructureGroup sg,
+            string variantName)
         {
             BootstrapData bootstrapData = new BootstrapData
             {
                 Files = binaries.Where(b => b != null).Select(b => b.Url).ToArray()
             };
-            binaries.Add(AddJsonBinary(bootstrapData, relatedComponent, sg, BootstrapFilename, variantName + "-bootstrap"));
+            binaries.Add(AddJsonBinary(bootstrapData, relatedComponent, sg, BootstrapFilename,
+                variantName + "-bootstrap"));
         }
 
-        protected Binary AddJsonBinary(object objectToSerialize, Component relatedComponent, StructureGroup structureGroup, string name, string variantId = null)
+        protected Binary AddJsonBinary(object objectToSerialize, Component relatedComponent,
+            StructureGroup structureGroup, string name, string variantId = null)
         {
+            //In unittest there may not be a PublishingContext
+            if (Engine.PublishingContext == null) return null;
+
             if (string.IsNullOrEmpty(variantId))
             {
                 variantId = name;
@@ -459,11 +549,12 @@ namespace Sdl.Web.Tridion.Common
 
             string json = JsonSerialize(objectToSerialize, IsPreview | IsXpmEnabled);
             Item jsonItem = Package.CreateStringItem(ContentType.Text, json);
-            Binary jsonBinary = Engine.PublishingContext.RenderedItem.AddBinary(jsonItem.GetAsStream(), name + JsonExtension, structureGroup, variantId, relatedComponent, JsonMimetype);
+            Binary jsonBinary = Engine.PublishingContext.RenderedItem.AddBinary(jsonItem.GetAsStream(),
+                name + JsonExtension, structureGroup, variantId, relatedComponent, JsonMimetype);
             jsonItem.Properties[Item.ItemPropertyPublishedPath] = jsonBinary.Url;
             Package.PushItem(jsonBinary.Url, jsonItem);
 
-            Logger.Info(string.Format("Added JSON Binary '{0}' related to Component '{1}' ({2}) with variant ID '{3}'", 
+            Logger.Info(string.Format("Added JSON Binary '{0}' related to Component '{1}' ({2}) with variant ID '{3}'",
                 jsonBinary.Url, relatedComponent.Title, relatedComponent.Id, variantId));
             return jsonBinary;
         }
@@ -490,7 +581,7 @@ namespace Sdl.Web.Tridion.Common
                     }
                     else
                     {
-                        Logger.Warning(string.Format("Empty or duplicate key found ('{0}') in Component '{1}' ({2})", 
+                        Logger.Warning(string.Format("Empty or duplicate key found ('{0}') in Component '{1}' ({2})",
                             key, component.Title, component.Id));
                     }
                 }
@@ -507,7 +598,8 @@ namespace Sdl.Web.Tridion.Common
             return keyValuePairs;
         }
 
-        protected string JsonSerialize(object objectToSerialize, bool prettyPrint = false, JsonSerializerSettings settings = null)
+        protected string JsonSerialize(object objectToSerialize, bool prettyPrint = false,
+            JsonSerializerSettings settings = null)
         {
             if (settings == null)
             {
@@ -517,7 +609,9 @@ namespace Sdl.Web.Tridion.Common
                 };
             }
 
-            Newtonsoft.Json.Formatting jsonFormatting = prettyPrint ? Newtonsoft.Json.Formatting.Indented : Newtonsoft.Json.Formatting.None;
+            Newtonsoft.Json.Formatting jsonFormatting = prettyPrint
+                ? Newtonsoft.Json.Formatting.Indented
+                : Newtonsoft.Json.Formatting.None;
 
             return JsonConvert.SerializeObject(objectToSerialize, jsonFormatting, settings);
         }
@@ -580,11 +674,13 @@ namespace Sdl.Web.Tridion.Common
 
             if (schemas.Length == 0)
             {
-                throw new DxaException($"Schema with namespace '{namespaceUri}' and root element name '{rootElementName}' not found.");
+                throw new DxaException(
+                    $"Schema with namespace '{namespaceUri}' and root element name '{rootElementName}' not found.");
             }
             if (schemas.Length > 1)
             {
-                throw new DxaException($"Found multiple Schemas with namespace '{namespaceUri}' and root element name '{rootElementName}'.");
+                throw new DxaException(
+                    $"Found multiple Schemas with namespace '{namespaceUri}' and root element name '{rootElementName}'.");
             }
 
             return schemas.First();
@@ -636,6 +732,7 @@ namespace Sdl.Web.Tridion.Common
 
             return name;
         }
+
         #endregion
 
     }

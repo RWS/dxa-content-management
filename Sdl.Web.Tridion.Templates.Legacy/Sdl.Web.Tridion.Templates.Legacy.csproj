@@ -30,23 +30,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DD4T.ContentModel">
-      <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.ContentModel.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="DD4T.ContentModel.Contracts">
-      <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.ContentModel.Contracts.dll</HintPath>
-    </Reference>
-    <Reference Include="DD4T.Serialization">
-      <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.Serialization.dll</HintPath>
-    </Reference>
-    <Reference Include="DD4T.Templates.Base">
-      <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.Templates.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Sdl.Web.Legacy.Model">
+      <HintPath>..\packages\Sdl.Dxa.Framework.Web8.2.0.0-beta-201708151247\lib\net452\Sdl.Web.Legacy.Model.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,14 +53,68 @@
     <Reference Include="Tridion.ContentManager">
       <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.dll</HintPath>
     </Reference>
+    <Reference Include="Tridion.ContentManager.Common">
+      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.ContentManager.Publishing">
+      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Publishing.dll</HintPath>
+    </Reference>
     <Reference Include="Tridion.ContentManager.Templating">
       <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Templating.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.ExternalContentLibrary">
+      <HintPath>C:\_references\cm-8.1\Tridion.ExternalContentLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.ExternalContentLibrary.V2">
+      <HintPath>C:\_references\cm-8.1\Tridion.ExternalContentLibrary.V2.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="DD4T\DD4T.Templates.Base\BaseComponentTemplate.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\BasePageTemplate.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\BaseTemplate.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\BuildManager.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\BuildProperties.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\CategoriesBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\ComponentBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\ComponentPresentationBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\ComponentTemplateBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\FieldBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\FieldsBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\KeywordBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\OrganizationalItemBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\PageBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\PageTemplateBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\PublicationBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\SchemaBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Builder\TargetGroupBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\DefaultTemplate.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\StopChainException.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Utils\BinaryPublisher.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Utils\EclProcessor.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Utils\GeneralUtils.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Utils\IOUtils.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Utils\LowerCaseConverter.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Utils\Si4tUtils.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Utils\TridionConfigurationManager.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Utils\TridionUtils.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Utils\XmlMinimizer.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Utils\XmlToJavaConverter.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\XML\TridionXml.cs" />
+    <Compile Include="DD4T\DD4T.Templates\AddTargetGroups.cs" />
+    <Compile Include="DD4T\DD4T.Templates\CompressOutput.cs" />
+    <Compile Include="DD4T\DD4T.Templates\DynamicComponent.cs" />
+    <Compile Include="DD4T\DD4T.Templates\DynamicComponentPresentation.cs" />
+    <Compile Include="DD4T\DD4T.Templates\DynamicPage.cs" />
+    <Compile Include="DD4T\DD4T.Templates\InheritMetadataComponent.cs" />
+    <Compile Include="DD4T\DD4T.Templates\InheritMetadataPage.cs" />
+    <Compile Include="DD4T\DD4T.Templates\PreviewPage.cs" />
+    <Compile Include="DD4T\DD4T.Templates\PublishBinariesComponent.cs" />
+    <Compile Include="DD4T\DD4T.Templates\PublishBinariesPage.cs" />
+    <Compile Include="DD4T\DD4T.Templates\Resources.cs" />
     <Compile Include="DD4T\DxaBuildManager.cs" />
     <Compile Include="DD4T\GenerateDynamicComponent.cs" />
     <Compile Include="DD4T\GenerateDynamicPage.cs" />
@@ -74,7 +122,15 @@
     <Compile Include="ResolveRichText.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\Schemas\Dynamic Delivery Parameters.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\Schemas\Resources Parameters.xsd">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <EmbeddedResource Include="Resources\ResolveRichTextParameters.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -91,13 +147,19 @@
       <Name>Sdl.Web.Tridion.Templates</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ConvertFirstCharToLowerCase.xslt" />
+    <EmbeddedResource Include="Resources\ConvertFullNameToLowerCase.xslt" />
+    <EmbeddedResource Include="Resources\ConvertToJava.xslt" />
+    <EmbeddedResource Include="Resources\Minimize.xslt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe"  ^
     /out:Sdl.Web.Tridion.Templates.merged.dll ^
     /targetplatform:v4 ^
     /lib:C:\_references\cm-8.1 ^
-    Sdl.Web.Tridion.Templates.dll Sdl.Web.Tridion.Templates.Legacy.dll Sdl.Web.DataModel.dll DD4T.ContentModel.Contracts.dll DD4T.ContentModel.dll DD4T.Serialization.dll DD4T.Templates.Base.dll Newtonsoft.Json.dll
+    Sdl.Web.Tridion.Templates.dll Sdl.Web.Tridion.Templates.Legacy.dll Sdl.Web.DataModel.dll Sdl.Web.Legacy.Model.dll  Newtonsoft.Json.dll
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

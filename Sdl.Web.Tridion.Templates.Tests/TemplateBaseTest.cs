@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sdl.Web.Tridion.Common;
 using Tridion.ContentManager.CommunicationManagement;
+using Tridion.ContentManager.ContentManagement;
+using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
 
 namespace Sdl.Web.Tridion.Templates.Tests

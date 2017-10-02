@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Tridion.ContentManager;
@@ -18,10 +14,10 @@ namespace Sdl.Web.Tridion.Templates.Tests
     /// </summary>
     public abstract class TemplateTest : TestClass
     {
-        protected string RunTemplate(Type templateType, IdentifiableObject inputItem, Template template = null)
+        protected Package RunTemplate(Type templateType, IdentifiableObject inputItem, out RenderedItem renderedItem, Template template = null)
         {
-            RenderedItem testRenderedItem = CreateTestRenderedItem(inputItem, template);
-            TestEngine testEngine = new TestEngine(testRenderedItem);
+            renderedItem = CreateTestRenderedItem(inputItem, template);
+            TestEngine testEngine = new TestEngine(renderedItem);
             Package testPackage = new Package(testEngine);
 
             Type inputItemType = inputItem.GetType();
@@ -33,8 +29,16 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(testTemplate, "testTemplate");
 
             testTemplate.Transform(testEngine, testPackage);
+            
+            return testPackage;
+        }
 
-            Item outputItem = testPackage.GetByName(Package.OutputName);
+        protected string RunTemplate(Type templateType, IdentifiableObject inputItem, Template template = null)
+        {
+            RenderedItem renderedItem;
+            Package testPackage = RunTemplate(templateType, inputItem, out renderedItem, template);
+
+             Item outputItem = testPackage.GetByName(Package.OutputName);
             Assert.IsNotNull(outputItem, "outputItem");
 
             string result = outputItem.GetAsString();

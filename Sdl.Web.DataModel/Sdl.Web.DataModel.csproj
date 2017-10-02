@@ -31,8 +31,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,6 +48,7 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BinaryContentData.cs" />
+    <Compile Include="ComponentTemplateData.cs" />
     <Compile Include="Configuration\BootstrapData.cs" />
     <Compile Include="Configuration\LocalizationData.cs" />
     <Compile Include="Configuration\SemanticPropertyData.cs" />
@@ -62,9 +63,11 @@
     <Compile Include="DataModelBinder.cs" />
     <Compile Include="EntityModelData.cs" />
     <Compile Include="ExternalContentData.cs" />
+    <Compile Include="FolderData.cs" />
     <Compile Include="KeywordModelData.cs" />
     <Compile Include="MvcData.cs" />
     <Compile Include="PageModelData.cs" />
+    <Compile Include="PageTemplateData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegionModelData.cs" />
     <Compile Include="RichTextData.cs" />

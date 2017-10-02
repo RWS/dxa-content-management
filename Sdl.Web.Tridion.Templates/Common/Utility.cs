@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Tridion;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
+using Tridion.ContentManager.CommunicationManagement.Regions;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Templating;
 
@@ -103,6 +105,21 @@ namespace Sdl.Web.Tridion.Common
                 _ns.AddNamespace(Constants.XlinkPrefix, Constants.XlinkNamespace);
             }
             return _ns;
+        }
+
+
+        public static bool IsNativeRegionsAvailable(Page page)
+        {
+            try
+            {
+                var propValue = page.GetPropertyValue("Regions");
+                var isNativeRegionsAvailable = propValue is IList<IRegion>;
+                return isNativeRegionsAvailable;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

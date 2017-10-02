@@ -55,7 +55,7 @@ namespace Sdl.Web.Tridion.Data
         protected static bool IsEclItem(Component component) =>
             (component.BinaryContent != null) && (component.BinaryContent.MultimediaType.MimeType == EclMimeType);
 
-        protected static string GetDxaIdentifier(IdentifiableObject tcmItem)
+        public static string GetDxaIdentifier(IdentifiableObject tcmItem)
             => tcmItem?.Id.ItemId.ToString();
 
         protected static string GetTcmIdentifier(IdentifiableObject tcmItem)
@@ -77,10 +77,22 @@ namespace Sdl.Web.Tridion.Data
             if (parts.Length == 1)
             {
                 moduleName = null;
-                return parts[0];
+                return parts[0];    // qualifiedName == viewName
             }
-            moduleName = parts[0];
-            return parts[1];
+
+            moduleName = parts[0].Trim();
+            string viewName = parts[1].Trim();
+
+            if (string.IsNullOrEmpty(moduleName))
+            {
+                throw new DxaException($"Invalid Area name: '{parts[0]}' in the qualified name '{qualifiedName}'");
+            }
+            if (string.IsNullOrEmpty(viewName))
+            {
+                throw new DxaException($"Invalid View name: '{parts[1]}' in the qualified name '{qualifiedName}'");
+            }
+
+            return viewName;
         }
 
         /// <summary>
@@ -228,7 +240,7 @@ namespace Sdl.Web.Tridion.Data
                 }
 
                 Logger.Debug($"Expanding Component link. expandLinkDepth: {expandLinkDepth}");
-                return Pipeline.CreateEntityModel(linkedComponent, null, expandLinkDepth - 1);
+                return Pipeline.CreateEntityModel(linkedComponent, dataPresentationTemplate, false, expandLinkDepth - 1);
             }
 
             Category category = (Category) linkedKeyword.OrganizationalItem;
@@ -389,13 +401,13 @@ namespace Sdl.Web.Tridion.Data
             return result;
         }
 
-        protected static MvcData GetRegionMvcData(ComponentTemplate ct, out string regionName)
+        public static MvcData GetRegionMvcData(ComponentTemplate ct, out string regionName, string defaultViewName = "Main")
         {
             string qualifiedViewName = ct.Metadata.GetTextFieldValue("regionView");
             regionName = ct.Metadata.GetTextFieldValue("regionName");
 
             string moduleName;
-            string viewName = StripModuleName(qualifiedViewName, out moduleName) ?? "Main";
+            string viewName = StripModuleName(qualifiedViewName, out moduleName) ?? defaultViewName;
 
             if (string.IsNullOrEmpty(regionName))
             {

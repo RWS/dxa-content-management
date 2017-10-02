@@ -159,11 +159,12 @@ namespace Sdl.Web.Tridion.Data
         /// </summary>
         /// <param name="component">The CM Component.</param>
         /// <param name="ct">The CM Component Template. Can be <c>null</c>.</param>
+        /// <param name="includeComponentTemplateDetails">Include component template details.</param>
         /// <param name="expandLinkDepth">The level of Component/Keyword links to expand. If not specified or <c>null</c>, <see cref="DataModelBuilderSettings.ExpandLinkDepth"/> is used.</param>
         /// <remarks>
         /// This method is called for Component Presentations on a Page, standalone DCPs and linked Components which are expanded.
         /// </remarks>
-        public EntityModelData CreateEntityModel(Component component, ComponentTemplate ct, int? expandLinkDepth = null)
+        public EntityModelData CreateEntityModel(Component component, ComponentTemplate ct, bool includeComponentTemplateDetails = true, int? expandLinkDepth = null)
         {
             if (!expandLinkDepth.HasValue)
             {
@@ -173,7 +174,7 @@ namespace Sdl.Web.Tridion.Data
             EntityModelData entityModelData = null;
             foreach (IEntityModelDataBuilder entityModelBuilder in _entityModelBuilders)
             {
-                entityModelBuilder.BuildEntityModel(ref entityModelData, component, ct, expandLinkDepth.Value);
+                entityModelBuilder.BuildEntityModel(ref entityModelData, component, ct, includeComponentTemplateDetails, expandLinkDepth.Value);
             }
             return entityModelData;
         }
