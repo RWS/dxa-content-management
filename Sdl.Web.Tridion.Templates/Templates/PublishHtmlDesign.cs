@@ -42,7 +42,11 @@ namespace Sdl.Web.Tridion.Templates
             Initialize(engine, package);
 
             bool cleanup;
-            package.TryGetParameter("cleanup", out cleanup, Logger);
+            // cleanup should be true by default (if not filled in)
+            if (!package.TryGetParameter("cleanup", out cleanup, Logger))
+			{
+				cleanup = true;
+            }
 
             string drive;
             package.TryGetParameter("drive", out drive, Logger);
