@@ -97,7 +97,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
             foreach (string modelBuilderTypeName in modelBuilderTypeNames)
             {
-                string qualifiedTypeName = modelBuilderTypeName.Contains(".") ? modelBuilderTypeName : $"Sdl.Web.Tridion.Data.{modelBuilderTypeName}";
+                string qualifiedTypeName = modelBuilderTypeName.Contains(".") ? modelBuilderTypeName : $"Sdl.Web.Tridion.Templates.R2.Data.{modelBuilderTypeName}";
                 Type modelBuilderType = Type.GetType(qualifiedTypeName, throwOnError: true);
                 object modelBuilder = Activator.CreateInstance(modelBuilderType, new object[] { this });
                 IPageModelDataBuilder pageModelBuilder = modelBuilder as IPageModelDataBuilder;
