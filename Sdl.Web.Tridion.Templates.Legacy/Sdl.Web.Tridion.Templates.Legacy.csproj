@@ -142,21 +142,21 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Sdl.Web.Tridion.Templates\Sdl.Web.Tridion.Templates.csproj">
-      <Project>{1f678cc2-4586-4f0c-8e70-3f6944bd6aaf}</Project>
-      <Name>Sdl.Web.Tridion.Templates</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\ConvertFirstCharToLowerCase.xslt" />
     <EmbeddedResource Include="Resources\ConvertFullNameToLowerCase.xslt" />
     <EmbeddedResource Include="Resources\ConvertToJava.xslt" />
     <EmbeddedResource Include="Resources\Minimize.xslt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sdl.Web.Tridion.Templates\Sdl.Web.Tridion.Templates.csproj">
+      <Project>{1f678cc2-4586-4f0c-8e70-3f6944bd6aaf}</Project>
+      <Name>Sdl.Web.Tridion.Templates</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe"  ^
-    /out:Sdl.Web.Tridion.Templates.merged.dll ^
+    /out:Sdl.Web.Tridion.Templates.Legacy.merged.dll ^
     /targetplatform:v4 ^
     /lib:C:\_references\cm-8.1 ^
     Sdl.Web.Tridion.Templates.dll Sdl.Web.Tridion.Templates.Legacy.dll Sdl.Web.DataModel.dll Sdl.Web.Legacy.Model.dll  Newtonsoft.Json.dll

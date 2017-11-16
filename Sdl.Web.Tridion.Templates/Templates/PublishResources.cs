@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using Sdl.Web.Tridion.Common;
+﻿using Sdl.Web.Tridion.Templates.Common;
 using System.Collections.Generic;
 using System.Linq;
 using Tridion.ContentManager.CommunicationManagement;

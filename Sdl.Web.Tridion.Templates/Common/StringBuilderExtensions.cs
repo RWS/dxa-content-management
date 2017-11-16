@@ -1,7 +1,6 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
-namespace Sdl.Web.Tridion.Common
+namespace Sdl.Web.Tridion.Templates.Common
 {
     public static class StringBuilderExtensions
     {

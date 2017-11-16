@@ -9,7 +9,7 @@ using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
 using ComponentPresentation = Tridion.ContentManager.CommunicationManagement.ComponentPresentation;
 
-namespace Sdl.Web.Tridion.Data
+namespace Sdl.Web.Tridion.Templates.R2.Data
 {
     /// <summary>
     /// Represents the pipeline of Page/Entity Data Model Builders.

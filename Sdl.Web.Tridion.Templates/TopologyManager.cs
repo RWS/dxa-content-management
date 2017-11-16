@@ -4,14 +4,14 @@ using System.Net;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.TopologyManager.Client;
 
-namespace Sdl.Web.Tridion
+namespace Sdl.Web.Tridion.Templates
 {
     /// <summary>
     /// Wrapper class for access to Topology Manager.
     /// </summary>
-    internal static class TopologyManager
+    public static class TopologyManager
     {
-        internal static string GetCmWebsiteUrl()
+        public static string GetCmWebsiteUrl()
         {
             CmEnvironmentData cmEnvironment = TopologyManagerClient.CmEnvironments.Where(env => env.Id == TopologyManagerClient.ContentManagerEnvironmentId).FirstOrDefault();
             if (cmEnvironment == null)
@@ -22,7 +22,7 @@ namespace Sdl.Web.Tridion
             return cmEnvironment.WebsiteRootUrl;
         }
 
-        internal static string GetSearchQueryUrl(Publication publication, string environmentPurpose)
+        public static string GetSearchQueryUrl(Publication publication, string environmentPurpose)
         {
             string publicationId = publication.Id.ToString();
             MappingData mapping = TopologyManagerClient.Mappings.Expand("CdEnvironment")
@@ -40,15 +40,9 @@ namespace Sdl.Web.Tridion
             return dxaSearchQueryUrl;
         }
 
-        private static TopologyManagerClient TopologyManagerClient
+        private static TopologyManagerClient TopologyManagerClient => new TopologyManagerClient
         {
-            get
-            {
-                return new TopologyManagerClient
-                {
-                    Credentials = CredentialCache.DefaultNetworkCredentials
-                };
-            }
-        }
+            Credentials = CredentialCache.DefaultNetworkCredentials
+        };
     }
 }
