@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Sdl.Web.DataModel.Condition;
 
 namespace Sdl.Web.DataModel
 {
@@ -44,5 +45,7 @@ namespace Sdl.Web.DataModel
         /// Gets or sets the Page Regions.
         /// </summary>
         public List<RegionModelData> Regions { get; set; }
+
+        public List<ICondition> Conditions { get; set; }
     }
 }
