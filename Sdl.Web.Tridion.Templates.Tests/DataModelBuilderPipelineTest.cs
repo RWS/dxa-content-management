@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Sdl.Web.DataModel;
-using Sdl.Web.Tridion.Common;
-using Sdl.Web.Tridion.Data;
+using Sdl.Web.Tridion.Templates.Common;
+using Sdl.Web.Tridion.Templates.R2.Data;
 using Tridion.ContentManager;
 using Tridion.ContentManager.Caching;
 using Tridion.ContentManager.CommunicationManagement;
