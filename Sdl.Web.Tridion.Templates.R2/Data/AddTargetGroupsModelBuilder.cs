@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Sdl.Web.DataModel;
 using Tridion.ContentManager.CommunicationManagement;
-using Dxa = Sdl.Web.DataModel.Condition;
 using AM = Tridion.ContentManager.AudienceManagement;
 
 namespace Sdl.Web.Tridion.Templates.R2.Data
@@ -10,38 +9,38 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
     {
         public AddTargetGroupsModelBuilder(DataModelBuilderPipeline pipeline) : base(pipeline)
         {
+            Logger.Debug("AddTargetGroupsModelBuilder initialized.");
         }
 
         public void BuildPageModel(ref PageModelData pageModelData, Page page)
         {
+            Logger.Debug("Adding target groups to page model data.");
+
             foreach (var componentPresentation in page.ComponentPresentations)
             {
                 if (componentPresentation.Conditions != null && componentPresentation.Conditions.Count > 0)
                 {
-                    pageModelData.Conditions = (List<Dxa.ICondition>)MapTargetGroupConditions(
+                    pageModelData.Conditions = (List<ICondition>)MapTargetGroupConditions(
                         componentPresentation.Conditions);
                 }               
             }
         }
 
-        public DataModel.TargetGroups.TargetGroup BuildTargetGroup(AM.TargetGroup targetGroup)
+        public TargetGroup BuildTargetGroup(AM.TargetGroup targetGroup) 
+            => new TargetGroup
         {
-            var tg = new DataModel.TargetGroups.TargetGroup
-            {
-                Conditions = MapConditions(targetGroup.Conditions),
-                Description = targetGroup.Description,
-               // Id = targetGroup.Id,
-               // OwningPublication = PublicationBuilder.BuildPublication(targetGroup.OwningRepository),
-               // Publication = PublicationBuilder.BuildPublication(targetGroup.ContextRepository),
-               // PublicationId = targetGroup.ContextRepository.Id,
-               // Title = targetGroup.Title
-            };
-            return tg;
-        }
+            Conditions = MapConditions(targetGroup.Conditions),
+            Description = targetGroup.Description,
+            Id = targetGroup.Id,
+            Title = targetGroup.Title
+            // OwningPublication = PublicationBuilder.BuildPublication(targetGroup.OwningRepository),
+            // Publication = PublicationBuilder.BuildPublication(targetGroup.ContextRepository),
+            // PublicationId = targetGroup.ContextRepository.Id,
+        };
 
-        public IList<Dxa.ICondition> MapTargetGroupConditions(IList<AM.TargetGroupCondition> componentPresentationConditions)
+        public IList<ICondition> MapTargetGroupConditions(IList<AM.TargetGroupCondition> componentPresentationConditions)
         {
-            var mappedConditions = new List<Dxa.ICondition>();
+            var mappedConditions = new List<ICondition>();
             foreach (var componentPresentationCondition in componentPresentationConditions)
             {
                 mappedConditions.AddRange(
@@ -50,9 +49,9 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             return mappedConditions;
         }
 
-        private IList<Dxa.ICondition> MapConditions(IList<AM.Condition> conditions)
+        private IList<ICondition> MapConditions(IList<AM.Condition> conditions)
         {
-            var mappedConditions = new List<Dxa.ICondition>();
+            var mappedConditions = new List<ICondition>();
             foreach (var condition in conditions)
             {
                 if (condition is AM.TrackingKeyCondition)
@@ -69,27 +68,27 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 }
                 else
                 {
-                    //log.Warning("Condition of type: " + condition.GetType().FullName + " was not supported by the mapping code.");
+                    Logger.Warning("Condition of type: " + condition.GetType().FullName + " was not supported by the mapping code.");
                 }
             }
             return mappedConditions;
         }
 
-        private Dxa.CustomerCharacteristicCondition MapCustomerCharacteristicCondition(AM.CustomerCharacteristicCondition condition)
+        private CustomerCharacteristicCondition MapCustomerCharacteristicCondition(AM.CustomerCharacteristicCondition condition)
         {
-            var newCondition = new Dxa.CustomerCharacteristicCondition()
+            var newCondition = new CustomerCharacteristicCondition()
             {
                 Value = condition.Value,
-                Operator = (Dxa.ConditionOperator)condition.Operator,
+                Operator = (ConditionOperator)condition.Operator,
                 Name = condition.Name,
                 Negate = condition.Negate
             };
             return newCondition;
         }
 
-        private Dxa.TargetGroupCondition MapTargetGroupCondition(AM.TargetGroupCondition targetGroupCondition)
+        private TargetGroupCondition MapTargetGroupCondition(AM.TargetGroupCondition targetGroupCondition)
         {
-            var newCondition = new Dxa.TargetGroupCondition()
+            var newCondition = new TargetGroupCondition()
             {
                 TargetGroup = BuildTargetGroup(targetGroupCondition.TargetGroup),
                 Negate = targetGroupCondition.Negate
@@ -97,12 +96,12 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             return newCondition;
         }
 
-        private Dxa.KeywordCondition MapTrackingKeyCondition(AM.TrackingKeyCondition trackingKeyCondition)
+        private KeywordCondition MapTrackingKeyCondition(AM.TrackingKeyCondition trackingKeyCondition)
         {
-            var newCondition = new Dxa.KeywordCondition
+            var newCondition = new KeywordCondition
             {
                 KeywordModelData = Pipeline.CreateKeywordModel(trackingKeyCondition.Keyword, Pipeline.Settings.ExpandLinkDepth),
-                Operator = (Dxa.ConditionOperator)trackingKeyCondition.Operator,
+                Operator = (ConditionOperator)trackingKeyCondition.Operator,
                 Negate = true,
                 Value = trackingKeyCondition.Value
             };

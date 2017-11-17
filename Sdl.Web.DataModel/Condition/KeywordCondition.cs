@@ -1,4 +1,4 @@
-﻿namespace Sdl.Web.DataModel.Condition
+﻿namespace Sdl.Web.DataModel
 {
     public class KeywordCondition : Condition
     {

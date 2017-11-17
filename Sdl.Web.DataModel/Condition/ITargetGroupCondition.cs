@@ -1,6 +1,4 @@
-﻿using Sdl.Web.DataModel.TargetGroups;
-
-namespace Sdl.Web.DataModel.Condition
+﻿namespace Sdl.Web.DataModel
 {
     public interface ITargetGroupCondition : ICondition
     {

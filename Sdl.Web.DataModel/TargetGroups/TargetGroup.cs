@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
-using Sdl.Web.DataModel.Condition;
 
-namespace Sdl.Web.DataModel.TargetGroups
+namespace Sdl.Web.DataModel
 {
     public class TargetGroup : ITargetGroup
     {
-        public string Description { get; set; }
+        public string Id { get; set; }
 
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+        
         public IList<ICondition> Conditions { get; set; }
     }
 }
