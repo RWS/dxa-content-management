@@ -15,40 +15,21 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         public void BuildPageModel(ref PageModelData pageModelData, Page page)
         {
             Logger.Debug("Adding target groups to page model data.");
-
-            foreach (var componentPresentation in page.ComponentPresentations)
+            foreach (var cp in page.ComponentPresentations)
             {
-                if (componentPresentation.Conditions != null && componentPresentation.Conditions.Count > 0)
+                if (cp.Conditions == null || cp.Conditions.Count <= 0) continue;
+                List<ICondition> conditions = new List<ICondition>();
+                foreach (var condition in cp.Conditions)
                 {
-                    pageModelData.Conditions = (List<ICondition>)MapTargetGroupConditions(
-                        componentPresentation.Conditions);
-                }               
+                    var mapped = MapConditions(condition.TargetGroup.Conditions);
+                    if (mapped == null || mapped.Count <= 0) continue;
+                    conditions.AddRange(mapped);
+                }
+                if (conditions.Count <= 0) continue;
+                pageModelData.Conditions = conditions;
             }
         }
-
-        public TargetGroup BuildTargetGroup(AM.TargetGroup targetGroup) 
-            => new TargetGroup
-        {
-            Conditions = MapConditions(targetGroup.Conditions),
-            Description = targetGroup.Description,
-            Id = targetGroup.Id,
-            Title = targetGroup.Title
-            // OwningPublication = PublicationBuilder.BuildPublication(targetGroup.OwningRepository),
-            // Publication = PublicationBuilder.BuildPublication(targetGroup.ContextRepository),
-            // PublicationId = targetGroup.ContextRepository.Id,
-        };
-
-        public IList<ICondition> MapTargetGroupConditions(IList<AM.TargetGroupCondition> componentPresentationConditions)
-        {
-            var mappedConditions = new List<ICondition>();
-            foreach (var componentPresentationCondition in componentPresentationConditions)
-            {
-                mappedConditions.AddRange(
-                    MapConditions(componentPresentationCondition.TargetGroup.Conditions));
-            }
-            return mappedConditions;
-        }
-
+      
         private IList<ICondition> MapConditions(IList<AM.Condition> conditions)
         {
             var mappedConditions = new List<ICondition>();
@@ -74,38 +55,37 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             return mappedConditions;
         }
 
-        private CustomerCharacteristicCondition MapCustomerCharacteristicCondition(AM.CustomerCharacteristicCondition condition)
+        private CustomerCharacteristicCondition MapCustomerCharacteristicCondition(AM.CustomerCharacteristicCondition condition) => new CustomerCharacteristicCondition()
         {
-            var newCondition = new CustomerCharacteristicCondition()
-            {
-                Value = condition.Value,
-                Operator = (ConditionOperator)condition.Operator,
-                Name = condition.Name,
-                Negate = condition.Negate
-            };
-            return newCondition;
-        }
+            Value = condition.Value,
+            Operator = (ConditionOperator)condition.Operator,
+            Name = condition.Name,
+            Negate = condition.Negate
+        };
 
-        private TargetGroupCondition MapTargetGroupCondition(AM.TargetGroupCondition targetGroupCondition)
+        private TargetGroupCondition MapTargetGroupCondition(AM.TargetGroupCondition targetGroupCondition) => new TargetGroupCondition()
         {
-            var newCondition = new TargetGroupCondition()
-            {
-                TargetGroup = BuildTargetGroup(targetGroupCondition.TargetGroup),
-                Negate = targetGroupCondition.Negate
-            };
-            return newCondition;
-        }
+            TargetGroup = MapTargetGroup(targetGroupCondition.TargetGroup),
+            Negate = targetGroupCondition.Negate
+        };
 
-        private KeywordCondition MapTrackingKeyCondition(AM.TrackingKeyCondition trackingKeyCondition)
+        private KeywordCondition MapTrackingKeyCondition(AM.TrackingKeyCondition trackingKeyCondition) => new KeywordCondition
         {
-            var newCondition = new KeywordCondition
-            {
-                KeywordModelData = Pipeline.CreateKeywordModel(trackingKeyCondition.Keyword, Pipeline.Settings.ExpandLinkDepth),
-                Operator = (ConditionOperator)trackingKeyCondition.Operator,
-                Negate = true,
-                Value = trackingKeyCondition.Value
-            };
-            return newCondition;
-        }
+            KeywordModelData = Pipeline.CreateKeywordModel(trackingKeyCondition.Keyword, Pipeline.Settings.ExpandLinkDepth),
+            Operator = (ConditionOperator)trackingKeyCondition.Operator,
+            Negate = true,
+            Value = trackingKeyCondition.Value
+        };
+
+        public TargetGroup MapTargetGroup(AM.TargetGroup targetGroup) => new TargetGroup
+        {
+            Conditions = MapConditions(targetGroup.Conditions),
+            Description = targetGroup.Description,
+            Id = targetGroup.Id,
+            Title = targetGroup.Title
+            // OwningPublication = PublicationBuilder.BuildPublication(targetGroup.OwningRepository),
+            // Publication = PublicationBuilder.BuildPublication(targetGroup.ContextRepository),
+            // PublicationId = targetGroup.ContextRepository.Id,
+        };
     }
 }

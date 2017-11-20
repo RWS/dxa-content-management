@@ -82,6 +82,8 @@
     <Compile Include="Data\ExternalContentLibrary.cs" />
     <Compile Include="Data\IEntityModelBuilder.cs" />
     <Compile Include="Data\IKeywordModelBuilder.cs" />
+    <Compile Include="Data\InheritMetadataPageModelBuilder.cs" />
+    <Compile Include="Data\InheritMetadataEntityModelBuilder.cs" />
     <Compile Include="Data\IPageModelBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TemplateR2Base.cs" />
