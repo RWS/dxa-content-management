@@ -1,7 +1,5 @@
-﻿using System;
-using Sdl.Web.DataModel;
+﻿using Sdl.Web.DataModel;
 using Tridion.ContentManager.CommunicationManagement;
-using Tridion.ContentManager.Templating;
 
 namespace Sdl.Web.Tridion.Templates.R2.Data
 {
@@ -18,11 +16,13 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             StructureGroup structureGroup = (StructureGroup)page.OrganizationalItem;
             while (structureGroup != null)
             {
-                if (structureGroup.MetadataSchema != null)
+                if (structureGroup.MetadataSchema != null && structureGroup.Metadata != null)
                 {
                     ContentModelData metaData = BuildContentModel(structureGroup.Metadata, Pipeline.Settings.ExpandLinkDepth);
                     string[] duplicateFieldNames;
-                    pageModelData.Metadata = MergeFields(pageModelData.Metadata, metaData, out duplicateFieldNames);
+
+                    ContentModelData pmdMetadata = pageModelData.Metadata ?? new ContentModelData();
+                    pageModelData.Metadata = MergeFields(pmdMetadata, metaData, out duplicateFieldNames);
                 }
                 structureGroup = structureGroup.OrganizationalItem as StructureGroup;
             }

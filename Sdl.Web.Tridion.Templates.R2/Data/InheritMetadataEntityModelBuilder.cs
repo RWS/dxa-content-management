@@ -21,14 +21,14 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             Logger.Debug("Adding folder metadata to entity model metadata.");
 
             Folder folder = (Folder)component.OrganizationalItem;
-
             while (folder.OrganizationalItem != null)
             {
-                if (folder.MetadataSchema != null)
+                if (folder.MetadataSchema != null && folder.Metadata != null)
                 {
                     ContentModelData metaData = BuildContentModel(folder.Metadata, expandLinkDepth);
                     string[] duplicateFieldNames;
-                    entityModelData.Metadata = MergeFields(entityModelData.Metadata, metaData, out duplicateFieldNames);
+                    ContentModelData emdMetadata = entityModelData.Metadata ?? new ContentModelData();
+                    entityModelData.Metadata = MergeFields(emdMetadata, metaData, out duplicateFieldNames);
                 }
                 folder = (Folder)folder.OrganizationalItem;
             }
