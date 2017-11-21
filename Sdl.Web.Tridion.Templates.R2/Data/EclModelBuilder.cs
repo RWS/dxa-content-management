@@ -3,7 +3,7 @@ using Sdl.Web.DataModel;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 
-namespace Sdl.Web.Tridion.Data
+namespace Sdl.Web.Tridion.Templates.R2.Data
 {
     /// <summary>
     /// Entity Model Builder implementation for ECL Stub Components.

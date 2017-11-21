@@ -1,6 +1,6 @@
 ﻿using Tridion.ContentManager;
 
-namespace Sdl.Web.Tridion
+namespace Sdl.Web.Tridion.Templates
 {
     public static class IdentifiableObjectExtensions
     {

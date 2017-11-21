@@ -1,6 +1,4 @@
-﻿using System.CodeDom;
-
-namespace Sdl.Web.Tridion.Templates.Tests
+﻿namespace Sdl.Web.Tridion.Templates.Tests
 {
     internal static class TestFixture
     {

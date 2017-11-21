@@ -2,7 +2,7 @@
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 
-namespace Sdl.Web.Tridion.Data
+namespace Sdl.Web.Tridion.Templates.R2.Data
 {
     /// <summary>
     /// Interface for DXA R2 Entity Data Model Builders

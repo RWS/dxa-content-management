@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Tridion.ContentManager.AudienceManagement;
 
-namespace Sdl.Web.Tridion
+namespace Sdl.Web.Tridion.Templates
 {
     /// <summary>
     /// Utility methods for working with Context Expression Target Groups.

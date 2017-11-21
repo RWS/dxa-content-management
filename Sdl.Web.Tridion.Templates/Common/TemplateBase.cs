@@ -5,7 +5,6 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using Newtonsoft.Json;
 using Sdl.Web.DataModel.Configuration;
-using Sdl.Web.Tridion.Data;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
@@ -15,7 +14,7 @@ using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
 using Tridion.ContentManager.Templating.Assembly;
 
-namespace Sdl.Web.Tridion.Common
+namespace Sdl.Web.Tridion.Templates.Common
 {
     /// <summary>
     /// Base class for common functionality used by DXA TBBs.
@@ -75,14 +74,7 @@ namespace Sdl.Web.Tridion.Common
         /// </summary>
         protected Publication Publication
         {
-            get
-            {
-                if (_publication == null)
-                {
-                    _publication = GetPublication();
-                }
-                return _publication;
-            }
+            get { return _publication ?? (_publication = GetPublication()); }
             set
             {
                 // Allows dependency injection for unit test purposes.
@@ -95,14 +87,7 @@ namespace Sdl.Web.Tridion.Common
         /// </summary>
         protected Session Session
         {
-            get
-            {
-                if (_session == null)
-                {
-                    _session = Engine.GetSession();
-                }
-                return _session;
-            }
+            get { return _session ?? (_session = Engine.GetSession()); }
             set
             {
                 // Allows dependency injection for unit test purposes.
@@ -113,18 +98,7 @@ namespace Sdl.Web.Tridion.Common
         /// <summary>
         /// Returns the current Logger
         /// </summary>
-        protected TemplatingLogger Logger
-        {
-            get
-            {
-                if (_logger == null)
-                {
-                    _logger = TemplatingLogger.GetLogger(GetType());
-                }
-
-                return _logger;
-            }
-        }
+        protected TemplatingLogger Logger => _logger ?? (_logger = TemplatingLogger.GetLogger(GetType()));
 
         /// <summary>
         /// Attempts to return value of a parameter
@@ -140,40 +114,7 @@ namespace Sdl.Web.Tridion.Common
         /// Return item to be rendered.
         /// </summary>
         protected RenderedItem RenderedItem => Engine.PublishingContext.RenderedItem;
-
-        /// <summary>
-        /// Return default model builder settings.
-        /// </summary>
-        protected DataModelBuilderSettings DefaultDataModelBuilderSettings
-        {
-            get
-            {
-                int expandLinkDepth;
-                TryGetParameter("expandLinkDepth", out expandLinkDepth);
-                return new DataModelBuilderSettings
-                {
-                    ExpandLinkDepth = expandLinkDepth,
-                    GenerateXpmMetadata = IsXpmEnabled || IsPreview,
-                    Locale = GetLocale()
-                };
-            }
-        }
-
-        /// <summary>
-        /// Create data model pipeline with default settings.
-        /// </summary>
-        /// <returns>Data Model Pipeline</returns>
-        protected DataModelBuilderPipeline CreatePipeline()
-            => CreatePipeline(DefaultDataModelBuilderSettings);
-
-        /// <summary>
-        /// Create data model pipeline with specified settings
-        /// </summary>
-        /// <param name="settings">Settings to use when creating data model pipeline</param>
-        /// <returns>Data Model Pipeline</returns>
-        protected DataModelBuilderPipeline CreatePipeline(DataModelBuilderSettings settings) 
-            => new DataModelBuilderPipeline(RenderedItem, settings, GetModelBuilderTypeNames());
-
+        
         /// <summary>
         /// Initializes the Engine and Package to use in this TemplateBase object.
         /// </summary>
@@ -260,10 +201,8 @@ namespace Sdl.Web.Tridion.Common
         /// Returns the Template from the resolved item if it's a Component Template
         /// </summary>
         /// <returns>A Component Template or <c>null</c></returns>
-        protected ComponentTemplate GetComponentTemplate()
-        {
-            return Engine.PublishingContext.ResolvedItem.Template as ComponentTemplate;
-        }
+        protected ComponentTemplate GetComponentTemplate() 
+            => Engine.PublishingContext.ResolvedItem.Template as ComponentTemplate;
 
         /// <summary>
         /// Returns the Page object that is defined in the package for this template.
@@ -273,13 +212,10 @@ namespace Sdl.Web.Tridion.Common
         {
             //first try to get from the render context
             RenderContext renderContext = Engine.PublishingContext?.RenderContext;
-            if (renderContext != null)
+            Page contextPage = renderContext?.ContextItem as Page;
+            if (contextPage != null)
             {
-                Page contextPage = renderContext.ContextItem as Page;
-                if (contextPage != null)
-                {
-                    return contextPage;
-                }
+                return contextPage;
             }
 
             Item pageItem = Package.GetByType(ContentType.Page);
@@ -305,24 +241,7 @@ namespace Sdl.Web.Tridion.Common
 
             return (Publication) inputItem.ContextRepository;
         }
-
-        /// <summary>
-        /// Gets the configured Model Builder Type Names
-        /// </summary>
-        /// <returns>The configured Model Builder Type Names</returns>
-        protected string[] GetModelBuilderTypeNames()
-        {
-            string modelBuilderTypeNamesParam;
-            Package.TryGetParameter("modelBuilderTypeNames", out modelBuilderTypeNamesParam);
-            if (string.IsNullOrEmpty(modelBuilderTypeNamesParam))
-            {
-                Logger.Warning("No Model Builder Type Names configured; using Default Model Builder only.");
-                modelBuilderTypeNamesParam = typeof (DefaultModelBuilder).Name;
-            }
-
-            return modelBuilderTypeNamesParam.Split(';');
-        }
-
+   
         /// <summary>
         /// Gets whether XPM is enabled on the publishing target.
         /// </summary>
@@ -438,11 +357,7 @@ namespace Sdl.Web.Tridion.Common
             if (cachedValue == null)
             {
                 result = addFunction();
-
-                if (cache != null)
-                {
-                    cache.Add(cacheRegion, cacheKey, result);
-                }
+                cache?.Add(cacheRegion, cacheKey, result);
             }
             else
             {
@@ -518,7 +433,7 @@ namespace Sdl.Web.Tridion.Common
                 else
                 {
                     Logger.Warning(
-                        String.Format(
+                        string.Format(
                             "Duplicate key ('{0}') found when merging data. The second value will be skipped.", key));
                 }
             }
@@ -622,7 +537,7 @@ namespace Sdl.Web.Tridion.Common
 
         protected StructureGroup GetSystemStructureGroup(string subStructureGroupTitle = null)
         {
-            string webDavUrl = string.Format("{0}/_System", Publication.RootStructureGroup.WebDavUrl);
+            string webDavUrl = $"{Publication.RootStructureGroup.WebDavUrl}/_System";
             if (!string.IsNullOrEmpty(subStructureGroupTitle))
             {
                 webDavUrl += "/" + subStructureGroupTitle;
@@ -734,6 +649,5 @@ namespace Sdl.Web.Tridion.Common
         }
 
         #endregion
-
     }
 }

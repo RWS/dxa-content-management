@@ -1,7 +1,7 @@
 ﻿using Sdl.Web.DataModel;
 using Tridion.ContentManager.CommunicationManagement;
 
-namespace Sdl.Web.Tridion.Data
+namespace Sdl.Web.Tridion.Templates.R2.Data
 {
     /// <summary>
     /// Interface for DXA R2 Page Data Model Builders

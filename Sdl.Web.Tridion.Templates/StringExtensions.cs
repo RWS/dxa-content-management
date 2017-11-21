@@ -1,4 +1,4 @@
-﻿namespace Sdl.Web.Tridion
+﻿namespace Sdl.Web.Tridion.Templates
 {
     /// <summary>
     /// Extension methods for class <see cref="string"/>.

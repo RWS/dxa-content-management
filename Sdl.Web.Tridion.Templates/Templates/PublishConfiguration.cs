@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using Sdl.Web.Tridion.Common;
+using Sdl.Web.Tridion.Templates.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
