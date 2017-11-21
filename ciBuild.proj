@@ -11,7 +11,13 @@
         <IsPreRelease>true</IsPreRelease>
         <BuildConfiguration>Release</BuildConfiguration>
         <ProjectDirectory>$(MSBuildProjectDirectory)</ProjectDirectory>
-        <TemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Legacy\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.merged.dll</TemplatesDll>
+
+        <!-- TBBs -->
+        <LegacyTemplatesFolder>tcm:1065-2742-2</LegacyTemplatesFolder>
+        <R2TemplatesFolder>tcm:1065-2741-2</R2TemplatesFolder>
+        <LegacyTemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Legacy\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.Legacy.merged.dll</LegacyTemplatesDll>
+        <R2TemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates.R2\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.R2.merged.dll</R2TemplatesDll>        
+        
         <CmsTargetDefinitionFile>dxadevweb85.xml</CmsTargetDefinitionFile>
         <NuGetRepositoryUrl></NuGetRepositoryUrl>
 
@@ -110,9 +116,15 @@
     
     <!-- =============================================================================================================================================  -->
     <Target Name="DeployOutput">
-      <Message Text="Deploying '$(TemplatesDll)' to CMS..." />
         
-        <Exec Command="TcmUploadAssembly.exe $(CmsTargetDefinitionFile) /folder:tcm:2-17-2 /verbose &quot;$(TemplatesDll)&quot;" WorkingDirectory="$(CmToolsDir)" />
+        <!-- Upload legacy TBBs to CMS -->
+        <Message Text="Deploying '$(LegacyTemplatesDll)' to CMS in folder '$(LegacyTemplatesFolder)'..." />
+        <Exec Command="TcmUploadAssembly.exe $(CmsTargetDefinitionFile) /folder:$(LegacyTemplatesFolder) /verbose &quot;$(LegacyTemplatesDll)&quot;" WorkingDirectory="$(CmToolsDir)" />
+      
+        <!-- Upload R2 TBBs to CMS -->
+        <Message Text="Deploying '$(R2TemplatesDll)' to CMS in folder '$(R2TemplatesFolder)'..." />
+        <Exec Command="TcmUploadAssembly.exe $(CmsTargetDefinitionFile) /folder:$(R2TemplatesFolder) /verbose &quot;$(R2TemplatesDll)&quot;" WorkingDirectory="$(CmToolsDir)" />
+
     </Target>
  
     <!-- =============================================================================================================================================  -->
