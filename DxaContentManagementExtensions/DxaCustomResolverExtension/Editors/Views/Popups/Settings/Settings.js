@@ -20,7 +20,7 @@ DXA.CM.Extensions.CustomResolver.Views.Popups.Settings.prototype.initialize = fu
 
     var p = this.properties;
 
-    p.buttons.close = $controls.getControl($("#BtnSave"), "Tridion.Controls.Button");
+    p.buttons.close = $controls.getControl($("#BtnClose"), "Tridion.Controls.Button");
     $evt.addEventHandler(p.buttons.close, "click", this.getDelegate(this.onCloseClick));
 
     p.buttons.save = $controls.getControl($("#BtnSave"), "Tridion.Controls.Button");
