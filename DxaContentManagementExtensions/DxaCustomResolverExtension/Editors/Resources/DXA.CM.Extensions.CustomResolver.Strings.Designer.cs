@@ -105,5 +105,14 @@ namespace DxaCustomResolverExtension.Editors.Resources {
                 return ResourceManager.GetString("CR_ShowSettings", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show DXA Custom Resolver Settings Dialog.
+        /// </summary>
+        internal static string CR_ShowSettingsDialog {
+            get {
+                return ResourceManager.GetString("CR_ShowSettingsDialog", resourceCulture);
+            }
+        }
     }
 }
