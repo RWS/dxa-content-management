@@ -135,4 +135,7 @@
   <data name="CR_ShowSettingsDialog" xml:space="preserve">
     <value>Show DXA Custom Resolver Settings Dialog</value>
   </data>
+  <data name="CR_RecurseDepth" xml:space="preserve">
+    <value>Recurse Depth</value>
+  </data>
 </root>

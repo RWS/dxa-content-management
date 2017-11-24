@@ -80,6 +80,15 @@ namespace DxaCustomResolverExtension.Editors.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Recurse Depth.
+        /// </summary>
+        internal static string CR_RecurseDepth {
+            get {
+                return ResourceManager.GetString("CR_RecurseDepth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         internal static string CR_Save {
