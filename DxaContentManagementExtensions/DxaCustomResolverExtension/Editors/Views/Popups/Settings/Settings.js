@@ -12,6 +12,7 @@ DXA.CM.Extensions.CustomResolver.Views.Popups.Settings = function Settings() {
         close: null,
         save: null
     }
+    p.fields = {}
 };
 
 DXA.CM.Extensions.CustomResolver.Views.Popups.Settings.prototype.initialize = function Settings$initialize()
@@ -25,6 +26,10 @@ DXA.CM.Extensions.CustomResolver.Views.Popups.Settings.prototype.initialize = fu
 
     p.buttons.save = $controls.getControl($("#BtnSave"), "Tridion.Controls.Button");
     $evt.addEventHandler(p.buttons.save, "click", this.getDelegate(this.onSaveClick));
+
+    p.fields.recurseDepth = $("#cr-recurse-depth");
+
+    p.fields.recurseDepth && p.fields.recurseDepth.focus();
 };
 
 DXA.CM.Extensions.CustomResolver.Views.Popups.Settings.prototype.disposeInterface = Tridion.OO.nonInheritable(function Settings$disposeInterface(){

@@ -25,10 +25,6 @@
     flex: 1 100%;
 }
 
-.dxa-layout_column.__side_right .dxa-buttons {
-    padding: 9px;
-}
-
 .dxa-layout .dxa-layout_element {
     display: flex;
 }
@@ -56,9 +52,11 @@
     flex: 1 100%;
 }
 
+.dxa-input.__type_text {
+    padding: 6px;
+}
 .dxa-input.__type_text.__numeric {
     width: 36px;
-    padding: 3px;
 }
 
 .dxa-field.__horizontal {
@@ -70,8 +68,16 @@
 
 .dxa-field.__horizontal .dxa-field_label,
 .dxa-field.__horizontal .dxa-field_content {
+    display: flex;
+}
+
+
+.dxa-field_label label.__required:before {
+    content: "*";
+    color: red;
 }
 
 .dxa-field.__horizontal .dxa-field_label {
     width: 120px;
+    align-items: center;
 }

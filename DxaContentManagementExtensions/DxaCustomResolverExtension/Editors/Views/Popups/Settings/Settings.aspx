@@ -30,24 +30,26 @@
             <div id="dxa-settings-form" class="dxa-layout_element __content dxa-form">
                     <div class="dxa-layout __horizontal">
                         <div class="dxa-layout_column __main">
-                            <div class="dxa-field __horizontal">
+                            <div class="dxa-layout_reducer">
+                                <div class="dxa-field __horizontal">
+                                    <div class="dxa-field_label">
+                                        <label for="CR_RecurseDepth" class="__required">
+                                            <asp:Literal runat="server" Text="<%$ Resources: DXA.CM.Extensions.CustomResolver.Strings, CR_RecurseDepth %>" />
+                                        </label>
+                                    </div>
 
-                                <div class="dxa-field_label">
-                                    <label for="CR_RecurseDepth __required">
-                                        <span class="asterisk">*</span>
-                                        <asp:Literal runat="server" Text="<%$ Resources: DXA.CM.Extensions.CustomResolver.Strings, CR_RecurseDepth %>" />
-                                    </label>
+                                    <div class="dxa-field_content">
+                                        <input name="CR_RecurseDepth" type="text" id="cr-recurse-depth" class="dxa-input __type_text __numeric" value="">
+                                    </div>
+
                                 </div>
-
-                                <div class="dxa-field_content">
-                                    <input name="CR_RecurseDepth" type="text" id="recurse-depth" class="dxa-input __type_text __numeric" value="...">
-                                </div>
-
                             </div>
                         </div>
                         <div class="dxa-layout_column __side_right">
-                            <div class="dxa-buttons">
-                                <c:Button ID="BtnSave" runat="server" Label="<%$ Resources: DXA.CM.Extensions.CustomResolver.Strings, CR_Save %>" />
+                            <div class="dxa-layout_reducer">
+                                <div class="dxa-buttons">
+                                    <c:Button ID="BtnSave" runat="server" Label="<%$ Resources: DXA.CM.Extensions.CustomResolver.Strings, CR_Save %>" />
+                                </div>
                             </div>
                         </div>
                     </div>
