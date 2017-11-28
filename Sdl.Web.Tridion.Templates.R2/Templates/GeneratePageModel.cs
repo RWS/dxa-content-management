@@ -1,20 +1,20 @@
 ﻿using System;
 using Sdl.Web.DataModel;
-using Sdl.Web.Tridion.Common;
-using Sdl.Web.Tridion.Data;
+using Sdl.Web.Tridion.Templates.Common;
+using Sdl.Web.Tridion.Templates.R2.Data;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
 using Tridion.ContentManager.Templating.Assembly;
 
-namespace Sdl.Web.Tridion.Templates
-{
+namespace Sdl.Web.Tridion.Templates.R2.Templates
+{   
     /// <summary>
     /// Generates a DXA R2 Data Model based on the current Page
     /// </summary>
     [TcmTemplateTitle("Generate DXA R2 Page Model")]
-    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.GeneratePageModelParameters.xsd")]
-    public class GeneratePageModel : TemplateBase
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Templates.R2.Resources.GeneratePageModelParameters.xsd")]
+    public class GeneratePageModel : TemplateR2Base
     {
         /// <summary>
         /// Performs the Transform.

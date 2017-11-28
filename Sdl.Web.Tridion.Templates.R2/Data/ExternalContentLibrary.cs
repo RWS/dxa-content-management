@@ -7,7 +7,7 @@ using Sdl.Web.DataModel;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ExternalContentLibrary.V2;
 
-namespace Sdl.Web.Tridion.Data
+namespace Sdl.Web.Tridion.Templates.R2.Data
 {
     /// <summary>
     /// Wrapper class of ECL API access to prevent runtime errors on systems which don't have ECL installed.

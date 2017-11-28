@@ -1,6 +1,5 @@
-﻿using Sdl.Web.Tridion.Common;
+﻿using Sdl.Web.Tridion.Templates.Common;
 using System.Text;
-using System.Text.RegularExpressions;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.Templating;
 using Tridion.ContentManager.Templating.Assembly;

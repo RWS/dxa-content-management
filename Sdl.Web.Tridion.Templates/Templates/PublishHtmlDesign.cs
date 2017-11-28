@@ -5,8 +5,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
-using Sdl.Web.Tridion.Common;
+using Sdl.Web.Tridion.Templates.Common;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.ContentManagement.Fields;
@@ -42,7 +41,11 @@ namespace Sdl.Web.Tridion.Templates
             Initialize(engine, package);
 
             bool cleanup;
-            package.TryGetParameter("cleanup", out cleanup, Logger);
+            // cleanup should be true by default (if not filled in)
+            if (!package.TryGetParameter("cleanup", out cleanup, Logger))
+			{
+				cleanup = true;
+            }
 
             string drive;
             package.TryGetParameter("drive", out drive, Logger);

@@ -1,21 +1,21 @@
 ﻿using System;
 using Sdl.Web.DataModel;
-using Sdl.Web.Tridion.Common;
-using Sdl.Web.Tridion.Data;
+using Sdl.Web.Tridion.Templates.Common;
+using Sdl.Web.Tridion.Templates.R2.Data;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
 using Tridion.ContentManager.Templating.Assembly;
 
-namespace Sdl.Web.Tridion.Templates
+namespace Sdl.Web.Tridion.Templates.R2.Templates
 {
     /// <summary>
     /// Generates a DXA R2 Data Model based on the current Component (Presentation)
     /// </summary>
     [TcmTemplateTitle("Generate DXA R2 Entity Model")]
-    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Resources.GenerateEntityModelParameters.xsd")]
-    public class GenerateEntityModel : TemplateBase
+    [TcmTemplateParameterSchema("resource:Sdl.Web.Tridion.Templates.R2.Resources.GenerateEntityModelParameters.xsd")]
+    public class GenerateEntityModel : TemplateR2Base
     {
         /// <summary>
         /// Performs the Transform.
@@ -34,7 +34,7 @@ namespace Sdl.Web.Tridion.Templates
 
             int expandLinkDepth;
             package.TryGetParameter("expandLinkDepth", out expandLinkDepth, Logger);
-
+            
             string[] modelBuilderTypeNames = GetModelBuilderTypeNames();
 
             RenderedItem renderedItem = Engine.PublishingContext.RenderedItem;

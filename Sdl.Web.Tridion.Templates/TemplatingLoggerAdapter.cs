@@ -1,8 +1,8 @@
 ﻿using Tridion.ContentManager.Templating;
 
-namespace Sdl.Web.Tridion
+namespace Sdl.Web.Tridion.Templates
 {
-    internal class TemplatingLoggerAdapter : ILogger
+    public class TemplatingLoggerAdapter : ILogger
     {
         private readonly TemplatingLogger _logger;
 

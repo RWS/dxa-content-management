@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using Sdl.Web.DataModel;
-using Sdl.Web.Tridion.Common;
+using Sdl.Web.Tridion.Templates.Common;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.CommunicationManagement.Regions;
@@ -11,7 +11,7 @@ using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Publishing.Resolving;
 
-namespace Sdl.Web.Tridion.Data
+namespace Sdl.Web.Tridion.Templates.R2.Data
 {
     /// <summary>
     /// Default Page/Entity Model Builder implementation.
