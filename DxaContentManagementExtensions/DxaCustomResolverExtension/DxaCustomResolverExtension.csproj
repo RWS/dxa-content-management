@@ -110,6 +110,10 @@
     <Content Include="dll\Tridion.Web.UI.Models.TTM.dll" />
     <Content Include="Editors\Commands\ShowSettings.js" />
     <Content Include="Editors\Configuration\CustomResolver.Editor.config" />
+    <Content Include="Models\Client\Configuration.js" />
+    <Content Include="Models\Client\Constants.js" />
+    <Content Include="Models\Client\Factory.js" />
+    <Content Include="Models\Configuration\CustomResolver.Model.config" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -140,7 +144,10 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Models\Resources\" />
+    <Folder Include="Models\Services\Implementation\" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Editors\Resources\DXA.CM.Extensions.CustomResolver.Strings.de.resx" />
     <EmbeddedResource Include="Editors\Resources\DXA.CM.Extensions.CustomResolver.Strings.es.resx" />
