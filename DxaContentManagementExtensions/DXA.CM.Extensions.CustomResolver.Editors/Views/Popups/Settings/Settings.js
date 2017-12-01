@@ -54,6 +54,7 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.initial
         $evt.addEventHandler(item, "load", this.getDelegate(this.onItemLoaded));
         $evt.addEventHandler(item, "loading", this.getDelegate(this.onItemLoading));
         $evt.addEventHandler(item, "loadfailed", this.getDelegate(this.onItemLoadFailed));
+        $evt.addEventHandler(item, "validate", this.getDelegate(this.onValidate));
 
         $evt.addEventHandler(item, "collectdata", this.getDelegate(this.onCollectData));
         $evt.addEventHandler(item, "save", this.getDelegate(this.onItemSaved));
@@ -67,6 +68,27 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemL
     this.disableControls();
 };
 
+DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onValidate = function Settings$onValidate() {
+    var p = this.properties;
+
+    var fields = p.fields;
+    var val = fields.recurseDepth.value;
+    if(val){
+        if(val.trim() === "") {
+            $messages.registerError("Custom Resolver: Recurse Depth can not be empty.");
+            return false;
+        }
+
+        if(isNaN(parseInt(val.trim()))) {
+            $messages.registerError("Custom Resolver: Recurse Depth should be numeric.");
+            return false;
+        }
+    }
+
+    return true;
+
+};
+
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemLoaded = function Settings$onItemLoaded() {
     var item = this.getItem();
     var p = this.properties;
@@ -75,13 +97,12 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemL
         var fields = p.fields;
 
         fields.recurseDepth.value = item.getRecurseDepth();
+        this.disableControls();
     }
-
-    this.enableControls();
 };
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemSaved = function Settings$onItemSaved() {
-    this.enableControls();
+    this.disableControls();
     $messages.registerNotification("Custom Resolver: Configuration has been saved.")
 };
 
@@ -106,9 +127,11 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onClose
 };
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onFieldChange = function Settings$onFieldChange(event) {
+    var item = this.getItem();
     var input = event && event.source;
+    var val = input && input.value;
     var p = this.properties;
-    if (input && input.value == "") {
+    if (val.trim() === "" || item.getRecurseDepth() == val.trim()) {
         p.buttons.save.disable()
     } else if (p.buttons.save.isDisabled()) {
         p.buttons.save.enable();
@@ -119,8 +142,8 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onColle
     var item = this.getItem();
     var p = this.properties;
 
-    if (p.fields.recurseDepth.value !== "") {
-        item.setRecurseDepth(p.fields.recurseDepth.value)
+    if (p.fields.recurseDepth.value.trim() !== "") {
+        item.setRecurseDepth(parseInt(p.fields.recurseDepth.value))
     }
 };
 
@@ -140,6 +163,7 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.dispose
         $evt.removeEventHandler(item, "load", this.getDelegate(this.onItemLoaded));
         $evt.removeEventHandler(item, "loading", this.getDelegate(this.onItemLoading));
         $evt.removeEventHandler(item, "loadfailed", this.getDelegate(this.onItemLoadFailed));
+        $evt.removeEventHandler(item, "validate", this.getDelegate(this.onValidate));
 
         $evt.removeEventHandler(item, "collectdata", this.getDelegate(this.onCollectData));
         $evt.removeEventHandler(item, "save", this.getDelegate(this.onItemSaved));

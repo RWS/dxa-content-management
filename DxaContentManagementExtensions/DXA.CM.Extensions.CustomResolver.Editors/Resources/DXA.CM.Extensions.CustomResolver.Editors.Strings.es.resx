@@ -138,4 +138,7 @@
   <data name="CR_ShowSettingsDialog" xml:space="preserve">
     <value>Show DXA Custom Resolver Settings Dialog</value>
   </data>
+  <data name="CR_DXACustomResolver" xml:space="preserve">
+    <value>DXA Custom Resolver</value>
+  </data>
 </root>

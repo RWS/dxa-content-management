@@ -138,4 +138,7 @@
   <data name="CR_RecurseDepth" xml:space="preserve">
     <value>Recurse Depth</value>
   </data>
+  <data name="CR_DXACustomResolver" xml:space="preserve">
+    <value>DXA Custom Resolver</value>
+  </data>
 </root>

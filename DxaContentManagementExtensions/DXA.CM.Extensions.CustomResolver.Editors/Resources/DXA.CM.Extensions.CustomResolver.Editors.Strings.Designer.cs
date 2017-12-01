@@ -10,8 +10,8 @@
 
 namespace DXA.CM.Extensions.CustomResolver.Editors {
     using System;
-
-
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +23,15 @@ namespace DXA.CM.Extensions.CustomResolver.Editors {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class DXA_CM_Extensions_CustomResolver_Editors_Strings {
-
+        
         private static global::System.Resources.ResourceManager resourceMan;
-
+        
         private static global::System.Globalization.CultureInfo resourceCulture;
-
+        
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal DXA_CM_Extensions_CustomResolver_Editors_Strings() {
         }
-
+        
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -67,6 +67,15 @@ namespace DXA.CM.Extensions.CustomResolver.Editors {
         internal static string CR_Close {
             get {
                 return ResourceManager.GetString("CR_Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DXA Custom Resolver.
+        /// </summary>
+        internal static string CR_DXACustomResolver {
+            get {
+                return ResourceManager.GetString("CR_DXACustomResolver", resourceCulture);
             }
         }
         
