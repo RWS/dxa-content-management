@@ -12,9 +12,21 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings = function Settin
         close: null,
         save: null
     };
+
     p.fields = {};
 
     this.initializeControls();
+};
+
+DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.enableControls = function Settings$enableControls() {
+    var p = this.properties;
+
+    p.buttons.save.enable();
+};
+DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.disableControls = function Settings$disableControls() {
+    var p = this.properties;
+
+    p.buttons.save.disable();
 };
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.initializeControls = function Settings$initializeControls() {
@@ -26,11 +38,11 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.initial
     p.buttons.save = $controls.getControl($("#BtnSave"), "Tridion.Controls.Button");
     $evt.addEventHandler(p.buttons.save, "click", this.getDelegate(this.onSaveClick));
 
-    p.fields.recurseDepth = $("#cr-recurse-depth");
-    $evt.addEventHandler(p.fields.recurseDepth, "valuepropertychange", this.getDelegate(this.onFieldChange));
-    $evt.addEventHandler(p.fields.recurseDepth, "valuepropertychange", this.getDelegate(this.onFieldChange));
+    var f = p.fields;
+    f.recurseDepth = $("#cr-recurse-depth");
+    $evt.addEventHandler(f.recurseDepth, "valuepropertychange", this.getDelegate(this.onFieldChange));
 
-    p.fields.recurseDepth && p.fields.recurseDepth.focus();
+    f.recurseDepth && f.recurseDepth.focus();
 
 };
 
@@ -39,20 +51,20 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.initial
     var item = this.getItem();
 
     if (item) {
-        var onLoad = this.getDelegate(this.onItemLoaded);
-        if(!item.isLoaded()) {
-            $evt.addEventHandler(item, "load", onLoad);
-            $evt.addEventHandler(item, "save", this.getDelegate(this.onItemSaved));
-            $evt.addEventHandler(item, "savefailed", this.getDelegate(this.onItemSaveFailed));
+        $evt.addEventHandler(item, "load", this.getDelegate(this.onItemLoaded));
+        $evt.addEventHandler(item, "loading", this.getDelegate(this.onItemLoading));
+        $evt.addEventHandler(item, "loadfailed", this.getDelegate(this.onItemLoadFailed));
 
-            item.load()
-        } else {
-            onLoad()
-        }
+        $evt.addEventHandler(item, "collectdata", this.getDelegate(this.onCollectData));
+        $evt.addEventHandler(item, "save", this.getDelegate(this.onItemSaved));
+        $evt.addEventHandler(item, "savefailed", this.getDelegate(this.onItemSaveFailed));
 
+        item.load(true)
     }
+};
 
-
+DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemLoading = function Settings$onItemLoading() {
+    this.disableControls();
 };
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemLoaded = function Settings$onItemLoaded() {
@@ -61,16 +73,26 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemL
 
     if (item && item.isLoaded()) {
         var fields = p.fields;
+
         fields.recurseDepth.value = item.getRecurseDepth();
     }
+
+    this.enableControls();
 };
 
-DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemSaved = function Settings$onItemLoaded() {
+DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemSaved = function Settings$onItemSaved() {
+    this.enableControls();
     $messages.registerNotification("Custom Resolver: Configuration has been saved.")
 };
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemSaveFailed = function Settings$onItemSaveFailed() {
+    this.enableControls();
     $messages.registerError("Custom Resolver: Couldn't save configuration.")
+};
+
+DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemLoadFailed = function Settings$onItemLoadFailed() {
+    this.enableControls();
+    $messages.registerError("Custom Resolver: Couldn't load configuration.")
 };
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.getItem = function Settings$getItem() {
@@ -78,19 +100,27 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.getItem
 };
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onCloseClick = function Settings$onCloseClick() {
+
     this.fireEvent("close");
     window.close();
 };
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onFieldChange = function Settings$onFieldChange(event) {
+    var input = event && event.source;
+    var p = this.properties;
+    if (input && input.value == "") {
+        p.buttons.save.disable()
+    } else if (p.buttons.save.isDisabled()) {
+        p.buttons.save.enable();
+    }
+};
+
+DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onCollectData = function Settings$onFieldChange(event) {
     var item = this.getItem();
     var p = this.properties;
 
-    if(item) {
-        var targetField = event && event.source;
-        if(targetField && (targetField.name === "CR_RecurseDepth")) {
-            item.setRecurseDepth(p.fields.recurseDepth.value)
-        }
+    if (p.fields.recurseDepth.value !== "") {
+        item.setRecurseDepth(p.fields.recurseDepth.value)
     }
 };
 
@@ -98,13 +128,23 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onSaveC
     this.fireEvent("save");
 
     var item = this.getItem();
-    if(item) {
-        item.save();
+    if (item) {
+        item.save(true);
     }
 };
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.disposeInterface = Tridion.OO.nonInheritable(function Settings$disposeInterface() {
+    var item = this.getItem();
 
+    if (item) {
+        $evt.removeEventHandler(item, "load", this.getDelegate(this.onItemLoaded));
+        $evt.removeEventHandler(item, "loading", this.getDelegate(this.onItemLoading));
+        $evt.removeEventHandler(item, "loadfailed", this.getDelegate(this.onItemLoadFailed));
+
+        $evt.removeEventHandler(item, "collectdata", this.getDelegate(this.onCollectData));
+        $evt.removeEventHandler(item, "save", this.getDelegate(this.onItemSaved));
+        $evt.removeEventHandler(item, "savefailed", this.getDelegate(this.onItemSaveFailed));
+    }
 });
 
 $display.registerView(DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings);
