@@ -1,3 +1,3 @@
-Tridion.Type.registerNamespace("DXA.CM.Extensions.CustomResolver.Constants");
+Tridion.Type.registerNamespace("DXA.CM.Extensions.CustomResolver.Editors.Constants");
 
-DXA.CM.Extensions.CustomResolver.Constants.CREditorName = "CustomResolver";
+DXA.CM.Extensions.CustomResolver.Editors.Constants.CREditorName = "CustomResolver";

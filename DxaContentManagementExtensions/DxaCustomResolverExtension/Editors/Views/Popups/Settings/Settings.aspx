@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="DXA.CM.Extensions.CustomResolver.Views.Popups.Settings" ClassName="Settings" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings" ClassName="Settings" %>
 <%@ Import Namespace="Tridion.Web.UI" %>
 
 <%@ Register TagPrefix="cc" Namespace="Tridion.Web.UI.Core.Controls" Assembly="Tridion.Web.UI.Core" %>
@@ -9,10 +9,10 @@
 <html id="dxa-cr-settings-dialog" class="popup" xmlns="http://www.w3.org/1999/xhtml">
     <head>
 		<title>
-		    <asp:Literal runat="server" Text="<%$ Resources: DXA.CM.Extensions.CustomResolver.Strings, CR_Settings %>" />
+		    <asp:Literal runat="server" Text="<%$ Resources: DXA.CM.Extensions.CustomResolver.Editors.Strings, CR_Settings %>" />
 		</title>
 
-		<link rel="shortcut icon" href="<%=ThemePath%>Images/Ico/favicon.ico" type="image/x-icon" />
+		<link rel="shortcut icon" href="<%=ThemePath %>Images/Ico/favicon.ico" type="image/x-icon" />
 
 	    <cc:TridionManager runat="server" Editor="CME">
         	<dependencies runat="server">
@@ -34,7 +34,7 @@
                                 <div class="dxa-field __horizontal">
                                     <div class="dxa-field_label">
                                         <label for="CR_RecurseDepth" class="__required">
-                                            <asp:Literal runat="server" Text="<%$ Resources: DXA.CM.Extensions.CustomResolver.Strings, CR_RecurseDepth %>" />
+                                            <asp:Literal runat="server" Text="<%$ Resources: DXA.CM.Extensions.CustomResolver.Editors.Strings, CR_RecurseDepth %>" />
                                         </label>
                                     </div>
 
@@ -48,7 +48,7 @@
                         <div class="dxa-layout_column __side_right">
                             <div class="dxa-layout_reducer">
                                 <div class="dxa-buttons">
-                                    <c:Button ID="BtnSave" runat="server" Label="<%$ Resources: DXA.CM.Extensions.CustomResolver.Strings, CR_Save %>" />
+                                    <c:Button ID="BtnSave" runat="server" Label="<%$ Resources: DXA.CM.Extensions.CustomResolver.Editors.Strings, CR_Save %>" />
                                 </div>
                             </div>
                         </div>
@@ -58,7 +58,7 @@
             <div id="BottomPanel" class="dxa-layout_element __footer">
                 <div class="dxa-layout_reducer">
                     <div class="dxa-button_group __move_right">
-                        <c:Button ID="BtnClose" runat="server" Label="<%$ Resources: DXA.CM.Extensions.CustomResolver.Strings, CR_Close %>" />
+                        <c:Button ID="BtnClose" runat="server" Label="<%$ Resources: DXA.CM.Extensions.CustomResolver.Editors.Strings, CR_Close %>" />
                     </div>
 
                 </div>

@@ -1,23 +1,23 @@
-﻿Tridion.Type.registerNamespace("DXA.CM.Extensions.CustomResolver.Commands");
+﻿Tridion.Type.registerNamespace("DXA.CM.Extensions.CustomResolver.Editors.Commands");
 
-DXA.CM.Extensions.CustomResolver.Commands.ShowSettings = function Commands$ShowSettings(name, action) {
-    Tridion.OO.enableInterface(this, "DXA.CM.Extensions.CustomResolver.Commands.ShowSettings");
+DXA.CM.Extensions.CustomResolver.Editors.Commands.ShowSettings = function Commands$ShowSettings(name, action) {
+    Tridion.OO.enableInterface(this, "DXA.CM.Extensions.CustomResolver.Editors.Commands.ShowSettings");
     this.addInterface("Tridion.Web.UI.Editors.CME.Commands.Navigation.Open", ["CRShowSettings", $const.AllowedActions.View]);
 
     this.properties.popup = null;
 };
 
-DXA.CM.Extensions.CustomResolver.Commands.ShowSettings.prototype._isAvailable = function ShowSettings$_isAvailable(selection) {
+DXA.CM.Extensions.CustomResolver.Editors.Commands.ShowSettings.prototype._isAvailable = function ShowSettings$_isAvailable(selection) {
     // always enabled
     return true;
 };
 
-DXA.CM.Extensions.CustomResolver.Commands.ShowSettings.prototype._isEnabled = function ShowSettings$_isEnabled(selection) {
+DXA.CM.Extensions.CustomResolver.Editors.Commands.ShowSettings.prototype._isEnabled = function ShowSettings$_isEnabled(selection) {
     // always enabled
     return true;
 };
 
-DXA.CM.Extensions.CustomResolver.Commands.ShowSettings.prototype._execute = function Delete$_execute(selection, pipeline) {
+DXA.CM.Extensions.CustomResolver.Editors.Commands.ShowSettings.prototype._execute = function Delete$_execute(selection, pipeline) {
     var p = this.properties;
 
     // Popup management
