@@ -9,6 +9,8 @@ DXA.CM.Extensions.CustomResolver.Models.Configuration = function Configuration(i
     p.recurseDepth = undefined;
 };
 
+DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.RECURSE_DEPTH_XPATH = "/dcr:Configuration/dcr:RecurseDepth";
+
 DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.getItemType = function Configuration$getItemType() {
     return DXA.CM.Extensions.CustomResolver.Models.Configuration.ItemType;
 };
@@ -17,7 +19,7 @@ DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.getDeltaXmlDefin
     var p = this.properties;
     if (!p.deltaXmlDefinition) {
         p.deltaXmlDefinition = {
-            xml: Tridion.Utils.String.format("<dcr:Configuration xmlns:sg=\"{0}\"></dcr:Configuration>", Tridion.Constants.Namespaces.dcr),
+            xml: Tridion.Utils.String.format("<dcr:Configuration xmlns:dcr=\"{0}\"></dcr:Configuration>", Tridion.Constants.Namespaces.dcr),
             sections: ["/"]
         };
     }
@@ -27,7 +29,7 @@ DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.getDeltaXmlDefin
 DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.getRecurseDepth = function Configuration$getRecurseDepth() {
     var xmlDoc, p = this.properties;
     if (p.recurseDepth === undefined && (xmlDoc = this.getStateXmlDocument())) {
-        p.recurseDepth = $xml.getInnerText(xmlDoc, "/dcr:Configuration/dcr:RecurseDepth") || null;
+        p.recurseDepth = $xml.getInnerText(xmlDoc, this.RECURSE_DEPTH_XPATH) || null;
     }
     return p.recurseDepth;
 };
@@ -38,7 +40,7 @@ DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.setRecurseDepth 
         p.recurseDepth = value;
 
         this.updateInnerXml("/dcr:Configuration", "", context);
-        this.updateValue("/dcr:Configuration/dcr:RecurseDepth", value, context);
+        this.updateValue(this.RECURSE_DEPTH_XPATH, value, context);
     }
 };
 
@@ -59,11 +61,11 @@ DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.invalidateEditab
 };
 
 DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.executeLoadItem = function Configuration$executeLoadItem(id, openMode, success, failure) {
-    tridion.web.ui.models.safeguard.services.LoadConfiguration(success, failure);
+    dxa.cm.extensions.customresolver.models.services.LoadConfiguration(success, failure);
 };
 
 DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.executeSaveItem = function Configuration$executeSaveItem(id, xml, doneEditing, success, failure) {
-    tridion.web.ui.models.safeguard.services.SaveConfiguration(xml, success, failure);
+    dxa.cm.extensions.customresolver.models.services.SaveConfiguration(xml, success, failure);
 };
 
 DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.pack = Tridion.OO.nonInheritable(function Configuration$pack() {

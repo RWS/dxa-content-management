@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DxaCustomResolverExtension.Editors.Resources {
+namespace DXA.CM.Extensions.CustomResolver.Models.Resources {
     using System;
     
     
@@ -22,14 +22,14 @@ namespace DxaCustomResolverExtension.Editors.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class DXA_CM_Extensions_CustomResolver_Strings {
+    internal class DXA_CM_Extensions_CustomResolver_Models_Strings {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal DXA_CM_Extensions_CustomResolver_Strings() {
+        internal DXA_CM_Extensions_CustomResolver_Models_Strings() {
         }
         
         /// <summary>
@@ -39,8 +39,8 @@ namespace DxaCustomResolverExtension.Editors.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DxaCustomResolverExtension.Editors.Resources.DXA.CM.Extensions.CustomResolver.Str" +
-                            "ings", typeof(DXA_CM_Extensions_CustomResolver_Strings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DXA.CM.Extensions.CustomResolver.Models.Resources.DXA.CM.Extensions.CustomResolve" +
+                            "r.Models.Strings", typeof(DXA_CM_Extensions_CustomResolver_Models_Strings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,65 +62,20 @@ namespace DxaCustomResolverExtension.Editors.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Close.
+        ///   Looks up a localized string similar to Custom Resolver: unable to load configuration.
         /// </summary>
-        internal static string CR_Close {
+        internal static string CR_LoadConfigurationFailed {
             get {
-                return ResourceManager.GetString("CR_Close", resourceCulture);
+                return ResourceManager.GetString("CR_LoadConfigurationFailed", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DXA Settings.
+        ///   Looks up a localized string similar to Custom Resolver: unable to save configuration.
         /// </summary>
-        internal static string CR_EditDXASettingsDialogTitle {
+        internal static string CR_SaveConfigurationFailed {
             get {
-                return ResourceManager.GetString("CR_EditDXASettingsDialogTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Recurse Depth.
-        /// </summary>
-        internal static string CR_RecurseDepth {
-            get {
-                return ResourceManager.GetString("CR_RecurseDepth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save.
-        /// </summary>
-        internal static string CR_Save {
-            get {
-                return ResourceManager.GetString("CR_Save", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Custom Resolver Publishing Settings.
-        /// </summary>
-        internal static string CR_Settings {
-            get {
-                return ResourceManager.GetString("CR_Settings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to DXA Settings.
-        /// </summary>
-        internal static string CR_ShowSettings {
-            get {
-                return ResourceManager.GetString("CR_ShowSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show DXA Custom Resolver Settings Dialog.
-        /// </summary>
-        internal static string CR_ShowSettingsDialog {
-            get {
-                return ResourceManager.GetString("CR_ShowSettingsDialog", resourceCulture);
+                return ResourceManager.GetString("CR_SaveConfigurationFailed", resourceCulture);
             }
         }
     }
