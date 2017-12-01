@@ -119,16 +119,6 @@
     <Content Include="Commands\ShowSettings.js" />
     <Content Include="Constants\Global.js" />
     <Content Include="Constants\Popups.js" />
-    <Content Include="dll\Tridion.Web.CMUtils.dll" />
-    <Content Include="dll\Tridion.Web.UI.Core.dll" />
-    <Content Include="dll\Tridion.Web.UI.Editors.Base.dll" />
-    <Content Include="dll\Tridion.Web.UI.Editors.CME.dll" />
-    <Content Include="dll\Tridion.Web.UI.Models.BaseEditor.dll" />
-    <Content Include="dll\Tridion.Web.UI.Models.CME.dll" />
-    <Content Include="dll\Tridion.Web.UI.Models.Interfaces.dll" />
-    <Content Include="dll\Tridion.Web.UI.Models.R5LegacyConverter.dll" />
-    <Content Include="dll\Tridion.Web.UI.Models.TCM54.dll" />
-    <Content Include="dll\Tridion.Web.UI.Models.TTM.dll" />
     <Content Include="Themes\Carbon2\Images\Ico\favicon.ico" />
     <Content Include="Views\Popups\Settings\Settings.aspx" />
     <Content Include="Views\Popups\Settings\Settings.css" />
