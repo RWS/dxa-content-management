@@ -9,7 +9,7 @@ DXA.CM.Extensions.CustomResolver.Models.Configuration = function Configuration(i
     p.recurseDepth = undefined;
 };
 
-DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.RECURSE_DEPTH_XPATH = "/dcr:Configuration/dcr:RecurseDepth";
+DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.RECURSE_DEPTH_XPATH = "/Configuration/dcr:RecurseDepth";
 
 DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.getItemType = function Configuration$getItemType() {
     return DXA.CM.Extensions.CustomResolver.Models.Configuration.ItemType;
@@ -19,7 +19,7 @@ DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.getDeltaXmlDefin
     var p = this.properties;
     if (!p.deltaXmlDefinition) {
         p.deltaXmlDefinition = {
-            xml: Tridion.Utils.String.format("<dcr:Configuration xmlns:dcr=\"{0}\"></dcr:Configuration>", Tridion.Constants.Namespaces.dcr),
+            xml: Tridion.Utils.String.format("<Configuration xmlns:dcr=\"{0}\"></Configuration>", Tridion.Constants.Namespaces.dcr),
             sections: ["/"]
         };
     }
@@ -39,7 +39,7 @@ DXA.CM.Extensions.CustomResolver.Models.Configuration.prototype.setRecurseDepth 
     if (this.getRecurseDepth() != value) {
         p.recurseDepth = value;
 
-        this.updateInnerXml("/dcr:Configuration", "", context);
+        this.updateInnerXml("/Configuration", "", context);
         this.updateValue(this.RECURSE_DEPTH_XPATH, value, context);
     }
 };

@@ -49,7 +49,7 @@ namespace DXA.CM.Extensions.CustomResolver.Models
 						return appDataXml.OuterXml;
 					}
 
-					return String.Format("<dcr:Configuration xmlns:{0}=\"{1}\"></dcr:Configuration>",
+					return String.Format("<Configuration xmlns:{0}=\"{1}\"></Configuration>",
 						Constants.CUSTOM_RESOLVER_CONFIGURATION_PREFIX, Constants.CUSTOM_RESOLVER_CONFIGURATION_NAMESPACE);
 				}
 				catch (Exception ex)
