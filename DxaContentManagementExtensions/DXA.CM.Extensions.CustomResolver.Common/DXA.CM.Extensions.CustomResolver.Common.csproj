@@ -40,9 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="dependencies\Tridion.Web.CMUtils.dll" />
     <Content Include="dependencies\Tridion.Web.UI.Core.dll" />
     <Content Include="dependencies\Tridion.Web.UI.Editors.Base.dll" />
@@ -53,6 +50,9 @@
     <Content Include="dependencies\Tridion.Web.UI.Models.R5LegacyConverter.dll" />
     <Content Include="dependencies\Tridion.Web.UI.Models.TCM54.dll" />
     <Content Include="dependencies\Tridion.Web.UI.Models.TTM.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
