@@ -62,6 +62,9 @@
         <Message Text="Restoring NuGet packages..."/>
         <Exec Command="_tools\RestorePackages DxaContentManagement.sln" WorkingDirectory="$(ProjectDirectory)" />
         
+        <Message Text="Restoring NuGet packages for extensions..."/>
+        <Exec Command="_tools\RestorePackages DxaContentManagementExtensions\DxaContentManagementExtensions.sln" WorkingDirectory="$(ProjectDirectory)" />
+
       <Message Text="Setting Assembly Info"/>
 
       <ItemGroup>
