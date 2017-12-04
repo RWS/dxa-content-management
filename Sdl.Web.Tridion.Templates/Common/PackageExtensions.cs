@@ -1,7 +1,7 @@
 ﻿using System;
 using Tridion.ContentManager.Templating;
 
-namespace Sdl.Web.Tridion.Common
+namespace Sdl.Web.Tridion.Templates.Common
 {
     public static class PackageExtensions
     {

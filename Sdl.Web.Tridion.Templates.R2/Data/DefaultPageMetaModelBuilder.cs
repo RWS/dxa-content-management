@@ -8,7 +8,7 @@ using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 
-namespace Sdl.Web.Tridion.Data
+namespace Sdl.Web.Tridion.Templates.R2.Data
 {
     /// <summary>
     /// Default implementation for Model Builder which sets <see cref="PageModelData.Meta"/> and <see cref="PageModelData.Title"/>.

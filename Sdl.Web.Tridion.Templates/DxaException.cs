@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sdl.Web.Tridion
+namespace Sdl.Web.Tridion.Templates
 {
     /// <summary>
     /// Base class for exceptions thrown by DXA templating code.

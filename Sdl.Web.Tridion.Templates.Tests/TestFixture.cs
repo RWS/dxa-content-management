@@ -1,6 +1,4 @@
-﻿using System.CodeDom;
-
-namespace Sdl.Web.Tridion.Templates.Tests
+﻿namespace Sdl.Web.Tridion.Templates.Tests
 {
     internal static class TestFixture
     {
@@ -15,7 +13,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         internal const string ArticleDcpPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Test Article (Dynamic) Page.tpg";
         internal const string ComponentLinkTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Component Link Test Page.tpg";
         internal const string MediaManagerPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/MediaManager.tpg";
-        internal const string FlickrTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/Flickr Test.tpg";
+        internal const string FlickrTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Flickr/Flickr Test.tpg";
         internal const string SmartTargetPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Smoke/Smart Target Smoke Test.tpg";
         internal const string SmartTargetMetadataOverridePageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Smoke/Smart Target PT metadata override.tpg";
         internal const string ContextExpressionsPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Smoke/Context Expression Smoke Test.tpg";

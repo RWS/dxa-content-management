@@ -3,7 +3,7 @@ using System.Linq;
 using System.Xml;
 using Tridion;
 
-namespace Sdl.Web.Tridion
+namespace Sdl.Web.Tridion.Templates
 {
     /// <summary>
     /// Extension methods for class <see cref="XmlElement"/>.

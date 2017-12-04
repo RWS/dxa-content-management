@@ -98,6 +98,14 @@
       <Project>{413425ca-005e-4269-90b0-82624d277943}</Project>
       <Name>Sdl.Web.DataModel</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sdl.Web.Tridion.Templates.Legacy\Sdl.Web.Tridion.Templates.Legacy.csproj">
+      <Project>{087bce15-f7b4-46f5-823a-ed8599855066}</Project>
+      <Name>Sdl.Web.Tridion.Templates.Legacy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sdl.Web.Tridion.Templates.R2\Sdl.Web.Tridion.Templates.R2.csproj">
+      <Project>{8598dbe9-33bf-4ef5-835f-e15ea117c2f8}</Project>
+      <Name>Sdl.Web.Tridion.Templates.R2</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sdl.Web.Tridion.Templates\Sdl.Web.Tridion.Templates.csproj">
       <Project>{1f678cc2-4586-4f0c-8e70-3f6944bd6aaf}</Project>
       <Name>Sdl.Web.Tridion.Templates</Name>

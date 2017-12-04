@@ -4,14 +4,12 @@ using System.Linq;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.ContentManagement.Fields;
 
-namespace Sdl.Web.Tridion.Common
+namespace Sdl.Web.Tridion.Templates.Common
 {
     public static class ItemFieldsExtensions
     {
-        public static double GetNumberValue(this ItemFields fields, string fieldName)
-        {
-            return fields.GetNumberValues(fieldName).FirstOrDefault();
-        }
+        public static double GetNumberValue(this ItemFields fields, string fieldName) 
+            => fields.GetNumberValues(fieldName).FirstOrDefault();
 
         public static IEnumerable<double> GetNumberValues(this ItemFields fields, string fieldName)
         {
@@ -21,96 +19,61 @@ namespace Sdl.Web.Tridion.Common
                     : new double[0];
         }
 
-        public static Keyword GetKeywordValue(this ItemFields fields, string fieldName)
-        {
-            return fields.GetKeywordValues(fieldName).FirstOrDefault();
-        }
+        public static Keyword GetKeywordValue(this ItemFields fields, string fieldName) 
+            => fields.GetKeywordValues(fieldName).FirstOrDefault();
 
-        public static IEnumerable<Keyword> GetKeywordValues(this ItemFields fields, string fieldName)
-        {
-            return
-                null != fields && fields.Contains(fieldName)
-                    ? (fields[fieldName] as KeywordField).Values
-                    : Enumerable.Empty<Keyword>();
-        }
+        public static IEnumerable<Keyword> GetKeywordValues(this ItemFields fields, string fieldName) 
+            => null != fields && fields.Contains(fieldName)
+            ? (fields[fieldName] as KeywordField).Values
+            : Enumerable.Empty<Keyword>();
 
-        public static Component GetComponentValue(this ItemFields fields, string fieldName)
-        {
-            return fields.GetComponentValues(fieldName).FirstOrDefault();
-        }
+        public static Component GetComponentValue(this ItemFields fields, string fieldName) 
+            => fields.GetComponentValues(fieldName).FirstOrDefault();
 
-        public static IEnumerable<Component> GetComponentValues(this ItemFields fields, string fieldName)
-        {
-            return
-                null != fields && fields.Contains(fieldName)
-                    ? (fields[fieldName] as ComponentLinkField).Values
-                    : Enumerable.Empty<Component>();
-        }
+        public static IEnumerable<Component> GetComponentValues(this ItemFields fields, string fieldName) 
+            => null != fields && fields.Contains(fieldName)
+            ? (fields[fieldName] as ComponentLinkField).Values
+            : Enumerable.Empty<Component>();
 
-        public static string GetExternalLink(this ItemFields fields, string fieldName)
-        {
-            return fields.GetExternalLinks(fieldName).FirstOrDefault() ?? string.Empty;
-        }
+        public static string GetExternalLink(this ItemFields fields, string fieldName) 
+            => fields.GetExternalLinks(fieldName).FirstOrDefault() ?? string.Empty;
 
-        public static IEnumerable<string> GetExternalLinks(this ItemFields fields, string fieldName)
-        {
-            return
-                null != fields && fields.Contains(fieldName)
-                    ? (fields[fieldName] as ExternalLinkField).Values
-                    : new string[0];
-        }
+        public static IEnumerable<string> GetExternalLinks(this ItemFields fields, string fieldName) 
+            => null != fields && fields.Contains(fieldName)
+            ? (fields[fieldName] as ExternalLinkField).Values
+            : new string[0];
 
-        public static Component GetMultimediaLink(this ItemFields fields, string fieldName)
-        {
-            return fields.GetMultimediaLinks(fieldName).FirstOrDefault();
-        }
+        public static Component GetMultimediaLink(this ItemFields fields, string fieldName) 
+            => fields.GetMultimediaLinks(fieldName).FirstOrDefault();
 
-        public static IEnumerable<Component> GetMultimediaLinks(this ItemFields fields, string fieldName)
-        {
-            return
-                null != fields && fields.Contains(fieldName)
-                    ? (fields[fieldName] as MultimediaLinkField).Values
-                    : Enumerable.Empty<Component>();
-        }
+        public static IEnumerable<Component> GetMultimediaLinks(this ItemFields fields, string fieldName) 
+            => null != fields && fields.Contains(fieldName)
+            ? (fields[fieldName] as MultimediaLinkField).Values
+            : Enumerable.Empty<Component>();
 
-        public static ItemFields GetEmbeddedField(this ItemFields fields, string fieldName)
-        {
-            return fields.GetEmbeddedFields(fieldName).FirstOrDefault();
-        }
+        public static ItemFields GetEmbeddedField(this ItemFields fields, string fieldName) 
+            => fields.GetEmbeddedFields(fieldName).FirstOrDefault();
 
-        public static IEnumerable<ItemFields> GetEmbeddedFields(this ItemFields fields, string fieldName)
-        {
-            return
-                null != fields && fields.Contains(fieldName)
-                    ? (fields[fieldName] as EmbeddedSchemaField).Values
-                    : Enumerable.Empty<ItemFields>();
-        }
+        public static IEnumerable<ItemFields> GetEmbeddedFields(this ItemFields fields, string fieldName) 
+            => null != fields && fields.Contains(fieldName)
+            ? (fields[fieldName] as EmbeddedSchemaField).Values
+            : Enumerable.Empty<ItemFields>();
 
-        public static string GetTextValue(this ItemFields fields, string fieldName)
-        {
-            return GetTextValues(fields, fieldName).FirstOrDefault() ?? string.Empty;
-        }
+        public static string GetTextValue(this ItemFields fields, string fieldName) 
+            => GetTextValues(fields, fieldName).FirstOrDefault() ?? string.Empty;
 
-        public static IEnumerable<string> GetTextValues(this ItemFields fields, string fieldName)
-        {
-            return
-                null != fields && fields.Contains(fieldName)
-                    ? (fields[fieldName] as TextField).Values
-                    : new string[0];
-        }
+        public static IEnumerable<string> GetTextValues(this ItemFields fields, string fieldName) 
+            => null != fields && fields.Contains(fieldName)
+            ? (fields[fieldName] as TextField).Values
+            : new string[0];
 
-        public static DateTime? GetDateValue(this ItemFields fields, string fieldName = "date")
-        {
-            return fields.GetDateValues(fieldName).FirstOrDefault();
-        }
+        public static DateTime? GetDateValue(this ItemFields fields, string fieldName = "date") 
+            => fields.GetDateValues(fieldName).FirstOrDefault();
 
-        public static IEnumerable<DateTime?> GetDateValues(this ItemFields fields, string fieldName = "date")
-        {
-            return
-                null != fields && fields.Contains(fieldName)
-                    ? (fields[fieldName] as DateField).Values.Select(d => d == DateTime.MinValue ? null : (DateTime?)d)
-                    : new DateTime?[0];
-        }
+        public static IEnumerable<DateTime?> GetDateValues(this ItemFields fields, string fieldName = "date") 
+            => null != fields && fields.Contains(fieldName)
+            ? (fields[fieldName] as DateField).Values.Select(d => d == DateTime.MinValue ? null : (DateTime?)d)
+            : new DateTime?[0];
 
         public static int GetFieldValueCount(this ItemFields fields, string fieldName)
         {

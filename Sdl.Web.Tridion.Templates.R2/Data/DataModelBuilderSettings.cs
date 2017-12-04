@@ -1,4 +1,4 @@
-﻿namespace Sdl.Web.Tridion.Data
+﻿namespace Sdl.Web.Tridion.Templates.R2.Data
 {
     /// <summary>
     /// Represents the settings for <see cref="DataModelBuilder"/>

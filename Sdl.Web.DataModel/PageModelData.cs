@@ -44,5 +44,10 @@ namespace Sdl.Web.DataModel
         /// Gets or sets the Page Regions.
         /// </summary>
         public List<RegionModelData> Regions { get; set; }
+
+        /// <summary>
+        /// Gets or sets the target group conditions.
+        /// </summary>
+        public List<ICondition> Conditions { get; set; }
     }
 }

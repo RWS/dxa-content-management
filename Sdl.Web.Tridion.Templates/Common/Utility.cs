@@ -9,7 +9,7 @@ using Tridion.ContentManager.CommunicationManagement.Regions;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Templating;
 
-namespace Sdl.Web.Tridion.Common
+namespace Sdl.Web.Tridion.Templates.Common
 {
     /// <summary>
     /// Static Helper methods
@@ -74,12 +74,8 @@ namespace Sdl.Web.Tridion.Common
 
             ApplicationDataAdapter ada = new ApplicationDataAdapter(appData);
             XmlElement appDataXml = ada.GetAs<XmlElement>();
-            if (appDataXml == null)
-            {
-                return false;
-            }
 
-            return (appDataXml.SelectSingleNode("self::se:configuration/se:PublicationTarget[se:EnableSiteEdit = 'true']", GetSeNamespaceManager()) != null);
+            return appDataXml?.SelectSingleNode("self::se:configuration/se:PublicationTarget[se:EnableSiteEdit = 'true']", GetSeNamespaceManager()) != null;
         }
 
         public static string GetCdEnvironmentPurpose(PublishingContext publishingContext)
