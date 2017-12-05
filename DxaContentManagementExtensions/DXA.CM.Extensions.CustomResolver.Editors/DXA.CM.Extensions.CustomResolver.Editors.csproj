@@ -64,50 +64,64 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="Tridion.Common, Version=8.1.0.150, Culture=neutral, PublicKeyToken=349a39f202fa9b53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.ContentManager.CoreService.Client">
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.ContentManager.CoreService.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.ContentManager.CoreService.Legacy">
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.ContentManager.CoreService.Legacy.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.Logging">
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="Tridion.Web.CMUtils, Version=8.6.0.45274, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\Tridion.Web.CMUtils.dll</HintPath>
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.Web.CMUtils.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.Web.UI.Core, Version=8.6.0.45274, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\Tridion.Web.UI.Core.dll</HintPath>
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Core.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.Web.UI.Editors.Base, Version=8.6.0.45274, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\Tridion.Web.UI.Editors.Base.dll</HintPath>
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Editors.Base.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.Web.UI.Editors.CME, Version=8.6.0.45274, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\Tridion.Web.UI.Editors.CME.dll</HintPath>
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Editors.CME.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.Web.UI.Models.BaseEditor, Version=8.6.0.45274, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\Tridion.Web.UI.Models.BaseEditor.dll</HintPath>
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Models.BaseEditor.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.Web.UI.Models.CME, Version=8.6.0.45274, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\Tridion.Web.UI.Models.CME.dll</HintPath>
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Models.CME.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.Web.UI.Models.Interfaces, Version=8.6.0.45274, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\Tridion.Web.UI.Models.Interfaces.dll</HintPath>
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Models.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.Web.UI.Models.R5LegacyConverter, Version=8.6.0.45274, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\Tridion.Web.UI.Models.R5LegacyConverter.dll</HintPath>
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Models.R5LegacyConverter.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.Web.UI.Models.TCM54, Version=8.6.0.45274, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\Tridion.Web.UI.Models.TCM54.dll</HintPath>
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Models.TCM54.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.Web.UI.Models.TTM, Version=8.6.0.45274, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\Tridion.Web.UI.Models.TTM.dll</HintPath>
+      <HintPath>..\DXA.CM.Extensions.CustomResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Models.TTM.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Configuration\CustomResolver.Editor.config" />
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,12 +1,11 @@
 ﻿using System.ServiceModel.Activation;
 using Tridion.Logging;
-using Tridion.Web.UI.Core.Services;
 using DXA.CM.Extensions.CustomResolver.Models.Interfaces;
 
 namespace DXA.CM.Extensions.CustomResolver.Models
 {
 	[AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
-	public partial class Services : BaseService, IServices
+	public partial class Services : IServices
 	{
 		public string LoadConfiguration()
 		{
