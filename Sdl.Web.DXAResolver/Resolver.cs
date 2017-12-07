@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
+using System.Xml;
 using System.Xml.Linq;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
@@ -12,7 +11,6 @@ using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.ContentManagement.Fields;
 using Tridion.ContentManager.Publishing;
 using Tridion.ContentManager.Publishing.Resolving;
-using Tridion.ContentManager.Templating;
 
 namespace Sdl.Web.DXAResolver
 {   
@@ -37,14 +35,13 @@ namespace Sdl.Web.DXAResolver
     public class Resolver : IResolver
     {
         private int _maxRecurseDepth = -1; // default = infinite recursion depth
-        private readonly TemplatingLogger _log;
-
+        private readonly LogAdapter _log;
         public Resolver()
         {
             // init logging
-            _log = TemplatingLogger.GetLogger(GetType());
+            _log = new LogAdapter(GetType());
             _log.Debug($"DXA Custom Resolver initialised with recurse depth {_maxRecurseDepth}");            
-        }
+        }       
 
         private List<Component> GatherLinkedComponents(Component component)
         {
@@ -192,7 +189,7 @@ namespace Sdl.Web.DXAResolver
         {
             if (instruction.Purpose != ResolvePurpose.Publish && instruction.Purpose != ResolvePurpose.RePublish ||
                 _maxRecurseDepth == 0)
-                return;
+                return;         
             _log.Debug("DXA Custom Resolver started...");
             _log.Debug("Loading global app data:");
             const string appId = "dxa:CustomResolver";
@@ -202,15 +199,28 @@ namespace Sdl.Web.DXAResolver
                 if (appData != null)
                 {
                     _log.Debug("Found configuration for custom resolver in global app data. Attempting to parse.");
-                    string xml = Encoding.Unicode.GetString(appData.Data);
+                    string xml = string.Empty;
+                    if (appData.TypeId?.StartsWith("XmlElement:") ?? false)
+                    {
+                        _log.Debug($"Found configuration using XElement appData type.");
+                        string @string = Encoding.UTF8.GetString(appData.Data);
+                        XmlDocument xmlDocument = new XmlDocument();
+                        xmlDocument.LoadXml(@string);
+                        xml = xmlDocument.DocumentElement?.OuterXml;
+                    }
+                    if (string.IsNullOrEmpty(xml))
+                    {
+                        _log.Debug("Assuming string content for xml.");
+                        xml = Encoding.Unicode.GetString(appData.Data);
+                    }
+                    _log.Debug($"xml={xml}");
                     XElement parsedXml = XElement.Parse(xml);
                     foreach (XElement xe in parsedXml.Elements())
                     {
-                        if (xe.Name.LocalName.Equals("RecurseDepth"))
-                        {
-                            _maxRecurseDepth = int.Parse(xe.Value);
-                            break; // only one setting at moment
-                        }
+                        if (!xe.Name.LocalName.Equals("RecurseDepth")) continue;
+                        _log.Debug($"Found RecurseDepth value of '{xe.Value}'.");
+                        _maxRecurseDepth = int.Parse(xe.Value);
+                        break; // only one setting at moment
                     }
                 }
                 else
@@ -228,6 +238,8 @@ namespace Sdl.Web.DXAResolver
                 _maxRecurseDepth = -1;
             }
             
+            _log.Debug($"Using _maxRecurseDepth={_maxRecurseDepth}");
+
             try
             {
                 var sourceItem = (RepositoryLocalObject) item;
