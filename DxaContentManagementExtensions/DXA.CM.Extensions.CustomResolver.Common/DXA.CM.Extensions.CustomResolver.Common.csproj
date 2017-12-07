@@ -40,8 +40,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="dependencies\8.1.1\Tridion.Common.dll" />
     <Content Include="dependencies\8.1.1\Tridion.ContentManager.CoreService.Client.dll" />
     <Content Include="dependencies\8.1.1\Tridion.ContentManager.CoreService.Legacy.dll" />
+    <Content Include="dependencies\8.1.1\Tridion.Logging.dll" />
+    <Content Include="dependencies\8.1.1\Tridion.TopologyManager.Client.dll" />
     <Content Include="dependencies\8.1.1\Tridion.Web.CMUtils.dll" />
     <Content Include="dependencies\8.1.1\Tridion.Web.UI.Core.dll" />
     <Content Include="dependencies\8.1.1\Tridion.Web.UI.Editors.Base.dll" />
