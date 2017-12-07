@@ -137,6 +137,7 @@
     <Content Include="Constants\Global.js" />
     <Content Include="Constants\Popups.js" />
     <Content Include="Themes\Carbon2\Images\Ico\favicon.ico" />
+    <Content Include="Themes\Carbon2\Views\Styles.css" />
     <Content Include="Views\Popups\Settings\Settings.aspx" />
     <Content Include="Views\Popups\Settings\Settings.css" />
     <Content Include="Views\Popups\Settings\Settings.js" />
