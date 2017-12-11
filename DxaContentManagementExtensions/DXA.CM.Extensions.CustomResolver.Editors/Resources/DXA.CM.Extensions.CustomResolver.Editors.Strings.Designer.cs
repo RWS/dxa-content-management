@@ -71,11 +71,38 @@ namespace DXA.CM.Extensions.CustomResolver.Editors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DXA Custom Resolver.
+        ///   Looks up a localized string similar to DXA Resolver: Unable to load configuration.
         /// </summary>
-        internal static string CR_DXACustomResolver {
+        internal static string CR_ConfigurationLoadFailed {
             get {
-                return ResourceManager.GetString("CR_DXACustomResolver", resourceCulture);
+                return ResourceManager.GetString("CR_ConfigurationLoadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DXA Resolver: Configuration has been saved..
+        /// </summary>
+        internal static string CR_ConfigurationSaved {
+            get {
+                return ResourceManager.GetString("CR_ConfigurationSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DXA Resolver: Unable to save configuration.
+        /// </summary>
+        internal static string CR_ConfigurationSaveFailed {
+            get {
+                return ResourceManager.GetString("CR_ConfigurationSaveFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DXA Resolver.
+        /// </summary>
+        internal static string CR_DXAResolver {
+            get {
+                return ResourceManager.GetString("CR_DXAResolver", resourceCulture);
             }
         }
         
@@ -98,6 +125,24 @@ namespace DXA.CM.Extensions.CustomResolver.Editors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DXA Resolver: Recurse Depth can not be empty..
+        /// </summary>
+        internal static string CR_RecurseDepthCanNotBeEmpty {
+            get {
+                return ResourceManager.GetString("CR_RecurseDepthCanNotBeEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DXA Resolver: The value for Recursion Depth must be an integer..
+        /// </summary>
+        internal static string CR_RecurseDepthShouldBeNumeric {
+            get {
+                return ResourceManager.GetString("CR_RecurseDepthShouldBeNumeric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         internal static string CR_Save {
@@ -107,7 +152,7 @@ namespace DXA.CM.Extensions.CustomResolver.Editors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom Resolver Publishing Settings.
+        ///   Looks up a localized string similar to DXA Resolver Publishing Settings.
         /// </summary>
         internal static string CR_Settings {
             get {
@@ -125,7 +170,7 @@ namespace DXA.CM.Extensions.CustomResolver.Editors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show DXA Custom Resolver Settings Dialog.
+        ///   Looks up a localized string similar to Show DXA Resolver Settings Dialog.
         /// </summary>
         internal static string CR_ShowSettingsDialog {
             get {

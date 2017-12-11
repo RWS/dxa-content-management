@@ -117,10 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CR_LoadConfigurationFailed" xml:space="preserve">
-    <value>Custom Resolver: Unable to load configuration</value>
+  <data name="CR_ConfigurationLoadFailed" xml:space="preserve">
+    <value>DXA Resolver: Unable to load configuration</value>
   </data>
-  <data name="CR_SaveConfigurationFailed" xml:space="preserve">
-    <value>Custom Resolver: unable to save configuration</value>
+  <data name="CR_ConfigurationSaved" xml:space="preserve">
+    <value>DXA Resolver: Configuration has been saved.</value>
+  </data>
+  <data name="CR_ConfigurationSaveFailed" xml:space="preserve">
+    <value>DXA Resolver: Unable to save configuration</value>
+  </data>
+  <data name="CR_RecurseDepthCanNotBeEmpty" xml:space="preserve">
+    <value>DXA Resolver: Recurse Depth can not be empty.</value>
+  </data>
+  <data name="CR_RecurseDepthShouldBeNumeric" xml:space="preserve">
+    <value>DXA Resolver: Recurse Depth should be numeric.</value>
   </data>
 </root>

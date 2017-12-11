@@ -121,7 +121,7 @@
     <value>DXA Settings</value>
   </data>
   <data name="CR_Settings" xml:space="preserve">
-    <value>Custom Resolver Publishing Settings</value>
+    <value>DXA Resolver Publishing Settings</value>
   </data>
   <data name="CR_Close" xml:space="preserve">
     <value>Close</value>
@@ -133,12 +133,27 @@
     <value>DXA Settings</value>
   </data>
   <data name="CR_ShowSettingsDialog" xml:space="preserve">
-    <value>Show DXA Custom Resolver Settings Dialog</value>
+    <value>Show DXA Resolver Settings Dialog</value>
   </data>
   <data name="CR_RecurseDepth" xml:space="preserve">
     <value>Recurse Depth</value>
   </data>
-  <data name="CR_DXACustomResolver" xml:space="preserve">
-    <value>DXA Custom Resolver</value>
+  <data name="CR_DXAResolver" xml:space="preserve">
+    <value>DXA Resolver</value>
+  </data>
+  <data name="CR_ConfigurationSaved" xml:space="preserve">
+    <value>DXA Resolver: Configuration has been saved.</value>
+  </data>
+  <data name="CR_RecurseDepthCanNotBeEmpty" xml:space="preserve">
+    <value>DXA Resolver: Recurse Depth can not be empty.</value>
+  </data>
+  <data name="CR_RecurseDepthShouldBeNumeric" xml:space="preserve">
+    <value>DXA Resolver: The value for Recursion Depth must be an integer.</value>
+  </data>
+  <data name="CR_ConfigurationLoadFailed" xml:space="preserve">
+    <value>DXA Resolver: Unable to load configuration</value>
+  </data>
+  <data name="CR_ConfigurationSaveFailed" xml:space="preserve">
+    <value>DXA Resolver: Unable to save configuration</value>
   </data>
 </root>
