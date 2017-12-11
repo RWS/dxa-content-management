@@ -75,18 +75,18 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onValid
     var val = fields.recurseDepth.value;
     if(val){
         if(val.trim() === "") {
-            $messages.registerError("Custom Resolver: Recurse Depth can not be empty.");
+            $messages.registerError($localization.getResource("DXA.CM.Extensions.CustomResolver.Editors.Strings", "CR_RecurseDepthCanNotBeEmpty"));
             return false;
         }
 
-        if(isNaN(parseInt(val.trim()))) {
-            $messages.registerError("Custom Resolver: Recurse Depth should be numeric.");
+        var reg = new RegExp("^\\d+$");
+        if(!reg.test(val.trim())) {
+            $messages.registerError($localization.getResource("DXA.CM.Extensions.CustomResolver.Editors.Strings", "CR_RecurseDepthShouldBeNumeric"));
             return false;
         }
     }
 
     return true;
-
 };
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemLoaded = function Settings$onItemLoaded() {
@@ -103,17 +103,17 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemL
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemSaved = function Settings$onItemSaved() {
     this.disableControls();
-    $messages.registerNotification("Custom Resolver: Configuration has been saved.")
+    $messages.registerNotification($localization.getResource("DXA.CM.Extensions.CustomResolver.Editors.Strings", "CR_ConfigurationSaved"))
 };
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemSaveFailed = function Settings$onItemSaveFailed() {
     this.enableControls();
-    $messages.registerError("Custom Resolver: Couldn't save configuration.")
+    $messages.registerError($localization.getResource("DXA.CM.Extensions.CustomResolver.Editors.Strings", "CR_ConfigurationSaveFailed"))
 };
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onItemLoadFailed = function Settings$onItemLoadFailed() {
     this.enableControls();
-    $messages.registerError("Custom Resolver: Couldn't load configuration.")
+    $messages.registerError($localization.getResource("DXA.CM.Extensions.CustomResolver.Editors.Strings", "CR_ConfigurationLoadFailed"))
 };
 
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.getItem = function Settings$getItem() {
@@ -141,9 +141,10 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onField
 DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onCollectData = function Settings$onFieldChange(event) {
     var item = this.getItem();
     var p = this.properties;
+    var val = p.fields.recurseDepth.value;
 
-    if (p.fields.recurseDepth.value.trim() !== "") {
-        item.setRecurseDepth(parseInt(p.fields.recurseDepth.value))
+    if (val.trim() !== "") {
+        item.setRecurseDepth(val.trim())
     }
 };
 
