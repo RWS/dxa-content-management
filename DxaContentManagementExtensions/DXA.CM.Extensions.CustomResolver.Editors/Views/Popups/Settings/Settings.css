@@ -78,6 +78,6 @@
 }
 
 .dxa-field.__horizontal .dxa-field_label {
-    width: 120px;
+    padding-right: 10px;
     align-items: center;
 }

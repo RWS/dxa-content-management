@@ -9,7 +9,7 @@
 <html id="dxa-cr-settings-dialog" class="popup" xmlns="http://www.w3.org/1999/xhtml">
     <head>
 		<title>
-		    <asp:Literal runat="server" Text="<%$ Resources: DXA.CM.Extensions.CustomResolver.Editors.Strings, CR_Settings %>" />
+		    <asp:Literal runat="server" Text="<%$ Resources: DXA.CM.Extensions.CustomResolver.Editors.Strings, CR_EditDXASettingsDialogTitle %>" />
 		</title>
 
 		<link rel="shortcut icon" href="<%=ThemePath %>Images/Ico/favicon.ico" type="image/x-icon" />

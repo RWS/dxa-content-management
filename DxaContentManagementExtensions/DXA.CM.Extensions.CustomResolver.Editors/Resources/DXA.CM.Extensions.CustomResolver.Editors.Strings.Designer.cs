@@ -116,7 +116,7 @@ namespace DXA.CM.Extensions.CustomResolver.Editors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recurse Depth.
+        ///   Looks up a localized string similar to DXA Resolver Recurse Depth.
         /// </summary>
         internal static string CR_RecurseDepth {
             get {

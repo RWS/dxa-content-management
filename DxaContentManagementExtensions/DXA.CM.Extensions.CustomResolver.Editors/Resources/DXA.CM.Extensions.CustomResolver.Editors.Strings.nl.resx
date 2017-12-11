@@ -136,7 +136,7 @@
     <value>Show DXA Resolver Settings Dialog</value>
   </data>
   <data name="CR_RecurseDepth" xml:space="preserve">
-    <value>Recurse Depth</value>
+    <value>DXA Resolver Recurse Depth</value>
   </data>
   <data name="CR_DXAResolver" xml:space="preserve">
     <value>DXA Resolver</value>
