@@ -79,7 +79,7 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onValid
             return false;
         }
 
-        var reg = new RegExp("^\\d+$");
+        var reg = new RegExp("^\-{0,1}\\d+$");
         if(!reg.test(val.trim())) {
             $messages.registerError($localization.getResource("DXA.CM.Extensions.CustomResolver.Editors.Strings", "CR_RecurseDepthShouldBeNumeric"));
             return false;
