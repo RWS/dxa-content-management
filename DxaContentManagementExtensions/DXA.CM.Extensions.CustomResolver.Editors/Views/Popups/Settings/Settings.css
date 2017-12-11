@@ -64,11 +64,16 @@
     flex-direction: row;
     align-items: stretch;
     align-content: stretch;
+    margin-bottom: 8px;
+}
+
+.dxa-field.__horizontal:last-child {
+    margin-bottom: 0;
 }
 
 .dxa-field.__horizontal .dxa-field_label,
 .dxa-field.__horizontal .dxa-field_content {
-    display: flex;
+    display: block;
 }
 
 
@@ -78,6 +83,12 @@
 }
 
 .dxa-field.__horizontal .dxa-field_label {
-    padding-right: 10px;
+    padding: 6px 10px 0 0;
+    width: 220px;
     align-items: center;
+}
+
+.dxa-field.__horizontal .dxa-field_label .dxa-field_hint {
+    color: #999;
+    font-size: 95%;
 }

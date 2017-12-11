@@ -36,6 +36,9 @@
                                         <label for="CR_RecurseDepth" class="__required">
                                             <asp:Literal runat="server" Text="<%$ Resources: DXA.CM.Extensions.CustomResolver.Editors.Strings, CR_RecurseDepth %>" />
                                         </label>
+                                        <div class="dxa-field_hint">
+                                            <asp:Literal runat="server" Text="<%$ Resources: DXA.CM.Extensions.CustomResolver.Editors.Strings, CR_RecurseDepthHint %>" />
+                                        </div>
                                     </div>
 
                                     <div class="dxa-field_content">

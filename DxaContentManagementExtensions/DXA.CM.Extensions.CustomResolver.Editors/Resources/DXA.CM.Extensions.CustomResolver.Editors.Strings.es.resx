@@ -156,4 +156,7 @@
   <data name="CR_ConfigurationSaveFailed" xml:space="preserve">
     <value>DXA Resolver: Unable to save configuration</value>
   </data>
+  <data name="CR_RecurseDepthHint" xml:space="preserve">
+    <value>The value for Recursion Depth must be an integer, such as "100" for a depth of 100 linked components. For an infinite recursion depth, enter "-1".</value>
+  </data>
 </root>

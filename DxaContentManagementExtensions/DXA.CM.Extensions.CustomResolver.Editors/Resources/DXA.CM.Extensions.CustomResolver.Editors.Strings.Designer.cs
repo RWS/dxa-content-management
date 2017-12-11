@@ -134,6 +134,15 @@ namespace DXA.CM.Extensions.CustomResolver.Editors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value for Recursion Depth must be an integer, such as &quot;100&quot; for a depth of 100 linked components. For an infinite recursion depth, enter &quot;-1&quot;..
+        /// </summary>
+        internal static string CR_RecurseDepthHint {
+            get {
+                return ResourceManager.GetString("CR_RecurseDepthHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DXA Resolver: The value for Recursion Depth must be an integer..
         /// </summary>
         internal static string CR_RecurseDepthShouldBeNumeric {
