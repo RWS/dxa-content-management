@@ -116,7 +116,7 @@ namespace DXA.CM.Extensions.CustomResolver.Editors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DXA Resolver Recurse Depth.
+        ///   Looks up a localized string similar to DXA Resolver Recursion Depth.
         /// </summary>
         internal static string CR_RecurseDepth {
             get {
@@ -125,7 +125,7 @@ namespace DXA.CM.Extensions.CustomResolver.Editors {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DXA Resolver: Recurse Depth can not be empty..
+        ///   Looks up a localized string similar to DXA Resolver: Recursion Depth can not be empty..
         /// </summary>
         internal static string CR_RecurseDepthCanNotBeEmpty {
             get {

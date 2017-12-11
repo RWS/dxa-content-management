@@ -133,7 +133,7 @@
     <value>DXA Settings</value>
   </data>
   <data name="CR_RecurseDepth" xml:space="preserve">
-    <value>DXA Resolver Recurse Depth</value>
+    <value>DXA Resolver Recursion Depth</value>
   </data>
   <data name="CR_ShowSettingsDialog" xml:space="preserve">
     <value>Show DXA Resolver Settings Dialog</value>
@@ -145,7 +145,7 @@
     <value>DXA Resolver: Configuration has been saved.</value>
   </data>
   <data name="CR_RecurseDepthCanNotBeEmpty" xml:space="preserve">
-    <value>DXA Resolver: Recurse Depth can not be empty.</value>
+    <value>DXA Resolver: Recursion Depth can not be empty.</value>
   </data>
   <data name="CR_RecurseDepthShouldBeNumeric" xml:space="preserve">
     <value>DXA Resolver: DXA Resolver: The value for Recursion Depth must be an integer.</value>
