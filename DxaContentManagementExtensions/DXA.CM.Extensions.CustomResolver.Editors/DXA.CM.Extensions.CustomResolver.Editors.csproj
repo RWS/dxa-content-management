@@ -138,6 +138,8 @@
     <Content Include="Views\Popups\Settings\Settings.aspx" />
     <Content Include="Views\Popups\Settings\Settings.css" />
     <Content Include="Views\Popups\Settings\Settings.js" />
+    <Content Include="Views\RibbonToolbar\RibbonGroup.ascx" />
+    <Content Include="Views\RibbonToolbar\RibbonToolbar.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +152,10 @@
     </Compile>
     <Compile Include="Views\Popups\Settings\Settings.aspx.cs">
       <DependentUpon>Settings.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\RibbonToolbar\RibbonGroup.ascx.cs">
+      <DependentUpon>RibbonGroup.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
   </ItemGroup>
