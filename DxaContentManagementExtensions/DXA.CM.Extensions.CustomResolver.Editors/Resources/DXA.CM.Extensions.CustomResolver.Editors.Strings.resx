@@ -159,4 +159,7 @@
   <data name="CR_RecurseDepthHint" xml:space="preserve">
     <value>The value for Recursion Depth must be an integer, such as "100" for a depth of 100 linked components. For an infinite recursion depth, enter "-1".</value>
   </data>
+  <data name="CR_RecurseDepthLessThanAllowed" xml:space="preserve">
+    <value>DXA Resolver: The value for Recursion Depth couldn't be less than -1.</value>
+  </data>
 </root>

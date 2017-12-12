@@ -148,7 +148,7 @@
     <value>DXA Resolver: Recursion Depth can not be empty.</value>
   </data>
   <data name="CR_RecurseDepthShouldBeNumeric" xml:space="preserve">
-    <value>DXA Resolver: DXA Resolver: The value for Recursion Depth must be an integer.</value>
+    <value>DXA Resolver: The value for Recursion Depth must be an integer.</value>
   </data>
   <data name="CR_ConfigurationLoadFailed" xml:space="preserve">
     <value>DXA Resolver: Unable to load configuration</value>
@@ -158,5 +158,8 @@
   </data>
   <data name="CR_RecurseDepthHint" xml:space="preserve">
     <value>The value for Recursion Depth must be an integer, such as "100" for a depth of 100 linked components. For an infinite recursion depth, enter "-1".</value>
+  </data>
+  <data name="CR_RecurseDepthLessThanAllowed" xml:space="preserve">
+    <value>DXA Resolver: The value for Recursion Depth couldn't be less than -1.</value>
   </data>
 </root>

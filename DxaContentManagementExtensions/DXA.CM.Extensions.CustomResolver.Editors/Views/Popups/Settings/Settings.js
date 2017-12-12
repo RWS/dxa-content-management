@@ -8,6 +8,7 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings = function Settin
 
     var p = this.properties;
 
+    p.LOWER_THRESHOLD = -1;
     p.buttons = {
         close: null,
         save: null
@@ -82,6 +83,12 @@ DXA.CM.Extensions.CustomResolver.Editors.Views.Popups.Settings.prototype.onValid
         var reg = new RegExp("^\-{0,1}\\d+$");
         if(!reg.test(val.trim())) {
             $messages.registerError($localization.getResource("DXA.CM.Extensions.CustomResolver.Editors.Strings", "CR_RecurseDepthShouldBeNumeric"));
+            return false;
+        }
+
+        var parsedVal = parseInt(val.trim());
+        if(parsedVal < p.LOWER_THRESHOLD) {
+            $messages.registerError($localization.getResource("DXA.CM.Extensions.CustomResolver.Editors.Strings", "CR_RecurseDepthLessThanAllowed"));
             return false;
         }
     }

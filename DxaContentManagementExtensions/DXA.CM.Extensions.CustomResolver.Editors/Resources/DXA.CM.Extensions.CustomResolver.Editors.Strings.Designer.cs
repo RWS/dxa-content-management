@@ -143,6 +143,15 @@ namespace DXA.CM.Extensions.CustomResolver.Editors {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DXA Resolver: The value for Recursion Depth couldn&apos;t be less than -1..
+        /// </summary>
+        internal static string CR_RecurseDepthLessThanAllowed {
+            get {
+                return ResourceManager.GetString("CR_RecurseDepthLessThanAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to DXA Resolver: The value for Recursion Depth must be an integer..
         /// </summary>
         internal static string CR_RecurseDepthShouldBeNumeric {
