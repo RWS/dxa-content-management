@@ -18,7 +18,6 @@
     width: 100%;
 }
 .dxa-layout.__horizontal .dxa-layout_column {
-    display: flex;
 }
 
 .dxa-layout.__horizontal .dxa-layout_column.__main {
