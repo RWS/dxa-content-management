@@ -145,13 +145,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Models.Strings.zh-CN.resx" />
     <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Models.Strings.de.resx" />
     <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Models.Strings.es.resx" />
     <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Models.Strings.fr.resx" />
     <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Models.Strings.ja.resx" />
     <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Models.Strings.nl.resx" />
     <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Models.Strings.resx" />
+    <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Models.Strings.zh-CN.resx" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

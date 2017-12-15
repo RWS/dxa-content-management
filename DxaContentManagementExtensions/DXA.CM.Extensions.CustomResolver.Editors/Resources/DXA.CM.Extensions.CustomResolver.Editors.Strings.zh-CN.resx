@@ -117,17 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CR_ShowSettings" xml:space="preserve">
-    <value>DXA Settings</value>
-  </data>
-  <data name="CR_Settings" xml:space="preserve">
-    <value>DXA Resolver Publishing Settings</value>
-  </data>
   <data name="CR_Close" xml:space="preserve">
     <value>Close</value>
   </data>
-  <data name="CR_Save" xml:space="preserve">
-    <value>Save</value>
+  <data name="CR_ConfigurationLoadFailed" xml:space="preserve">
+    <value>DXA Resolver: Unable to load configuration</value>
+  </data>
+  <data name="CR_ConfigurationSaved" xml:space="preserve">
+    <value>DXA Resolver: Configuration has been saved.</value>
+  </data>
+  <data name="CR_ConfigurationSaveFailed" xml:space="preserve">
+    <value>DXA Resolver: Unable to save configuration</value>
+  </data>
+  <data name="CR_DXAResolver" xml:space="preserve">
+    <value>DXA Resolver</value>
   </data>
   <data name="CR_EditDXASettingsDialogTitle" xml:space="preserve">
     <value>DXA Settings</value>
@@ -135,31 +138,28 @@
   <data name="CR_RecurseDepth" xml:space="preserve">
     <value>DXA Resolver Recursion Depth</value>
   </data>
-  <data name="CR_ShowSettingsDialog" xml:space="preserve">
-    <value>Show DXA Resolver Settings Dialog</value>
-  </data>
-  <data name="CR_DXAResolver" xml:space="preserve">
-    <value>DXA Resolver</value>
-  </data>
-  <data name="CR_ConfigurationSaved" xml:space="preserve">
-    <value>DXA Resolver: Configuration has been saved.</value>
-  </data>
   <data name="CR_RecurseDepthCanNotBeEmpty" xml:space="preserve">
     <value>DXA Resolver: Recursion Depth can not be empty.</value>
-  </data>
-  <data name="CR_RecurseDepthShouldBeNumeric" xml:space="preserve">
-    <value>DXA Resolver: The value for Recursion Depth must be an integer.</value>
-  </data>
-  <data name="CR_ConfigurationLoadFailed" xml:space="preserve">
-    <value>DXA Resolver: Unable to load configuration</value>
-  </data>
-  <data name="CR_ConfigurationSaveFailed" xml:space="preserve">
-    <value>DXA Resolver: Unable to save configuration</value>
   </data>
   <data name="CR_RecurseDepthHint" xml:space="preserve">
     <value>Enter an integer, such as "100" for a depth of 100 linked components. For infinite recursion, enter "-1"</value>
   </data>
   <data name="CR_RecurseDepthLessThanAllowed" xml:space="preserve">
     <value>DXA Resolver: The value for Recursion Depth couldn't be less than -1.</value>
+  </data>
+  <data name="CR_RecurseDepthShouldBeNumeric" xml:space="preserve">
+    <value>DXA Resolver: The value for Recursion Depth must be an integer.</value>
+  </data>
+  <data name="CR_Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="CR_Settings" xml:space="preserve">
+    <value>DXA Resolver Publishing Settings</value>
+  </data>
+  <data name="CR_ShowSettings" xml:space="preserve">
+    <value>DXA Settings</value>
+  </data>
+  <data name="CR_ShowSettingsDialog" xml:space="preserve">
+    <value>Show DXA Resolver Settings Dialog</value>
   </data>
 </root>
