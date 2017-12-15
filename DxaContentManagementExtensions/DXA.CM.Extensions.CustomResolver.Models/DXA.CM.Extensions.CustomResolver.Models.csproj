@@ -145,6 +145,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Models.Strings.zh-CN.resx" />
     <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Models.Strings.de.resx" />
     <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Models.Strings.es.resx" />
     <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Models.Strings.fr.resx" />

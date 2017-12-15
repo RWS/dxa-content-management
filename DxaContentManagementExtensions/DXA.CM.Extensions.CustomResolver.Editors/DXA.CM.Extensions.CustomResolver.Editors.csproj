@@ -160,6 +160,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Editors.Strings.zh-CN.resx" />
     <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Editors.Strings.de.resx" />
     <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Editors.Strings.es.resx" />
     <EmbeddedResource Include="Resources\DXA.CM.Extensions.CustomResolver.Editors.Strings.fr.resx" />
