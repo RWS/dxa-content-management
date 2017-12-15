@@ -63,7 +63,7 @@
         <Exec Command="_tools\RestorePackages DxaContentManagement.sln" WorkingDirectory="$(ProjectDirectory)" />
         
         <Message Text="Restoring NuGet packages for extensions..."/>
-        <Exec Command="_tools\RestorePackages DxaContentManagementExtensions\DxaContentManagementExtensions.sln" WorkingDirectory="$(ProjectDirectory)" />
+        <Exec Command="_tools\RestorePackages Dxa.CM.Extensions\Dxa.CM.Extensions.sln" WorkingDirectory="$(ProjectDirectory)" />
 
       <Message Text="Setting Assembly Info"/>
 
@@ -101,7 +101,7 @@
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Tests\Sdl.Web.Tridion.Templates.Tests.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
 
         <!-- Build all CM extensions -->
-        <MSBuild Projects="$(ProjectDirectory)\DxaContentManagementExtensions\DxaContentManagementExtensions.sln" Properties="Configuration=$(BuildConfiguration);" StopOnFirstFailure="true" />
+        <MSBuild Projects="$(ProjectDirectory)\Dxa.CM.Extensions\Dxa.CM.Extensions.sln" Properties="Configuration=$(BuildConfiguration);" StopOnFirstFailure="true" />
     </Target>
 
     <!-- ======================================================================================================================= -->
