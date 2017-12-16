@@ -1,2 +1,0 @@
-﻿<%@ Assembly Name="DXA.CM.Extensions.CustomResolver.Models" %>
-<%@ ServiceHost Language="C#" Service="DXA.CM.Extensions.CustomResolver.Models.Services" CodeBehind="Services.svc.cs" %>
