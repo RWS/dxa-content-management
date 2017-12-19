@@ -1,4 +1,9 @@
-#CR_DXASettings .image {
-    background: url({ThemePath[DXAResolver]}Images/Icons/dxa-settings.svg) no-repeat;
+#CR_DXASettings.button.ribbonitem .image {
+    background: url({ThemePath[DXAResolver]}Images/Icons/dxa-resolver.32.color.png) no-repeat;
+    background-size: contain;
+}
+
+.ribbontoolbar.minimized #CR_DXASettings.button.ribbonitem .image {
+    background: url({ThemePath[DXAResolver]}Images/Icons/dxa-resolver.16.color.png) no-repeat;
     background-size: contain;
 }
