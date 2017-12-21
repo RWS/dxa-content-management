@@ -420,5 +420,19 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 AreaName = moduleName
             };
         }
+
+        public void CreateSchemaIdListExtensionData(ViewModelData modelData, List<string> ids) {
+            if (modelData != null && modelData.ExtensionData == null)
+            {
+                modelData.ExtensionData = new Dictionary<string, object>();
+            }
+
+            if (!modelData.ExtensionData.ContainsKey("Schemas"))
+            {
+                modelData.ExtensionData.Add("Schemas", ids);
+            }
+
+
+        }
     }
 }

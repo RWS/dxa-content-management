@@ -1,4 +1,5 @@
 ﻿using Sdl.Web.DataModel;
+using System.Collections.Generic;
 using Tridion.ContentManager.CommunicationManagement;
 
 namespace Sdl.Web.Tridion.Templates.R2.Data
@@ -13,10 +14,15 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         public void BuildPageModel(ref PageModelData pageModelData, Page page)
         {
             Logger.Debug("Adding structure group metadata to page model metadata.");
+
             StructureGroup structureGroup = (StructureGroup)page.OrganizationalItem;
-            while (structureGroup != null)
+            List<string> schemaIdList = new List<string>();
+
+            while (structureGroup != null && structureGroup.MetadataSchema != null)
             {
-                if (structureGroup.MetadataSchema != null && structureGroup.Metadata != null)
+                schemaIdList.Insert(0, structureGroup.MetadataSchema.Id);
+
+                if (structureGroup.Metadata != null)
                 {
                     ContentModelData metaData = BuildContentModel(structureGroup.Metadata, Pipeline.Settings.ExpandLinkDepth);
                     string[] duplicateFieldNames;
@@ -24,8 +30,11 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     ContentModelData pmdMetadata = pageModelData.Metadata ?? new ContentModelData();
                     pageModelData.Metadata = MergeFields(pmdMetadata, metaData, out duplicateFieldNames);
                 }
+
                 structureGroup = structureGroup.OrganizationalItem as StructureGroup;
             }
+
+            CreateSchemaIdListExtensionData(pageModelData, schemaIdList);
         }
     }
 }
