@@ -1,4 +1,5 @@
 ﻿using Sdl.Web.DataModel;
+using System.Collections.Generic;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 
@@ -21,17 +22,24 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             Logger.Debug("Adding folder metadata to entity model metadata.");
 
             Folder folder = (Folder)component.OrganizationalItem;
-            while (folder.OrganizationalItem != null)
+            List<string> schemaIdList = new List<string>();
+
+            while (folder != null && folder.MetadataSchema != null)
             {
-                if (folder.MetadataSchema != null && folder.Metadata != null)
+                if (folder.Metadata != null)
                 {
+                    schemaIdList.Insert(0, folder.MetadataSchema.Id);
+
                     ContentModelData metaData = BuildContentModel(folder.Metadata, expandLinkDepth);
                     string[] duplicateFieldNames;
                     ContentModelData emdMetadata = entityModelData.Metadata ?? new ContentModelData();
                     entityModelData.Metadata = MergeFields(emdMetadata, metaData, out duplicateFieldNames);
                 }
+
                 folder = (Folder)folder.OrganizationalItem;
             }
+
+            CreateSchemaIdListExtensionData(entityModelData, schemaIdList);
         }
     }
 }
