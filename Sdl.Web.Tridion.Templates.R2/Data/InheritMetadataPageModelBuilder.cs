@@ -35,7 +35,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 structureGroup = structureGroup.OrganizationalItem as StructureGroup;
             }
 
-            CreateSchemaIdListExtensionData(pageModelData, schemaIdList);
+            ViewModelData vm = pageModelData as ViewModelData;
+            CreateSchemaIdListExtensionData(ref vm, schemaIdList);
         }
     }
 }

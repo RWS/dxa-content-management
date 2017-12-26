@@ -40,7 +40,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 folder = (Folder)folder.OrganizationalItem;
             }
 
-            CreateSchemaIdListExtensionData(entityModelData, schemaIdList);
+            ViewModelData vm = entityModelData as ViewModelData;
+            CreateSchemaIdListExtensionData(ref vm, schemaIdList);
         }
     }
 }
