@@ -421,7 +421,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             };
         }
 
-        public void CreateSchemaIdListExtensionData(ViewModelData modelData, List<string> ids) {
+        public void CreateSchemaIdListExtensionData(ref ViewModelData modelData, List<string> ids) {
             if (modelData != null && modelData.ExtensionData == null)
             {
                 modelData.ExtensionData = new Dictionary<string, object>();

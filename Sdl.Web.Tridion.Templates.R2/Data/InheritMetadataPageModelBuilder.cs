@@ -18,6 +18,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             StructureGroup structureGroup = (StructureGroup)page.OrganizationalItem;
             List<string> schemaIdList = new List<string>();
 
+            // Checking for Schema Metadata is very important because we need to stop adding metadata as soon as we found page without it
             while (structureGroup != null && structureGroup.MetadataSchema != null)
             {
                 schemaIdList.Insert(0, structureGroup.MetadataSchema.Id);
