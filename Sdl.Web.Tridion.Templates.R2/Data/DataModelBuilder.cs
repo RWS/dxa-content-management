@@ -429,10 +429,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
             if (!modelData.ExtensionData.ContainsKey("Schemas"))
             {
-                modelData.ExtensionData.Add("Schemas", ids);
+                modelData.ExtensionData.Add("Schemas", ids.ToArray());
             }
-
-
         }
     }
 }
