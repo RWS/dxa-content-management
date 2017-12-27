@@ -427,9 +427,13 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 modelData.ExtensionData = new Dictionary<string, object>();
             }
 
+            object typedValue = GetTypedFieldValue(ids);
             if (!modelData.ExtensionData.ContainsKey("Schemas"))
             {
-                modelData.ExtensionData.Add("Schemas", GetTypedFieldValue(ids));
+                modelData.ExtensionData.Add("Schemas", typedValue);
+            }
+            else {
+                modelData.ExtensionData["Schemas"] = typedValue;
             }
         }
     }
