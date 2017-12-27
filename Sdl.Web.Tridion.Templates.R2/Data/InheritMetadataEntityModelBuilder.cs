@@ -24,6 +24,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             Folder folder = (Folder)component.OrganizationalItem;
             List<string> schemaIdList = new List<string>();
 
+            // Checking for Schema Metadata is very important because we need to stop adding metadata as soon as we found folder without it
             while (folder != null && folder.MetadataSchema != null)
             {
                 if (folder.Metadata != null)
@@ -39,7 +40,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 folder = (Folder)folder.OrganizationalItem;
             }
 
-            CreateSchemaIdListExtensionData(entityModelData, schemaIdList);
+            ViewModelData vm = entityModelData as ViewModelData;
+            CreateSchemaIdListExtensionData(ref vm, schemaIdList);
         }
     }
 }

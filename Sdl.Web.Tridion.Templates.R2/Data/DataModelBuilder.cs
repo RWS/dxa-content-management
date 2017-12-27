@@ -142,7 +142,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             return result.Count == 0 ? null : result;
         }
 
-        private static object GetTypedFieldValue(List<object> fieldValues)
+        private static object GetTypedFieldValue<T>(List<T> fieldValues)
         {
             switch (fieldValues.Count)
             {
@@ -154,7 +154,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
             Array typedArray = Array.CreateInstance(fieldValues[0].GetType(), fieldValues.Count);
             int i = 0;
-            foreach (object fieldValue in fieldValues)
+            foreach (T fieldValue in fieldValues)
             {
                 typedArray.SetValue(fieldValue, i++);
             }
@@ -421,18 +421,20 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             };
         }
 
-        public void CreateSchemaIdListExtensionData(ViewModelData modelData, List<string> ids) {
+        public void CreateSchemaIdListExtensionData(ref ViewModelData modelData, List<string> ids) {
             if (modelData != null && modelData.ExtensionData == null)
             {
                 modelData.ExtensionData = new Dictionary<string, object>();
             }
 
+            object typedValue = GetTypedFieldValue(ids);
             if (!modelData.ExtensionData.ContainsKey("Schemas"))
             {
-                modelData.ExtensionData.Add("Schemas", ids);
+                modelData.ExtensionData.Add("Schemas", typedValue);
             }
-
-
+            else {
+                modelData.ExtensionData["Schemas"] = typedValue;
+            }
         }
     }
 }
