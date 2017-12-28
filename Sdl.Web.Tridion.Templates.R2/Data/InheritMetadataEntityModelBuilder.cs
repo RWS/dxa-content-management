@@ -1,5 +1,6 @@
 ﻿using Sdl.Web.DataModel;
 using System.Collections.Generic;
+using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 
@@ -29,7 +30,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             {
                 if (folder.Metadata != null)
                 {
-                    schemaIdList.Insert(0, folder.MetadataSchema.Id);
+                    schemaIdList.Insert(0, new TcmUri(folder.MetadataSchema.Id).ItemId.ToString());
 
                     ContentModelData metaData = BuildContentModel(folder.Metadata, expandLinkDepth);
                     string[] duplicateFieldNames;
