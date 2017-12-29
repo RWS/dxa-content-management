@@ -42,7 +42,10 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             }
 
             ViewModelData vm = entityModelData as ViewModelData;
-            CreateSchemaIdListExtensionData(ref vm, schemaIdList);
+            if (schemaIdList.Count > 0)
+            {
+                CreateSchemaIdListExtensionData(ref vm, schemaIdList);
+            }
         }
     }
 }
