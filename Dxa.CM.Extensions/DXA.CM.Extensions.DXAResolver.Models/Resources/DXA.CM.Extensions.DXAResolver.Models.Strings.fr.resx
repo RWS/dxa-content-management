@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CR_ConfigurationLoadFailed" xml:space="preserve">
-    <value>DXA Resolver: Unable to load configuration</value>
+    <value>DXA Resolver: impossible de charger la configuration</value>
   </data>
   <data name="CR_ConfigurationSaved" xml:space="preserve">
-    <value>DXA Resolver: Configuration has been saved.</value>
+    <value>DXA Resolver: la configuration a été enregistrée.</value>
   </data>
   <data name="CR_ConfigurationSaveFailed" xml:space="preserve">
-    <value>DXA Resolver: Unable to save configuration</value>
+    <value>DXA Resolver: impossible d'enregistrer la configuration</value>
   </data>
   <data name="CR_RecurseDepthCanNotBeEmpty" xml:space="preserve">
-    <value>DXA Resolver: Recursion Depth can not be empty.</value>
+    <value>DXA Resolver: la profondeur de récurrence ne peut pas être vide.</value>
   </data>
   <data name="CR_RecurseDepthShouldBeNumeric" xml:space="preserve">
-    <value>DXA Resolver: Recursion Depth should be numeric.</value>
+    <value>DXA Resolver: la valeur de la profondeur de récurrence doit être numérique.</value>
   </data>
 </root>

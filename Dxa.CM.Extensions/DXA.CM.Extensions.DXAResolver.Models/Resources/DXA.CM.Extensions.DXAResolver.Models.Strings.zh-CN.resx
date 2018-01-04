@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CR_ConfigurationLoadFailed" xml:space="preserve">
-    <value>DXA Resolver: Unable to load configuration</value>
+    <value>DXA Resolver：无法加载配置</value>
   </data>
   <data name="CR_ConfigurationSaved" xml:space="preserve">
-    <value>DXA Resolver: Configuration has been saved.</value>
+    <value>DXA Resolver：配置已保存。</value>
   </data>
   <data name="CR_ConfigurationSaveFailed" xml:space="preserve">
-    <value>DXA Resolver: Unable to save configuration</value>
+    <value>DXA Resolver：无法保存配置</value>
   </data>
   <data name="CR_RecurseDepthCanNotBeEmpty" xml:space="preserve">
-    <value>DXA Resolver: Recursion Depth can not be empty.</value>
+    <value>DXA Resolver：递归深度不能为空。</value>
   </data>
   <data name="CR_RecurseDepthShouldBeNumeric" xml:space="preserve">
-    <value>DXA Resolver: Recursion Depth should be numeric.</value>
+    <value>DXA Resolver：递归深度应为数字。</value>
   </data>
 </root>
