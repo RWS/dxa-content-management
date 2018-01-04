@@ -36,8 +36,7 @@ namespace DD4T.Templates.Base.Utils
             using (eclContext)
             {
                 eclStubComponent.EclId = eclItem.Id.ToString();
-
-                string directLinkToPublished = eclItem.GetDirectLinkToPublished(null);
+                string directLinkToPublished = eclItem.GetDirectLinkToPublished(_emptyTemplateAttributes);
                 eclStubComponent.Multimedia.Url = string.IsNullOrEmpty(directLinkToPublished) ? PublishBinaryContent(eclItem, eclStubComponent.Id) : directLinkToPublished;
 
                 // Set additional ECL Item properties as ExtensionData on the ECL Stub Component.
@@ -86,7 +85,7 @@ namespace DD4T.Templates.Base.Utils
 
                 BuildExternalMetadataXmlAttributes(eclItem, xlinkElement);
 
-                string directLinkToPublished = eclItem.GetDirectLinkToPublished(null);
+                string directLinkToPublished = eclItem.GetDirectLinkToPublished(_emptyTemplateAttributes);
                 return string.IsNullOrEmpty(directLinkToPublished) ? PublishBinaryContent(eclItem, eclStubComponentId) : directLinkToPublished;
             }
         }
