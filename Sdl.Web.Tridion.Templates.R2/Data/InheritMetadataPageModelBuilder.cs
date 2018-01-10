@@ -1,4 +1,6 @@
 ﻿using Sdl.Web.DataModel;
+using System.Collections.Generic;
+using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 
 namespace Sdl.Web.Tridion.Templates.R2.Data
@@ -13,10 +15,16 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         public void BuildPageModel(ref PageModelData pageModelData, Page page)
         {
             Logger.Debug("Adding structure group metadata to page model metadata.");
+
             StructureGroup structureGroup = (StructureGroup)page.OrganizationalItem;
-            while (structureGroup != null)
+            List<string> schemaIdList = new List<string>();
+
+            // Checking for Schema Metadata is very important because we need to stop adding metadata as soon as we found page without it
+            while (structureGroup != null && structureGroup.MetadataSchema != null)
             {
-                if (structureGroup.MetadataSchema != null && structureGroup.Metadata != null)
+                schemaIdList.Insert(0, new TcmUri(structureGroup.MetadataSchema.Id).ItemId.ToString());
+
+                if (structureGroup.Metadata != null)
                 {
                     ContentModelData metaData = BuildContentModel(structureGroup.Metadata, Pipeline.Settings.ExpandLinkDepth);
                     string[] duplicateFieldNames;
@@ -24,8 +32,12 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     ContentModelData pmdMetadata = pageModelData.Metadata ?? new ContentModelData();
                     pageModelData.Metadata = MergeFields(pmdMetadata, metaData, out duplicateFieldNames);
                 }
+
                 structureGroup = structureGroup.OrganizationalItem as StructureGroup;
             }
+
+            ViewModelData vm = pageModelData as ViewModelData;
+            CreateSchemaIdListExtensionData(ref vm, schemaIdList);
         }
     }
 }

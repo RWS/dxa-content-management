@@ -91,7 +91,10 @@
     <Compile Include="DD4T\DD4T.Templates.Base\Builder\PublicationBuilder.cs" />
     <Compile Include="DD4T\DD4T.Templates.Base\Builder\SchemaBuilder.cs" />
     <Compile Include="DD4T\DD4T.Templates.Base\Builder\TargetGroupBuilder.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Contracts\IBinaryPathProvider.cs" />
     <Compile Include="DD4T\DD4T.Templates.Base\DefaultTemplate.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Providers\BaseBinaryPathProvider.cs" />
+    <Compile Include="DD4T\DD4T.Templates.Base\Providers\DefaultBinaryPathProvider.cs" />
     <Compile Include="DD4T\DD4T.Templates.Base\StopChainException.cs" />
     <Compile Include="DD4T\DD4T.Templates.Base\Utils\BinaryPublisher.cs" />
     <Compile Include="DD4T\DD4T.Templates.Base\Utils\EclProcessor.cs" />

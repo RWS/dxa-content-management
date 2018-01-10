@@ -142,7 +142,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             return result.Count == 0 ? null : result;
         }
 
-        private static object GetTypedFieldValue(List<object> fieldValues)
+        private static object GetTypedFieldValue<T>(List<T> fieldValues)
         {
             switch (fieldValues.Count)
             {
@@ -152,12 +152,18 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     return fieldValues[0];
             }
 
+            return GetTypedArrayOfValues(fieldValues);
+        }
+
+        private static object GetTypedArrayOfValues<T>(List<T> fieldValues)
+        {
             Array typedArray = Array.CreateInstance(fieldValues[0].GetType(), fieldValues.Count);
             int i = 0;
-            foreach (object fieldValue in fieldValues)
+            foreach (T fieldValue in fieldValues)
             {
                 typedArray.SetValue(fieldValue, i++);
             }
+
             return typedArray;
         }
 
@@ -419,6 +425,22 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 ViewName = viewName,
                 AreaName = moduleName
             };
+        }
+
+        public void CreateSchemaIdListExtensionData(ref ViewModelData modelData, List<string> ids) {
+            if (modelData != null && modelData.ExtensionData == null)
+            {
+                modelData.ExtensionData = new Dictionary<string, object>();
+            }
+
+            object typedValue = GetTypedArrayOfValues(ids);
+            if (!modelData.ExtensionData.ContainsKey("Schemas"))
+            {
+                modelData.ExtensionData.Add("Schemas", typedValue);
+            }
+            else {
+                modelData.ExtensionData["Schemas"] = typedValue;
+            }
         }
     }
 }

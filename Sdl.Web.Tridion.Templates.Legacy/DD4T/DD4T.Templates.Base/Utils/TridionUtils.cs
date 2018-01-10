@@ -59,65 +59,65 @@ namespace DD4T.Templates.Base.Utils
       /// there can be other aspects set on the item that are taken into account in the filename</remarks>
       /// <param name="item"></param>
       /// <returns></returns>
-      public static string ConstructFileName(Item item)
-      {
-         IDictionary<string, string> properties = item.Properties;
-         string fileName = properties[Item.ItemPropertyFileName];
-         if (fileName == null)
-         {
-            log.Warning(String.Format("No filename set in property {0}", Item.ItemPropertyFileName));
-            return null;
-         }
+      //public static string ConstructFileName(Item item)
+      //{
+      //   IDictionary<string, string> properties = item.Properties;
+      //   string fileName = properties[Item.ItemPropertyFileName];
+      //   if (fileName == null)
+      //   {
+      //      log.Warning(String.Format("No filename set in property {0}", Item.ItemPropertyFileName));
+      //      return null;
+      //   }
 
-         // Handle prefix
-         fileName = GetPropertyValue(item, Item.ItemPropertyFileNamePrefix) + fileName;
+      //   // Handle prefix
+      //   fileName = GetPropertyValue(item, Item.ItemPropertyFileNamePrefix) + fileName;
 
-         // Handle subfolder (todo: fix this, ItemPropertyFileNameSubFolder does not exist!!
-         //string subFolder = GetPropertyValue(item, Item.ItemPropertyFileNameSubFolder);
-         //if (subFolder != "") {
-         //    if (subFolder.StartsWith("/")) {
-         //        // Strip of leading /
-         //        subFolder = subFolder.Substring(1);
-         //    }
-         //    if (!subFolder.EndsWith(PathSeparator)) {
-         //        // Ensure there is always a separator at the end
-         //        subFolder += PathSeparator;
-         //    }
-         //    fileName = subFolder + fileName;
-         //}
+      //   // Handle subfolder (todo: fix this, ItemPropertyFileNameSubFolder does not exist!!
+      //   //string subFolder = GetPropertyValue(item, Item.ItemPropertyFileNameSubFolder);
+      //   //if (subFolder != "") {
+      //   //    if (subFolder.StartsWith("/")) {
+      //   //        // Strip of leading /
+      //   //        subFolder = subFolder.Substring(1);
+      //   //    }
+      //   //    if (!subFolder.EndsWith(PathSeparator)) {
+      //   //        // Ensure there is always a separator at the end
+      //   //        subFolder += PathSeparator;
+      //   //    }
+      //   //    fileName = subFolder + fileName;
+      //   //}
 
-         // Handle extension
-         int extensionDotIndex = fileName.LastIndexOf(".");
-         string overriddenExtension = GetPropertyValue(item, Item.ItemPropertyFileNameExtension);
-         if (overriddenExtension != "")
-         {
-            if (extensionDotIndex != -1)
-            {
-               // replace extension, so strip current one first
-               fileName = fileName.Substring(0, extensionDotIndex);
-            }
-            // In all cases there will be an extension now
-            extensionDotIndex = fileName.Length;
+      //   // Handle extension
+      //   int extensionDotIndex = fileName.LastIndexOf(".");
+      //   string overriddenExtension = GetPropertyValue(item, Item.ItemPropertyFileNameExtension);
+      //   if (overriddenExtension != "")
+      //   {
+      //      if (extensionDotIndex != -1)
+      //      {
+      //         // replace extension, so strip current one first
+      //         fileName = fileName.Substring(0, extensionDotIndex);
+      //      }
+      //      // In all cases there will be an extension now
+      //      extensionDotIndex = fileName.Length;
 
-            fileName += "." + overriddenExtension;
-         }
+      //      fileName += "." + overriddenExtension;
+      //   }
 
-         // Handle filename suffix
-         string suffix = GetPropertyValue(item, Item.ItemPropertyFileNameSuffix);
-         if (suffix != "")
-         {
-            if (extensionDotIndex == -1)
-            {
-               fileName += suffix;
-            }
-            else
-            {
-               fileName = fileName.Substring(0, extensionDotIndex) + suffix + fileName.Substring(extensionDotIndex);
-            }
-         }
+      //   // Handle filename suffix
+      //   string suffix = GetPropertyValue(item, Item.ItemPropertyFileNameSuffix);
+      //   if (suffix != "")
+      //   {
+      //      if (extensionDotIndex == -1)
+      //      {
+      //         fileName += suffix;
+      //      }
+      //      else
+      //      {
+      //         fileName = fileName.Substring(0, extensionDotIndex) + suffix + fileName.Substring(extensionDotIndex);
+      //      }
+      //   }
 
-         return fileName;
-      }
+      //   return fileName;
+      //}
 
       /// <summary>
       /// Get a property value from an item, or an empty string if the property value

@@ -556,7 +556,6 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             };
         }
 
-
         private Dictionary<string, object> GetXpmMetadata(Page page)
         {
             if (!Pipeline.Settings.GenerateXpmMetadata)

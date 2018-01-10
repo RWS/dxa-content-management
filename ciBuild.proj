@@ -40,7 +40,7 @@
   </PropertyGroup>
 
 
-    <!-- =============================================================================================================================================  -->
+    <!-- ======================================================================================================================= -->
     <Target Name="Build">
         <Message Text="Start build..." Importance="high" />
         
@@ -52,7 +52,7 @@
         <!-- NOTE: Not calling DeployOutput here; should be called separately by Jenkins build -->
     </Target>
 
-    <!-- =============================================================================================================================================  -->
+    <!-- ======================================================================================================================= -->
     <Target Name="PrepareBuild">
         <Message Text="Preparing build..." Importance="high" />
 
@@ -62,6 +62,9 @@
         <Message Text="Restoring NuGet packages..."/>
         <Exec Command="_tools\RestorePackages DxaContentManagement.sln" WorkingDirectory="$(ProjectDirectory)" />
         
+        <Message Text="Restoring NuGet packages for extensions..."/>
+        <Exec Command="_tools\RestorePackages Dxa.CM.Extensions\Dxa.CM.Extensions.sln" WorkingDirectory="$(ProjectDirectory)" />
+
       <Message Text="Setting Assembly Info"/>
 
       <ItemGroup>
@@ -88,7 +91,7 @@
 
     </Target>
 
-    <!-- =============================================================================================================================================  -->
+    <!-- ======================================================================================================================= -->
     <Target Name="RunBuild">
         <Message Text="Running build commands..." Importance="high" />
 
@@ -96,9 +99,12 @@
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates\Sdl.Web.Tridion.Templates.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Legacy\Sdl.Web.Tridion.Templates.Legacy.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Tests\Sdl.Web.Tridion.Templates.Tests.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
+
+        <!-- Build all CM extensions -->
+        <MSBuild Projects="$(ProjectDirectory)\Dxa.CM.Extensions\Dxa.CM.Extensions.sln" Properties="Configuration=$(BuildConfiguration);" StopOnFirstFailure="true" />
     </Target>
 
-    <!-- =============================================================================================================================================  -->
+    <!-- ======================================================================================================================= -->
     <Target Name="CreatePackages" Condition="'$(BuildConfiguration)' == 'Release'">
         <Message Text="Creating NuGet packages in '$(NuGetPackageDirectory)' ..." Importance="high" />
 
@@ -107,14 +113,14 @@
         <Exec Command="$(NuGet) pack Sdl.Dxa.DataModel.nuspec -Version $(PackageVersion)" WorkingDirectory="$(NuGetPackageDirectory)" />
     </Target>
 
-    <!-- =============================================================================================================================================  -->
+    <!-- ======================================================================================================================= -->
     <Target Name="PublishPackages" Condition="'$(BuildConfiguration)' == 'Release'">
         <Message Text="Publishing NuGet packages to '$(NuGetRepositoryUrl)' ..." Importance="high" />
 
         <Exec Command="$(NuGet) push Sdl.Dxa.DataModel.$(PackageVersion).nupkg -Source $(NuGetRepositoryUrl)" WorkingDirectory="$(NuGetPackageDirectory)" />
     </Target>
     
-    <!-- =============================================================================================================================================  -->
+    <!-- ======================================================================================================================= -->
     <Target Name="DeployOutput">
         
         <!-- Upload legacy TBBs to CMS -->
@@ -127,7 +133,7 @@
 
     </Target>
  
-    <!-- =============================================================================================================================================  -->
+    <!-- ======================================================================================================================= -->
     <Target Name="Test" Condition="'$(BuildConfiguration)' == 'Release'">
         <Message Text="Running unit tests..." />
     

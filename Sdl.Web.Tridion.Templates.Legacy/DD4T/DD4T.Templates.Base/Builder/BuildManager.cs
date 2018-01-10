@@ -18,11 +18,14 @@ namespace DD4T.Templates.Base.Builder
     /// </summary>
     public class BuildManager
     {
-        // I think this should go! (qs)
-        //public BuildManager()
-        //{
-        //    BuildProperties = new BuildProperties(null);
-        //}
+        private static TemplatingLogger log = TemplatingLogger.GetLogger(typeof(BuildManager));
+
+
+        /// <summary>
+        /// Create a BuildManager (can only be instantiated from an SDL Web template)
+        /// </summary>
+        /// <param name="package">SDL Web publishing package</param>
+        /// <param name="engine">SDL Web publishing engine</param>
         public BuildManager (Package package, Engine engine)
         {
             BuildProperties = new BuildProperties(package);
@@ -54,7 +57,7 @@ namespace DD4T.Templates.Base.Builder
         public virtual Dynamic.Component BuildComponent(TCM.Component tcmComponent)
         {
             return ComponentBuilder.BuildComponent(tcmComponent, this);
-		}
+        }
 
         public virtual Dynamic.Component BuildComponent(TCM.Component tcmComponent, int currentLinkLevel)
         {
@@ -100,7 +103,7 @@ namespace DD4T.Templates.Base.Builder
         public virtual Dynamic.OrganizationalItem BuildOrganizationalItem(TComm.StructureGroup tcmStructureGroup)
         {
             return OrganizationalItemBuilder.BuildOrganizationalItem(tcmStructureGroup);
-		}
+        }
 
         public virtual Dynamic.OrganizationalItem BuildOrganizationalItem(TCM.Folder tcmFolder)
         {

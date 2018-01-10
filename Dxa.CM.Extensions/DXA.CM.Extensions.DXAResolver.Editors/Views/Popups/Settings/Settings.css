@@ -1,0 +1,93 @@
+﻿#dxa-cr-settings-dialog .dxa-layout.__full_screen {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.dxa-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    align-content: stretch;
+}
+
+.dxa-layout.__horizontal {
+    flex-direction: row;
+    width: 100%;
+}
+.dxa-layout.__horizontal .dxa-layout_column {
+}
+
+.dxa-layout.__horizontal .dxa-layout_column.__main {
+    flex: 1 100%;
+}
+
+.dxa-layout .dxa-layout_element {
+    display: flex;
+}
+
+.dxa-layout_element.__footer {
+    border-top: solid 1px #a1a9b2;
+    background-color: #ebedf0;
+}
+
+.dxa-layout_reducer {
+    display: block;
+    padding: 9px;
+    flex: 1 100%;
+}
+
+.dxa-layout_element.__footer .dxa-button_group {
+    float: left;
+}
+
+.dxa-layout_element.__footer .dxa-button_group.__move_right {
+    float: right;
+}
+
+.dxa-layout_element.__content {
+    flex: 1 100%;
+}
+
+.dxa-input.__type_text {
+    padding: 6px;
+}
+.dxa-input.__type_text.__numeric {
+    width: 36px;
+}
+
+.dxa-field.__horizontal {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    align-content: stretch;
+    margin-bottom: 8px;
+}
+
+.dxa-field.__horizontal:last-child {
+    margin-bottom: 0;
+}
+
+.dxa-field.__horizontal .dxa-field_label,
+.dxa-field.__horizontal .dxa-field_content {
+    display: block;
+}
+
+
+.dxa-field_label label.__required:before {
+    content: "*";
+    color: red;
+}
+
+.dxa-field.__horizontal .dxa-field_label {
+    padding: 6px 10px 0 0;
+    width: 220px;
+    align-items: center;
+}
+
+.dxa-field.__horizontal .dxa-field_label .dxa-field_hint {
+    color: #999;
+    font-size: 95%;
+}

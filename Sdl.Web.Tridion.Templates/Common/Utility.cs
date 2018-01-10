@@ -61,12 +61,7 @@ namespace Sdl.Web.Tridion.Templates.Common
 
         public static bool IsPublicationTargetXpmEnabled(PublicationTarget publicationTarget)
         {
-            if (publicationTarget == null)
-            {
-                return false;
-            }
-
-            ApplicationData appData = publicationTarget.LoadApplicationData(SiteEditApplicationId);
+            ApplicationData appData = publicationTarget?.LoadApplicationData(SiteEditApplicationId);
             if (appData == null)
             {
                 return false;

@@ -10,49 +10,100 @@ using DD4T.Templates.Base.Xml;
 using System.Text.RegularExpressions;
 using DD4T.Templates.Base.Builder;
 using Dynamic = DD4T.ContentModel;
-
+using DD4T.Templates.Base.Contracts;
+using System.Reflection;
+using System.Linq;
+using DD4T.Templates.Base.Providers;
 
 namespace DD4T.Templates.Base.Utils
 {
     public class BinaryPublisher
     {
-        protected TemplatingLogger log = TemplatingLogger.GetLogger(typeof(BinaryPublisher));
-        TcmUri targetStructureGroupUri = null;
+        protected static TemplatingLogger log = TemplatingLogger.GetLogger(typeof(BinaryPublisher));
         protected Package package;
         protected Engine engine;
         Template currentTemplate;
+        private IBinaryPathProvider binaryPathProvider;
 
         private const string EclMimeType = "application/externalcontentlibrary";
 
         public BinaryPublisher(Package package, Engine engine)
-            : this(package, engine, null)
         {
+            this.package = package;
+            this.engine = engine;
+
+            Init();
         }
 
+        [Obsolete("Please use the constructor BinaryPublisher(Package,Engine)")]
         public BinaryPublisher(Package package, Engine engine, string targetStructureGroup)
         {
 
             this.package = package;
             this.engine = engine;
 
-            currentTemplate = engine.PublishingContext.ResolvedItem.Template;
-
-            // Determine (optional) structure group parameter
-
-            String targetStructureGroupParam = targetStructureGroup == null ? package.GetValue("sg_PublishBinariesTargetStructureGroup") : targetStructureGroup;
-            if (targetStructureGroupParam != null)
-            {
-                if (!TcmUri.IsValid(targetStructureGroupParam))
-                {
-                    log.Error(String.Format("TargetStructureGroup '{0}' is not a valid TCMURI. Exiting template.", targetStructureGroupParam));
-                    return;
-                }
-
-                Publication publication = TridionUtils.GetPublicationFromContext(package, engine);
-                TcmUri localTargetStructureGroupTcmUri = TridionUtils.GetLocalUri(new TcmUri(publication.Id), new TcmUri(targetStructureGroupParam));
-                targetStructureGroupUri = new TcmUri(localTargetStructureGroupTcmUri);
-            }
+            Init();
         }
+
+        private void Init()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+
+            currentTemplate = engine.PublishingContext.ResolvedItem.Template;
+            BuildProperties buildProperties = new BuildProperties(package);
+
+            if (!string.IsNullOrWhiteSpace(buildProperties.BinaryPathProvider))
+            {
+                log.Debug($"Found class to override the binary path provider: {buildProperties.BinaryPathProvider}");
+
+                if (buildProperties.BinaryPathProvider.Contains("|"))
+                {
+                    var t = buildProperties.BinaryPathProvider.Split('|').Select(a => a.Trim()).ToArray<string>();
+                    log.Debug("Assembly:" + t[0]);
+                    log.Debug("Class:" + t[1]);
+                    object[] parameters = new object[2] { engine, package };
+                    binaryPathProvider = (IBinaryPathProvider)Activator.CreateInstance(t[0], t[1], parameters).Unwrap();
+                }
+                else
+                {
+                    var type = Type.GetType(buildProperties.BinaryPathProvider);
+                    if (type == null)
+                    {
+                        log.Warning($"Could not find class {buildProperties.BinaryPathProvider}");
+                        binaryPathProvider = null;
+                    }
+                    else
+                    {
+                        log.Debug($"Found type {type.FullName}");
+                        binaryPathProvider = (IBinaryPathProvider)Activator.CreateInstance(type, engine, package);
+                        log.Debug($"Instantiated class {binaryPathProvider.GetType().FullName}");
+                    }
+                }
+            }
+            if (binaryPathProvider == null)
+            {
+                binaryPathProvider = new DefaultBinaryPathProvider(engine, package);
+            }
+
+
+
+        }
+
+        static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            log.Debug($"called CurrentDomain_AssemblyResolve for {sender} and {args.Name}");
+            foreach (Assembly ass in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                log.Debug($"Found assembly {ass.FullName}");
+                if (ass.FullName.Contains("DD4T.Templates.Merged"))
+                {
+                    log.Debug("FOUND!");
+                    return ass;
+                }
+            }
+            return null;
+        }
+
 
         #region Protected Members
 
@@ -109,10 +160,9 @@ namespace DD4T.Templates.Base.Utils
                 log.Warning("PublishMultimediaComponent called with a non-Multimedia Component: " + mmComponent.Id);
                 return;
             }
-
             if (multimedia.MimeType == EclMimeType && buildProperties.ECLEnabled && mmComponent.EclId == null)
             {
-                using (EclProcessor eclProcessor = new EclProcessor(engine, targetStructureGroupUri))
+                using (EclProcessor eclProcessor = new EclProcessor(engine, binaryPathProvider.GetTargetStructureGroupUri(mmComponent.Id)))
                 {
                     eclProcessor.ProcessEclStubComponent(mmComponent);
                 }
@@ -152,7 +202,7 @@ namespace DD4T.Templates.Base.Utils
             string url;
             if (multimediaType.MimeType == EclMimeType && buildProperties.ECLEnabled)
             {
-                using (EclProcessor eclProcessor = new EclProcessor(engine, targetStructureGroupUri))
+                using (EclProcessor eclProcessor = new EclProcessor(engine, binaryPathProvider.GetTargetStructureGroupUri(component.Id)))
                 {
                     url = eclProcessor.ProcessEclXlink(xlinkElement);
                 }
@@ -187,6 +237,9 @@ namespace DD4T.Templates.Base.Utils
 
         protected virtual void PublishItem(Item item, TcmUri itemUri)
         {
+
+            log.Debug($"PublishItem called on {itemUri}");
+
             Stream itemStream = null;
             // See if some template set itself as the applied template on this item
             TcmUri appliedTemplateUri = null;
@@ -194,14 +247,15 @@ namespace DD4T.Templates.Base.Utils
             {
                 appliedTemplateUri = new TcmUri(item.Properties[Item.ItemPropertyTemplateUri]);
             }
-
+            Component mmComp = (Component)engine.GetObject(item.Properties[Item.ItemPropertyTcmUri]);
+            string fileName = binaryPathProvider.GetFilename(mmComp, currentTemplate.Id);
+            
             try
             {
                 string publishedPath;
-                if (targetStructureGroupUri == null)
+                if (fileName == DefaultBinaryPathProvider.USE_DEFAULT_BINARY_PATH)
                 {
                     log.Debug("no structure group defined, publishing binary with default settings");
-                    Component mmComp = (Component)engine.GetObject(item.Properties[Item.ItemPropertyTcmUri]);
                     // Note: it is dangerous to specify the CT URI as variant ID without a structure group, because it will fail if you publish the same MMC from two or more CTs!
                     // So I removed the variant ID altogether (QS, 20-10-2011)
                     log.Debug(string.Format("publishing mm component {0} without variant id", mmComp.Id));
@@ -211,23 +265,31 @@ namespace DD4T.Templates.Base.Utils
                 }
                 else
                 {
-                    Component mmComp = (Component)engine.GetObject(item.Properties[Item.ItemPropertyTcmUri]);
+                    string targetSGuri = binaryPathProvider.GetTargetStructureGroupUri(mmComp.Id.ToString());
+                    StructureGroup targetSG = null;
+                    if (targetSGuri!= null)
+                    {
+                        targetSG = (StructureGroup)engine.GetObject(targetSGuri);
+                    }
 
-                    string fileName = ConstructFileName(mmComp, currentTemplate.Id);
-                    StructureGroup targetSG = (StructureGroup)engine.GetObject(targetStructureGroupUri);
                     itemStream = item.GetAsStream();
                     if (itemStream == null)
                     {
                         // All items can be converted to a stream?
                         log.Error(String.Format("Cannot get item '{0}' as stream", itemUri.ToString()));
                     }
-                    //byte[] data = new byte[itemStream.Length];
-                    //itemStream.Read(data, 0, data.Length);
-                    //itemStream.Close();
-                    log.Debug(string.Format("publishing mm component {0} to structure group {1} with variant id {2} and filename {3}", mmComp.Id, targetStructureGroupUri.ToString(), currentTemplate.Id, fileName));
-                    Binary b = engine.PublishingContext.RenderedItem.AddBinary(item.GetAsStream(), fileName, targetSG, currentTemplate.Id, mmComp, mmComp.BinaryContent.MultimediaType.MimeType);
+                    Binary b;
+                    if (targetSG == null)
+                    {
+                        log.Debug(string.Format("publishing mm component {0} with variant id {1} and filename {2}", mmComp.Id, currentTemplate.Id, fileName));
+                        b = engine.PublishingContext.RenderedItem.AddBinary(itemStream, fileName, currentTemplate.Id, mmComp, mmComp.BinaryContent.MultimediaType.MimeType);
+                    }
+                    else
+                    {
+                        log.Debug(string.Format("publishing mm component {0} to structure group {1} with variant id {2} and filename {3}", mmComp.Id, targetSGuri, currentTemplate.Id, fileName));
+                        b = engine.PublishingContext.RenderedItem.AddBinary(itemStream, fileName, targetSG, currentTemplate.Id, mmComp, mmComp.BinaryContent.MultimediaType.MimeType);
+                    }
                     publishedPath = b.Url;
-                    //publishedPath = engine.AddBinary(itemUri, appliedTemplateUri, targetStructureGroupUri, data, fileName);
                     log.Debug(string.Format("binary is published to url {0}", publishedPath));
                 }
                 log.Debug("binary published, published path = " + publishedPath);
@@ -239,19 +301,8 @@ namespace DD4T.Templates.Base.Utils
             }
         }
 
-        private static string ConstructFileName(Component mmComp, string variantId)
-        {
-            Regex re = new Regex(@"^(.*)\.([^\.]+)$");
-            string fileName = mmComp.BinaryContent.Filename;
-            if (!String.IsNullOrEmpty(fileName))
-            {
-                fileName = Path.GetFileName(fileName);
-            }
-            return re.Replace(fileName, string.Format("$1_{0}_{1}.$2", mmComp.Id.ToString().Replace(":", ""), variantId.Replace(":", "")));
-        }
         #endregion
 
     }
-
 
 }

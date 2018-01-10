@@ -57,8 +57,12 @@
     <Reference Include="Tridion.ContentManager.Publishing">
       <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Publishing.dll</HintPath>
     </Reference>
+    <Reference Include="Tridion.ContentManager.Templating">
+      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Templating.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LogAdaptor.cs" />
     <Compile Include="Resolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\CommonAssemblyInfo.cs" />

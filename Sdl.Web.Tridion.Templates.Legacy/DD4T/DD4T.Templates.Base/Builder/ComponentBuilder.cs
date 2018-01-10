@@ -128,5 +128,5 @@ namespace DD4T.Templates.Base.Builder
           manager.AddXpathToFields(c.MetadataFields, "tcm:Metadata/custom:Metadata");
           return c;
       }
-	}
+    }
 }
