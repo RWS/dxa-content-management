@@ -8,19 +8,8 @@ namespace DXA.CM.Extensions.DXAResolver.Models
 {
 	public partial class Services
 	{
-		private static String DCR_NS
-		{
-			get
-			{
-				using (Tracer.GetTracer().StartTrace())
-				{
-					return Constants.DXA_RESOLVER_CONFIGURATION_NAMESPACE;
-				}
-			}
-		}
-
 		private static XmlNamespaceManager _ns;
-		internal static XmlNamespaceManager getNameSpacemanager()
+		internal static XmlNamespaceManager GetNameSpacemanager()
 		{
 			using (Tracer.GetTracer().StartTrace())
 			{

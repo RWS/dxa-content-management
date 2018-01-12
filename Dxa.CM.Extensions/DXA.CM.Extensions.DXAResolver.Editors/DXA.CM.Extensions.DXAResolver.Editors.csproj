@@ -1,4 +1,5 @@
-﻿<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -44,30 +45,8 @@
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Web.DynamicData" />
-    <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Web.Services" />
-    <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="Tridion.Logging, Version=8.1.0.150, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.CMUtils, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Web.CMUtils.dll</HintPath>
-    </Reference>
     <Reference Include="Tridion.Web.UI.Core, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Core.dll</HintPath>
@@ -76,45 +55,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Editors.Base.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.Web.UI.Editors.CME, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Editors.CME.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Models.BaseEditor, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Models.BaseEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Models.CME, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Models.CME.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Models.Interfaces, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Models.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Models.R5LegacyConverter, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Models.R5LegacyConverter.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Models.TCM54, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Models.TCM54.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Models.TTM, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Models.TTM.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Configuration\DXAResolver.Editor.config" />
-    <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Commands\ShowSettings.js" />
@@ -132,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources\DXA.CM.Extensions.DXAResolver.Editors.Strings.Designer.cs">
+    <Compile Include="App_GlobalResources\DXA.CM.Extensions.DXAResolver.Editors.Strings.Designer.cs">
       <DependentUpon>DXA.CM.Extensions.DXAResolver.Editors.Strings.resx</DependentUpon>
       <CustomToolNamespace>DXA.CM.Extensions.DXAResolver.Editors.Resources</CustomToolNamespace>
     </Compile>
@@ -146,25 +90,25 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\DXA.CM.Extensions.DXAResolver.Editors.Strings.de.resx">
+    <EmbeddedResource Include="App_GlobalResources\DXA.CM.Extensions.DXAResolver.Editors.Strings.de.resx">
       <CustomToolNamespace>DXA.CM.Extensions.DXAResolver.Editors.Resources</CustomToolNamespace>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\DXA.CM.Extensions.DXAResolver.Editors.Strings.es.resx">
+    <EmbeddedResource Include="App_GlobalResources\DXA.CM.Extensions.DXAResolver.Editors.Strings.es.resx">
       <CustomToolNamespace>DXA.CM.Extensions.DXAResolver.Editors.Resources</CustomToolNamespace>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\DXA.CM.Extensions.DXAResolver.Editors.Strings.fr.resx">
+    <EmbeddedResource Include="App_GlobalResources\DXA.CM.Extensions.DXAResolver.Editors.Strings.fr.resx">
       <CustomToolNamespace>DXA.CM.Extensions.DXAResolver.Editors.Resources</CustomToolNamespace>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\DXA.CM.Extensions.DXAResolver.Editors.Strings.ja.resx">
+    <EmbeddedResource Include="App_GlobalResources\DXA.CM.Extensions.DXAResolver.Editors.Strings.ja.resx">
       <CustomToolNamespace>DXA.CM.Extensions.DXAResolver.Editors.Resources</CustomToolNamespace>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\DXA.CM.Extensions.DXAResolver.Editors.Strings.nl.resx">
+    <EmbeddedResource Include="App_GlobalResources\DXA.CM.Extensions.DXAResolver.Editors.Strings.nl.resx">
       <CustomToolNamespace>DXA.CM.Extensions.DXAResolver.Editors.Resources</CustomToolNamespace>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\DXA.CM.Extensions.DXAResolver.Editors.Strings.resx">
+    <EmbeddedResource Include="App_GlobalResources\DXA.CM.Extensions.DXAResolver.Editors.Strings.resx">
       <CustomToolNamespace>DXA.CM.Extensions.DXAResolver.Editors.Resources</CustomToolNamespace>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\DXA.CM.Extensions.DXAResolver.Editors.Strings.zh-CN.resx">
+    <EmbeddedResource Include="App_GlobalResources\DXA.CM.Extensions.DXAResolver.Editors.Strings.zh-CN.resx">
       <CustomToolNamespace>DXA.CM.Extensions.DXAResolver.Editors.Resources</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
@@ -192,13 +136,7 @@
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>
-  </ProjectExtensions>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props'))" />
-  </Target>
+  </ProjectExtensions> 
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
