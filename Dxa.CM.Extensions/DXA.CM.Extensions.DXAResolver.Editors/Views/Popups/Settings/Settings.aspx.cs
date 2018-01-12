@@ -10,7 +10,7 @@ namespace DXA.CM.Extensions.DXAResolver.Editors.Views.Popups
 
     public class Settings : PopupView
     {
-        public string ThemePath
+        public new string ThemePath
         {
             get
             {
