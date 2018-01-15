@@ -46,10 +46,10 @@
 
         <CallTarget Targets="PrepareBuild"/>
         <CallTarget Targets="RunBuild"/>
+        <CallTarget Targets="CreateDXAResolverExtensionDist"/>
         <CallTarget Targets="Test"/>
         <CallTarget Targets="CreatePackages"/>
         <CallTarget Targets="PublishPackages" Condition="'$(NuGetRepositoryUrl)' != ''"/>
-        <CallTarget Targets="CreateDXAResolverExtensionDist"/>
         <!-- NOTE: Not calling DeployOutput here; should be called separately by Jenkins build -->
     </Target>
 
@@ -130,7 +130,7 @@
                 $(ModelsFolder)\**\Passolo\**;
                 $(ModelsFolder)\**\Properties\**;
             </ExcludeFiles>
-            <ExtensionBinDist>$(PackageFolder)\bin</ExtensionBinDist>
+            <ExtensionBinDist>$(PackageFolder)\binaries</ExtensionBinDist>
         </PropertyGroup>
         <ItemGroup>
             <ExtensionEditorsStaticFile Include="$(EditorsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
@@ -152,8 +152,8 @@
         </ItemGroup>
 
         <!-- Build all CM extensions -->
-        <MSBuild Projects="$(EditorsFolder)\DXA.CM.Extensions.DXAResolver.Editors.csproj" Targets="Clean;Build" Properties="Configuration=$(BuildConfiguration)" StopOnFirstFailure="true" />
-        <MSBuild Projects="$(ModelsFolder)\DXA.CM.Extensions.DXAResolver.Models.csproj" Targets="Clean;Build" Properties="Configuration=$(BuildConfiguration)" StopOnFirstFailure="true" />
+        <MSBuild Projects="$(EditorsFolder)\DXA.CM.Extensions.DXAResolver.Editors.csproj" Targets="Clean;Build" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
+        <MSBuild Projects="$(ModelsFolder)\DXA.CM.Extensions.DXAResolver.Models.csproj" Targets="Clean;Build" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
 
         <Message Text="Cleaning dist folder" Importance="high" />
         <RemoveDir Directories="$(ExtensionsDistFolder)" />
