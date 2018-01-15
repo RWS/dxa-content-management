@@ -16,36 +16,68 @@
         <LegacyTemplatesFolder>tcm:2-2744-2</LegacyTemplatesFolder>
         <R2TemplatesFolder>tcm:2-2743-2</R2TemplatesFolder>
         <LegacyTemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Legacy\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.Legacy.merged.dll</LegacyTemplatesDll>
-        <R2TemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates.R2\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.R2.merged.dll</R2TemplatesDll>        
-        
+        <R2TemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates.R2\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.R2.merged.dll</R2TemplatesDll>
+
         <CmsTargetDefinitionFile>dxadevweb85.xml</CmsTargetDefinitionFile>
         <NuGetRepositoryUrl></NuGetRepositoryUrl>
 
         <NuGet>&quot;$(ProjectDirectory)\_tools\NuGet.exe&quot;</NuGet>
         <NuGetPackageDirectory>$(ProjectDirectory)\_NuGet</NuGetPackageDirectory>
-        
+
         <VersionMajor>$(Version.Split('.')[0])</VersionMajor>
         <VersionMinor>$(Version.Split('.')[1])</VersionMinor>
         <VersionPatch>$(Version.Split('.')[2])</VersionPatch>
         <VersionBuild>$(Version.Split('.')[3])</VersionBuild>
         <PreReleaseLabel Condition="'$(IsPreRelease)' == 'true'">-beta-$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</PreReleaseLabel>
         <PackageVersion>$(VersionMajor).$(VersionMinor).$(VersionPatch)$(PreReleaseLabel)</PackageVersion>
-        
+
         <!--Tools-->
         <MsBuildExe>C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe</MsBuildExe>
         <CmToolsDir>C:\_cm_tools</CmToolsDir>
-    
+
         <MsTestExe Condition="'$(MsTestExe)'=='' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio 14.0\Common7\IDE\MSTest.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio 14.0\Common7\IDE\MSTest.exe</MsTestExe>
         <MsTestExe Condition="'$(MsTestExe)'=='' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio 12.0\Common7\IDE\MSTest.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio 12.0\Common7\IDE\MSTest.exe</MsTestExe>
+
+      <ExtensionsRoot>$(ProjectDirectory)\Dxa.CM.Extensions</ExtensionsRoot>
+
+      <ExtensionEditorsName>DXA.CM.Extensions.DXAResolver.Editors</ExtensionEditorsName>
+      <ExtensionModelsName>DXA.CM.Extensions.DXAResolver.Models</ExtensionModelsName>
+
+      <EditorsFolder>$(ExtensionsRoot)\$(ExtensionEditorsName)</EditorsFolder>
+      <ModelsFolder>$(ExtensionsRoot)\$(ExtensionModelsName)</ModelsFolder>
+
+      <ExtensionName Condition="'$(ExtensionName)' == ''">DxaResolver</ExtensionName>
+      <ExtensionsDistFolder Condition="'$(ExtensionsDistFolder)' == ''">$(ExtensionsRoot)\dist</ExtensionsDistFolder>
+      <PackageFolder>$(ExtensionsDistFolder)\$(ExtensionName)</PackageFolder>
+
+      <SupportedLanguage>(en|de|nl|fr|ja|es|zn-CH)</SupportedLanguage>
+      <ExcludeFiles>
+          $(EditorsFolder)\bin\**\*.*;
+          $(EditorsFolder)\obj\**\*.*;
+          $(EditorsFolder)\**\*.cs;
+          $(EditorsFolder)\**\*.csproj;
+          $(EditorsFolder)\**\*.csproj.user;
+          $(EditorsFolder)\**\Passolo\**;
+          $(EditorsFolder)\**\Properties\**;
+          $(ModelsFolder)\bin\**\*.*;
+          $(ModelsFolder)\obj\**\*.*;
+          $(ModelsFolder)\**\*.cs;
+          $(ModelsFolder)\**\*.csproj;
+          $(ModelsFolder)\**\*.csproj.user;
+          $(ModelsFolder)\**\Passolo\**;
+          $(ModelsFolder)\**\Properties\**;
+      </ExcludeFiles>
+      <ExtensionBinDist>$(PackageFolder)\bin</ExtensionBinDist>
   </PropertyGroup>
 
 
     <!-- ======================================================================================================================= -->
     <Target Name="Build">
         <Message Text="Start build..." Importance="high" />
-        
+
         <CallTarget Targets="PrepareBuild"/>
         <CallTarget Targets="RunBuild"/>
+        <CallTarget Targets="CreateDXAResolverExtensionDist"/>
         <CallTarget Targets="Test"/>
         <CallTarget Targets="CreatePackages"/>
         <CallTarget Targets="PublishPackages" Condition="'$(NuGetRepositoryUrl)' != ''"/>
@@ -61,11 +93,8 @@
 
         <Message Text="Restoring NuGet packages..."/>
         <Exec Command="_tools\RestorePackages DxaContentManagement.sln" WorkingDirectory="$(ProjectDirectory)" />
-        
-        <Message Text="Restoring NuGet packages for extensions..."/>
-        <Exec Command="_tools\RestorePackages Dxa.CM.Extensions\Dxa.CM.Extensions.sln" WorkingDirectory="$(ProjectDirectory)" />
 
-      <Message Text="Setting Assembly Info"/>
+        <Message Text="Setting Assembly Info"/>
 
       <ItemGroup>
         <AssemblyInfoFile Include="$(ProjectDirectory)\CommonAssemblyInfo.cs">
@@ -81,12 +110,12 @@
 
       <MSBuild.ExtensionPack.FileSystem.File TaskAction="SetAttributes" Files="@(AssemblyInfoFile)"/>
 
-      <MSBuild.ExtensionPack.Framework.AssemblyInfo 
-        AssemblyInfoFiles="@(AssemblyInfoFile)" 
-        AssemblyVersion="$(Version)" 
+      <MSBuild.ExtensionPack.Framework.AssemblyInfo
+        AssemblyInfoFiles="@(AssemblyInfoFile)"
+        AssemblyVersion="$(Version)"
         AssemblyFileVersion="$(VersionMajor).$(VersionMinor).$(VersionPatch).$(VersionBuild)"
-        AssemblyCopyright="Copyright &#169; 2014-$(Year) SDL Group" 
-        SkipVersioning="false"  
+        AssemblyCopyright="Copyright &#169; 2014-$(Year) SDL Group"
+        SkipVersioning="false"
       />
 
     </Target>
@@ -101,7 +130,37 @@
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Tests\Sdl.Web.Tridion.Templates.Tests.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
 
         <!-- Build all CM extensions -->
-        <MSBuild Projects="$(ProjectDirectory)\Dxa.CM.Extensions\Dxa.CM.Extensions.sln" Properties="Configuration=$(BuildConfiguration);" StopOnFirstFailure="true" />
+        <MSBuild Projects="$(EditorsFolder)\DXA.CM.Extensions.DXAResolver.Editors.csproj" Targets="Clean;Build" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
+        <MSBuild Projects="$(ModelsFolder)\DXA.CM.Extensions.DXAResolver.Models.csproj" Targets="Clean;Build" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
+
+    </Target>
+
+    <Target Name="CreateDXAResolverExtensionDist">
+        <ItemGroup>
+            <ExtensionEditorsStaticFile Include="$(EditorsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
+            <ExtensionModelsStaticFile Include="$(ModelsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
+
+            <ExtensionEditorsBinFile Include="$(EditorsFolder)\bin\**\DXA.CM.Extensions.*dll" Exclude="
+                $(EditorsFolder)\bin\bin\;
+                $(EditorsFolder)\bin\*.config;
+                $(EditorsFolder)\bin\*.pdb;
+            "/>
+            <ExtensionModelsBinFile Include="$(ModelsFolder)\bin\**\DXA.CM.Extensions.*dll" Exclude="
+                $(ModelsFolder)\bin\bin\;
+                $(ModelsFolder)\bin\*.config;
+                $(ModelsFolder)\bin\*.pdb;
+            "/>
+        </ItemGroup>
+
+        <Message Text="Cleaning dist folder" Importance="high" />
+        <RemoveDir Directories="$(ExtensionsDistFolder)" />
+
+        <Message Text="Copying static files to $(PackageFolder)" Importance="high" />
+        <Copy SourceFiles="@(ExtensionEditorsStaticFile)" DestinationFolder="$(PackageFolder)\Editors\%(RecursiveDir)"/>
+        <Copy SourceFiles="@(ExtensionModelsStaticFile)" DestinationFolder="$(PackageFolder)\Models\%(RecursiveDir)"/>
+
+        <Message Text="Copying binaries to $(ExtensionBinDist)" Importance="high" />
+        <Copy SourceFiles="@(ExtensionEditorsBinFile);@(ExtensionModelsBinFile)" DestinationFolder="$(ExtensionBinDist)\%(RecursiveDir)"/>
     </Target>
 
     <!-- ======================================================================================================================= -->
@@ -109,7 +168,7 @@
         <Message Text="Creating NuGet packages in '$(NuGetPackageDirectory)' ..." Importance="high" />
 
         <Message Text="Package Version: $(PackageVersion)" />
-        
+
         <Exec Command="$(NuGet) pack Sdl.Dxa.DataModel.nuspec -Version $(PackageVersion)" WorkingDirectory="$(NuGetPackageDirectory)" />
     </Target>
 
@@ -119,25 +178,25 @@
 
         <Exec Command="$(NuGet) push Sdl.Dxa.DataModel.$(PackageVersion).nupkg -Source $(NuGetRepositoryUrl)" WorkingDirectory="$(NuGetPackageDirectory)" />
     </Target>
-    
+
     <!-- ======================================================================================================================= -->
     <Target Name="DeployOutput">
-        
+
         <!-- Upload legacy TBBs to CMS -->
         <Message Text="Deploying '$(LegacyTemplatesDll)' to CMS in folder '$(LegacyTemplatesFolder)'..." />
         <Exec Command="TcmUploadAssembly.exe $(CmsTargetDefinitionFile) /folder:$(LegacyTemplatesFolder) /verbose &quot;$(LegacyTemplatesDll)&quot;" WorkingDirectory="$(CmToolsDir)" />
-      
+
         <!-- Upload R2 TBBs to CMS -->
         <Message Text="Deploying '$(R2TemplatesDll)' to CMS in folder '$(R2TemplatesFolder)'..." />
         <Exec Command="TcmUploadAssembly.exe $(CmsTargetDefinitionFile) /folder:$(R2TemplatesFolder) /verbose &quot;$(R2TemplatesDll)&quot;" WorkingDirectory="$(CmToolsDir)" />
 
     </Target>
- 
+
     <!-- ======================================================================================================================= -->
     <Target Name="Test" Condition="'$(BuildConfiguration)' == 'Release'">
         <Message Text="Running unit tests..." />
-    
-        <Exec Command='packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user "-target:$(MsTestExe)" "-targetargs:/testcontainer:Sdl.Web.Tridion.Templates.Tests\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.Tests.dll /testsettings:MsTest.testsettings /resultsfile:TestResults.trx" "-filter:+[Sdl.*]* -[*Test*]*" -output:CoverageReports\Coverage.xml"'/>      
+
+        <Exec Command='packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user "-target:$(MsTestExe)" "-targetargs:/testcontainer:Sdl.Web.Tridion.Templates.Tests\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.Tests.dll /testsettings:MsTest.testsettings /resultsfile:TestResults.trx" "-filter:+[Sdl.*]* -[*Test*]*" -output:CoverageReports\Coverage.xml"'/>
 
         <Exec Command='packages\ReportGenerator.2.4.4.0\tools\ReportGenerator.exe "-reports:CoverageReports\Coverage.xml" "-targetdir:CoverageReports"'/>
     </Target>
