@@ -37,6 +37,37 @@
 
         <MsTestExe Condition="'$(MsTestExe)'=='' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio 14.0\Common7\IDE\MSTest.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio 14.0\Common7\IDE\MSTest.exe</MsTestExe>
         <MsTestExe Condition="'$(MsTestExe)'=='' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio 12.0\Common7\IDE\MSTest.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio 12.0\Common7\IDE\MSTest.exe</MsTestExe>
+
+      <ExtensionsRoot>$(ProjectDirectory)\Dxa.CM.Extensions</ExtensionsRoot>
+
+      <ExtensionEditorsName>DXA.CM.Extensions.DXAResolver.Editors</ExtensionEditorsName>
+      <ExtensionModelsName>DXA.CM.Extensions.DXAResolver.Models</ExtensionModelsName>
+
+      <EditorsFolder>$(ExtensionsRoot)\$(ExtensionEditorsName)</EditorsFolder>
+      <ModelsFolder>$(ExtensionsRoot)\$(ExtensionModelsName)</ModelsFolder>
+
+      <ExtensionName Condition="'$(ExtensionName)' == ''">DxaResolver</ExtensionName>
+      <ExtensionsDistFolder Condition="'$(ExtensionsDistFolder)' == ''">$(ExtensionsRoot)\dist</ExtensionsDistFolder>
+      <PackageFolder>$(ExtensionsDistFolder)\$(ExtensionName)</PackageFolder>
+
+      <SupportedLanguage>(en|de|nl|fr|ja|es|zn-CH)</SupportedLanguage>
+      <ExcludeFiles>
+          $(EditorsFolder)\bin\**\*.*;
+          $(EditorsFolder)\obj\**\*.*;
+          $(EditorsFolder)\**\*.cs;
+          $(EditorsFolder)\**\*.csproj;
+          $(EditorsFolder)\**\*.csproj.user;
+          $(EditorsFolder)\**\Passolo\**;
+          $(EditorsFolder)\**\Properties\**;
+          $(ModelsFolder)\bin\**\*.*;
+          $(ModelsFolder)\obj\**\*.*;
+          $(ModelsFolder)\**\*.cs;
+          $(ModelsFolder)\**\*.csproj;
+          $(ModelsFolder)\**\*.csproj.user;
+          $(ModelsFolder)\**\Passolo\**;
+          $(ModelsFolder)\**\Properties\**;
+      </ExcludeFiles>
+      <ExtensionBinDist>$(PackageFolder)\bin</ExtensionBinDist>
   </PropertyGroup>
 
 
@@ -105,38 +136,6 @@
     </Target>
 
     <Target Name="CreateDXAResolverExtensionDist">
-        <PropertyGroup>
-            <ExtensionsRoot>$(ProjectDirectory)\Dxa.CM.Extensions</ExtensionsRoot>
-
-            <ExtensionEditorsName>DXA.CM.Extensions.DXAResolver.Editors</ExtensionEditorsName>
-            <ExtensionModelsName>DXA.CM.Extensions.DXAResolver.Models</ExtensionModelsName>
-
-            <EditorsFolder>$(ExtensionsRoot)\$(ExtensionEditorsName)</EditorsFolder>
-            <ModelsFolder>$(ExtensionsRoot)\$(ExtensionModelsName)</ModelsFolder>
-
-            <ExtensionName Condition="'$(ExtensionName)' == ''">DxaResolver</ExtensionName>
-            <ExtensionsDistFolder Condition="'$(ExtensionsDistFolder)' == ''">$(ExtensionsRoot)\dist</ExtensionsDistFolder>
-            <PackageFolder>$(ExtensionsDistFolder)\$(ExtensionName)</PackageFolder>
-
-            <SupportedLanguage>(en|de|nl|fr|ja|es|zn-CH)</SupportedLanguage>
-            <ExcludeFiles>
-                $(EditorsFolder)\bin\**\*.*;
-                $(EditorsFolder)\obj\**\*.*;
-                $(EditorsFolder)\**\*.cs;
-                $(EditorsFolder)\**\*.csproj;
-                $(EditorsFolder)\**\*.csproj.user;
-                $(EditorsFolder)\**\Passolo\**;
-                $(EditorsFolder)\**\Properties\**;
-                $(ModelsFolder)\bin\**\*.*;
-                $(ModelsFolder)\obj\**\*.*;
-                $(ModelsFolder)\**\*.cs;
-                $(ModelsFolder)\**\*.csproj;
-                $(ModelsFolder)\**\*.csproj.user;
-                $(ModelsFolder)\**\Passolo\**;
-                $(ModelsFolder)\**\Properties\**;
-            </ExcludeFiles>
-            <ExtensionBinDist>$(PackageFolder)\bin</ExtensionBinDist>
-        </PropertyGroup>
         <ItemGroup>
             <ExtensionEditorsStaticFile Include="$(EditorsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
             <ExtensionModelsStaticFile Include="$(ModelsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
