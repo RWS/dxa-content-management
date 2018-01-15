@@ -97,6 +97,11 @@
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates\Sdl.Web.Tridion.Templates.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Legacy\Sdl.Web.Tridion.Templates.Legacy.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Tests\Sdl.Web.Tridion.Templates.Tests.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
+
+        <!-- Build all CM extensions -->
+        <MSBuild Projects="$(EditorsFolder)\DXA.CM.Extensions.DXAResolver.Editors.csproj" Targets="Clean;Build" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
+        <MSBuild Projects="$(ModelsFolder)\DXA.CM.Extensions.DXAResolver.Models.csproj" Targets="Clean;Build" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
+
     </Target>
 
     <Target Name="CreateDXAResolverExtensionDist">
@@ -147,10 +152,6 @@
                 $(ModelsFolder)\bin\*.pdb;
             "/>
         </ItemGroup>
-
-        <!-- Build all CM extensions -->
-        <MSBuild Projects="$(EditorsFolder)\DXA.CM.Extensions.DXAResolver.Editors.csproj" Targets="Clean;Build" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
-        <MSBuild Projects="$(ModelsFolder)\DXA.CM.Extensions.DXAResolver.Models.csproj" Targets="Clean;Build" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
 
         <Message Text="Cleaning dist folder" Importance="high" />
         <RemoveDir Directories="$(ExtensionsDistFolder)" />
