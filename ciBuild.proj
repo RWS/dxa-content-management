@@ -158,9 +158,12 @@
         <Message Text="Cleaning dist folder" Importance="high" />
         <RemoveDir Directories="$(ExtensionsDistFolder)" />
 
+        <Message Text="Copying static files" Importance="high" />
         <Copy SourceFiles="@(ExtensionEditorsStaticFile)" DestinationFolder="$(PackageFolder)\Editors\%(RecursiveDir)"/>
-        <Copy SourceFiles="@(ExtensionEditorsBinFile)" DestinationFolder="$(ExtensionBinDist)\%(RecursiveDir)"/>
         <Copy SourceFiles="@(ExtensionModelsStaticFile)" DestinationFolder="$(PackageFolder)\Models\%(RecursiveDir)"/>
+
+        <Message Text="Copying binaries" Importance="high" />
+        <Copy SourceFiles="@(ExtensionEditorsBinFile)" DestinationFolder="$(ExtensionBinDist)\%(RecursiveDir)"/>
         <Copy SourceFiles="@(ExtensionModelsBinFile)" DestinationFolder="$(ExtensionBinDist)\%(RecursiveDir)"/>
     </Target>
 
