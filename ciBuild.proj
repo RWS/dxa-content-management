@@ -136,12 +136,12 @@
             <ExtensionEditorsStaticFile Include="$(EditorsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
             <ExtensionModelsStaticFile Include="$(ModelsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
 
-            <ExtensionEditorsBinFile Include="$(EditorsFolder)\bin\**\*.dll" Exclude="
+            <ExtensionEditorsBinFile Include="$(EditorsFolder)\bin\**\DXA.CM.Extensions.*dll" Exclude="
                 $(EditorsFolder)\bin\bin\;
                 $(EditorsFolder)\bin\*.config;
                 $(EditorsFolder)\bin\*.pdb;
             "/>
-            <ExtensionModelsBinFile Include="$(ModelsFolder)\bin\**\*.dll" Exclude="
+            <ExtensionModelsBinFile Include="$(ModelsFolder)\bin\**\DXA.CM.Extensions.*dll" Exclude="
                 $(ModelsFolder)\bin\bin\;
                 $(ModelsFolder)\bin\*.config;
                 $(ModelsFolder)\bin\*.pdb;
@@ -160,8 +160,7 @@
         <Copy SourceFiles="@(ExtensionModelsStaticFile)" DestinationFolder="$(PackageFolder)\Models\%(RecursiveDir)"/>
 
         <Message Text="Copying binaries to $(ExtensionBinDist)" Importance="high" />
-        <Copy SourceFiles="@(ExtensionEditorsBinFile)" DestinationFolder="$(ExtensionBinDist)\%(RecursiveDir)"/>
-        <Copy SourceFiles="@(ExtensionModelsBinFile)" DestinationFolder="$(ExtensionBinDist)\%(RecursiveDir)"/>
+        <Copy SourceFiles="@(ExtensionEditorsBinFile);@(ExtensionModelsBinFile)" DestinationFolder="$(ExtensionBinDist)\%(RecursiveDir)"/>
     </Target>
 
     <!-- ======================================================================================================================= -->
