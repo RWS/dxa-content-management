@@ -130,18 +130,17 @@
                 $(ModelsFolder)\**\Passolo\**;
                 $(ModelsFolder)\**\Properties\**;
             </ExcludeFiles>
-            <ExtensionBinDist>$(PackageFolder)\binaries</ExtensionBinDist>
+            <ExtensionBinDist>$(PackageFolder)\bin</ExtensionBinDist>
         </PropertyGroup>
         <ItemGroup>
             <ExtensionEditorsStaticFile Include="$(EditorsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
-            <ExtensionEditorsBinFile Include="
-                $(EditorsFolder)\bin\**\DXA.CM.Extensions.*.dll;
-            " Exclude="
+            <ExtensionModelsStaticFile Include="$(ModelsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
+
+            <ExtensionEditorsBinFile Include="$(EditorsFolder)\bin\**\*.dll;" Exclude="
                 $(EditorsFolder)\bin\bin\;
                 $(EditorsFolder)\bin\*.config;
                 $(EditorsFolder)\bin\*.pdb;
             "/>
-            <ExtensionModelsStaticFile Include="$(ModelsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
             <ExtensionModelsBinFile Include="
                 $(ModelsFolder)\bin\**\DXA.CM.Extensions.*.dll;
             " Exclude="
@@ -158,11 +157,11 @@
         <Message Text="Cleaning dist folder" Importance="high" />
         <RemoveDir Directories="$(ExtensionsDistFolder)" />
 
-        <Message Text="Copying static files" Importance="high" />
+        <Message Text="Copying static files to $(PackageFolder)" Importance="high" />
         <Copy SourceFiles="@(ExtensionEditorsStaticFile)" DestinationFolder="$(PackageFolder)\Editors\%(RecursiveDir)"/>
         <Copy SourceFiles="@(ExtensionModelsStaticFile)" DestinationFolder="$(PackageFolder)\Models\%(RecursiveDir)"/>
 
-        <Message Text="Copying binaries" Importance="high" />
+        <Message Text="Copying binaries to $(ExtensionBinDist)" Importance="high" />
         <Copy SourceFiles="@(ExtensionEditorsBinFile)" DestinationFolder="$(ExtensionBinDist)\%(RecursiveDir)"/>
         <Copy SourceFiles="@(ExtensionModelsBinFile)" DestinationFolder="$(ExtensionBinDist)\%(RecursiveDir)"/>
     </Target>
