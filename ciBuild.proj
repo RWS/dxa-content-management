@@ -136,14 +136,12 @@
             <ExtensionEditorsStaticFile Include="$(EditorsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
             <ExtensionModelsStaticFile Include="$(ModelsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
 
-            <ExtensionEditorsBinFile Include="$(EditorsFolder)\bin\**\*.dll;" Exclude="
+            <ExtensionEditorsBinFile Include="$(EditorsFolder)\bin\**\*.dll" Exclude="
                 $(EditorsFolder)\bin\bin\;
                 $(EditorsFolder)\bin\*.config;
                 $(EditorsFolder)\bin\*.pdb;
             "/>
-            <ExtensionModelsBinFile Include="
-                $(ModelsFolder)\bin\**\DXA.CM.Extensions.*.dll;
-            " Exclude="
+            <ExtensionModelsBinFile Include="$(ModelsFolder)\bin\**\*.dll" Exclude="
                 $(ModelsFolder)\bin\bin\;
                 $(ModelsFolder)\bin\*.config;
                 $(ModelsFolder)\bin\*.pdb;
