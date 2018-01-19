@@ -27,12 +27,11 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         {}
 
         private string _userName;
+        private static CoreServiceManager _instance;
 
         internal ICoreServiceWrapper _coreServiceClient = null;
         internal AccessTokenData _userData = null;
         internal ICoreServiceWrapperFactory CoreServiceFactory;
-
-        public const string CacheKey = "DXA.CM.Extensions.DXAResolver-CoreClientManager";
 
         /// <summary>
         /// Gets or creates an instance of <see cref="CoreClientManager"/> that is stored in the current http context <seealso cref="HttpContext.Current"/>.
@@ -47,26 +46,12 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         {
             using (Tracer.GetTracer().StartTrace())
             {
-                return GetInstance(HttpContext.Current);
-            }
-        }
-
-        public static CoreServiceManager GetInstance(HttpContext httpContext)
-        {
-            using (Tracer.GetTracer().StartTrace(httpContext))
-            {
-                if (httpContext == null)
+                if (_instance != null)
                 {
-                    throw new ArgumentNullException("httpContext");
+                    _instance = new CoreServiceManager();
                 }
 
-                if (!(httpContext.Items[CacheKey] is CoreServiceManager instance))
-                {
-                    instance = new CoreServiceManager();
-                    httpContext.Items[CacheKey] = instance;
-                }
-
-                return instance;
+                return _instance;
             }
         }
 
