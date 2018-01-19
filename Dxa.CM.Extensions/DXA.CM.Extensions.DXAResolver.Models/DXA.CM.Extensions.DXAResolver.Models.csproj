@@ -51,6 +51,10 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="Tridion.Common, Version=8.1.0.150, Culture=neutral, PublicKeyToken=349a39f202fa9b53, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\_references\cm-8.1\Tridion.Common.dll</HintPath>
+    </Reference>
     <Reference Include="Tridion.ContentManager.CoreService.Client, Version=8.1.0.1287, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.CoreService.Client.dll</HintPath>
@@ -88,6 +92,7 @@
     </Compile>
     <Compile Include="Services\Implementation\Configuration.cs" />
     <Compile Include="Services\Implementation\Constants.cs" />
+    <Compile Include="Services\Implementation\CoreServiceManager.cs" />
     <Compile Include="Services\Interfaces\IServices.cs" />
     <Compile Include="Services\Services.svc.cs">
       <DependentUpon>Services.svc</DependentUpon>
