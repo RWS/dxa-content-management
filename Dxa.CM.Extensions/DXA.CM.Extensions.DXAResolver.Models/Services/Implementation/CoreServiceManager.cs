@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Caching;
 
 using System.Xml.Linq;
+using ImpromptuInterface;
 using Tridion.ContentManager.CoreService.Client;
 using Tridion.ContentManager.CoreService.Client.Security;
 using Tridion.Logging;
@@ -31,7 +32,6 @@ namespace DXA.CM.Extensions.DXAResolver.Models
 
         internal ICoreServiceWrapper _coreServiceClient = null;
         internal AccessTokenData _userData = null;
-        internal ICoreServiceWrapperFactory CoreServiceFactory;
 
         /// <summary>
         /// Gets or creates an instance of <see cref="CoreClientManager"/> that is stored in the current http context <seealso cref="HttpContext.Current"/>.
@@ -46,7 +46,7 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         {
             using (Tracer.GetTracer().StartTrace())
             {
-                if (_instance != null)
+                if (_instance == null)
                 {
                     _instance = new CoreServiceManager();
                 }
@@ -198,7 +198,6 @@ namespace DXA.CM.Extensions.DXAResolver.Models
                     }
 
                     StoreAccessTokenInCache(UserName, accessTokenData);
-                    StoreAccessTokenLocally(accessTokenData);
 
                     return _coreServiceClient;
                 }
@@ -216,10 +215,9 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         {
             using (Tracer.GetTracer().StartTrace(endpointName))
             {
-                _coreServiceClient = new SessionAwareCoreServiceClient(endpointName) as ICoreServiceWrapper;
+                var coreServiceClient = new SessionAwareCoreServiceClient(endpointName);
+                return coreServiceClient.ActLike<ICoreServiceWrapper>();
             }
-
-            return _coreServiceClient;
         }
 
         private void DestroyCoreService()
@@ -328,15 +326,6 @@ namespace DXA.CM.Extensions.DXAResolver.Models
 
                 HttpContext.Current.Cache.Insert(cacheKey, accessToken, null, accessToken.ExpiresAt,
                     Cache.NoSlidingExpiration);
-            }
-        }
-
-        private void StoreAccessTokenLocally(AccessTokenData accessTokenData)
-        {
-            using (Tracer.GetTracer().StartTrace(accessTokenData))
-            {
-                //TODO AN: Get rid of this side effect, take _userData from cache instead
-                _userData = accessTokenData;
             }
         }
 

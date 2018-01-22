@@ -27,9 +27,10 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         {
             using (Tracer.GetTracer().StartTrace())
             {
+                R6.ISessionAwareCoreService client = CoreServiceManager.GetInstance().CoreServiceClient;
                 try
                 {
-                    R6.ApplicationData appData = CoreServiceManager.GetInstance().CoreServiceClient.ReadApplicationData(null, Constants.DXA_RESOLVER_CONFIGURATION_NAME);
+                    R6.ApplicationData appData = client.ReadApplicationData(null, Constants.DXA_RESOLVER_CONFIGURATION_NAME);
                     if (appData != null)
                     {
                         R6.ApplicationDataAdapter ada = new R6.ApplicationDataAdapter(appData);
@@ -56,12 +57,13 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         {
             using (Tracer.GetTracer().StartTrace(configurationXml))
             {
+                R6.ISessionAwareCoreService client = CoreServiceManager.GetInstance().CoreServiceClient;
                 try
                 {
                     XmlDocument appDataXml = new XmlDocument();
                     appDataXml.LoadXml(configurationXml);
                     R6.ApplicationDataAdapter ada = new R6.ApplicationDataAdapter(Constants.DXA_RESOLVER_CONFIGURATION_NAME, appDataXml.DocumentElement);
-                    CoreServiceManager.GetInstance().CoreServiceClient.SaveApplicationData(null, new[] {ada.ApplicationData});
+                    client.SaveApplicationData(null, new[] {ada.ApplicationData});
 
                     return configurationXml;
                 }
