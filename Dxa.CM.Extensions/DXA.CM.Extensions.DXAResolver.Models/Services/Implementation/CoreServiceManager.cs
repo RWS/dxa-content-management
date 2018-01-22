@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.ServiceModel;
 using System.Threading;
 using System.Web;
 using System.Web.Caching;
 
-using System.Xml.Linq;
 using ImpromptuInterface;
 using Tridion.ContentManager.CoreService.Client;
 using Tridion.ContentManager.CoreService.Client.Security;

@@ -96,7 +96,7 @@
 
         <Message Text="Setting Assembly Info"/>
 
-      <ItemGroup>
+       <ItemGroup>
         <AssemblyInfoFile Include="$(ProjectDirectory)\CommonAssemblyInfo.cs">
           <Attributes>Normal</Attributes>
         </AssemblyInfoFile>
@@ -118,6 +118,8 @@
         SkipVersioning="false"
       />
 
+        <Message Text="Restoring NuGet packages for extensions..."/>
+        <Exec Command="_tools\RestorePackages Dxa.CM.Extensions\Dxa.CM.Extensions.sln" WorkingDirectory="$(ProjectDirectory)" />
     </Target>
 
     <!-- ======================================================================================================================= -->
