@@ -1,4 +1,7 @@
 ﻿using System;
+using System.ServiceModel;
+using System.Threading;
+using System.Web;
 using System.Xml;
 using R6 = Tridion.ContentManager.CoreService.Client;
 using Tridion.Logging;

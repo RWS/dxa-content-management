@@ -3,13 +3,9 @@ using System.Security.Claims;
 using System.ServiceModel;
 using System.Threading;
 using System.Web;
-using System.Web.Caching;
 
-using ImpromptuInterface;
 using Tridion.ContentManager.CoreService.Client;
-using Tridion.ContentManager.CoreService.Client.Security;
 using Tridion.Logging;
-using Tridion.Web.CMUtils;
 
 namespace DXA.CM.Extensions.DXAResolver.Models
 {
@@ -27,18 +23,13 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         private string _userName;
         private static CoreServiceManager _instance;
 
-        internal ICoreServiceWrapper _coreServiceClient = null;
+        internal ISessionAwareCoreService _coreServiceClient = null;
         internal AccessTokenData _userData = null;
 
         /// <summary>
         /// Gets or creates an instance of <see cref="CoreClientManager"/> that is stored in the current http context <seealso cref="HttpContext.Current"/>.
         /// </summary>
         /// <returns>An instance of <see cref="CoreClientManager"/></returns>
-        /// <remarks>
-        /// The lifecycle of the instance is managed through <see cref="Tridion.Web.UI.Models.TCM54.TcmAuthorizationModule"/> http module.
-        /// It creates the instance on authorization (<seealso cref="HttpApplication.AuthorizeRequest"/>) 
-        /// and dispose it after ASP.NET responds to a request (<seealso cref="HttpApplication.EndRequest"/>).
-        /// </remarks>
         public static CoreServiceManager GetInstance()
         {
             using (Tracer.GetTracer().StartTrace())
@@ -63,13 +54,14 @@ namespace DXA.CM.Extensions.DXAResolver.Models
                         return;
                     }
 
-                    if (_coreServiceClient.State == CommunicationState.Faulted)
+                    var client = _coreServiceClient as ICommunicationObject;
+                    if (client?.State == CommunicationState.Faulted)
                     {
-                        _coreServiceClient.Abort();
+                        client.Abort();
                     }
                     else
                     {
-                        _coreServiceClient.Close();
+                        client.Close();
                     }
 
                     _coreServiceClient = null;
@@ -116,33 +108,6 @@ namespace DXA.CM.Extensions.DXAResolver.Models
             }
         }
 
-        public AccessTokenData UserData
-        {
-            get
-            {
-                using (Tracer.GetTracer().StartTrace())
-                {
-                    if (_userData == null)
-                    {
-                        _userData = CoreServiceClient.GetCurrentUser();
-                    }
-
-                    return _userData;
-                }
-            }
-        }
-
-        public string UserId
-        {
-            get
-            {
-                using (Tracer.GetTracer().StartTrace())
-                {
-                    return UserData.Id;
-                }
-            }
-        }
-
         public ISessionAwareCoreService CoreServiceClient
         {
             get
@@ -160,44 +125,18 @@ namespace DXA.CM.Extensions.DXAResolver.Models
                     }
 
                     _coreServiceClient = CreateCoreService(Constants.CLIENT_ENDPOINT_NAME_81);
-
-                    var accessTokenData = GetNonExpiredAccessTokenFromCache(UserName);
-
-                    if (accessTokenData != null)
-                    {
-                        Logger.Write(
-                            String.Format(
-                                "Using cached access token for user '{0}' to do an impersonation with token.",
-                                UserName
-                            ),
-                            this.GetType().Name,
-                            LoggingCategory.Logging
-                        );
-
-                        try
-                        {
-                            _coreServiceClient.ImpersonateWithToken(accessTokenData);
-                        }
-                        catch (Exception exception)
-                        {
-                            Logger.Write(exception, this.GetType().Name, LoggingCategory.Logging);
-
-                            // Cleanup cached access token as we need to get it again due to some failure.
-                            accessTokenData = null;
-
-                            RecreateCoreService();
-                        }
-                    }
-
-                    if (accessTokenData == null)
-                    {
-                        accessTokenData = GetAccessTokenData();
-                    }
-
-                    StoreAccessTokenInCache(UserName, accessTokenData);
+                    _coreServiceClient.Impersonate(UserName);
 
                     return _coreServiceClient;
                 }
+            }
+        }
+
+        public ISessionAwareCoreService CreateCoreService(string endpointName)
+        {
+            using (Tracer.GetTracer().StartTrace(endpointName))
+            {
+                return new SessionAwareCoreServiceClient(endpointName);
             }
         }
 
@@ -205,15 +144,7 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         {
             using (Tracer.GetTracer().StartTrace())
             {
-                return _coreServiceClient.State == CommunicationState.Faulted;
-            }
-        }
-        public ICoreServiceWrapper CreateCoreService(string endpointName)
-        {
-            using (Tracer.GetTracer().StartTrace(endpointName))
-            {
-                var coreServiceClient = new SessionAwareCoreServiceClient(endpointName);
-                return coreServiceClient.ActLike<ICoreServiceWrapper>();
+                return ((ICommunicationObject) _coreServiceClient).State == CommunicationState.Faulted;
             }
         }
 
@@ -221,140 +152,9 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         {
             using (Tracer.GetTracer().StartTrace())
             {
-                _coreServiceClient.Abort();
-                _coreServiceClient.Dispose();
+                ((ICommunicationObject) _coreServiceClient).Abort();
+                ((IDisposable) _coreServiceClient).Dispose();
                 _coreServiceClient = null;
-            }
-        }
-
-        private void RecreateCoreService()
-        {
-            using (Tracer.GetTracer().StartTrace())
-            {
-                DestroyCoreService();
-                _coreServiceClient = CreateCoreService(Constants.CLIENT_ENDPOINT_NAME_81);
-            }
-        }
-
-        private AccessTokenData GetNonExpiredAccessTokenFromCache(string user)
-        {
-            using (Tracer.GetTracer().StartTrace(user))
-            {
-                Logger.Write(String.Format("Trying to retrieve access token for user '{0}'", user), this.GetType().Name,
-                    LoggingCategory.Logging);
-
-                var accessTokenData = GetAccessTokenFromCache(user);
-
-                if (accessTokenData == null || HasAccessTokenExpired(accessTokenData))
-                {
-                    return null;
-                }
-
-                Logger.Write(
-                    String.Format("Access token for user '{0}' was succesfully retrieved from cache.", UserName),
-                    this.GetType().Name,
-                    LoggingCategory.Logging);
-
-                return accessTokenData;
-            }
-        }
-
-        private static AccessTokenData GetAccessTokenFromCache(string user)
-        {
-            using (Tracer.GetTracer().StartTrace(user))
-            {
-                var cacheKey = GetAccessTokenCacheKey(user);
-                var accessTokenData = HttpContext.Current.Cache.Get(cacheKey) as AccessTokenData;
-
-                if (accessTokenData == null)
-                {
-                    Logger.Write(String.Format("Access token for user '{0}' couldn't be found in cache.", user),
-                        "GetAccessTokenFromCache", LoggingCategory.Logging);
-                }
-
-                return accessTokenData;
-            }
-        }
-
-        private static string GetAccessTokenCacheKey(string user)
-        {
-            using (Tracer.GetTracer().StartTrace(user))
-            {
-                return "SdlTridion\\WebUI\\AccessTokens\\" + user;
-            }
-        }
-
-        private static bool HasAccessTokenExpired(AccessTokenData accessToken)
-        {
-            using (Tracer.GetTracer().StartTrace(accessToken))
-            {
-                return accessToken.ExpiresAt < DateTime.UtcNow;
-            }
-        }
-
-        private AccessTokenData GetAccessTokenData()
-        {
-            using (Tracer.GetTracer().StartTrace())
-            {
-                Logger.Write(
-                    String.Format("_coreServiceClient.ClientCredentials type is {0}",
-                        _coreServiceClient.ClientCredentials == null
-                            ? "None"
-                            : _coreServiceClient.ClientCredentials.GetType().ToString()),
-                    this.GetType().Name, LoggingCategory.Logging);
-                var clientCredentials = _coreServiceClient.ClientCredentials as ClaimsClientCredentials;
-
-                return clientCredentials != null
-                    ? GetAccessTokenDataFromClientCrentials(clientCredentials)
-                    // Default ClientCredentials. Use the current Windows Identity as client credentials and specify the user name in a Core Service Impersonate call.
-                    : _coreServiceClient.Impersonate(UserName);
-            }
-        }
-
-        private static void StoreAccessTokenInCache(string user, AccessTokenData accessToken)
-        {
-            using (Tracer.GetTracer().StartTrace(user, accessToken))
-            {
-                Logger.Write(String.Format("Storing access token for user '{0}' in cache.", user),
-                    "StoreAccessTokenInCache",
-                    LoggingCategory.Logging);
-
-                var cacheKey = GetAccessTokenCacheKey(user);
-
-                HttpContext.Current.Cache.Insert(cacheKey, accessToken, null, accessToken.ExpiresAt,
-                    Cache.NoSlidingExpiration);
-            }
-        }
-
-        private AccessTokenData GetAccessTokenDataFromClientCrentials(ClaimsClientCredentials clientCredentials)
-        {
-            using (Tracer.GetTracer().StartTrace(clientCredentials))
-            {
-                // Our own ClaimsClientCredentials (SAML support) has been configured.
-                if (IsSamlSupported())
-                {
-                    // Our own LDAP or SSO authentication has been used. Use the ClaimSet it provided as client credentials.
-                    var user = (ClaimsPrincipal) HttpContext.Current.User;
-                    clientCredentials.Claims = user.Claims;
-                }
-                else
-                {
-                    // Other authentication scheme has been used. Provide the user name as client credentials.
-                    clientCredentials.UserName.UserName = UserName;
-                }
-
-                clientCredentials.AudienceUris = new[] {_coreServiceClient.Endpoint.Address.Uri};
-
-                return _coreServiceClient.GetCurrentUser();
-            }
-        }
-
-        private static bool IsSamlSupported()
-        {
-            using (Tracer.GetTracer().StartTrace())
-            {
-                var user = HttpContext.Current.User as ClaimsPrincipal;
-                return user != null;
             }
         }
     }
