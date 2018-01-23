@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Security.Claims;
 using System.ServiceModel;
 using System.Threading;
 using System.Web;
 
 using Tridion.ContentManager.CoreService.Client;
+using Tridion.ContentManager.CoreService.Client.Security;
 using Tridion.Logging;
 
 namespace DXA.CM.Extensions.DXAResolver.Models
@@ -16,14 +18,13 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         /// <remarks>
         /// This constructor should NOT be removed.
         /// </remarks>
-        internal CoreServiceManager()
-        {}
+        private CoreServiceManager()
+        { }
 
         private string _userName;
-        private static CoreServiceManager _instance;
+        private static Lazy<CoreServiceManager> _instance = new Lazy<CoreServiceManager>(() => new CoreServiceManager());
 
-        internal ISessionAwareCoreService _coreServiceClient = null;
-        internal AccessTokenData _userData = null;
+        internal SessionAwareCoreServiceClient _coreServiceClient = null;
 
         /// <summary>
         /// Gets or creates an instance of <see cref="CoreServiceManager"/> that is stored in the current http context <seealso cref="HttpContext.Current"/>.
@@ -33,12 +34,7 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         {
             using (Tracer.GetTracer().StartTrace())
             {
-                if (_instance == null)
-                {
-                    _instance = new CoreServiceManager();
-                }
-
-                return _instance;
+                return _instance.Value;
             }
         }
 
@@ -78,7 +74,7 @@ namespace DXA.CM.Extensions.DXAResolver.Models
             }
         }
 
-        public ISessionAwareCoreService CoreServiceClient
+        public SessionAwareCoreServiceClient CoreServiceClient
         {
             get
             {
@@ -95,18 +91,9 @@ namespace DXA.CM.Extensions.DXAResolver.Models
                     }
 
                     _coreServiceClient = CreateCoreService(Constants.CLIENT_ENDPOINT_NAME_81);
-                    _coreServiceClient.Impersonate(UserName);
 
                     return _coreServiceClient;
                 }
-            }
-        }
-
-        public ISessionAwareCoreService CreateCoreService(string endpointName)
-        {
-            using (Tracer.GetTracer().StartTrace(endpointName))
-            {
-                return new SessionAwareCoreServiceClient(endpointName);
             }
         }
 
@@ -114,7 +101,28 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         {
             using (Tracer.GetTracer().StartTrace())
             {
-                return ((ICommunicationObject) _coreServiceClient).State == CommunicationState.Faulted;
+                return ((ICommunicationObject)_coreServiceClient).State == CommunicationState.Faulted;
+            }
+        }
+
+        public SessionAwareCoreServiceClient CreateCoreService(string endpointName)
+        {
+            using (Tracer.GetTracer().StartTrace(endpointName))
+            {
+                SessionAwareCoreServiceClient client = new SessionAwareCoreServiceClient(endpointName);
+                var clientCredentials = client.ClientCredentials as ClaimsClientCredentials;
+
+                if (clientCredentials != null)
+                {
+                    SetClaimsCredential(clientCredentials, client.Endpoint.Address.Uri);
+                }
+                else
+                {
+                    // Default ClientCredentials. Use the current Windows Identity as client credentials and specify the user name in a Core Service Impersonate call.
+                    client.Impersonate(UserName);
+                }
+
+                return client;
             }
         }
 
@@ -139,8 +147,38 @@ namespace DXA.CM.Extensions.DXAResolver.Models
                         client.Close();
                     }
                 }
-                ((IDisposable) _coreServiceClient).Dispose();
+                ((IDisposable)_coreServiceClient).Dispose();
                 _coreServiceClient = null;
+            }
+        }
+
+        private void SetClaimsCredential(ClaimsClientCredentials clientCredentials, Uri audienceUri)
+        {
+            using (Tracer.GetTracer().StartTrace(clientCredentials))
+            {
+                // Our own ClaimsClientCredentials (SAML support) has been configured.
+                if (IsSamlSupported())
+                {
+                    // Our own LDAP or SSO authentication has been used. Use the ClaimSet it provided as client credentials.
+                    var user = (ClaimsPrincipal)HttpContext.Current.User;
+                    clientCredentials.Claims = user.Claims;
+                }
+                else
+                {
+                    // Other authentication scheme has been used. Provide the user name as client credentials.
+                    clientCredentials.UserName.UserName = UserName;
+                }
+
+                clientCredentials.AudienceUris = new[] { audienceUri };
+            }
+        }
+
+        private static bool IsSamlSupported()
+        {
+            using (Tracer.GetTracer().StartTrace())
+            {
+                var user = HttpContext.Current.User as ClaimsPrincipal;
+                return user != null;
             }
         }
     }
