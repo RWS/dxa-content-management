@@ -26,9 +26,9 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         internal AccessTokenData _userData = null;
 
         /// <summary>
-        /// Gets or creates an instance of <see cref="CoreClientManager"/> that is stored in the current http context <seealso cref="HttpContext.Current"/>.
+        /// Gets or creates an instance of <see cref="CoreServiceManager"/> that is stored in the current http context <seealso cref="HttpContext.Current"/>.
         /// </summary>
-        /// <returns>An instance of <see cref="CoreClientManager"/></returns>
+        /// <returns>An instance of <see cref="CoreServiceManager"/></returns>
         public static CoreServiceManager GetInstance()
         {
             using (Tracer.GetTracer().StartTrace())
@@ -39,35 +39,6 @@ namespace DXA.CM.Extensions.DXAResolver.Models
                 }
 
                 return _instance;
-            }
-        }
-
-        public void Dispose()
-        {
-            using (Tracer.GetTracer().StartTrace())
-            {
-                try
-                {
-                    if (_coreServiceClient == null)
-                    {
-                        return;
-                    }
-
-                    var client = _coreServiceClient as ICommunicationObject;
-                    if (client?.State == CommunicationState.Faulted)
-                    {
-                        client.Abort();
-                    }
-                    else
-                    {
-                        client.Close();
-                    }
-
-                    _coreServiceClient = null;
-                }
-                finally
-                {
-                }
             }
         }
 
@@ -88,7 +59,7 @@ namespace DXA.CM.Extensions.DXAResolver.Models
                             userName = HttpContext.Current.User.Identity.Name;
                         }
                         // Use the WCF security context if available (second choice)
-                        else if (ServiceSecurityContext.Current != null && ServiceSecurityContext.Current.WindowsIdentity != null)
+                        else if (ServiceSecurityContext.Current != null)
                         {
                             userName = ServiceSecurityContext.Current.WindowsIdentity.Name;
                         }
@@ -151,7 +122,23 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         {
             using (Tracer.GetTracer().StartTrace())
             {
-                ((ICommunicationObject) _coreServiceClient).Abort();
+                if (_coreServiceClient == null)
+                {
+                    return;
+                }
+
+                var client = _coreServiceClient as ICommunicationObject;
+                if (client != null)
+                {
+                    if (client.State == CommunicationState.Faulted)
+                    {
+                        client.Abort();
+                    }
+                    else
+                    {
+                        client.Close();
+                    }
+                }
                 ((IDisposable) _coreServiceClient).Dispose();
                 _coreServiceClient = null;
             }
