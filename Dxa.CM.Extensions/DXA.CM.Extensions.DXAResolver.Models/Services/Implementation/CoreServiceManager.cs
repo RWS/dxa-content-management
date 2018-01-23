@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Claims;
 using System.ServiceModel;
 using System.Threading;
 using System.Web;
