@@ -1,9 +1,6 @@
 ﻿using System;
-using System.ServiceModel;
-using System.Threading;
-using System.Web;
 using System.Xml;
-using R6 = Tridion.ContentManager.CoreService.Client;
+using Tridion.ContentManager.CoreService.Client;
 using Tridion.Logging;
 
 namespace DXA.CM.Extensions.DXAResolver.Models
@@ -30,49 +27,56 @@ namespace DXA.CM.Extensions.DXAResolver.Models
         {
             using (Tracer.GetTracer().StartTrace())
             {
-                R6.ISessionAwareCoreService client = CoreServiceManager.GetInstance().CoreServiceClient;
-                try
+                using (SessionAwareCoreServiceClient client = CoreServiceManager.GetCoreServiceClient())
                 {
-                    R6.ApplicationData appData = client.ReadApplicationData(null, Constants.DXA_RESOLVER_CONFIGURATION_NAME);
-                    if (appData != null)
+                    try
                     {
-                        R6.ApplicationDataAdapter ada = new R6.ApplicationDataAdapter(appData);
-                        XmlElement appDataXml = ada.GetAs<XmlElement>();
-                        return appDataXml.OuterXml;
-                    }
+                        ApplicationData appData =
+                            client.ReadApplicationData(null, Constants.DXA_RESOLVER_CONFIGURATION_NAME);
+                        if (appData != null)
+                        {
+                            ApplicationDataAdapter ada = new ApplicationDataAdapter(appData);
+                            XmlElement appDataXml = ada.GetAs<XmlElement>();
+                            return appDataXml.OuterXml;
+                        }
 
-                    return String.Format(
-                        "<Configuration xmlns:{0}=\"{1}\"></Configuration>",
-                        Constants.DXA_RESOLVER_CONFIGURATION_PREFIX,
-                        Constants.DXA_RESOLVER_CONFIGURATION_NAMESPACE
+                        return String.Format(
+                            "<Configuration xmlns:{0}=\"{1}\"></Configuration>",
+                            Constants.DXA_RESOLVER_CONFIGURATION_PREFIX,
+                            Constants.DXA_RESOLVER_CONFIGURATION_NAMESPACE
                         );
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(Resources.DXA_CM_Extensions_DXAResolver_Models_Strings.CR_LoadConfigurationFailed, ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(
+                            Resources.DXA_CM_Extensions_DXAResolver_Models_Strings.CR_LoadConfigurationFailed, ex);
+                    }
                 }
             }
         }
-
-
 
         internal static string SaveConfigurationImpl(string configurationXml)
         {
             using (Tracer.GetTracer().StartTrace(configurationXml))
             {
-                R6.ISessionAwareCoreService client = CoreServiceManager.GetInstance().CoreServiceClient;
-                try
+                using (SessionAwareCoreServiceClient client = CoreServiceManager.GetCoreServiceClient())
                 {
-                    XmlDocument appDataXml = new XmlDocument();
-                    appDataXml.LoadXml(configurationXml);
-                    R6.ApplicationDataAdapter ada = new R6.ApplicationDataAdapter(Constants.DXA_RESOLVER_CONFIGURATION_NAME, appDataXml.DocumentElement);
-                    client.SaveApplicationData(null, new[] {ada.ApplicationData});
+                    try
+                    {
+                        XmlDocument appDataXml = new XmlDocument();
+                        appDataXml.LoadXml(configurationXml);
+                        ApplicationDataAdapter ada =
+                            new ApplicationDataAdapter(Constants.DXA_RESOLVER_CONFIGURATION_NAME,
+                                appDataXml.DocumentElement);
+                        client.SaveApplicationData(null, new[] {ada.ApplicationData});
 
-                    return configurationXml;
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception(Resources.DXA_CM_Extensions_DXAResolver_Models_Strings.CR_SaveConfigurationFailed, ex);
+                        return configurationXml;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(
+                            Resources.DXA_CM_Extensions_DXAResolver_Models_Strings.CR_SaveConfigurationFailed, ex);
+                    }
                 }
             }
         }
