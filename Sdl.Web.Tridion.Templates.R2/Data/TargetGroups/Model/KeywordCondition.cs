@@ -1,4 +1,6 @@
-﻿namespace Sdl.Web.DataModel
+﻿using Sdl.Web.DataModel;
+
+namespace Sdl.Web.Tridion.Templates.R2.Data.TargetGroups.Model
 {
     public class KeywordCondition : Condition
     {
