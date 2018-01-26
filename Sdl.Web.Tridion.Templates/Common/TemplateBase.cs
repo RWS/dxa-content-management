@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Sdl.Web.DataModel.Configuration;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
@@ -20,7 +21,7 @@ namespace Sdl.Web.Tridion.Templates.Common
     /// Base class for common functionality used by DXA TBBs.
     /// </summary>
     public abstract class TemplateBase : ITemplate
-    {
+    {       
         protected const string JsonMimetype = "application/json";
         protected const string JsonExtension = ".json";
         protected const string BootstrapFilename = "_all";
@@ -514,7 +515,7 @@ namespace Sdl.Web.Tridion.Templates.Common
         }
 
         protected string JsonSerialize(object objectToSerialize, bool prettyPrint = false,
-            JsonSerializerSettings settings = null)
+            JsonSerializerSettings settings = null, bool addUnknownTypeAttributes = false)
         {
             if (settings == null)
             {
@@ -528,7 +529,35 @@ namespace Sdl.Web.Tridion.Templates.Common
                 ? Newtonsoft.Json.Formatting.Indented
                 : Newtonsoft.Json.Formatting.None;
 
-            return JsonConvert.SerializeObject(objectToSerialize, jsonFormatting, settings);
+            ContractResolver resolver = new ContractResolver();
+            if (addUnknownTypeAttributes)
+            {
+                settings.ContractResolver = resolver;
+            }
+
+            string json = JsonConvert.SerializeObject(objectToSerialize, jsonFormatting, settings);
+
+            if (addUnknownTypeAttributes)
+            {
+                // should be able to do this properly in a Json convertor or something but it
+                // didn't work for interface collections so resorting to this ugly approach :/               
+                string patternPrefix = $"\"$type\":";
+                foreach (Type type in resolver.Types)
+                {
+                    string patternSuffix = $"\"{type.Name}\",";
+                    string pattern = patternPrefix;
+                    if (prettyPrint) pattern += " ";
+                    pattern += patternSuffix;
+                    string newpattern = $"\"@type\":" + patternSuffix;
+                    int index = json.IndexOf(pattern);
+                    while (index >= 0)
+                    {
+                        json = json.Insert(index + pattern.Length, newpattern);
+                        index = json.IndexOf(pattern, index + pattern.Length);
+                    }
+                }
+            }
+            return json;
         }
 
         #endregion
@@ -649,5 +678,22 @@ namespace Sdl.Web.Tridion.Templates.Common
         }
 
         #endregion
+    }
+
+    internal class ContractResolver : DefaultContractResolver
+    {
+        public readonly HashSet<Type> _types = new HashSet<Type>();
+        public HashSet<Type> Types => _types;
+        private bool IsUnknownType(Type type)
+            => type.Module.ScopeName != "CommonLanguageRuntimeLibrary" &&
+               type.Namespace != "Sdl.Web.DataModel";
+        protected override JsonConverter ResolveContractConverter(Type objectType)
+        {
+            if (IsUnknownType(objectType))
+            {
+                _types.Add(objectType);                
+            }
+            return base.ResolveContractConverter(objectType);
+        }
     }
 }
