@@ -44,7 +44,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Templates
 
                 DataModelBuilderPipeline modelBuilderPipeline = new DataModelBuilderPipeline(renderedItem, settings, modelBuilderTypeNames);
                 PageModelData pageModel = modelBuilderPipeline.CreatePageModel(page);
-                OutputJson = JsonSerialize(pageModel, IsPreview, DataModelBinder.SerializerSettings, true);
+                OutputJson = JsonSerialize(pageModel, IsPreview, DataModelBinder.SerializerSettings);
             }
             catch (Exception ex)
             {

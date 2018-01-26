@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Sdl.Web.DataModel.Configuration;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
@@ -135,29 +134,7 @@ namespace Sdl.Web.Tridion.Templates.Common
         /// <param name="json">Json to render</param>
         protected string OutputJson
         {
-            get
-            {
-                string json = OutputText;
-                if (!string.IsNullOrEmpty(json))
-                {
-                    // make sure if are returning json stored in the output we remove @type annotations as they 
-                    // can break deserialization
-                    json = Regex.Replace(json, @"\s+", "");
-                    string patternPrefix = $"\"@type\":\"";
-                    int idx = json.IndexOf(patternPrefix);
-                    while (idx >= 0)
-                    {
-                        int idx2 = json.IndexOf("\"", json.IndexOf("\"", idx + patternPrefix.Length)) + 1;
-                        if (json[idx2] == ',')
-                        {
-                            idx2++;
-                        }
-                        json = json.Substring(0, idx) + json.Substring(idx2);
-                        idx = json.IndexOf(patternPrefix);
-                    }
-                }
-                return json;
-            }
+            get { return OutputText; }
             set { OutputText = value; }
         }
 
@@ -548,7 +525,7 @@ namespace Sdl.Web.Tridion.Templates.Common
         }
 
         protected string JsonSerialize(object objectToSerialize, bool prettyPrint = false,
-            JsonSerializerSettings settings = null, bool addUnknownTypeAttributes = false)
+            JsonSerializerSettings settings = null)
         {
             if (settings == null)
             {
@@ -562,35 +539,7 @@ namespace Sdl.Web.Tridion.Templates.Common
                 ? Newtonsoft.Json.Formatting.Indented
                 : Newtonsoft.Json.Formatting.None;
 
-            ContractResolver resolver = new ContractResolver();
-            if (addUnknownTypeAttributes)
-            {
-                settings.ContractResolver = resolver;
-            }
-
-            string json = JsonConvert.SerializeObject(objectToSerialize, jsonFormatting, settings);
-
-            if (addUnknownTypeAttributes)
-            {
-                // should be able to do this properly in a Json convertor or something but it
-                // didn't work for interface collections so resorting to this ugly approach :/               
-                string patternPrefix = $"\"$type\":";
-                foreach (Type type in resolver.Types)
-                {
-                    string patternSuffix = $"\"{type.Name}\",";
-                    string pattern = patternPrefix;
-                    if (prettyPrint) pattern += " ";
-                    pattern += patternSuffix;
-                    string newpattern = $"\"@type\":" + patternSuffix;
-                    int index = json.IndexOf(pattern);
-                    while (index >= 0)
-                    {
-                        json = json.Insert(index + pattern.Length, newpattern);
-                        index = json.IndexOf(pattern, index + pattern.Length);
-                    }
-                }
-            }
-            return json;
+            return JsonConvert.SerializeObject(objectToSerialize, jsonFormatting, settings);         
         }
 
         #endregion
@@ -711,22 +660,5 @@ namespace Sdl.Web.Tridion.Templates.Common
         }
 
         #endregion
-    }
-
-    internal class ContractResolver : DefaultContractResolver
-    {
-        public readonly HashSet<Type> _types = new HashSet<Type>();
-        public HashSet<Type> Types => _types;
-        private bool IsUnknownType(Type type)
-            => type.Module.ScopeName != "CommonLanguageRuntimeLibrary" &&
-               type.Namespace != "Sdl.Web.DataModel";
-        protected override JsonConverter ResolveContractConverter(Type objectType)
-        {
-            if (IsUnknownType(objectType))
-            {
-                _types.Add(objectType);                
-            }
-            return base.ResolveContractConverter(objectType);
-        }
     }
 }
