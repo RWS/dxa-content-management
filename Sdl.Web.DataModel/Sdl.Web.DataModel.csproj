@@ -49,11 +49,6 @@
     </Compile>
     <Compile Include="BinaryContentData.cs" />
     <Compile Include="ComponentTemplateData.cs" />
-    <Compile Include="Condition\Condition.cs" />
-    <Compile Include="Condition\ConditionOperator.cs" />
-    <Compile Include="Condition\CustomerCharacteristicCondition.cs" />
-    <Compile Include="Condition\ICondition.cs" />
-    <Compile Include="Condition\KeywordCondition.cs" />
     <Compile Include="Configuration\BootstrapData.cs" />
     <Compile Include="Configuration\LocalizationData.cs" />
     <Compile Include="Configuration\SemanticPropertyData.cs" />
@@ -77,10 +72,6 @@
     <Compile Include="RegionModelData.cs" />
     <Compile Include="RichTextData.cs" />
     <Compile Include="SitemapItemData.cs" />
-    <Compile Include="TargetGroups\ITargetGroup.cs" />
-    <Compile Include="Condition\ITargetGroupCondition.cs" />
-    <Compile Include="TargetGroups\TargetGroup.cs" />
-    <Compile Include="Condition\TargetGroupCondition.cs" />
     <Compile Include="ViewModelData.cs" />
   </ItemGroup>
   <ItemGroup>

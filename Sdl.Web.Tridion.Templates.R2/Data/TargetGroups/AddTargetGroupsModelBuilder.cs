@@ -1,35 +1,42 @@
 ﻿using System.Collections.Generic;
 using Sdl.Web.DataModel;
+using Sdl.Web.Tridion.Templates.R2.Data.TargetGroups.Model;
 using Tridion.ContentManager.CommunicationManagement;
+using Tridion.ContentManager.ContentManagement;
 using AM = Tridion.ContentManager.AudienceManagement;
 
 namespace Sdl.Web.Tridion.Templates.R2.Data
 {
-    public class AddTargetGroupsModelBuilder : DataModelBuilder, IPageModelDataBuilder
+    public class AddTargetGroupsModelBuilder : DataModelBuilder, IEntityModelDataBuilder
     {
         public AddTargetGroupsModelBuilder(DataModelBuilderPipeline pipeline) : base(pipeline)
         {
             Logger.Debug("AddTargetGroupsModelBuilder initialized.");
         }
 
-        public void BuildPageModel(ref PageModelData pageModelData, Page page)
+        public void BuildEntityModel(ref EntityModelData entityModelData, ComponentPresentation cp)
         {
-            Logger.Debug("Adding target groups to page model data.");
-            foreach (var cp in page.ComponentPresentations)
+            Logger.Debug("Adding target groups to entity model data.");
+            if (cp.Conditions == null || cp.Conditions.Count <= 0) return;
+            List<ICondition> conditions = new List<ICondition>();
+            foreach (var condition in cp.Conditions)
             {
-                if (cp.Conditions == null || cp.Conditions.Count <= 0) continue;
-                List<ICondition> conditions = new List<ICondition>();
-                foreach (var condition in cp.Conditions)
-                {
-                    var mapped = MapConditions(condition.TargetGroup.Conditions);
-                    if (mapped == null || mapped.Count <= 0) continue;
-                    conditions.AddRange(mapped);
-                }
-                if (conditions.Count <= 0) continue;
-                pageModelData.Conditions = conditions;
+                var mapped = MapConditions(condition.TargetGroup.Conditions);
+                if (mapped == null || mapped.Count <= 0) continue;
+                conditions.AddRange(mapped);
+            }
+            if (conditions.Count > 0)
+            {
+                entityModelData.SetExtensionData("TargetGroupConditions", conditions.ToArray());
             }
         }
-      
+
+        public void BuildEntityModel(ref EntityModelData entityModelData, Component component, ComponentTemplate ct,
+            bool includeComponentTemplateDetails, int expandLinkDepth)
+        {
+
+        }
+
         private IList<ICondition> MapConditions(IList<AM.Condition> conditions)
         {
             var mappedConditions = new List<ICondition>();

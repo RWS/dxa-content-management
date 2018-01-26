@@ -1,4 +1,4 @@
-﻿namespace Sdl.Web.DataModel
+﻿namespace Sdl.Web.Tridion.Templates.R2.Data.TargetGroups.Model
 {
     public class TargetGroupCondition : Condition, ITargetGroupCondition
     {
