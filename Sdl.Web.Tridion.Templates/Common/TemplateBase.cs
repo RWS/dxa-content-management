@@ -133,18 +133,51 @@ namespace Sdl.Web.Tridion.Templates.Common
         /// Output rendered json.
         /// </summary>
         /// <param name="json">Json to render</param>
-        protected void OutputJson(string json)
-            => OutputText(json);
+        protected string OutputJson
+        {
+            get
+            {
+                string json = OutputText;
+                if (!string.IsNullOrEmpty(json))
+                {
+                    // make sure if are returning json stored in the output we remove @type annotations as they 
+                    // can break deserialization
+                    json = Regex.Replace(json, @"\s+", "");
+                    string patternPrefix = $"\"@type\":\"";
+                    int idx = json.IndexOf(patternPrefix);
+                    while (idx >= 0)
+                    {
+                        int idx2 = json.IndexOf("\"", json.IndexOf("\"", idx + patternPrefix.Length)) + 1;
+                        if (json[idx2] == ',')
+                        {
+                            idx2++;
+                        }
+                        json = json.Substring(0, idx) + json.Substring(idx2);
+                        idx = json.IndexOf(patternPrefix);
+                    }
+                }
+                return json;
+            }
+            set { OutputText = value; }
+        }
 
         /// <summary>
         /// Output text.
         /// </summary>
-        /// <param name="text">Json to render</param>
-        protected void OutputText(string text)
+        protected string OutputText
         {
-            Item outputItem = Package.CreateStringItem(ContentType.Text, text);
-            Package.PushItem(Package.OutputName, outputItem);
+            get
+            {
+                Item outputItem = Package.GetByName(Package.OutputName);
+                return outputItem?.GetAsString();
+            }
+            set
+            {
+                Item outputItem = Package.CreateStringItem(ContentType.Text, value);
+                Package.PushItem(Package.OutputName, outputItem);
+            }
         }
+
 
         /// <summary>
         /// Update the (JSON) summary in the Output item.
