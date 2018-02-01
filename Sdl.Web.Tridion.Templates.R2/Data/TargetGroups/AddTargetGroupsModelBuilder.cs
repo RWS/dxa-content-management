@@ -76,13 +76,17 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             Negate = targetGroupCondition.Negate
         };
 
-        private KeywordCondition MapTrackingKeyCondition(AM.TrackingKeyCondition trackingKeyCondition) => new KeywordCondition
+        private TrackingKeyCondition MapTrackingKeyCondition(AM.TrackingKeyCondition trackingKeyCondition)
         {
-            KeywordModelData = Pipeline.CreateKeywordModel(trackingKeyCondition.Keyword, Pipeline.Settings.ExpandLinkDepth),
-            Operator = (ConditionOperator)trackingKeyCondition.Operator,
-            Negate = true,
-            Value = trackingKeyCondition.Value
-        };
+            KeywordModelData kwd = Pipeline.CreateKeywordModel(trackingKeyCondition.Keyword, Pipeline.Settings.ExpandLinkDepth);
+            return new TrackingKeyCondition
+            {
+                Operator = (ConditionOperator) trackingKeyCondition.Operator,
+                Negate = true,
+                Value = trackingKeyCondition.Value,
+                TrackingKeyTitle = kwd.Title
+            };
+        }
 
         public TargetGroup MapTargetGroup(AM.TargetGroup targetGroup) => new TargetGroup
         {
