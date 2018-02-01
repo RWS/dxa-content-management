@@ -90,7 +90,7 @@
     <Compile Include="Data\TargetGroups\Model\CustomerCharacteristicCondition.cs" />
     <Compile Include="Data\TargetGroups\Model\ICondition.cs" />
     <Compile Include="Data\TargetGroups\Model\ITargetGroupCondition.cs" />
-    <Compile Include="Data\TargetGroups\Model\KeywordCondition.cs" />
+    <Compile Include="Data\TargetGroups\Model\TrackingKeyCondition.cs" />
     <Compile Include="Data\TargetGroups\Model\TargetGroupCondition.cs" />
     <Compile Include="Data\TargetGroups\Model\ITargetGroup.cs" />
     <Compile Include="Data\TargetGroups\Model\TargetGroup.cs" />
