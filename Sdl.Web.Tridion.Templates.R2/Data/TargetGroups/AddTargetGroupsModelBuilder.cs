@@ -18,7 +18,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         {
             Logger.Debug("Adding target groups to entity model data.");
             if (cp.Conditions == null || cp.Conditions.Count <= 0) return;
-            List<ICondition> conditions = new List<ICondition>();
+            List<Condition> conditions = new List<Condition>();
             foreach (var condition in cp.Conditions)
             {
                 var mapped = MapConditions(condition.TargetGroup.Conditions);
@@ -37,9 +37,9 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
         }
 
-        private IList<ICondition> MapConditions(IList<AM.Condition> conditions)
+        private IList<Condition> MapConditions(IList<AM.Condition> conditions)
         {
-            var mappedConditions = new List<ICondition>();
+            var mappedConditions = new List<Condition>();
             foreach (var condition in conditions)
             {
                 if (condition is AM.TrackingKeyCondition)

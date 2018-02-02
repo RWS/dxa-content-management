@@ -88,11 +88,8 @@
     <Compile Include="Data\TargetGroups\Model\Condition.cs" />
     <Compile Include="Data\TargetGroups\Model\ConditionOperator.cs" />
     <Compile Include="Data\TargetGroups\Model\CustomerCharacteristicCondition.cs" />
-    <Compile Include="Data\TargetGroups\Model\ICondition.cs" />
-    <Compile Include="Data\TargetGroups\Model\ITargetGroupCondition.cs" />
     <Compile Include="Data\TargetGroups\Model\TrackingKeyCondition.cs" />
     <Compile Include="Data\TargetGroups\Model\TargetGroupCondition.cs" />
-    <Compile Include="Data\TargetGroups\Model\ITargetGroup.cs" />
     <Compile Include="Data\TargetGroups\Model\TargetGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TemplateR2Base.cs" />

@@ -2,7 +2,7 @@
 
 namespace Sdl.Web.Tridion.Templates.R2.Data.TargetGroups.Model
 {
-    public class TargetGroup : ITargetGroup
+    public class TargetGroup
     {
         public string Id { get; set; }
 
@@ -10,6 +10,6 @@ namespace Sdl.Web.Tridion.Templates.R2.Data.TargetGroups.Model
 
         public string Description { get; set; }
         
-        public IList<ICondition> Conditions { get; set; }
+        public IList<Condition> Conditions { get; set; }
     }
 }
