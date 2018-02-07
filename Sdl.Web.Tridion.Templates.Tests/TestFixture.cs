@@ -35,5 +35,8 @@
         internal const string BullsEyeComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Images/Large/bulls-eye.jpg";
         internal const string TestComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Test/Test Component.xml";
         internal const string NavConfigurationComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Settings/Core/Site Manager/Navigation Configuration.xml";
+
+
+        internal const string Tsi2844WebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-2844.tpg";
     }
 }

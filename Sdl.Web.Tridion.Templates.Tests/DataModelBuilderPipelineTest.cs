@@ -17,7 +17,6 @@ using Tridion.ContentManager.Publishing.Rendering;
 
 namespace Sdl.Web.Tridion.Templates.Tests
 {
-
     [TestClass]
     public class DataModelBuilderPipelineTest : TestClass
     {
@@ -30,10 +29,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
         private static readonly string[] _defaultModelBuilderTypeNames =
         {
-            typeof(DefaultModelBuilder).Name,
+            typeof(DefaultModelBuilder).Name, // Both unqualified and qualified type names should work.
             typeof(DefaultPageMetaModelBuilder).Name,
             typeof(EclModelBuilder).Name,
-            typeof(ContextExpressionsModelBuilder).FullName // Both unqualified and qualified type names should work.
+            typeof(ContextExpressionsModelBuilder).FullName, 
+            typeof(AddTargetGroupsModelBuilder).FullName,
+            typeof(InheritMetadataPageModelBuilder).FullName,
+            typeof(InheritMetadataEntityModelBuilder).FullName
         };
 
         [ClassInitialize]
@@ -107,6 +109,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 testLogger.LoggedMessages.Contains(new LogMessage(LogLevel.Warning, "Component Template 'Generate Data Presentation' not found.")),
                 "Expected Log message not found."
                 );
+        }
+
+        [TestMethod]
+        public void CreatePageModel_AutoTestParentTsi2844_Success()
+        {
+            Page testPage = (Page)TestSession.GetObject(TestFixture.Tsi2844WebDavUrl);
+            Assert.IsNotNull(testPage);
         }
 
         [TestMethod]
