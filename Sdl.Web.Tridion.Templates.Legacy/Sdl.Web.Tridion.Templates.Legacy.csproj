@@ -31,19 +31,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="DD4T.ContentModel">
-      <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.ContentModel.dll</HintPath>
+      <HintPath>..\packages\DD4T.Templates.Base.2.2.2\lib\net45\DD4T.ContentModel.dll</HintPath>
     </Reference>
     <Reference Include="DD4T.ContentModel.Contracts">
-      <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.ContentModel.Contracts.dll</HintPath>
+      <HintPath>..\packages\DD4T.Templates.Base.2.2.2\lib\net45\DD4T.ContentModel.Contracts.dll</HintPath>
     </Reference>
     <Reference Include="DD4T.ContentModel.XmlSerializers">
-      <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.ContentModel.XmlSerializers.dll</HintPath>
+      <HintPath>..\packages\DD4T.Templates.Base.2.2.2\lib\net45\DD4T.ContentModel.XmlSerializers.dll</HintPath>
     </Reference>
     <Reference Include="DD4T.Serialization">
-      <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.Serialization.dll</HintPath>
+      <HintPath>..\packages\DD4T.Templates.Base.2.2.2\lib\net45\DD4T.Serialization.dll</HintPath>
     </Reference>
     <Reference Include="DD4T.Templates.Base">
-      <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.Templates.Base.dll</HintPath>
+      <HintPath>..\packages\DD4T.Templates.Base.2.2.2\lib\net45\DD4T.Templates.Base.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -60,25 +60,25 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="Tridion.Common">
-      <HintPath>C:\_references\cm-8.1\Tridion.Common.dll</HintPath>
+      <HintPath>C:\_references\cm-8.5\Tridion.Common.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.ContentManager">
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.dll</HintPath>
+      <HintPath>C:\_references\cm-8.5\Tridion.ContentManager.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.ContentManager.Common">
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Common.dll</HintPath>
+      <HintPath>C:\_references\cm-8.5\Tridion.ContentManager.Common.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.ContentManager.Publishing">
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Publishing.dll</HintPath>
+      <HintPath>C:\_references\cm-8.5\Tridion.ContentManager.Publishing.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.ContentManager.Templating">
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Templating.dll</HintPath>
+      <HintPath>C:\_references\cm-8.5\Tridion.ContentManager.Templating.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.ExternalContentLibrary">
-      <HintPath>C:\_references\cm-8.1\Tridion.ExternalContentLibrary.dll</HintPath>
+      <HintPath>C:\_references\cm-8.5\Tridion.ExternalContentLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.ExternalContentLibrary.V2">
-      <HintPath>C:\_references\cm-8.1\Tridion.ExternalContentLibrary.V2.dll</HintPath>
+      <HintPath>C:\_references\cm-8.5\Tridion.ExternalContentLibrary.V2.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -128,7 +128,7 @@
     <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe"  ^
     /out:Sdl.Web.Tridion.Templates.Legacy.merged.dll ^
     /targetplatform:v4 ^
-    /lib:C:\_references\cm-8.1 ^
+    /lib:C:\_references\cm-8.5 ^
     Sdl.Web.Tridion.Templates.dll Sdl.Web.Tridion.Templates.Legacy.dll Sdl.Web.DataModel.dll DD4T.ContentModel.Contracts.dll DD4T.ContentModel.dll DD4T.Serialization.dll DD4T.Templates.Base.dll Newtonsoft.Json.dll
 </PostBuildEvent>
   </PropertyGroup>
