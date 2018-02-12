@@ -116,6 +116,9 @@ namespace Sdl.Web.Tridion.Templates.Tests
         {
             Page testPage = (Page)TestSession.GetObject(TestFixture.Tsi2844WebDavUrl);
             Assert.IsNotNull(testPage);
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+            Assert.IsNotNull(pageModel);
         }
 
         [TestMethod]
