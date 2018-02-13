@@ -20,7 +20,7 @@ namespace Sdl.Web.Tridion.Templates.Common
     /// Base class for common functionality used by DXA TBBs.
     /// </summary>
     public abstract class TemplateBase : ITemplate
-    {
+    {       
         protected const string JsonMimetype = "application/json";
         protected const string JsonExtension = ".json";
         protected const string BootstrapFilename = "_all";
@@ -132,18 +132,29 @@ namespace Sdl.Web.Tridion.Templates.Common
         /// Output rendered json.
         /// </summary>
         /// <param name="json">Json to render</param>
-        protected void OutputJson(string json)
-            => OutputText(json);
+        protected string OutputJson
+        {
+            get { return OutputText; }
+            set { OutputText = value; }
+        }
 
         /// <summary>
         /// Output text.
         /// </summary>
-        /// <param name="text">Json to render</param>
-        protected void OutputText(string text)
+        protected string OutputText
         {
-            Item outputItem = Package.CreateStringItem(ContentType.Text, text);
-            Package.PushItem(Package.OutputName, outputItem);
+            get
+            {
+                Item outputItem = Package.GetByName(Package.OutputName);
+                return outputItem?.GetAsString();
+            }
+            set
+            {
+                Item outputItem = Package.CreateStringItem(ContentType.Text, value);
+                Package.PushItem(Package.OutputName, outputItem);
+            }
         }
+
 
         /// <summary>
         /// Update the (JSON) summary in the Output item.
@@ -528,7 +539,7 @@ namespace Sdl.Web.Tridion.Templates.Common
                 ? Newtonsoft.Json.Formatting.Indented
                 : Newtonsoft.Json.Formatting.None;
 
-            return JsonConvert.SerializeObject(objectToSerialize, jsonFormatting, settings);
+            return JsonConvert.SerializeObject(objectToSerialize, jsonFormatting, settings);         
         }
 
         #endregion

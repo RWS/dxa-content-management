@@ -428,6 +428,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         }
 
         public void CreateSchemaIdListExtensionData(ref ViewModelData modelData, List<string> ids) {
+            if (ids == null || ids.Count == 0) return;
             if (modelData != null && modelData.ExtensionData == null)
             {
                 modelData.ExtensionData = new Dictionary<string, object>();

@@ -1,4 +1,5 @@
-﻿<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -44,78 +45,20 @@
     <LangVersion>4</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Web.DynamicData" />
-    <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Web.Services" />
-    <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="Tridion.Common">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.Common.dll</HintPath>
+    <Reference Include="Tridion.Web.UI.Core, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.ContentManager.CoreService.Client">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.ContentManager.CoreService.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.ContentManager.CoreService.Legacy">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.ContentManager.CoreService.Legacy.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Logging">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.TopologyManager.Client">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.TopologyManager.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.CMUtils">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.Web.CMUtils.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Core">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Editors.Base">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Editors.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Editors.CME">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Editors.CME.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Models.BaseEditor">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Models.BaseEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Models.CME">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Models.CME.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Models.Interfaces">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Models.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Models.R5LegacyConverter">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Models.R5LegacyConverter.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Models.TCM54">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Models.TCM54.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Web.UI.Models.TTM">
-      <HintPath>..\DXA.CM.Extensions.DXAResolver.Common\dependencies\8.1.1\Tridion.Web.UI.Models.TTM.dll</HintPath>
+    <Reference Include="Tridion.Web.UI.Editors.Base, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Editors.Base.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Configuration\DXAResolver.Editor.config" />
-    <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Commands\ShowSettings.js" />
@@ -194,12 +137,6 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
