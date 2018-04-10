@@ -1,4 +1,6 @@
-﻿namespace Sdl.Web.Tridion.Templates.R2.Data
+﻿using System.Collections.Generic;
+
+namespace Sdl.Web.Tridion.Templates.R2.Data
 {
     /// <summary>
     /// Represents the settings for <see cref="DataModelBuilder"/>
@@ -20,5 +22,10 @@
         /// Gets or sets the Locale which is output as <c>og:locale</c> PageModel Meta.
         /// </summary>
         public string Locale { get; set; }
+
+        /// <summary>
+        /// Gets or sets the a list of schema names used to determine embed behaviour in Rich text fields
+        /// </summary>
+        public List<string> SchemasForRichTextEmbed { get; set; }
     }
 }

@@ -271,6 +271,44 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             foreach (XmlElement xlinkElement in xhtmlElement.SelectElements(".//*[starts-with(@xlink:href, 'tcm:')]"))
             {
                 Component linkedComponent = Pipeline.Session.GetObject(xlinkElement) as Component;
+                if (xlinkElement.LocalName == "img" || ShouldBeEmbedded(linkedComponent))
+                {
+                    EntityModelData embeddedEntity = Pipeline.CreateEntityModel(linkedComponent, ct: null, expandLinkDepth: 0);
+                    string htmlClasses = xlinkElement.GetAttribute("class");
+                    if (!string.IsNullOrEmpty(htmlClasses))
+                    {
+                        embeddedEntity.HtmlClasses = htmlClasses;
+                    }
+                    string altText = xlinkElement.GetAttribute("alt");
+                    if (!string.IsNullOrEmpty(altText))
+                    {
+                        // The XHTML element has an alt attribute; use this as "altText" metadata field (possibly overwriting the actual metadata field).
+                        if (embeddedEntity.Metadata == null)
+                        {
+                            embeddedEntity.Metadata = new ContentModelData();
+                        }
+                        embeddedEntity.Metadata["altText"] = altText;
+                    }
+                    string content = xlinkElement.InnerXml;
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        //If the item has content (for example the text for a link) we add this as metadata, so it can be used if required
+                        if (embeddedEntity.ExtensionData == null)
+                        {
+                            embeddedEntity.ExtensionData = new Dictionary<string, object>();
+                        }
+                        embeddedEntity.ExtensionData["_content"] = content;
+                    }
+                    embeddedEntities.Add(embeddedEntity);
+
+                    // Replace entire element with marker XML processing instruction (see below). 
+                    Logger.Debug($"Replacing element with embedded entity {embeddedEntity.Id}");
+                    xlinkElement.ParentNode.ReplaceChild(
+                        xmlDoc.CreateProcessingInstruction("EmbeddedEntity", string.Empty),
+                        xlinkElement
+                        );
+                    continue;
+                }
 
                 if ((xlinkElement.LocalName == "a") && (linkedComponent != null))
                 {
@@ -286,41 +324,10 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     xlinkElement.RemoveXlinkAttributes();
                     continue;
                 }
-
-                if (xlinkElement.LocalName == "img")
-                {
-                    // img element pointing to MM Component is expanded to an embedded Entity Model
-                    EntityModelData embeddedEntity = Pipeline.CreateEntityModel(linkedComponent, ct: null, expandLinkDepth: 0);
-                    string htmlClasses = xlinkElement.GetAttribute("class");
-                    if (!string.IsNullOrEmpty(htmlClasses))
-                    {
-                        embeddedEntity.HtmlClasses = htmlClasses;
-                    }
-                    string altText = xlinkElement.GetAttribute("alt");
-                    if (!string.IsNullOrEmpty(altText))
-                    {
-                        // The XHTML img element has an alt attribute; use this as "altText" metadata field (possibly overwriting the actual metadata field).
-                        if (embeddedEntity.Metadata == null)
-                        {
-                            embeddedEntity.Metadata = new ContentModelData();
-                        }
-                        embeddedEntity.Metadata["altText"] = altText;
-                    }
-                    embeddedEntities.Add(embeddedEntity);
-
-                    // Replace entire img element with marker XML processing instruction (see below). 
-                    xlinkElement.ParentNode.ReplaceChild(
-                        xmlDoc.CreateProcessingInstruction("EmbeddedEntity", string.Empty),
-                        xlinkElement
-                        );
-                }
-                else
-                {
-                    // Hyperlink to MM Component: add the Binary and set the URL as href
-                    string binaryUrl = Pipeline.RenderedItem.AddBinary(linkedComponent).Url;
-                    xlinkElement.SetAttribute("href", binaryUrl);
-                    xlinkElement.RemoveXlinkAttributes();
-                }
+                // Default behaviour: Hyperlink to MM Component: add the Binary and set the URL as href
+                string binaryUrl = Pipeline.RenderedItem.AddBinary(linkedComponent).Url;
+                xlinkElement.SetAttribute("href", binaryUrl);
+                xlinkElement.RemoveXlinkAttributes();
             }
 
             // Remove XHTML namespace declarations
@@ -347,6 +354,20 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             }
 
             return new RichTextData { Fragments = richTextFragments };
+        }
+
+        private bool ShouldBeEmbedded(Component linkedComponent)
+        {
+            if (Pipeline.Settings.SchemasForRichTextEmbed != null)
+            {
+                Logger.Debug($"Looking for schema {linkedComponent.Schema.Title} in set of schemas configured for rtf embed: {String.Join(";", Pipeline.Settings.SchemasForRichTextEmbed)}");
+                if (Pipeline.Settings.SchemasForRichTextEmbed.Contains(linkedComponent.Schema.Title.ToLower()))
+                {
+                    Logger.Debug($"Found!");
+                    return true;
+                }
+            }
+            return false;
         }
 
         protected ContentModelData ExtractCustomMetadata(XmlElement metadata, IEnumerable<string> excludeFields)

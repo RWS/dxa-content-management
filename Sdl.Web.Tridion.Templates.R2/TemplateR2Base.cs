@@ -1,5 +1,7 @@
 ﻿using Sdl.Web.Tridion.Templates.Common;
 using Sdl.Web.Tridion.Templates.R2.Data;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Sdl.Web.Tridion.Templates.R2
 {
@@ -18,7 +20,8 @@ namespace Sdl.Web.Tridion.Templates.R2
                 {
                     ExpandLinkDepth = expandLinkDepth,
                     GenerateXpmMetadata = IsXpmEnabled || IsPreview,
-                    Locale = GetLocale()
+                    Locale = GetLocale(),
+                    SchemasForRichTextEmbed = GetSchemasForRichTextEmbed()
                 };
             }
         }
@@ -53,6 +56,18 @@ namespace Sdl.Web.Tridion.Templates.R2
             }
 
             return modelBuilderTypeNamesParam.Split(';');
+        }
+
+        protected List<string> GetSchemasForRichTextEmbed()
+        {
+            string schemasForEmbed;
+            List<string> schemasForEmbedList = new List<string>();
+            TryGetParameter("schemasToEmbedInRichText", out schemasForEmbed);
+            if (!string.IsNullOrEmpty(schemasForEmbed))
+            {
+                schemasForEmbedList = schemasForEmbed.Split(';').Select(s => s.Trim().ToLower()).ToList();
+            }
+            return schemasForEmbedList;
         }
     }
 }

@@ -46,7 +46,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Templates
                 DataModelBuilderSettings settings = new DataModelBuilderSettings
                 {
                     ExpandLinkDepth = expandLinkDepth,
-                    GenerateXpmMetadata = IsXpmEnabled || IsPreview
+                    GenerateXpmMetadata = IsXpmEnabled || IsPreview,
+                    SchemasForRichTextEmbed = GetSchemasForRichTextEmbed()
                 };
 
                 DataModelBuilderPipeline modelBuilderPipeline = new DataModelBuilderPipeline(renderedItem, settings, modelBuilderTypeNames);
