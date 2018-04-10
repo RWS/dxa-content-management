@@ -92,6 +92,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 Regions = regionModels.Values.ToList(),                
                 Metadata = pageModelMetadata,
                 MvcData = GetPageMvcData(pt),
+                HtmlClasses = GetHtmlClasses(pt),
                 XpmMetadata = GetXpmMetadata(page)
             };
         }
@@ -232,9 +233,9 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             };
         }
 
-        private static string GetHtmlClasses(ComponentTemplate ct)
+        private static string GetHtmlClasses(Template t)
         {
-            IEnumerable<string> htmlClasses = ct?.Metadata?.GetTextFieldValues("htmlClasses");
+            IEnumerable<string> htmlClasses = t?.Metadata?.GetTextFieldValues("htmlClasses");
             return (htmlClasses == null) ? null : string.Join(" ", htmlClasses);
         }
 
