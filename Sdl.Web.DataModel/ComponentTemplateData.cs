@@ -10,6 +10,11 @@ namespace Sdl.Web.DataModel
         public string Id { get; set; }
 
         /// <summary>
+        /// Gets or sets the CM Uri namespace (Either 'tcm' or 'ish' but in future could be something else)
+        /// </summary>
+        public string Namespace { get; set; }
+
+        /// <summary>
         /// Gets or sets the title for the Template
         /// </summary>
         public string Title { get; set; }
