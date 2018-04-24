@@ -19,6 +19,11 @@
         public string Id { get; set; }
 
         /// <summary>
+        /// Gets or sets the CM Uri namespace (Either 'tcm' or 'ish' but in future could be something else)
+        /// </summary>
+        public string Namespace { get; set; }
+
+        /// <summary>
         /// Gets or sets the component template.
         /// </summary>
         public ComponentTemplateData ComponentTemplate { get; set; }
