@@ -124,7 +124,12 @@ namespace Sdl.Web.Tridion.Templates
 
         protected string GetNavigationTitle(StructureGroup sg)
         {
-            return StripPrefix(sg.Title);
+            string title = null;
+            if (_config.NavType == NavigationType.Localizable)
+            {
+                title = GetNavTextFromStructureGroup(sg);
+            }
+            return string.IsNullOrEmpty(title) ? StripPrefix(sg.Title) : title;
         }
 
         protected string StripPrefix(string title)
@@ -177,6 +182,21 @@ namespace Sdl.Web.Tridion.Templates
             {
                 data.Add(component.Metadata);
             }
+            return GetNavTitleFromData(data);
+        }
+
+        private string GetNavTextFromStructureGroup(StructureGroup sg)
+        {
+            string title = null;
+            if (sg.Metadata != null)
+            {
+                title = GetNavTitleFromData(new List<XmlElement> { sg.Metadata });
+            }
+            return title;
+        }
+
+        private string GetNavTitleFromData(List<XmlElement> data)
+        {
             foreach (string fieldname in _config.NavTextFieldPaths)
             {
                 string title = GetNavTitleFromField(fieldname, data);
