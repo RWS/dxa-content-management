@@ -61,6 +61,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         protected static string GetTcmIdentifier(IdentifiableObject tcmItem)
             => tcmItem?.Id.GetVersionlessUri().ToString();
 
+        public static string GetNamespace(IdentifiableObject tcmItem) => "tcm"; // can only be tcm at the moment
+
         protected static string StripModuleName(string qualifiedName, out string moduleName)
         {
             if (string.IsNullOrEmpty(qualifiedName))
@@ -223,12 +225,14 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 {
                     return new EntityModelData
                     {
-                        Id = GetDxaIdentifier(linkedComponent)
+                        Id = GetDxaIdentifier(linkedComponent),
+                        Namespace = GetNamespace(linkedComponent)
                     };
                 }
                 return new KeywordModelData
                 {
                     Id = GetDxaIdentifier(linkedKeyword),
+                    Namespace = GetNamespace(linkedKeyword),
                     SchemaId = GetDxaIdentifier(linkedKeyword.MetadataSchema)
                 };
             }
@@ -241,7 +245,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     Logger.Debug($"Not expanding Component link because a Data Presentation exists: {linkedComponent.Schema.FormatIdentifier()}");
                     return new EntityModelData
                     {
-                        Id = $"{GetDxaIdentifier(linkedComponent)}-{GetDxaIdentifier(dataPresentationTemplate)}"
+                        Id = $"{GetDxaIdentifier(linkedComponent)}-{GetDxaIdentifier(dataPresentationTemplate)}",
+                        Namespace = GetNamespace(linkedComponent)
                     };
                 }
 
@@ -256,6 +261,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 return new KeywordModelData
                 {
                     Id = GetDxaIdentifier(linkedKeyword),
+                    Namespace = GetNamespace(linkedKeyword),
                     SchemaId = GetDxaIdentifier(linkedKeyword.MetadataSchema)
                 };
             }

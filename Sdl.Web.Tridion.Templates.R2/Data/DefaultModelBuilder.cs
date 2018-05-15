@@ -83,6 +83,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             pageModelData = new PageModelData
             {
                 Id = GetDxaIdentifier(page),
+                Namespace = GetNamespace(page),
                 PageTemplate = GetPageTemplateData(pt),
                 StructureGroupId = GetDxaIdentifier(structureGroup),
                 SchemaId = GetDxaIdentifier(page.MetadataSchema),
@@ -154,6 +155,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             entityModelData = new EntityModelData
             {
                 Id = GetDxaIdentifier(component),
+                Namespace = GetNamespace(component),
                 SchemaId = GetDxaIdentifier(component.Schema),
                 Content = BuildContentModel(component.Content, expandLinkDepth),
                 Metadata = BuildContentModel(component.Metadata, expandLinkDepth),
@@ -224,6 +226,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             keywordModelData = new KeywordModelData
             {
                 Id = GetDxaIdentifier(keyword),
+                Namespace = GetNamespace(keyword),
                 Title = StripSequencePrefix(keyword.Title, out sequencePrefix),
                 Description = keyword.Description.NullIfEmpty(),
                 Key = keyword.Key.NullIfEmpty(),
@@ -439,7 +442,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 Logger.Debug($"Not expanding DCP ({cp.Component}, {ct})");
                 entityModel = new EntityModelData
                 {
-                    Id = $"{GetDxaIdentifier(cp.Component)}-{GetDxaIdentifier(ct)}"
+                    Id = $"{GetDxaIdentifier(cp.Component)}-{GetDxaIdentifier(ct)}",
+                    Namespace = GetNamespace(cp.Component)
                 };
             }
             else
@@ -578,6 +582,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             var pageTemplateData = new PageTemplateData
             {
                 Id = GetDxaIdentifier(pt),
+                Namespace = GetNamespace(pt),
                 Title = pt.Title,
                 FileExtension = pt.FileExtension,
                 RevisionDate = pt.RevisionDate
@@ -592,7 +597,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         {
             var componentTemplateData = new ComponentTemplateData
             {
-                Id = GetDxaIdentifier(ct)
+                Id = GetDxaIdentifier(ct),
+                Namespace = GetNamespace(ct)
             };
            
             if (ct.Metadata == null || ct.MetadataSchema == null) return componentTemplateData;
