@@ -121,6 +121,11 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             List<object> currentFieldValues = new List<object>();
             foreach (XmlElement childElement in xmlElement.SelectElements("*"))
             {
+                if (!(childElement.HasChildNodes || childElement.HasAttributes))
+                {
+                    //Special case: sometimes empty embedded fields appear as empty elements - skip them
+                    continue;
+                }
                 if (childElement.Name != currentFieldName)
                 {
                     // New field
