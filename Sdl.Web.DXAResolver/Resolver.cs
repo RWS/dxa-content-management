@@ -169,7 +169,14 @@ namespace Sdl.Web.DXAResolver
                     if (!ContinueRecursion(depth + 1)) break;
                     if (toProcess.Contains(linkedComponent)) continue;
                     components.Add(linkedComponent);
-                    depths.Add(linkedComponent, depth + 1);
+                    if (depths.ContainsKey(linkedComponent))
+                    {
+                        depths[linkedComponent] = depth + 1;
+                    }
+                    else
+                    {
+                        depths.Add(linkedComponent, depth + 1);
+                    }
                 }
             }
             toResolve.AddRange(toProcess.Select(
