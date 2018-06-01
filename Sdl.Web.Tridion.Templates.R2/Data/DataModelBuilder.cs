@@ -154,17 +154,38 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
             return GetTypedArrayOfValues(fieldValues);
         }
-
+     
         private static object GetTypedArrayOfValues<T>(List<T> fieldValues)
         {
-            Array typedArray = Array.CreateInstance(fieldValues[0].GetType(), fieldValues.Count);
-            int i = 0;
-            foreach (T fieldValue in fieldValues)
+            List<string> strings = fieldValues.OfType<string>().Select(v => v).ToList();
+            List<RichTextData> richTextDatas = fieldValues.OfType<RichTextData>().Select(v => v).ToList();
+            if (richTextDatas.Count == fieldValues.Count) return richTextDatas;
+            if (richTextDatas.Count + strings.Count == fieldValues.Count)
             {
-                typedArray.SetValue(fieldValue, i++);
+                RichTextData[] richTextData = new RichTextData[fieldValues.Count];
+                for (int i = 0; i < fieldValues.Count; i++)
+                {
+                    if (fieldValues[i] is RichTextData)
+                    {
+                        richTextData.SetValue(fieldValues[i], i);
+                    }
+                    else if (fieldValues[i] is string)
+                    {
+                        richTextData.SetValue(new RichTextData { Fragments = new List<object> { fieldValues[i] } }, i);
+                    }
+                }
+                return richTextData;
             }
-
-            return typedArray;
+            else
+            {
+                Array typedArray = Array.CreateInstance(fieldValues[0].GetType(), fieldValues.Count);
+                int i = 0;
+                foreach (T fieldValue in fieldValues)
+                {
+                    typedArray.SetValue(fieldValue, i++);
+                }
+                return typedArray;
+            }
         }
 
         private object GetFieldValue(XmlElement xmlElement, int expandLinkDepth)
