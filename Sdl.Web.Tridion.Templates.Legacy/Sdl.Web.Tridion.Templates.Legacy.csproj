@@ -98,7 +98,6 @@
     <EmbeddedResource Include="Resources\Schemas\Resources Parameters.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="app.config" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
