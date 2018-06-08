@@ -161,7 +161,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         {
             List<string> strings = fieldValues.OfType<string>().Select(v => v).ToList();
             List<RichTextData> richTextDatas = fieldValues.OfType<RichTextData>().Select(v => v).ToList();
-            if (richTextDatas.Count == fieldValues.Count) return richTextDatas;
+            if (richTextDatas.Count == fieldValues.Count) return richTextDatas.ToArray();
+            if (strings.Count == fieldValues.Count) return strings.ToArray();
             if (richTextDatas.Count + strings.Count == fieldValues.Count)
             {
                 RichTextData[] richTextData = new RichTextData[fieldValues.Count];
