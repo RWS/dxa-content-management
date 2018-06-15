@@ -126,7 +126,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe"  ^
+    <PostBuildEvent>"$(MSBuildThisFileDirectory)..\packages\ILMerge.2.14.1208\tools\ILMerge.exe"  ^
     /out:Sdl.Web.Tridion.Templates.R2.merged.dll ^
     /targetplatform:v4 ^
     /lib:C:\_references\cm-8.1 ^

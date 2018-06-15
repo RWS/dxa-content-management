@@ -61,6 +61,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         protected static string GetTcmIdentifier(IdentifiableObject tcmItem)
             => tcmItem?.Id.GetVersionlessUri().ToString();
 
+        public static string GetNamespace(IdentifiableObject tcmItem) => "tcm"; // can only be tcm at the moment
+
         protected static string StripModuleName(string qualifiedName, out string moduleName)
         {
             if (string.IsNullOrEmpty(qualifiedName))
@@ -157,14 +159,36 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
         private static object GetTypedArrayOfValues<T>(List<T> fieldValues)
         {
-            Array typedArray = Array.CreateInstance(fieldValues[0].GetType(), fieldValues.Count);
-            int i = 0;
-            foreach (T fieldValue in fieldValues)
+            List<string> strings = fieldValues.OfType<string>().Select(v => v).ToList();
+            List<RichTextData> richTextDatas = fieldValues.OfType<RichTextData>().Select(v => v).ToList();
+            if (richTextDatas.Count == fieldValues.Count) return richTextDatas.ToArray();
+            if (strings.Count == fieldValues.Count) return strings.ToArray();
+            if (richTextDatas.Count + strings.Count == fieldValues.Count)
             {
-                typedArray.SetValue(fieldValue, i++);
+                RichTextData[] richTextData = new RichTextData[fieldValues.Count];
+                for (int i = 0; i < fieldValues.Count; i++)
+                {
+                    if (fieldValues[i] is RichTextData)
+                    {
+                        richTextData.SetValue(fieldValues[i], i);
+                    }
+                    else if (fieldValues[i] is string)
+                    {
+                        richTextData.SetValue(new RichTextData { Fragments = new List<object> { fieldValues[i] } }, i);
+                    }
+                }
+                return richTextData;
             }
-
-            return typedArray;
+            else
+            {
+                Array typedArray = Array.CreateInstance(fieldValues[0].GetType(), fieldValues.Count);
+                int i = 0;
+                foreach (T fieldValue in fieldValues)
+                {
+                    typedArray.SetValue(fieldValue, i++);
+                }
+                return typedArray;
+            }
         }
 
         private object GetFieldValue(XmlElement xmlElement, int expandLinkDepth)
@@ -223,12 +247,14 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 {
                     return new EntityModelData
                     {
-                        Id = GetDxaIdentifier(linkedComponent)
+                        Id = GetDxaIdentifier(linkedComponent),
+                        Namespace = GetNamespace(linkedComponent)
                     };
                 }
                 return new KeywordModelData
                 {
                     Id = GetDxaIdentifier(linkedKeyword),
+                    Namespace = GetNamespace(linkedKeyword),
                     SchemaId = GetDxaIdentifier(linkedKeyword.MetadataSchema)
                 };
             }
@@ -241,7 +267,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     Logger.Debug($"Not expanding Component link because a Data Presentation exists: {linkedComponent.Schema.FormatIdentifier()}");
                     return new EntityModelData
                     {
-                        Id = $"{GetDxaIdentifier(linkedComponent)}-{GetDxaIdentifier(dataPresentationTemplate)}"
+                        Id = $"{GetDxaIdentifier(linkedComponent)}-{GetDxaIdentifier(dataPresentationTemplate)}",
+                        Namespace = GetNamespace(linkedComponent)
                     };
                 }
 
@@ -256,6 +283,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 return new KeywordModelData
                 {
                     Id = GetDxaIdentifier(linkedKeyword),
+                    Namespace = GetNamespace(linkedKeyword),
                     SchemaId = GetDxaIdentifier(linkedKeyword.MetadataSchema)
                 };
             }
