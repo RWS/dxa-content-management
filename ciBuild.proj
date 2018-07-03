@@ -173,13 +173,15 @@
         <Message Text="Package Version: $(PackageVersion)" />
 
         <Exec Command="$(NuGet) pack Sdl.Dxa.DataModel.nuspec -Version $(PackageVersion)" WorkingDirectory="$(NuGetPackageDirectory)" />
+		<Exec Command="$(NuGet) pack Sdl.Dxa.Tridion.Templates.nuspec -Version $(PackageVersion)" WorkingDirectory="$(NuGetPackageDirectory)" />
     </Target>
 
     <!-- ======================================================================================================================= -->
     <Target Name="PublishPackages" Condition="'$(BuildConfiguration)' == 'Release'">
         <Message Text="Publishing NuGet packages to '$(NuGetRepositoryUrl)' ..." Importance="high" />
 
-        <Exec Command="$(NuGet) push Sdl.Dxa.DataModel.$(PackageVersion).nupkg -Source $(NuGetRepositoryUrl)" WorkingDirectory="$(NuGetPackageDirectory)" />
+        <Exec Command="$(NuGet) push Sdl.Dxa.DataModel.$(PackageVersion).nupkg -Source $(NuGetRepositoryUrl) -Verbosity detailed" WorkingDirectory="$(NuGetPackageDirectory)" />
+		<Exec Command="$(NuGet) push Sdl.Dxa.Tridion.Templates.$(PackageVersion).nupkg -Source $(NuGetRepositoryUrl) -Verbosity detailed" WorkingDirectory="$(NuGetPackageDirectory)" />
     </Target>
 
     <!-- ======================================================================================================================= -->
