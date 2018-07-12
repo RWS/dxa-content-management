@@ -111,7 +111,7 @@ namespace Sdl.Web.Tridion.Templates
                 {
                     Recursive = true,
                     ItemTypes = new[] { ItemType.Schema },
-                    SchemaPurposes = new[] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata }
+                    SchemaPurposes = new[] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata, SchemaPurpose.Region }
                 };
                 IEnumerable<Schema> schemas = Publication.GetItems(schemasFilter).Cast<Schema>();
                 vocabularies.AddRange(schemas.Select(schema => new VocabularyData { Prefix = GetDefaultVocabularyPrefix(schema), Vocab = schema.NamespaceUri }));
@@ -133,7 +133,7 @@ namespace Sdl.Web.Tridion.Templates
             {
                 Recursive = true,
                 ItemTypes = new[] { ItemType.Schema },
-                SchemaPurposes = new[] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata }
+                SchemaPurposes = new[] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata, SchemaPurpose.Region }
             };
 
             IEnumerable<Schema> schemas = Publication.GetItems(schemasFilter).Cast<Schema>();
@@ -158,31 +158,23 @@ namespace Sdl.Web.Tridion.Templates
             foreach (Schema schema in regionSchemas)
             {
                 dynamic regionDefinition = schema.RegionDefinition;
-                dynamic schemasNestedRegions = regionDefinition.NestedRegions;
-               
-                if (schemasNestedRegions != null)
+
+                string regionSchemaId = schema.Id.ItemId.ToString();
+                if (nativeRegions.All(nr => nr.Key != regionSchemaId))
                 {
-                    foreach (dynamic nestedRegionDefinition in schemasNestedRegions)
+                    XpmRegionData nativeRegion = new XpmRegionData
                     {
-                        string regionName = nestedRegionDefinition.RegionName;
-                        if (nativeRegions.All(nr => nr.Key != regionName))
+                        Region = regionSchemaId,
+                        ComponentTypes = new List<XpmComponentTypeData>
                         {
-                            XpmRegionData nativeRegion = new XpmRegionData
-                            {
-                                Region = regionName,
-                                ComponentTypes = new List<XpmComponentTypeData>
-                                {
-                                    new XpmComponentTypeData {Schema = "*", Template = "*"} // Allow all schemas/templates
-                                }
-                            };
-                            nativeRegions.Add(regionName, nativeRegion);
+                            new XpmComponentTypeData {Schema = "*", Template = "*"} // Allow all schemas/templates
                         }
-                        else
-                        {
-                            // TODO : Should be revisited in context of the story CMF1-259
-                            Logger.Debug($"Region {regionName} has already been added. Skipping.");
-                        }
-                    }
+                    };
+                    nativeRegions.Add(regionSchemaId, nativeRegion);
+                }
+                else
+                {
+                    Logger.Debug($"Region {regionSchemaId} has already been added. Skipping.");
                 }
             }
             return nativeRegions;
