@@ -114,7 +114,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 Item testItem = testPackage.GetByName("/Preview/system/mappings/regions.json");
                 var content = testItem.GetAsString();
                 var definedRegions = JsonConvert.DeserializeObject<List<RegionDefinitionTest>>(content);
-                Assert.IsTrue(definedRegions.Count(x => x.Region==regionShemaTitle 
+                Assert.IsTrue(definedRegions.Count(x => x.Region== regionSchema.Id.ItemId.ToString()
                                                         && x.ComponentTypes.Count == 1
                                                         && x.ComponentTypes[0].Schema == "*"
                                                         && x.ComponentTypes[0].Template == "*"
@@ -166,68 +166,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
             {
                 //Cleanup
                regionSchema?.Delete();
-            }
-        }
-        
-        [Ignore]
-        [Description("Ignore until DXA unit tests use at least 8.7 TCM version")]
-        [TestMethod]
-        public void AddNotUniqueRegions_Success()
-        {
-            const string regionShemaTitle = "AddNotUniqueRegions_Success1"; 
-            const string nestedRegionSchemaTitle = "AddNotUniqueRegions_Success2";
-            const string superNestedRegionSchemaTitle = "AddNotUniqueRegions_Success3";
-            Schema regionSchema = null;
-            Schema nestedRegionSchema = null;
-            Schema superNestedRegionSchema = null;
-           
-            try
-            {
-                //init engine
-                Component inputItem = (Component)TestSession.GetObject(CoreCoponentWebDavUrl);
-                
-                // Create TestData Regions
-                Publication testPublication = (Publication)inputItem.ContextRepository;
-
-                superNestedRegionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
-                {
-                    Purpose = SchemaPurpose.Region,
-                    Title = superNestedRegionSchemaTitle,
-                    Description = superNestedRegionSchemaTitle
-                };
-                superNestedRegionSchema.Save(true);
-
-                nestedRegionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
-                {
-                    Purpose = SchemaPurpose.Region,
-                    Title = nestedRegionSchemaTitle,
-                    Description = nestedRegionSchemaTitle
-                };
-                SaveRegionSchemaWithRegionList(nestedRegionSchema, new object[] { regionShemaTitle, superNestedRegionSchema, true});
-                
-                regionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
-                {
-                    Purpose = SchemaPurpose.Region,
-                    Title = regionShemaTitle,
-                    Description = regionShemaTitle
-                };
-                SaveRegionSchemaWithRegionList(regionSchema, new object[] { regionShemaTitle, nestedRegionSchema, true });
-                
-                RenderedItem testRenderedItem;
-                Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
-                Item testItem =  testPackage.GetByName(RegionJsonFile);
-                string content = testItem.GetAsString();
-                var definedRegions = JsonConvert.DeserializeObject<List<RegionDefinitionTest>>(content);
-                Assert.IsTrue(definedRegions.Count(x => x.Region == regionShemaTitle) == 1,
-                    "Despite Different Schemas has Regions with the same name only one of those added to Regions.json");
-
-            }
-            finally
-            {
-                //Cleanup
-                regionSchema?.Delete();
-                nestedRegionSchema?.Delete();
-                superNestedRegionSchema?.Delete();
             }
         }
 
