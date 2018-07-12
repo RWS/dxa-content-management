@@ -165,10 +165,7 @@ namespace Sdl.Web.Tridion.Templates
                     XpmRegionData nativeRegion = new XpmRegionData
                     {
                         Region = regionSchemaId,
-                        ComponentTypes = new List<XpmComponentTypeData>
-                        {
-                            new XpmComponentTypeData {Schema = "*", Template = "*"} // Allow all schemas/templates
-                        }
+                        ComponentTypes = GetComponentTypeConstraints(regionDefinition)
                     };
                     nativeRegions.Add(regionSchemaId, nativeRegion);
                 }
@@ -178,6 +175,34 @@ namespace Sdl.Web.Tridion.Templates
                 }
             }
             return nativeRegions;
+        }
+
+        private List<XpmComponentTypeData> GetComponentTypeConstraints(dynamic regionDefinition)
+        {
+            List<XpmComponentTypeData> result = new List<XpmComponentTypeData>();
+            dynamic constraints = regionDefinition.ComponentPresentationConstraints;
+            foreach (var constraint in constraints)
+            {
+                if (constraint.GetType().ToString() == "Tridion.ContentManager.CommunicationManagement.Regions.TypeConstraint")
+                {
+                    string schemaId = constraint.BasedOnSchema != null ? constraint.BasedOnSchema.Id.ToString() : "*";
+                    string templateId = constraint.BasedOnComponentTemplate != null ? constraint.BasedOnComponentTemplate.Id.ToString() : "*";
+                    result.Add(new XpmComponentTypeData()
+                    {
+                        Schema = schemaId,
+                        Template = templateId
+                    });
+                }
+            }
+            if (result.Count == 0)
+            {
+                result.Add(new XpmComponentTypeData()
+                {
+                    Schema = "*",
+                    Template = "*"
+                });
+            }
+            return result;
         }
 
         private Binary PublishXpmRegionConfiguration(StructureGroup structureGroup, Component relatedComponent)
