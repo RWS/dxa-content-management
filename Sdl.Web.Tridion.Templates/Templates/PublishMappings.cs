@@ -228,6 +228,7 @@ namespace Sdl.Web.Tridion.Templates
                 MaxOccurs = -1
             };
         }
+
         private Binary PublishXpmRegionConfiguration(StructureGroup structureGroup, Component relatedComponent)
         {
             IDictionary<string, XpmRegionData> xpmRegions = new Dictionary<string, XpmRegionData>();
