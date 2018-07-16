@@ -56,6 +56,7 @@
     <Compile Include="Configuration\SemanticSchemaData.cs" />
     <Compile Include="Configuration\SemanticSchemaFieldData.cs" />
     <Compile Include="Configuration\XpmComponentTypeData.cs" />
+    <Compile Include="Configuration\XpmOccurrenceConstraintData.cs" />
     <Compile Include="Configuration\XpmRegionData.cs" />
     <Compile Include="Configuration\VocabularyData.cs" />
     <Compile Include="Configuration\SummaryData.cs" />

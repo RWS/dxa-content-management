@@ -165,7 +165,8 @@ namespace Sdl.Web.Tridion.Templates
                     XpmRegionData nativeRegion = new XpmRegionData
                     {
                         Region = regionSchemaId,
-                        ComponentTypes = GetComponentTypeConstraints(regionDefinition)
+                        ComponentTypes = GetComponentTypeConstraints(regionDefinition),
+                        OccurrenceConstraint = GetOccurrenceConstraint(regionDefinition)
                     };
                     nativeRegions.Add(regionSchemaId, nativeRegion);
                 }
@@ -203,6 +204,29 @@ namespace Sdl.Web.Tridion.Templates
                 });
             }
             return result;
+        }
+
+        private XpmOccurrenceConstraintData GetOccurrenceConstraint(dynamic regionDefinition)
+        {
+            XpmOccurrenceConstraintData result = null;
+            dynamic constraints = regionDefinition.ComponentPresentationConstraints;
+            foreach (var constraint in constraints)
+            {
+                if (constraint.GetType().ToString() == "Tridion.ContentManager.CommunicationManagement.Regions.OccurrenceConstraint")
+                {
+                    result = new XpmOccurrenceConstraintData
+                    {
+                        MinOccurs = constraint.MinOccurs,
+                        MaxOccurs = constraint.MaxOccurs
+                    };
+                }
+            }
+
+            return result ?? new XpmOccurrenceConstraintData
+            {
+                MinOccurs = 0,
+                MaxOccurs = -1
+            };
         }
 
         private Binary PublishXpmRegionConfiguration(StructureGroup structureGroup, Component relatedComponent)
