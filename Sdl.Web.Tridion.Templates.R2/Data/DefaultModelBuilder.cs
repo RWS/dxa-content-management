@@ -388,9 +388,11 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 string viewName = region.RegionSchema != null ? region.RegionSchema.Title : regionName;
                 viewName = StripModuleName(viewName, out moduleName);
                 ContentModelData metadata = BuildContentModel(region.Metadata, expandLinkDepth: 0);
+                string schemaId = GetDxaIdentifier(region.RegionSchema);
                 var regionModelData = new RegionModelData
                 {
                     Name = regionName,
+                    SchemaId = schemaId,
                     MvcData = new MvcData
                     {
                         ViewName = viewName,

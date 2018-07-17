@@ -111,7 +111,7 @@ namespace Sdl.Web.Tridion.Templates
                 {
                     Recursive = true,
                     ItemTypes = new[] { ItemType.Schema },
-                    SchemaPurposes = new[] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata }
+                    SchemaPurposes = new[] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata, SchemaPurpose.Region }
                 };
                 IEnumerable<Schema> schemas = Publication.GetItems(schemasFilter).Cast<Schema>();
                 vocabularies.AddRange(schemas.Select(schema => new VocabularyData { Prefix = GetDefaultVocabularyPrefix(schema), Vocab = schema.NamespaceUri }));
@@ -133,7 +133,7 @@ namespace Sdl.Web.Tridion.Templates
             {
                 Recursive = true,
                 ItemTypes = new[] { ItemType.Schema },
-                SchemaPurposes = new[] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata }
+                SchemaPurposes = new[] { SchemaPurpose.Component, SchemaPurpose.Multimedia, SchemaPurpose.Metadata, SchemaPurpose.Region }
             };
 
             IEnumerable<Schema> schemas = Publication.GetItems(schemasFilter).Cast<Schema>();
@@ -158,34 +158,75 @@ namespace Sdl.Web.Tridion.Templates
             foreach (Schema schema in regionSchemas)
             {
                 dynamic regionDefinition = schema.RegionDefinition;
-                dynamic schemasNestedRegions = regionDefinition.NestedRegions;
-               
-                if (schemasNestedRegions != null)
+
+                string regionSchemaId = schema.Id.ItemId.ToString();
+                if (nativeRegions.All(nr => nr.Key != regionSchemaId))
                 {
-                    foreach (dynamic nestedRegionDefinition in schemasNestedRegions)
+                    XpmRegionData nativeRegion = new XpmRegionData
                     {
-                        string regionName = nestedRegionDefinition.RegionName;
-                        if (nativeRegions.All(nr => nr.Key != regionName))
-                        {
-                            XpmRegionData nativeRegion = new XpmRegionData
-                            {
-                                Region = regionName,
-                                ComponentTypes = new List<XpmComponentTypeData>
-                                {
-                                    new XpmComponentTypeData {Schema = "*", Template = "*"} // Allow all schemas/templates
-                                }
-                            };
-                            nativeRegions.Add(regionName, nativeRegion);
-                        }
-                        else
-                        {
-                            // TODO : Should be revisited in context of the story CMF1-259
-                            Logger.Debug($"Region {regionName} has already been added. Skipping.");
-                        }
-                    }
+                        Region = regionSchemaId,
+                        ComponentTypes = GetComponentTypeConstraints(regionDefinition),
+                        OccurrenceConstraint = GetOccurrenceConstraint(regionDefinition)
+                    };
+                    nativeRegions.Add(regionSchemaId, nativeRegion);
+                }
+                else
+                {
+                    Logger.Debug($"Region {regionSchemaId} has already been added. Skipping.");
                 }
             }
             return nativeRegions;
+        }
+
+        private List<XpmComponentTypeData> GetComponentTypeConstraints(dynamic regionDefinition)
+        {
+            List<XpmComponentTypeData> result = new List<XpmComponentTypeData>();
+            dynamic constraints = regionDefinition.ComponentPresentationConstraints;
+            foreach (var constraint in constraints)
+            {
+                if (constraint.GetType().ToString() == "Tridion.ContentManager.CommunicationManagement.Regions.TypeConstraint")
+                {
+                    string schemaId = constraint.BasedOnSchema != null ? constraint.BasedOnSchema.Id.ToString() : "*";
+                    string templateId = constraint.BasedOnComponentTemplate != null ? constraint.BasedOnComponentTemplate.Id.ToString() : "*";
+                    result.Add(new XpmComponentTypeData()
+                    {
+                        Schema = schemaId,
+                        Template = templateId
+                    });
+                }
+            }
+            if (result.Count == 0)
+            {
+                result.Add(new XpmComponentTypeData()
+                {
+                    Schema = "*",
+                    Template = "*"
+                });
+            }
+            return result;
+        }
+
+        private XpmOccurrenceConstraintData GetOccurrenceConstraint(dynamic regionDefinition)
+        {
+            XpmOccurrenceConstraintData result = null;
+            dynamic constraints = regionDefinition.ComponentPresentationConstraints;
+            foreach (var constraint in constraints)
+            {
+                if (constraint.GetType().ToString() == "Tridion.ContentManager.CommunicationManagement.Regions.OccurrenceConstraint")
+                {
+                    result = new XpmOccurrenceConstraintData
+                    {
+                        MinOccurs = constraint.MinOccurs,
+                        MaxOccurs = constraint.MaxOccurs
+                    };
+                }
+            }
+
+            return result ?? new XpmOccurrenceConstraintData
+            {
+                MinOccurs = 0,
+                MaxOccurs = -1
+            };
         }
 
         private Binary PublishXpmRegionConfiguration(StructureGroup structureGroup, Component relatedComponent)
