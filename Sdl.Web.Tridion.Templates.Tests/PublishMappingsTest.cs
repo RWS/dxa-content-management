@@ -55,11 +55,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 };
                 SaveRegionSchemaWithRegionList(regionSchema, new object[] { regionShemaTitle, nestedRegionSchema, true });
 
-                RenderedItem testRenderedItem;
-                Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
-                Item testItem = testPackage.GetByName("/Preview/system/mappings/regions.json");
-                string content = testItem.GetAsString();
-                var definedRegions = JsonConvert.DeserializeObject<List<RegionDefinitionTest>>(content);
+                var definedRegions = GetRenderedRegionDefinitions();
                 Assert.IsTrue(definedRegions.Count(x => x.Region == regionShemaTitle
                                                         && x.ComponentTypes.Any()
                                                         && x.ComponentTypes[0].Schema != "*"
@@ -110,11 +106,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 };
                 SaveRegionSchemaWithRegionList(regionSchema, new object[] { regionShemaTitle, nestedRegionSchema, true });
 
-                RenderedItem testRenderedItem;
-                Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
-                Item testItem = testPackage.GetByName("/Preview/system/mappings/regions.json");
-                var content = testItem.GetAsString();
-                var definedRegions = JsonConvert.DeserializeObject<List<RegionDefinitionTest>>(content);
+                var definedRegions = GetRenderedRegionDefinitions();
                 Assert.IsTrue(definedRegions.Count(x => x.Region == regionSchema.Id.ItemId.ToString()
                                                         && x.ComponentTypes.Count == 1
                                                         && x.ComponentTypes[0].Schema == "*"
@@ -134,74 +126,18 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [Ignore]
         [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
-        public void AddNoNativeRegions_Success()
-        {
-            const string regionShemaTitle = "AddNoNativeRegions_Success";
-            Schema regionSchema = null;
-
-            try
-            {
-                //init engine
-                Component inputItem = (Component)TestSession.GetObject(CoreCoponentWebDavUrl);
-
-                // Create TestData Regions
-                Publication testPublication = (Publication)inputItem.ContextRepository;
-
-                regionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
-                {
-                    Purpose = SchemaPurpose.Region,
-                    Title = regionShemaTitle,
-                    Description = regionShemaTitle
-                };
-                regionSchema.Save(true);
-
-                RenderedItem testRenderedItem;
-                Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
-                Item testItem = testPackage.GetByName("/Preview/system/mappings/regions.json");
-                string content = testItem.GetAsString();
-                var definedRegions = JsonConvert.DeserializeObject<List<RegionDefinitionTest>>(content);
-                Assert.IsFalse(definedRegions.Any(x => x.Region == regionShemaTitle),
-                    "No TCM Region added to Regions.json");
-            }
-            finally
-            {
-                //Cleanup
-                regionSchema?.Delete();
-            }
-        }
-
-        [Ignore]
-        [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
-        [TestMethod]
         public void NativeRegionDefaultOccurrenceConstraint_Success()
         {
-            const string regionShemaTitle = "NativeRegionDefaultOccurrenceConstraint_Success";
+            int expectedMinOccurs = 0;
+            int expectedMaxOccurs = -1;
             Schema regionSchema = null;
             try
             {
-                int expectedMinOccurs = 0;
-                int expectedMaxOccurs = -1;
-                //init engine
-                Component inputItem = (Component)TestSession.GetObject(CoreCoponentWebDavUrl);
-
-                // Create TestData Regions
-                Publication testPublication = (Publication)inputItem.ContextRepository;
-
-                regionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
-                {
-                    Purpose = SchemaPurpose.Region,
-                    Title = regionShemaTitle,
-                    Description = regionShemaTitle
-                };
-
+                regionSchema = GetNewSchema(SchemaPurpose.Region);
                 regionSchema.Save(true);
-
-                RenderedItem testRenderedItem;
-                Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
-                Item testItem = testPackage.GetByName("/Preview/system/mappings/regions.json");
-                var content = testItem.GetAsString();
-                var definedRegions = JsonConvert.DeserializeObject<List<RegionDefinitionTest>>(content);
                 string regionId = regionSchema.Id.ItemId.ToString();
+
+                var definedRegions = GetRenderedRegionDefinitions();
                 var region = definedRegions.FirstOrDefault(r => r.Region == regionId);
 
                 Assert.IsNotNull(region, $"Region with Id {regionId} was not found");
@@ -220,40 +156,17 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void NativeRegionAddOccurrenceConstraint_Success()
         {
-            const string regionShemaTitle = "NativeRegionAddOccurrenceConstraint_Success";
+            int expectedMinOccurs = 1;
+            int expectedMaxOccurs = 7;
             Schema regionSchema = null;
             try
             {
-                int expectedMinOccurs = 1;
-                int expectedMaxOccurs = 7;
-                //init engine
-                Component inputItem = (Component)TestSession.GetObject(CoreCoponentWebDavUrl);
-
-                // Create TestData Regions
-                Publication testPublication = (Publication)inputItem.ContextRepository;
-
-                regionSchema = new Schema(TestSession, testPublication.RootFolder.Id)
-                {
-                    Purpose = SchemaPurpose.Region,
-                    Title = regionShemaTitle,
-                    Description = regionShemaTitle
-                };
-                dynamic regionDefinition = regionSchema.RegionDefinition;
-                Type occurrenceConstraintType = GetType(
-                    "Tridion.ContentManager.CommunicationManagement.Regions.OccurrenceConstraint");
-                dynamic occurrenceConstraint = Activator.CreateInstance(occurrenceConstraintType, TestSession);
-                occurrenceConstraint.MinOccurs = expectedMinOccurs;
-                occurrenceConstraint.MaxOccurs = expectedMaxOccurs;
-                regionDefinition.ComponentPresentationConstraints.Add(occurrenceConstraint);
-
+                regionSchema = GetNewSchema(SchemaPurpose.Region);
+                AddOccurrenceConstraint(regionSchema.RegionDefinition, expectedMinOccurs, expectedMaxOccurs);
                 regionSchema.Save(true);
-
-                RenderedItem testRenderedItem;
-                Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
-                Item testItem = testPackage.GetByName("/Preview/system/mappings/regions.json");
-                var content = testItem.GetAsString();
-                var definedRegions = JsonConvert.DeserializeObject<List<RegionDefinitionTest>>(content);
                 string regionId = regionSchema.Id.ItemId.ToString();
+
+                var definedRegions = GetRenderedRegionDefinitions();
                 var region = definedRegions.FirstOrDefault(r => r.Region == regionId);
 
                 Assert.IsNotNull(region, $"Region with Id {regionId} was not found");
@@ -265,6 +178,205 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 //Cleanup
                 regionSchema?.Delete();
             }
+        }
+
+        [Ignore]
+        [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
+        [TestMethod]
+        public void NativeRegionDefaultTypeConstraint_Success()
+        {
+            Schema regionSchema = null;
+            try
+            {
+                regionSchema = GetNewSchema(SchemaPurpose.Region);
+                regionSchema.Save(true);
+                string regionId = regionSchema.Id.ItemId.ToString();
+
+                var definedRegions = GetRenderedRegionDefinitions();
+                var region = definedRegions.FirstOrDefault(r => r.Region == regionId);
+
+                Assert.IsNotNull(region, $"Region with Id {regionId} was not found");
+                Assert.AreEqual(1, region.ComponentTypes.Count);
+                Assert.AreEqual("*", region.ComponentTypes[0].Schema);
+                Assert.AreEqual("*", region.ComponentTypes[0].Template);
+            }
+            finally
+            {
+                //Cleanup
+                regionSchema?.Delete();
+            }
+        }
+
+        [Ignore]
+        [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
+        [TestMethod]
+        public void NativeRegionAddSchemaConstraint_Success()
+        {
+            Schema regionSchema = null;
+            Schema constraintSchema = null;
+            try
+            {
+                constraintSchema = GetNewSchema(SchemaPurpose.Component);
+                constraintSchema.Save(true);
+
+                regionSchema = GetNewSchema(SchemaPurpose.Region);
+                AddTypeConstraint(regionSchema.RegionDefinition, constraintSchema, null);
+                regionSchema.Save(true);
+                string regionId = regionSchema.Id.ItemId.ToString();
+
+                var definedRegions = GetRenderedRegionDefinitions();
+                var region = definedRegions.FirstOrDefault(r => r.Region == regionId);
+
+                Assert.IsNotNull(region, $"Region with Id {regionId} was not found");
+                Assert.AreEqual(1, region.ComponentTypes.Count);
+                Assert.AreEqual(constraintSchema.Id, region.ComponentTypes[0].Schema);
+                Assert.AreEqual("*", region.ComponentTypes[0].Template);
+            }
+            finally
+            {
+                //Cleanup
+                regionSchema?.Delete();
+                constraintSchema?.Delete();
+            }
+        }
+
+        [Ignore]
+        [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
+        [TestMethod]
+        public void NativeRegionAddComponentTemplateConstraint_Success()
+        {
+            Schema regionSchema = null;
+            Schema constraintSchema = null;
+            ComponentTemplate constraintComponentTemplate = null;
+            try
+            {
+                constraintSchema = GetNewSchema(SchemaPurpose.Component);
+                constraintSchema.Save(true);
+                constraintComponentTemplate = GetNewComponentTemaplate(constraintSchema);
+                constraintComponentTemplate.Save(true);
+
+                regionSchema = GetNewSchema(SchemaPurpose.Region);
+                AddTypeConstraint(regionSchema.RegionDefinition, null, constraintComponentTemplate);
+                regionSchema.Save(true);
+                string regionId = regionSchema.Id.ItemId.ToString();
+
+                var definedRegions = GetRenderedRegionDefinitions();
+                var region = definedRegions.FirstOrDefault(r => r.Region == regionId);
+
+                Assert.IsNotNull(region, $"Region with Id {regionId} was not found");
+                Assert.AreEqual(1, region.ComponentTypes.Count);
+                Assert.AreEqual("*", region.ComponentTypes[0].Schema);
+                Assert.AreEqual(constraintComponentTemplate.Id, region.ComponentTypes[0].Template);
+            }
+            finally
+            {
+                //Cleanup
+                regionSchema?.Delete();
+                constraintComponentTemplate?.Delete();
+                constraintSchema?.Delete();
+            }
+        }
+
+        [Ignore]
+        [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
+        [TestMethod]
+        public void NativeRegionAddComponentTemplateAndSchemaConstraint_Success()
+        {
+            Schema regionSchema = null;
+            Schema constraintSchema = null;
+            ComponentTemplate constraintComponentTemplate = null;
+            try
+            {
+                constraintSchema = GetNewSchema(SchemaPurpose.Component);
+                constraintSchema.Save(true);
+                constraintComponentTemplate = GetNewComponentTemaplate(constraintSchema);
+                constraintComponentTemplate.Save(true);
+
+                regionSchema = GetNewSchema(SchemaPurpose.Region);
+                AddTypeConstraint(regionSchema.RegionDefinition, constraintSchema, constraintComponentTemplate);
+                regionSchema.Save(true);
+                string regionId = regionSchema.Id.ItemId.ToString();
+
+                var definedRegions = GetRenderedRegionDefinitions();
+                var region = definedRegions.FirstOrDefault(r => r.Region == regionId);
+
+                Assert.IsNotNull(region, $"Region with Id {regionId} was not found");
+                Assert.AreEqual(1, region.ComponentTypes.Count);
+                Assert.AreEqual(constraintSchema.Id, region.ComponentTypes[0].Schema);
+                Assert.AreEqual(constraintComponentTemplate.Id, region.ComponentTypes[0].Template);
+            }
+            finally
+            {
+                //Cleanup
+                regionSchema?.Delete();
+                constraintComponentTemplate?.Delete();
+                constraintSchema?.Delete();
+            }
+        }
+
+        private void AddTypeConstraint(dynamic regionDefinition, Schema schema, ComponentTemplate ct)
+        {
+            Type typeConstraintType = GetType(
+                "Tridion.ContentManager.CommunicationManagement.Regions.TypeConstraint");
+            dynamic typeConstraint = Activator.CreateInstance(typeConstraintType, TestSession);
+            typeConstraint.BasedOnComponentTemplate = ct;
+            typeConstraint.BasedOnSchema = schema;
+            regionDefinition.ComponentPresentationConstraints.Add(typeConstraint);
+        }
+
+        private void AddOccurrenceConstraint(dynamic regionDefinition, int minOccurs, int maxOccurs)
+        {
+            Type occurrenceConstraintType = GetType(
+                "Tridion.ContentManager.CommunicationManagement.Regions.OccurrenceConstraint");
+            dynamic occurrenceConstraint = Activator.CreateInstance(occurrenceConstraintType, TestSession);
+            occurrenceConstraint.MinOccurs = minOccurs;
+            occurrenceConstraint.MaxOccurs = maxOccurs;
+            regionDefinition.ComponentPresentationConstraints.Add(occurrenceConstraint);
+        }
+
+        private Schema GetNewSchema(SchemaPurpose purpose)
+        {
+            //init engine
+            Component inputItem = (Component)TestSession.GetObject(CoreCoponentWebDavUrl);
+
+            // Create TestData Regions
+            Publication testPublication = (Publication)inputItem.ContextRepository;
+            var title = Guid.NewGuid().ToString("N");
+            var schema = new Schema(TestSession, testPublication.RootFolder.Id)
+            {
+                Purpose = purpose,
+                Title = title,
+                Description = title
+            };
+            return schema;
+        }
+
+        private ComponentTemplate GetNewComponentTemaplate(Schema relatedSchema)
+        {
+            //init engine
+            Component inputItem = (Component)TestSession.GetObject(CoreCoponentWebDavUrl);
+
+            // Create TestData Regions
+            Publication testPublication = (Publication)inputItem.ContextRepository;
+            var title = Guid.NewGuid().ToString("N");
+            var componentTemplate = new ComponentTemplate(TestSession, testPublication.RootFolder.Id)
+            {
+                Title = title,
+                Description = title,
+                RelatedSchemas = { relatedSchema }
+            };
+            return componentTemplate;
+        }
+
+        private List<RegionDefinitionTest> GetRenderedRegionDefinitions()
+        {
+            Component inputItem = (Component)TestSession.GetObject(CoreCoponentWebDavUrl);
+            RenderedItem testRenderedItem;
+            Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
+            Item testItem = testPackage.GetByName("/Preview/system/mappings/regions.json");
+            var content = testItem.GetAsString();
+            List<RegionDefinitionTest> definedRegions = JsonConvert.DeserializeObject<List<RegionDefinitionTest>>(content);
+            return definedRegions;
         }
 
         private Type GetType(string strFullyQualifiedName)
