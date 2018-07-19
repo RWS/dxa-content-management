@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml;
 using Sdl.Web.DataModel;
 using Sdl.Web.Tridion.Templates.Common;
@@ -385,7 +386,9 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             {
                 string moduleName;
                 string regionName = region.RegionName;
-                string viewName = region.RegionSchema != null ? region.RegionSchema.Title : regionName;
+                string viewName = region.RegionSchema != null
+                    ? GetViewNameFromSchemaTitle(region.RegionSchema.Title)
+                    : regionName;
                 viewName = StripModuleName(viewName, out moduleName);
                 ContentModelData metadata = BuildContentModel(region.Metadata, expandLinkDepth: 0);
                 string schemaId = GetDxaIdentifier(region.RegionSchema);
@@ -427,6 +430,18 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             }
 
             return regionModelDatas;
+        }
+
+        private string GetViewNameFromSchemaTitle(string schemaTitle)
+        {
+            string result = schemaTitle;
+            Regex regex = new Regex(@"\[([^\[\]]*+)\]");
+            Match match = regex.Match(schemaTitle);
+            if (match.Success)
+            {
+                result = match.Groups[1].Value;
+            }
+            return result;
         }
 
         private EntityModelData GetEntityModelData(ComponentPresentation cp)
