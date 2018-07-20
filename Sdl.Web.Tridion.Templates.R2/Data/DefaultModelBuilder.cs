@@ -435,7 +435,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         private string GetViewNameFromSchemaTitle(string schemaTitle)
         {
             string result = schemaTitle;
-            Regex regex = new Regex(@"\[([^\[\]]*+)\]");
+            Regex regex = new Regex(@"\[([^\[\]]*)\]");
             Match match = regex.Match(schemaTitle);
             if (match.Success)
             {
