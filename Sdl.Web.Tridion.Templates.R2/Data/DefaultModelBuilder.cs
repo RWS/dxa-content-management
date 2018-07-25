@@ -439,7 +439,11 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             Match match = regex.Match(schemaTitle);
             if (match.Success)
             {
-                result = match.Groups[1].Value;
+                result = match.Groups[1].Value.Trim();
+                if (string.IsNullOrEmpty(result))
+                {
+                    result = schemaTitle;
+                }
             }
             return result;
         }
