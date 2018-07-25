@@ -402,7 +402,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                         AreaName = moduleName
                     },
                     Entities = new List<EntityModelData>(),
-                    Metadata = metadata
+                    Metadata = metadata,
+                    XpmMetadata = GetXpmMetadata(region)
                 };
 
                 foreach (var cp in region.ComponentPresentations)
@@ -596,6 +597,19 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 { "PageTemplateID", GetTcmIdentifier(page.PageTemplate) },
                 { "PageTemplateModified", page.PageTemplate.RevisionDate },
                 { "PageSchemaID", GetDxaIdentifier(page.PageTemplate.PageSchema) }
+            };
+        }
+
+        private Dictionary<string, object> GetXpmMetadata(IRegion region)
+        {
+            if (!Pipeline.Settings.GenerateXpmMetadata)
+            {
+                return null;
+            }
+
+            return new Dictionary<string, object>
+            {
+                { "FullyQualifiedName", region.FullyQualifiedName }
             };
         }
 
