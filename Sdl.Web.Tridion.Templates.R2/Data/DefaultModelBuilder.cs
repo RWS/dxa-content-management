@@ -594,8 +594,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 { "PageID", GetTcmIdentifier(page) },
                 { "PageModified", page.RevisionDate },
                 { "PageTemplateID", GetTcmIdentifier(page.PageTemplate) },
-                { "PageTemplateModified", page.PageTemplate.RevisionDate },
-                { "PageSchemaID", GetDxaIdentifier(page.PageTemplate.PageSchema) }
+                { "PageTemplateModified", page.PageTemplate.RevisionDate }
             };
         }
 
