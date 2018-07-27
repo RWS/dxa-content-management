@@ -6,5 +6,6 @@ namespace Sdl.Web.DataModel.Configuration
     {
         public string Region;
         public List<XpmComponentTypeData> ComponentTypes;
+        public XpmOccurrenceConstraintData OccurrenceConstraint;
     }
 }
