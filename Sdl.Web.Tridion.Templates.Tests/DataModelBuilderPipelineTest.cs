@@ -154,8 +154,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         #region Native Region tests
-        [Ignore]
-        [Description("Ignore until DXA unit tests use at least 8.7 TCM version")]
         [TestMethod]
         public void CreatePageModel_InvalidTitle_Exception()
         {
@@ -177,8 +175,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 defaultPageTemplateCopy = (PageTemplate)defaultPageTemplate.Copy(defaultPageTemplate.OrganizationalItem, true);
                 testPage.CheckOut();
 
-                Region region = new Region(schemaDescription, testPage, testPage);
-
                 nestedRegionSchema = new Schema(TestSession, testPage.ContextRepository.RootFolder.Id)
                 {
                     Purpose = SchemaPurpose.Region,
@@ -192,7 +188,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                     Purpose = SchemaPurpose.Region,
                     Title = schemaDescription,
                     Description = schemaDescription,
-                    RegionDefinition = { NestedRegions = { { schemaDescription, nestedRegionSchema } } }
+                    RegionDefinition = { NestedRegions = { new NestedRegion(schemaDescription, nestedRegionSchema) } }
                 };
                 regionSchema.Save(true);
 
@@ -202,9 +198,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
                 testPage.IsPageTemplateInherited = false;
                 testPage.PageTemplate = defaultPageTemplateCopy;
-                testPage.Metadata = null;
-                dynamic dynamicPage = testPage;
-                dynamicPage.Regions.Add(region);
                 testPage.Save(true);
                 
                 // Check 1: 
@@ -247,21 +240,28 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_Success()
         {
             // Assign
-            Page samplePage = (Page) TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return;}
+            Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
+            if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return; }
 
             Page testPage = null;
+            Schema regionSchema = null;
             try
             {
                 // Create copy of existing page to do not disturb environment
-                testPage = (Page) samplePage.Copy(samplePage.OrganizationalItem, true);
+                testPage = (Page)samplePage.Copy(samplePage.OrganizationalItem, true);
                 testPage.CheckOut();
 
-                IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
+                regionSchema = new Schema(TestSession, testPage.ContextRepository.RootFolder.Id)
+                {
+                    Purpose = SchemaPurpose.Region,
+                    Title = "testRegion",
+                    Description = "testRegion",
+                };
+                regionSchema.Save(true);
 
-                var region = new Region("testRegion", testPage, testPage);
+                EmbeddedRegion region = new EmbeddedRegion("testRegion", regionSchema, testPage, testPage);
                 region.ComponentPresentations.Add(testPage.ComponentPresentations.First());
-                cmRegions.Add(region);
+                testPage.Regions.Add(region);
 
                 testPage.Save(true);
 
@@ -270,12 +270,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
                 // Assert
-                AssertCmRegions(cmRegions, pageModel.Regions);
+                AssertCmRegions(testPage.Regions, pageModel.Regions);
             }
             finally
             {
                 //cleanup
                 testPage?.Delete();
+                regionSchema?.Delete();
             }
         }
 
@@ -306,11 +307,14 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_ConflictWithDXACPRegions_Success()
         {
+            const string regionName = "Hero";
+
             // Assign
             Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
             if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return; }
 
             Page testPage = null;
+            Schema regionSchema = null;
             try
             {
                 // Create copy of existing page to do not disturb environment
@@ -321,10 +325,15 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
 
                 testPage.CheckOut();
-                const string regionName = "Hero";
-                var region = new Region(regionName, testPage, testPage);
-                IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
-                cmRegions.Add(region);
+                
+                regionSchema = new Schema(TestSession, testPage.ContextRepository.RootFolder.Id)
+                {
+                    Purpose = SchemaPurpose.Region,
+                    Title = regionName,
+                    Description = regionName,
+                };
+                EmbeddedRegion region = new EmbeddedRegion(regionName, regionSchema, testPage, testPage);
+                testPage.Regions.Add(region);
                 testPage.Save(true);
 
                 PageModelData pageModelWithNativeRegion = CreatePageModel(testPage, out testRenderedItem);
@@ -342,6 +351,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             {
                 //cleanup
                 testPage?.Delete();
+                regionSchema?.Delete();
             }
         }
 
@@ -352,19 +362,27 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_DXARegions_SameCP_Success()
         {
+            const string regionNameHero = "Hero";
             // Assign
             Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
             if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return; }
 
             Page testPage = null;
+            Schema regionSchema = null;
             try
             {
                 // Create copy of existing page to do not disturb environment
                 testPage = (Page)samplePage.Copy(samplePage.OrganizationalItem, true);
-                const string regionNameHero = "Hero";
 
                 testPage.CheckOut();
-                Region region = new Region(regionNameHero, testPage, testPage);
+                regionSchema = new Schema(TestSession, testPage.ContextRepository.RootFolder.Id)
+                {
+                    Purpose = SchemaPurpose.Region,
+                    Title = regionNameHero,
+                    Description = regionNameHero,
+                };
+                EmbeddedRegion region = new EmbeddedRegion(regionNameHero, regionSchema, testPage, testPage);
+                
                 ComponentPresentation componentPresentation = testPage.ComponentPresentations.First(cp =>
                 {
                     string regionName;
@@ -372,9 +390,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                     return regionName == regionNameHero;
                 });
                 region.ComponentPresentations.Add(componentPresentation);
-                IList<IRegion> cmRegions = testPage.GetPropertyValue<IList<IRegion>>("Regions");
-                cmRegions.Add(region);
-
+                testPage.Regions.Add(region);
                 testPage.Save(true);
 
                 // Act
@@ -389,6 +405,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             {
                 //cleanup
                 testPage?.Delete();
+                regionSchema?.Delete();
             }
         }
 
@@ -399,6 +416,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_MetadataConflict_Success()
         {
+            const string regionNameHero = "Hero";
             // Assign
             Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
             if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return; }
@@ -407,6 +425,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Schema metadataSchema = null;
             PageTemplate template = null;
             Page page = null;
+            Schema regionSchema = null;
 
             try
             {
@@ -415,7 +434,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 embSchema.Title = embSchema.Description = "_EmbSchemaTest";
 
                 var embFields = new SchemaFields(embSchema);
-                embFields.Fields.Add(new SingleLineTextFieldDefinition("name") { Description = "Name"});
+                embFields.Fields.Add(new SingleLineTextFieldDefinition("name") { Description = "Name" });
                 embFields.Fields.Add(new SingleLineTextFieldDefinition("view") { Description = "View", DefaultValue = "Hero" });
                 embFields.Fields.Add(new SingleLineTextFieldDefinition("RegionMetadataField1") { Description = "MF1", DefaultValue = "DXA Region Metadata Field 1" });
                 embFields.Fields.Add(new SingleLineTextFieldDefinition("RegionMetadataField2") { Description = "MF2", DefaultValue = "DXA Region Metadata Field 2" });
@@ -470,9 +489,16 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 xml.LoadXml("<Metadata xmlns=\"uuid:a94a82b5-5a3e-4256-a75d-52b6014dbf22\"><RegionMetadataField1>Native1</RegionMetadataField1><RegionMetadataField4>Native4</RegionMetadataField4></Metadata>");
 
                 page.CheckOut();
-                var region = new Region("Hero", page, page) {Metadata = xml.DocumentElement};
-                IList<IRegion> cmRegions = page.GetPropertyValue<IList<IRegion>>("Regions");
-                cmRegions.Add(region);
+                regionSchema = new Schema(TestSession, page.ContextRepository.RootFolder.Id)
+                {
+                    Purpose = SchemaPurpose.Region,
+                    Title = regionNameHero,
+                    Description = regionNameHero
+                };
+                EmbeddedRegion region = new EmbeddedRegion(regionNameHero, regionSchema, page, page);
+                region.Metadata = xml.DocumentElement;
+
+                page.Regions.Add(region);
                 page.Save(true);
 
                 //Act
@@ -481,7 +507,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
                 //Assert
                 Assert.AreEqual(1, pageModelData.Regions.Count);
-                Assert.AreEqual(2, pageModelData.Regions[0].Metadata.Count);
+                Assert.AreEqual(4, pageModelData.Regions[0].Metadata.Count);
                 Assert.AreEqual(true, pageModelData.Regions[0].Metadata.ContainsKey("RegionMetadataField1"));
                 Assert.AreEqual("Native1", pageModelData.Regions[0].Metadata["RegionMetadataField1"]);
                 Assert.AreEqual(true, pageModelData.Regions[0].Metadata.ContainsKey("RegionMetadataField4"));
@@ -494,6 +520,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 template?.Delete();
                 metadataSchema?.Delete();
                 embSchema?.Delete();
+                regionSchema?.Delete();
             }
         }
 
