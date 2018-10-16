@@ -24,7 +24,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Console.WriteLine("==== {0} ====", testContext.FullyQualifiedTestClassName);
             try
             {
-                TestSession = new Session();
+                TestSession = new Session("DXADEV2T9\\SDLAdministrator");
             }
             catch (Exception ex)
             {
