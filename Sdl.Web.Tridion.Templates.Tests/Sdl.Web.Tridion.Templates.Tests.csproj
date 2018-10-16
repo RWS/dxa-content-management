@@ -133,7 +133,7 @@
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>xcopy C:\_references\cm-8.1\*.* $(TargetDir) /Y</PreBuildEvent>
+    <PreBuildEvent>xcopy C:\_references\cm-9.0\*.* $(TargetDir) /Y</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>
