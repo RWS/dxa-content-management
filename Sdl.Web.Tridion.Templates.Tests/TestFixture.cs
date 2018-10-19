@@ -13,7 +13,7 @@
         internal const string ArticleDcpPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Test Article (Dynamic) Page.tpg";
         internal const string ComponentLinkTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Component Link Test Page.tpg";
         internal const string MediaManagerPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/MediaManager.tpg";
-        internal const string FlickrTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Flickr/Flickr Test.tpg";
+        internal const string FlickrTestPageWebDavUrl = "/webdav/401 adcevora.com/Home/Test/Flickr Test.tpg";
         internal const string SmartTargetPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Smoke/Smart Target Smoke Test.tpg";
         internal const string SmartTargetMetadataOverridePageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Smoke/Smart Target PT metadata override.tpg";
         internal const string ContextExpressionsPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Smoke/Context Expression Smoke Test.tpg";
@@ -30,7 +30,12 @@
         internal const string PredefinedRegionsTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/RegionsTest/Predefined Regions - Empty.tpg";
         internal const string R2PageIncludesPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/R2 Page Includes.tpg";
 
-        internal const string ArticleDcpId = "tcm:1065-9712/tcm:1065-9711-32";
+        internal const string Tsi811TestKeyword2WebDavUrl = "/webdav/401 Automated Test Parent/TSI-811 Test%20Category/Test Keyword 2.tkw";
+        internal const string NavigationMetadataSchemaWebDavUrl = "/webdav/110 DXA Site Type/Building Blocks/Framework/Site Manager/Schemas/Page Navigation Metadata.xsd";
+        internal const string Tsi811TestCategoryWebDavUrl = "/webdav/401 Automated Test Parent/TSI-811 Test Category";
+        internal const string ArticleDcpComponentWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Content/Test/Test Article.xml";
+        internal const string ArticleDcpComponentTemplateWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Modules/Test/Test Article %28Dynamic%29.tctcmp";
+        internal const string CompanyNewMediaManagerComponentWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Content/Video/Company News%20Media Manager Video.png";
 
         internal const string BullsEyeComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Images/Large/bulls-eye.jpg";
         internal const string TestComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Test/Test Component.xml";

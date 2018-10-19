@@ -124,7 +124,11 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void CreatePageModel_ExampleSiteHomePage_Success()
         {
-            Page testPage = (Page) TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
+            Page testPage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
+            string pageId = new TcmUri(testPage.Id).ItemId.ToString();
+
+            Schema testSchema = (Schema)TestSession.GetObject(TestFixture.NavigationMetadataSchemaWebDavUrl);
+            string schemaId = new TcmUri(testSchema.Id).ItemId.ToString();
 
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
@@ -133,9 +137,9 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNull(pageModel.HtmlClasses, "pageModel.HtmlClasses");
             Assert.IsNotNull(pageModel.XpmMetadata, "pageModel.XpmMetadata");
             Assert.IsNull(pageModel.ExtensionData, "pageModel.ExtensionData");
-            Assert.AreEqual("10015", pageModel.SchemaId, "pageModel.SchemaId");
+            Assert.AreEqual(schemaId, pageModel.SchemaId, "pageModel.SchemaId");
             Assert.IsNotNull(pageModel.Metadata, "pageModel.Metadata");
-            Assert.AreEqual("640", pageModel.Id, "pageModel.Id");
+            Assert.AreEqual(pageId, pageModel.Id, "pageModel.Id");
             Assert.AreEqual("Home", pageModel.Title, "pageModel.Title");
             Assert.AreEqual("/index", pageModel.UrlPath, "pageModel.UrlPath");
             Assert.IsNotNull(pageModel.Meta, "pageModel.Meta");
@@ -530,6 +534,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public void CreatePageModel_Article_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.ArticlePageWebDavUrl);
+            string pageId = new TcmUri(testPage.Id).ItemId.ToString();
 
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
@@ -541,7 +546,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNull(pageModel.ExtensionData, "pageModel.ExtensionData");
             Assert.IsNull(pageModel.SchemaId, "pageModel.SchemaId");
             Assert.IsNull(pageModel.Metadata, "pageModel.Metadata");
-            Assert.AreEqual("9786", pageModel.Id, "pageModel.Id");
+            Assert.AreEqual(pageId, pageModel.Id, "pageModel.Id");
             Assert.AreEqual("Test Article used for Automated Testing (Sdl.Web.Tridion.Tests)", pageModel.Title, "pageModel.Title");
             Assert.AreEqual("/autotest-parent/test_article_page", pageModel.UrlPath, "pageModel.UrlPath");
             Assert.IsNotNull(pageModel.Meta, "pageModel.Meta");
@@ -755,6 +760,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public void CreatePageModel_KeywordModel_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi811PageWebDavUrl);
+            Keyword testKeyword = (Keyword)TestSession.GetObject(TestFixture.Tsi811TestKeyword2WebDavUrl);
+            string testKeywordId = new TcmUri(testKeyword.Id).ItemId.ToString();
 
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
@@ -765,7 +772,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(pageMetadata, "pageMetadata");
             KeywordModelData pageKeyword = pageMetadata["pageKeyword"] as KeywordModelData;
             Assert.IsNotNull(pageKeyword, "pageKeyword");
-            Assert.AreEqual("10120", pageKeyword.Id, "pageKeyword.Id");
+            Assert.AreEqual(testKeywordId, pageKeyword.Id, "pageKeyword.Id");
             Assert.AreEqual("Test Keyword 2", pageKeyword.Title, "pageKeyword.Title");
             ContentModelData keywordMetadata = pageKeyword.Metadata;
             Assert.IsNotNull(keywordMetadata, "keywordMetadata");
@@ -828,6 +835,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public void CreatePageModel_RichTextComponentLinks_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.ArticlePageWebDavUrl);
+            Component testComponent = (Component)TestSession.GetObject(TestFixture.TestComponentWebDavUrl);
+            string testKeywordId = new TcmUri(testComponent.Id).ItemId.ToString();
 
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
@@ -837,8 +846,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
             ContentModelData articleBody = (ContentModelData) article.Content["articleBody"];
             RichTextData content = (RichTextData) articleBody["content"];
             string firstHtmlFragment = (string) content.Fragments[0];
-            StringAssert.Contains(firstHtmlFragment, "href=\"tcm:1065-9710\"");
-            StringAssert.Contains(firstHtmlFragment, "<!--CompLink tcm:1065-9710-->");
+            StringAssert.Contains(firstHtmlFragment, $"href=\"{testComponent.Id}\"");
+            StringAssert.Contains(firstHtmlFragment, $"<!--CompLink {testComponent.Id}-->");
         }
 
         [TestMethod]
@@ -901,6 +910,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public void CreatePageModel_PageMetaForCustomFields_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi1308PageWebDavUrl);
+            Component testComponent = (Component) TestSession.GetObject(TestFixture.ArticleDcpComponentWebDavUrl);
+            Component mediaManagerComponent = (Component) TestSession.GetObject(TestFixture.CompanyNewMediaManagerComponentWebDavUrl);
 
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
@@ -909,10 +920,10 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(pageMeta, "pageMeta");
             Assert.AreEqual("This is single line text", pageMeta["singleLineText"], "pageMeta['singleLineText']");
             Assert.AreEqual("This is multi line text line 1\nAnd line 2\n", pageMeta["multiLineText"], "pageMeta['multiLineText']");
-            Assert.AreEqual("This is <strong>rich</strong> text with a <a title=\"Test Article\" href=\"tcm:1065-9712\">Component Link</a><!--CompLink tcm:1065-9712-->", pageMeta["richText"], "pageMeta['richText']");
+            Assert.AreEqual($"This is <strong>rich</strong> text with a <a title=\"Test Article\" href=\"{testComponent.Id}\">Component Link</a><!--CompLink {testComponent.Id}-->", pageMeta["richText"], "pageMeta['richText']");
             Assert.AreEqual("News Article", pageMeta["keyword"], "pageMeta['keyword']");
-            Assert.AreEqual("tcm:1065-9712", pageMeta["componentLink"], "pageMeta['componentLink']");
-            Assert.AreEqual("tcm:1065-4480", pageMeta["mmComponentLink"], "pageMeta['mmComponentLink']");
+            Assert.AreEqual(testComponent.Id, pageMeta["componentLink"], "pageMeta['componentLink']");
+            Assert.AreEqual(mediaManagerComponent.Id, pageMeta["mmComponentLink"], "pageMeta['mmComponentLink']");
             Assert.AreEqual("1970-12-16T12:34:56.000", pageMeta["date"], "pageMeta['date']");
             Assert.AreEqual("2016-11-23T13:11:40.000", pageMeta["dateCreated"], "pageMeta['dateCreated']");
             Assert.AreEqual("Rick Pannekoek", pageMeta["author"], "pageMeta['author']");
@@ -973,9 +984,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void CreateEntityModel_ArticleDcp_Success()
         {
-            string[] articleDcpIds = TestFixture.ArticleDcpId.Split('/');
-            Component testComponent = (Component) TestSession.GetObject(articleDcpIds[0]);
-            ComponentTemplate ct = (ComponentTemplate) TestSession.GetObject(articleDcpIds[1]);
+            Component testComponent = (Component) TestSession.GetObject(TestFixture.ArticleDcpComponentWebDavUrl);
+            ComponentTemplate ct = (ComponentTemplate) TestSession.GetObject(TestFixture.ArticleDcpComponentTemplateWebDavUrl);
 
             RenderedItem testRenderedItem;
             EntityModelData article = CreateEntityModel(testComponent, ct, out testRenderedItem);
@@ -996,8 +1006,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void CreateEntityModel_WithoutComponentTemplate_Success()
         {
-            string[] articleDcpIds = TestFixture.ArticleDcpId.Split('/');
-            Component testComponent = (Component) TestSession.GetObject(articleDcpIds[0]);
+            Component testComponent = (Component) TestSession.GetObject(TestFixture.ArticleDcpComponentWebDavUrl);
 
             RenderedItem testRenderedItem;
             EntityModelData article = CreateEntityModel(testComponent, null, out testRenderedItem);
@@ -1015,6 +1024,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void CreateEntityModel_WithCategoryLink_Success()
         {
+            Category testCategory = (Category)TestSession.GetObject(TestFixture.Tsi811TestCategoryWebDavUrl);
             Component testComponent = (Component) TestSession.GetObject(TestFixture.TestComponentWebDavUrl);
 
             RenderedItem testRenderedItem;
@@ -1023,7 +1033,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             string[] externalLinkField = (string[]) testEntity.Content["ExternalLink"];
             Assert.AreEqual(2, externalLinkField.Length, "externalLinkField.Length");
             Assert.AreEqual("http://www.sdl.com", externalLinkField[0], "externalLinkField[0]");
-            Assert.AreEqual("tcm:1065-2702-512", externalLinkField[1], "externalLinkField[1]"); // NOTE: This is a (managed) Category link (!)
+            Assert.AreEqual(testCategory.Id, externalLinkField[1], "externalLinkField[1]"); // NOTE: This is a (managed) Category link (!)
         }
 
 
