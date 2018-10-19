@@ -18,10 +18,10 @@
             <reference file="Sdl.Web.DataModel.dll" />
         </references>
         <dependencies>
-            <dependency id="Newtonsoft.Json" version="7.0.0" />
+            <dependency id="Newtonsoft.Json" version="11.0.2" />
         </dependencies>
     </metadata>
     <files>
-        <file src="..\Sdl.Web.DataModel\bin\Release\Sdl.Web.DataModel.dll" target="lib\net452" />
+        <file src="..\Sdl.Web.DataModel\bin\Release\Sdl.Web.DataModel.dll" target="lib\net462" />
     </files>
 </package>
