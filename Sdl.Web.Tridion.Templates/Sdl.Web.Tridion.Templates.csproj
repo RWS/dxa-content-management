@@ -32,9 +32,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.OData.Client">
-      <HintPath>C:\_references\cm-8.1\Microsoft.OData.Client.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Microsoft.OData.Client, Version=7.5.0.20627, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\_references\cm-9.0\Microsoft.OData.Client.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <SpecificVersion>False</SpecificVersion>
@@ -48,45 +48,41 @@
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Tridion.Common">
+    <Reference Include="Tridion.Common, Version=9.0.0.0, Culture=neutral, PublicKeyToken=349a39f202fa9b53, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Common.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>C:\_references\cm-9.0\Tridion.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.ContentManager">
+    <Reference Include="Tridion.ContentManager, Version=9.0.0.0, Culture=neutral, PublicKeyToken=360aac4d3354074b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>C:\_references\cm-9.0\Tridion.ContentManager.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.ContentManager.Common">
+    <Reference Include="Tridion.ContentManager.Common, Version=9.0.0.0, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Common.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>C:\_references\cm-9.0\Tridion.ContentManager.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.ContentManager.Publishing">
+    <Reference Include="Tridion.ContentManager.Publishing, Version=9.0.0.0, Culture=neutral, PublicKeyToken=360aac4d3354074b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Publishing.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>C:\_references\cm-9.0\Tridion.ContentManager.Publishing.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.ContentManager.Templating">
+    <Reference Include="Tridion.ContentManager.Templating, Version=9.0.0.0, Culture=neutral, PublicKeyToken=360aac4d3354074b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Templating.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>C:\_references\cm-9.0\Tridion.ContentManager.Templating.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.ExternalContentLibrary">
-      <HintPath>C:\_references\cm-8.1\Tridion.ExternalContentLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.ExternalContentLibrary.V2">
-      <HintPath>C:\_references\cm-8.1\Tridion.ExternalContentLibrary.V2.dll</HintPath>
-    </Reference>
-    <Reference Include="Tridion.Logging">
+    <Reference Include="Tridion.ExternalContentLibrary, Version=9.0.0.0, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Logging.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>C:\_references\cm-9.0\Tridion.ExternalContentLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.TopologyManager.Client">
-      <HintPath>C:\_references\cm-8.1\Tridion.TopologyManager.Client.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Tridion.ExternalContentLibrary.V2, Version=1.1.0.90, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\_references\cm-9.0\Tridion.ExternalContentLibrary.V2.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.Logging, Version=9.0.0.0, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\_references\cm-9.0\Tridion.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.TopologyManager.Client, Version=9.0.0.0, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\_references\cm-9.0\Tridion.TopologyManager.Client.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
