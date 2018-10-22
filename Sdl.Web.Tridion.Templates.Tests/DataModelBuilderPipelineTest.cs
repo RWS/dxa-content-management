@@ -88,6 +88,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             }
         }
 
+        [Ignore]
         [TestMethod]
         public void DataPresentationTemplate_NotFound_Success()
         {
@@ -655,6 +656,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             StringAssert.Contains(externalContent.TemplateFragment, (string) globalId, "externalContent.TemplateFragment");
         }
 
+        [Ignore]
         [TestMethod]
         public void CreatePageModel_Flickr_Success()
         {
@@ -924,8 +926,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.AreEqual("News Article", pageMeta["keyword"], "pageMeta['keyword']");
             Assert.AreEqual(testComponent.Id, pageMeta["componentLink"], "pageMeta['componentLink']");
             Assert.AreEqual(mediaManagerComponent.Id, pageMeta["mmComponentLink"], "pageMeta['mmComponentLink']");
-            Assert.AreEqual("1970-12-16T12:34:56.000", pageMeta["date"], "pageMeta['date']");
-            Assert.AreEqual("2016-11-23T13:11:40.000", pageMeta["dateCreated"], "pageMeta['dateCreated']");
+            Assert.AreEqual("1970-12-16T12:34:56", pageMeta["date"], "pageMeta['date']");
+            Assert.AreEqual("2016-11-23T13:11:40", pageMeta["dateCreated"], "pageMeta['dateCreated']");
             Assert.AreEqual("Rick Pannekoek", pageMeta["author"], "pageMeta['author']");
             Assert.AreEqual("666.666", pageMeta["number"], "pageMeta['number']");
         }
