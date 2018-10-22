@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -29,7 +30,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
             catch (Exception ex)
             {
                 Console.WriteLine("Unable to initialize TOM.NET Session:\n{0}", ex);
-                throw new ApplicationException($"Unable to initialize TOM.NET Session: {ex.Message}");
+                using (StreamWriter file = new StreamWriter(@"C:\msapiegin\1.txt"))
+                {
+                    file.WriteLine($"Message: {ex.Message}");
+                    file.WriteLine($"InnerExceptionMessage: {ex.InnerException?.Message}");
+                    file.WriteLine($"InnerExceptionMessage: {ex.InnerException?.StackTrace}");
+                }
+                    throw new ApplicationException($"Unable to initialize TOM.NET Session: {ex.Message}");
             }
         }
 
