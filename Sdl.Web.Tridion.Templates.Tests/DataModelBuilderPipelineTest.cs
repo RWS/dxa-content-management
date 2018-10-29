@@ -14,6 +14,7 @@ using Tridion.ContentManager.CommunicationManagement.Regions;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.ContentManagement.Fields;
 using Tridion.ContentManager.Publishing.Rendering;
+using Tridion.ExternalContentLibrary.V2;
 
 namespace Sdl.Web.Tridion.Templates.Tests
 {
@@ -605,6 +606,14 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public void CreatePageModel_ComponentLinkExpansion_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.ComponentLinkTestPageWebDavUrl);
+            Component dynamicComponent = (Component)TestSession.GetObject(TestFixture.ArticleDcpComponentWebDavUrl);
+            string dynamicComponentdId = new TcmUri(dynamicComponent.Id).ItemId.ToString();
+            ComponentTemplate testComponentTemplate = (ComponentTemplate)TestSession.GetObject(TestFixture.GenerateDataPresentationCPWebDavUrl);
+            string testComponentTemplatedId = new TcmUri(testComponentTemplate.Id).ItemId.ToString();
+            Component testComponent = (Component)TestSession.GetObject(TestFixture.TestComponentWebDavUrl);
+            string testComponentdId = new TcmUri(testComponent.Id).ItemId.ToString();
+            Schema testSchema = (Schema)TestSession.GetObject(TestFixture.TestSchemaWebDavUrl);
+            string testSchemaId = new TcmUri(testSchema.Id).ItemId.ToString();
 
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
@@ -619,14 +628,14 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
             EntityModelData notExpandedCompLink = compLinkField[0]; // Has Data Presentation
             Assert.IsNotNull(notExpandedCompLink, "notExpandedCompLink");
-            Assert.AreEqual("9712-10247", notExpandedCompLink.Id, "notExpandedCompLink.Id");
+            Assert.AreEqual($"{dynamicComponentdId}-{testComponentTemplatedId}", notExpandedCompLink.Id, "notExpandedCompLink.Id");
             Assert.IsNull(notExpandedCompLink.SchemaId, "notExpandedCompLink.SchemaId");
             Assert.IsNull(notExpandedCompLink.Content, "notExpandedCompLink.Content");
 
             EntityModelData expandedCompLink = compLinkField[1]; // Has no Data Presentation
             Assert.IsNotNull(expandedCompLink, "expandedCompLink");
-            Assert.AreEqual("9710", expandedCompLink.Id, "expandedCompLink.Id");
-            Assert.AreEqual("9709", expandedCompLink.SchemaId, "9710");
+            Assert.AreEqual(testComponentdId, expandedCompLink.Id, "expandedCompLink.Id");
+            Assert.AreEqual(testSchemaId, expandedCompLink.SchemaId, "9710");
             Assert.IsNotNull(expandedCompLink.Content, "expandedCompLink.Content");
         }
 
@@ -634,6 +643,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public void CreatePageModel_MediaManager_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.MediaManagerPageWebDavUrl);
+            Component eclComponent = (Component) TestSession.GetObject(TestFixture.EclComponentWebDavUrl);
+            IEclUri eclUri;
+            using (IEclSession _eclSession = SessionFactory.CreateEclSession(eclComponent.Session))
+            {
+                eclUri = _eclSession.TryGetEclUriFromTcmUri(eclComponent.Id);
+            }
 
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
@@ -647,7 +662,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.AreEqual("https://mmecl.dist.sdlmedia.com/distributions/?o=51498399-31e9-4c89-98eb-0c4256c96f71", binaryContent.Url, "binaryContent.Url");
             Assert.AreEqual("application/externalcontentlibrary", binaryContent.MimeType, "binaryContent.MimeType");
             Assert.IsNotNull(externalContent, "externalContent");
-            Assert.AreEqual("ecl:1065-mm-415-dist-file", externalContent.Id, "externalContent.Id");
+            Assert.AreEqual(eclUri.ToString(), externalContent.Id, "externalContent.Id");
             Assert.AreEqual("html5dist", externalContent.DisplayTypeId, "externalContent.DisplayTypeId");
             Assert.IsNotNull(externalContent.Metadata, "externalContent.Metadata");
             object globalId;
@@ -671,10 +686,10 @@ namespace Sdl.Web.Tridion.Templates.Tests
             ExternalContentData externalContent = flickrImage.ExternalContent;
 
             Assert.IsNotNull(binaryContent, "binaryContent");
-            StringAssert.Matches(binaryContent.Url, new Regex(@"/Preview/Images/.*\.jpg"), "binaryContent.Url");
+            StringAssert.Matches(binaryContent.Url, new Regex(@"/Preview/media/.*\.jpg"), "binaryContent.Url");
             Assert.AreEqual("image/jpeg", binaryContent.MimeType, "binaryContent.MimeType");
             Assert.IsNotNull(externalContent, "externalContent");
-            Assert.AreEqual("ecl:1065-flickr-5606989559_6b62b3c3fc_72157626470204584-img-file", externalContent.Id, "externalContent.Id");
+            Assert.AreEqual("ecl:6-flickr-5695933543_456ce40ba4_72157626542559591-img-file", externalContent.Id, "externalContent.Id");
             Assert.AreEqual("img", externalContent.DisplayTypeId, "externalContent.DisplayTypeId");
             Assert.IsNotNull(externalContent.Metadata, "externalContent.Metadata");
             object width;
@@ -881,6 +896,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
         public void CreatePageModel_RichTextEmbeddedMediaManagerItems_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.Tsi2306PageWebDavUrl);
+            Component eclComponent = (Component)TestSession.GetObject(TestFixture.EclComponentWebDavUrl);
+            Component eclMMComponent = (Component)TestSession.GetObject(TestFixture.EclMMComponentWebDavUrl);
+            IEclUri eclMMUri;
+            using (IEclSession _eclSession = SessionFactory.CreateEclSession(eclComponent.Session))
+            {
+                eclMMUri = _eclSession.TryGetEclUriFromTcmUri(eclMMComponent.Id);
+            }
 
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
@@ -901,9 +923,9 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(binaryContent, "binaryContent");
             Assert.IsNotNull(externalContent, "externalContent");
             Assert.AreEqual("https://mmecl.dist.sdlmedia.com/distributions/?o=3e5f81f2-c7b3-47f7-8ede-b84b447195b9", binaryContent.Url, "binaryContent.Url");
-            Assert.AreEqual("1065-mm-204-dist-file.ecl", binaryContent.FileName, "binaryContent.FileName");
+            Assert.AreEqual($"{eclMMUri.ToString().Replace("ecl:", "")}.ecl", binaryContent.FileName, "binaryContent.FileName");
             Assert.AreEqual("application/externalcontentlibrary", binaryContent.MimeType, "binaryContent.MimeType");
-            Assert.AreEqual("ecl:1065-mm-204-dist-file", externalContent.Id, "ecl:1065-mm-204-dist-file");
+            Assert.AreEqual(eclMMUri.ToString(), externalContent.Id, "externalContent.Id");
             Assert.AreEqual("html5dist", externalContent.DisplayTypeId, "externalContent.DisplayTypeId");
             Assert.IsNotNull(externalContent.Metadata, "externalContent.Metadata");
         }
