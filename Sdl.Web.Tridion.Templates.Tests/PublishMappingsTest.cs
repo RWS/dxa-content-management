@@ -20,8 +20,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [ClassInitialize]
         public static void Initialize(TestContext testContext)
             => DefaultInitialize(testContext);
-
-        [Ignore]
+        
         [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
         public void AddNativeRegionNotUniqueName_Success()
@@ -71,8 +70,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 nestedRegionSchema?.Delete();
             }
         }
-
-        [Ignore]
+        
         [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
         public void AddNativeRegionUniqueName_Success()
@@ -122,8 +120,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 nestedRegionSchema?.Delete();
             }
         }
-
-        [Ignore]
+        
         [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
         public void NativeRegionDefaultOccurrenceConstraint_Success()
@@ -150,8 +147,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 regionSchema?.Delete();
             }
         }
-
-        [Ignore]
+        
         [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
         public void NativeRegionAddOccurrenceConstraint_Success()
@@ -179,8 +175,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 regionSchema?.Delete();
             }
         }
-
-        [Ignore]
+        
         [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
         public void NativeRegionDefaultTypeConstraint_Success()
@@ -206,8 +201,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 regionSchema?.Delete();
             }
         }
-
-        [Ignore]
+        
         [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
         public void NativeRegionAddSchemaConstraint_Success()
@@ -239,8 +233,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 constraintSchema?.Delete();
             }
         }
-
-        [Ignore]
+        
         [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
         public void NativeRegionAddComponentTemplateConstraint_Success()
@@ -276,8 +269,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 constraintSchema?.Delete();
             }
         }
-
-        [Ignore]
+        
         [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
         public void NativeRegionAddComponentTemplateAndSchemaConstraint_Success()
