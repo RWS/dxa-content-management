@@ -16,7 +16,7 @@
         <tags>SDL DXA Tridion Templates</tags>
     </metadata>
     <files>
-        <file src="..\Sdl.Web.Tridion.Templates.Legacy\bin\Release\Sdl.Web.Tridion.Templates.Legacy.merged.dll" target="lib\net452" />
-		<file src="..\Sdl.Web.Tridion.Templates.R2\bin\Release\Sdl.Web.Tridion.Templates.R2.merged.dll" target="lib\net452" />
+        <file src="..\Sdl.Web.Tridion.Templates.Legacy\bin\Release\Sdl.Web.Tridion.Templates.Legacy.merged.dll" target="lib\net462" />
+		<file src="..\Sdl.Web.Tridion.Templates.R2\bin\Release\Sdl.Web.Tridion.Templates.R2.merged.dll" target="lib\net462" />
     </files>
 </package>
