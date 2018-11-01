@@ -15,6 +15,7 @@ using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.ContentManagement.Fields;
 using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ExternalContentLibrary.V2;
+using Sdl.Web.Tridion.Templates.R2.Data.TargetGroups.Model;
 
 namespace Sdl.Web.Tridion.Templates.Tests
 {
@@ -114,14 +115,59 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void CreatePageModel_AutoTestParentTsi2844_Success()
+        public void CreatePageModel_WithTargetGroupConditions_Success() // See TSI-2844 / TSI-3637
         {
             Page testPage = (Page)TestSession.GetObject(TestFixture.Tsi2844WebDavUrl);
-            Assert.IsNotNull(testPage);
+
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
-            Assert.IsNotNull(pageModel);
+
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData testEntityModel = mainRegion.Entities[0];
+
+            Assert.IsNotNull(testEntityModel.ExtensionData, "testEntityModel.ExtensionData");
+            object targetGroupConditionsValue;
+            Assert.IsTrue(testEntityModel.ExtensionData.TryGetValue("TargetGroupConditions", out targetGroupConditionsValue), "testEntityModel.ExtensionData['TargetGroupConditions']");
+            Condition[] targetGroupConditions = targetGroupConditionsValue as Condition[];
+            Assert.IsNotNull(targetGroupConditions, "targetGroupConditions");
+            Assert.AreEqual(1, targetGroupConditions.Length, "targetGroupConditions.Length");
+            TrackingKeyCondition trackingKeyCondition = targetGroupConditions[0] as TrackingKeyCondition;
+            Assert.IsNotNull(trackingKeyCondition, "trackingKeyCondition");
+            Assert.AreEqual("Test Keyword 2", trackingKeyCondition.TrackingKeyTitle, "trackingKeyCondition.TrackingKeyTitle");
+            Assert.AreEqual(ConditionOperator.Equals, trackingKeyCondition.Operator, "trackingKeyCondition.Operator");
+            Assert.AreEqual(1234.0, trackingKeyCondition.Value, "trackingKeyCondition.Value");
         }
+
+        [TestMethod]
+        public void CreatePageModel_WithInheritedMetadata_Success() // See TSI-2844
+        {
+            Page testPage = (Page)TestSession.GetObject(TestFixture.Tsi2844WebDavUrl);
+            Component testComponent = testPage.ComponentPresentations[0].Component;
+            Folder testFolder = (Folder) testComponent.OrganizationalItem;
+
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData testEntityModel = mainRegion.Entities[0];
+
+            // Check inherited metadata on EntityModel
+            Assert.IsNotNull(testEntityModel.Metadata, "testEntityModel.Metadata");
+            Assert.AreEqual(2, testEntityModel.Metadata.Count, "testEntityModel.Metadata.Count");
+            Assert.AreEqual("TSI-2844 Folder Metadata Text Value", testEntityModel.Metadata["folderMetadataTextField"], "testEntityModel.Metadata['metadataTextField']");
+
+            Assert.IsNotNull(testEntityModel.ExtensionData, "testEntityModel.ExtensionData");
+            object schemasValue;
+            Assert.IsTrue(testEntityModel.ExtensionData.TryGetValue("Schemas", out schemasValue), "testEntityModel.ExtensionData['Schemas']");
+            string[] schemas = schemasValue as string[];
+            Assert.IsNotNull(schemas, "schemas");
+            Assert.AreEqual(1, schemas.Length, "schemas.Length");
+            Assert.AreEqual(testFolder.MetadataSchema.Id.ItemId.ToString(), schemas[0], "schemas[0]");
+
+            // TODO: Check inherited metadata on PageModel
+        }
+
 
         [TestMethod]
         public void CreatePageModel_ExampleSiteHomePage_Success()
@@ -671,7 +717,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
             StringAssert.Contains(externalContent.TemplateFragment, (string) globalId, "externalContent.TemplateFragment");
         }
 
-        [Ignore]
         [TestMethod]
         public void CreatePageModel_Flickr_Success()
         {
