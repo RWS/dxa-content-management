@@ -139,12 +139,11 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        public void CreatePageModel_WithInheritedMetadata_Success() // See TSI-2844
+        public void CreatePageModel_WithInheritedEntityMetadata_Success() // See TSI-2844
         {
             Page testPage = (Page)TestSession.GetObject(TestFixture.Tsi2844WebDavUrl);
             Component testComponent = testPage.ComponentPresentations[0].Component;
             Folder testFolder = (Folder) testComponent.OrganizationalItem;
-
 
             RenderedItem testRenderedItem;
             PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
@@ -155,7 +154,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             // Check inherited metadata on EntityModel
             Assert.IsNotNull(testEntityModel.Metadata, "testEntityModel.Metadata");
             Assert.AreEqual(2, testEntityModel.Metadata.Count, "testEntityModel.Metadata.Count");
-            Assert.AreEqual("TSI-2844 Folder Metadata Text Value", testEntityModel.Metadata["folderMetadataTextField"], "testEntityModel.Metadata['metadataTextField']");
+            Assert.AreEqual("TSI-2844 Folder Metadata Text Value", testEntityModel.Metadata["folderMetadataTextField"], "testEntityModel.Metadata['folderMetadataTextField']");
 
             Assert.IsNotNull(testEntityModel.ExtensionData, "testEntityModel.ExtensionData");
             object schemasValue;
@@ -164,10 +163,31 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(schemas, "schemas");
             Assert.AreEqual(1, schemas.Length, "schemas.Length");
             Assert.AreEqual(testFolder.MetadataSchema.Id.ItemId.ToString(), schemas[0], "schemas[0]");
-
-            // TODO: Check inherited metadata on PageModel
         }
 
+
+        [TestMethod]
+        public void CreatePageModel_WithInheritedPageMetadata_Success() // See TSI-2844
+        {
+            Page testPage = (Page)TestSession.GetObject(TestFixture.Tsi2844PageWebDavUrl);
+            StructureGroup testStructureGroup = (StructureGroup)testPage.OrganizationalItem;
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
+
+            // Check inherited metadata on PageModel
+            Assert.IsNotNull(pageModel.Metadata, "pageModel.Metadata");
+            Assert.AreEqual(1, pageModel.Metadata.Count, "pageModel.Metadata.Count");
+            Assert.AreEqual("TSI-2844 Structure Group Metadata", pageModel.Metadata["folderMetadataTextField"], "pageModel.Metadata['folderMetadataTextField']");
+
+            Assert.IsNotNull(pageModel.ExtensionData, "testEntityModel.ExtensionData");
+            object schemasValue;
+            Assert.IsTrue(pageModel.ExtensionData.TryGetValue("Schemas", out schemasValue), "pageModel.ExtensionData['Schemas']");
+            string[] schemas = schemasValue as string[];
+            Assert.IsNotNull(schemas, "schemas");
+            Assert.AreEqual(1, schemas.Length, "schemas.Length");
+            Assert.AreEqual(testStructureGroup.MetadataSchema.Id.ItemId.ToString(), schemas[0], "schemas[0]");
+        }
 
         [TestMethod]
         public void CreatePageModel_ExampleSiteHomePage_Success()
