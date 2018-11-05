@@ -63,6 +63,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\_references\cm-9.0\Tridion.ContentManager.Templating.dll</HintPath>
     </Reference>
+    <Reference Include="Tridion.ExternalContentLibrary, Version=9.0.0.0, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\_references\cm-9.0\Tridion.ExternalContentLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.ExternalContentLibrary.V2, Version=1.1.0.90, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\_references\cm-9.0\Tridion.ExternalContentLibrary.V2.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
