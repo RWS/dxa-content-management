@@ -54,14 +54,11 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
             if ((title == null) || (description == null))
             {
-                var pageCps = page.ComponentPresentations.ToList();
+                var pageCps = page.ComponentPresentations;
                 var region = page.Regions.FirstOrDefault(r => r.RegionName == "Main" || r.RegionName == "Article");
-                List<ComponentPresentation> cps = pageCps;
-
-                if (pageCps.Count == 0 && region != null)
-                {
-                    cps = region.ComponentPresentations.ToList();
-                }
+                IEnumerable<ComponentPresentation> cps = (!pageCps.Any() && region != null) 
+                    ? region.ComponentPresentations 
+                    : pageCps;
 
                 // Try to get title/description/image from Component in Main Region.
                 foreach (ComponentPresentation cp in cps)
