@@ -11,6 +11,7 @@ using Tridion.ContentManager.CommunicationManagement.Regions;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Publishing.Resolving;
+using System.Text;
 
 namespace Sdl.Web.Tridion.Templates.R2.Data
 {
@@ -19,8 +20,6 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
     /// </summary>
     public class DefaultModelBuilder : DataModelBuilder, IPageModelDataBuilder, IEntityModelDataBuilder, IKeywordModelDataBuilder
     {
-        private const string LegacyIncludePrefix = "system/include/";
-
         private static readonly string[] _standardPageTemplateMetadataFields = { "includes", "view", "regions", "htmlClasses" };
         private static readonly string[] _standardRegionMetadataFields = { "name", "view" };
 
@@ -286,6 +285,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             }
         }
 
+
         private void AddIncludePageRegions(IDictionary<string, RegionModelData> regionModels, PageTemplate pageTemplate)
         {
             IEnumerable<string> includes = pageTemplate.Metadata.GetTextFieldValues("includes"); // TODO: use external link field (?)
@@ -295,23 +295,31 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 return;
             }
 
+            Publication contextPub = (Publication)pageTemplate.ContextRepository;
             foreach (string include in includes)
             {
                 string includePageId;
-                if (include.StartsWith(LegacyIncludePrefix))
+                if (TcmUri.IsValid(include) || include.StartsWith("/webdav/"))
                 {
-                    // Legacy include: publish path. Try to convert to WebDAV URL.
-                    string relativeUrl = include.Substring(LegacyIncludePrefix.Length).Replace('-', ' ');
-                    Publication contextPub = (Publication) pageTemplate.ContextRepository;
-                    includePageId = $"/webdav/{contextPub.Title}/{contextPub.RootStructureGroup.Title}/_System/include/{relativeUrl}.tpg";
-                    Logger.Debug($"Converted legacy Page include '{include}' to WebDAV URL '{includePageId}'.");
+                    // TCM URI or WebDAV URL
+                    includePageId = include;
                 }
                 else
                 {
-                    includePageId = include;
+                    // Legacy include: publish path. Convert to WebDAV URL.
+                    includePageId = ConvertPublishPathToWebDavUrl(include, contextPub);
                 }
 
-                Page includePage = (Page) Pipeline.Session.GetObject(includePageId);
+                Page includePage;
+                try
+                {
+                    includePage = (Page) Pipeline.Session.GetObject(includePageId);
+                    includePage.Load(LoadFlags.None); // Force load the Page
+                }
+                catch (Exception ex)
+                {
+                    throw new DxaException($"Unable to load include page for '{include}'", ex);
+                }
 
                 string moduleName;
                 string regionViewName = StripModuleName(includePage.Title, out moduleName);
@@ -347,6 +355,47 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     };
                 }
             }
+        }
+
+        private string ConvertPublishPathToWebDavUrl(string publishPath, Publication contextPub)
+        {
+            StringBuilder webDavUrlBuilder = new StringBuilder($"/webdav/{contextPub.Title}/{contextPub.RootStructureGroup.Title}");
+            string[] pathSegments = publishPath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < pathSegments.Length; i++)
+            {
+                webDavUrlBuilder.Append("/");
+
+                string pathSegment = pathSegments[i];
+                if (i == 0 && pathSegment == "system")
+                {
+                    webDavUrlBuilder.Append("_System");
+                }
+                else if (i == pathSegments.Length -1)
+                {
+                    // Last path segment (representing the Page itself)
+                    // Convert dashes to spaces and capitalize each name segment.
+                    // For example: "content-tools" becomes "Content Tools"
+                    bool firstNameSegment = true;
+                    foreach (string nameSegment in pathSegment.Split('-'))
+                    {
+                        string urlNameSegment = nameSegment.Substring(0, 1).ToUpper() + nameSegment.Substring(1);
+                        if (!firstNameSegment)
+                            webDavUrlBuilder.Append(" ");
+                        webDavUrlBuilder.Append(urlNameSegment);
+                        firstNameSegment = false;
+                    }
+                }
+                else
+                {
+                    webDavUrlBuilder.Append(pathSegment);
+                }
+            }
+            webDavUrlBuilder.Append(".tpg"); // WebDAV URL file extension for Pages
+
+            string result = webDavUrlBuilder.ToString();
+            Logger.Debug($"Converted legacy Page include '{publishPath}' to WebDAV URL '{result}'.");
+
+            return result;
         }
 
         private void AddComponentPresentationRegions(IDictionary<string, RegionModelData> regionModels, Page page)
