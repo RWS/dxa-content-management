@@ -102,8 +102,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
-                nestedRegionSchema?.Delete();
+                Remove(regionSchema);
+                Remove(nestedRegionSchema);
             }
         }
         
@@ -151,8 +151,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
-                nestedRegionSchema?.Delete();
+                Remove(regionSchema);
+                Remove(nestedRegionSchema);
             }
         }
         
@@ -178,7 +178,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
+                Remove(regionSchema);
             }
         }
         
@@ -205,7 +205,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
+                Remove(regionSchema);
             }
         }
         
@@ -230,7 +230,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
+                Remove(regionSchema);
             }
         }
         
@@ -260,8 +260,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
-                constraintSchema?.Delete();
+                Remove(regionSchema);
+                Remove(constraintSchema);
             }
         }
         
@@ -294,9 +294,9 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
-                constraintComponentTemplate?.Delete();
-                constraintSchema?.Delete();
+                Remove(regionSchema);
+                Remove(constraintComponentTemplate);
+                Remove(constraintSchema);
             }
         }
         
@@ -329,9 +329,9 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
-                constraintComponentTemplate?.Delete();
-                constraintSchema?.Delete();
+                Remove(regionSchema);
+                Remove(constraintComponentTemplate);
+                Remove(constraintSchema);
             }
         }
 
