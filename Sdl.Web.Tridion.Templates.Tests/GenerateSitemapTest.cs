@@ -13,7 +13,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             => DefaultInitialize(testContext);
 
         [TestMethod]
-        public void Transform_Success()
+        public void Transform_GenerateSitemap_Success()
         {
             Component navConfigComponent = (Component) TestSession.GetObject(TestFixture.NavConfigurationComponentWebDavUrl);
             Publication testPublication = (Publication) navConfigComponent.ContextRepository;

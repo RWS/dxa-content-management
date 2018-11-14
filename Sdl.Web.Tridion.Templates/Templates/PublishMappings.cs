@@ -283,11 +283,26 @@ namespace Sdl.Web.Tridion.Templates
             foreach (PageTemplate pt in pageTemplates.Where(pt => pt.MetadataSchema != null && pt.Metadata != null))
             {
                 ItemFields ptMetadataFields = new ItemFields(pt.Metadata, pt.MetadataSchema);
-                string[] includes = ptMetadataFields.GetTextValues("includes").ToArray();
+                string[] includes = ptMetadataFields.GetTextValues("includes").Select(id => GetPublishPath(id)).ToArray();
                 pageIncludes.Add(pt.Id.ItemId.ToString(), includes);
             }
 
             return AddJsonBinary(pageIncludes, relatedComponent, structureGroup, "includes");
+        }
+
+        private string GetPublishPath(string pageId)
+        {
+            string result;
+            if (TcmUri.IsValid(pageId) || pageId.StartsWith("/webdav/"))
+            {
+                Page page = (Page)Session.GetObject(pageId);
+                result = page.PublishLocationUrl.Substring(1);
+            }
+            else
+            {
+                result = pageId;
+            }
+            return result;
         }
 
         private SemanticSchemaData GetSemanticSchema(Schema schema)
