@@ -195,7 +195,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Page testPage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
             string pageId = new TcmUri(testPage.Id).ItemId.ToString();
 
-            Schema testSchema = (Schema)TestSession.GetObject(TestFixture.NavigationMetadataSchemaWebDavUrl);
+            Schema testSchema = (Schema)TestSession.GetObject(TestFixture.HomePageMetadataSchemaWebDavUrl);
             string schemaId = new TcmUri(testSchema.Id).ItemId.ToString();
 
             RenderedItem testRenderedItem;
@@ -222,7 +222,6 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Assert.IsNotNull(testRenderedItem, "testRenderedItem");
             Assert.AreEqual(5, testRenderedItem.Binaries.Count, "testRenderedItem.Binaries.Count");
             Assert.AreEqual(5, testRenderedItem.ChildRenderedItems.Count, "testRenderedItem.ChildRenderedItems.Count");
-
         }
 
         #region Native Region tests
