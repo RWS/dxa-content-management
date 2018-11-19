@@ -9,6 +9,7 @@ using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.Publishing;
 using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Publishing.Resolving;
+using Tridion.ContentManager.ContentManagement;
 
 namespace Sdl.Web.Tridion.Templates.Tests
 {
@@ -137,5 +138,39 @@ namespace Sdl.Web.Tridion.Templates.Tests
             };
             return new RenderedItem(new ResolvedItem(item, template), testRenderInstruction);
         }
+
+        /// <summary>
+        /// Removes a test items created during the test.
+        /// </summary>
+        /// <remarks>
+        /// This never throws an exception, so it can safely be used in a finally statement (without hiding the original exception).
+        /// </remarks>
+        protected void Remove(IdentifiableObject item)
+        {
+            if (item == null)
+                return;
+            VersionedItem versionedItem = item as VersionedItem;
+            if (versionedItem != null & versionedItem.IsLocked)
+            {
+                try
+                {
+                    versionedItem.UndoCheckOut();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Unable to undo check out {0}: {1}", item, ex.Message);
+                }
+            }
+            try
+            {
+                versionedItem.Delete();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Unable to delete {0}: {1}", item, ex.Message);
+            }
+        }
+
+
     }
 }

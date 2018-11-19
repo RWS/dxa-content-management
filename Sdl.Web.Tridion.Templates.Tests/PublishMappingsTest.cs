@@ -1,29 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
+using Tridion.ContentManager.ContentManagement.Fields;
+using Tridion.ContentManager;
 
 namespace Sdl.Web.Tridion.Templates.Tests
 {
     [TestClass]
     public class PublishMappingsTest : TemplateTest
     {
-        private static readonly string CoreCoponentWebDavUrl = "/webdav/100 Master/Building Blocks/Modules/Core/Admin/Core.xml";
-        private static readonly string RegionJsonFile = "/Preview/system/mappings/regions.json";
+        private const string CoreComponentWebDavUrl = "/webdav/400 Example Site/Building Blocks/Modules/Core/Admin/Core.xml";
+        private const string ContentPageTemplateWebDavUrl = "/webdav/400 Example Site/Building Blocks/Modules/Core/Editor/Templates/Content Page.tptcmp";
 
         [ClassInitialize]
         public static void Initialize(TestContext testContext)
             => DefaultInitialize(testContext);
-        
-        [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
+
+
         [TestMethod]
-        public void AddNativeRegionNotUniqueName_Success()
+        public void Transform_PageIncludes_Success()
+        {
+            Component inputItem = (Component)TestSession.GetObject(CoreComponentWebDavUrl);
+            RenderedItem testRenderedItem;
+            Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
+
+            Item includesItem = testPackage.GetByName("/Preview/system/mappings/includes.json");
+            Assert.IsNotNull(includesItem, "includesItem");
+            string includesJson = includesItem.GetAsString();
+            Console.WriteLine(includesJson);
+
+            Dictionary<string, string[]> includes = JsonConvert.DeserializeObject<Dictionary<string, string[]>>(includesJson);
+
+            PageTemplate testPageTemplate = (PageTemplate)TestSession.GetObject(ContentPageTemplateWebDavUrl);
+            ItemFields ptMetadataFields = new ItemFields(testPageTemplate.Metadata, testPageTemplate.MetadataSchema);
+            TextField includesField = (TextField)ptMetadataFields["includes"];
+            string testKey = testPageTemplate.Id.ItemId.ToString();
+            string[] includePaths;
+            Assert.IsTrue(includes.TryGetValue(testKey, out includePaths), $"includes.TryGetValue['{testKey}']");
+            Assert.AreEqual(includesField.Values.Count, includePaths.Length, "includePaths.Length");
+            int i = 0;
+            foreach (string include in includesField.Values)
+            {
+                string expectedIncludePath = include;
+                if (TcmUri.IsValid(include) || include.StartsWith("/webdav/"))
+                {
+                    Page includePage = (Page) TestSession.GetObject(include);
+                    expectedIncludePath = includePage.PublishLocationUrl.Substring(1);
+                }
+                Assert.AreEqual(expectedIncludePath, includePaths[i], $"includePaths[{i}]");
+                i++;
+            }
+        }
+
+        [TestMethod]
+        public void Transform_AddNativeRegionNotUniqueName_Success()
         {
             const string regionShemaTitle = "Main"; // Region with this name already exists in DXA Templates 
             const string nestedRegionSchemaTitle = "AddNativeRegionNotUniqueName_Success";
@@ -33,7 +69,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             try
             {
                 //init engine
-                Component inputItem = (Component)TestSession.GetObject(CoreCoponentWebDavUrl);
+                Component inputItem = (Component)TestSession.GetObject(CoreComponentWebDavUrl);
 
                 // Create TestData Regions
                 Publication testPublication = (Publication)inputItem.ContextRepository;
@@ -66,14 +102,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
-                nestedRegionSchema?.Delete();
+                Remove(regionSchema);
+                Remove(nestedRegionSchema);
             }
         }
         
-        [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
-        public void AddNativeRegionUniqueName_Success()
+        public void Transform_AddNativeRegionUniqueName_Success()
         {
             const string regionShemaTitle = "AddNativeRegionUniqueName_Success1";
             const string nestedRegionSchemaTitle = "AddNativeRegionUniqueName_Success2";
@@ -83,7 +118,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             try
             {
                 //init engine
-                Component inputItem = (Component)TestSession.GetObject(CoreCoponentWebDavUrl);
+                Component inputItem = (Component)TestSession.GetObject(CoreComponentWebDavUrl);
 
                 // Create TestData Regions
                 Publication testPublication = (Publication)inputItem.ContextRepository;
@@ -116,14 +151,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
-                nestedRegionSchema?.Delete();
+                Remove(regionSchema);
+                Remove(nestedRegionSchema);
             }
         }
         
-        [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
-        public void NativeRegionDefaultOccurrenceConstraint_Success()
+        public void Transform_NativeRegionDefaultOccurrenceConstraint_Success()
         {
             int expectedMinOccurs = 0;
             int expectedMaxOccurs = -1;
@@ -144,13 +178,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
+                Remove(regionSchema);
             }
         }
         
-        [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
-        public void NativeRegionAddOccurrenceConstraint_Success()
+        public void Transform_NativeRegionAddOccurrenceConstraint_Success()
         {
             int expectedMinOccurs = 1;
             int expectedMaxOccurs = 7;
@@ -172,13 +205,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
+                Remove(regionSchema);
             }
         }
         
-        [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
-        public void NativeRegionDefaultTypeConstraint_Success()
+        public void Transform_NativeRegionDefaultTypeConstraint_Success()
         {
             Schema regionSchema = null;
             try
@@ -198,13 +230,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
+                Remove(regionSchema);
             }
         }
         
-        [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
-        public void NativeRegionAddSchemaConstraint_Success()
+        public void Transform_NativeRegionAddSchemaConstraint_Success()
         {
             Schema regionSchema = null;
             Schema constraintSchema = null;
@@ -229,14 +260,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
-                constraintSchema?.Delete();
+                Remove(regionSchema);
+                Remove(constraintSchema);
             }
         }
         
-        [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
-        public void NativeRegionAddComponentTemplateConstraint_Success()
+        public void Transform_NativeRegionAddComponentTemplateConstraint_Success()
         {
             Schema regionSchema = null;
             Schema constraintSchema = null;
@@ -264,15 +294,14 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
-                constraintComponentTemplate?.Delete();
-                constraintSchema?.Delete();
+                Remove(regionSchema);
+                Remove(constraintComponentTemplate);
+                Remove(constraintSchema);
             }
         }
         
-        [Description("Ignore until DXA unit tests use at least 9.0 TCM version")]
         [TestMethod]
-        public void NativeRegionAddComponentTemplateAndSchemaConstraint_Success()
+        public void Transform_NativeRegionAddComponentTemplateAndSchemaConstraint_Success()
         {
             Schema regionSchema = null;
             Schema constraintSchema = null;
@@ -300,9 +329,9 @@ namespace Sdl.Web.Tridion.Templates.Tests
             finally
             {
                 //Cleanup
-                regionSchema?.Delete();
-                constraintComponentTemplate?.Delete();
-                constraintSchema?.Delete();
+                Remove(regionSchema);
+                Remove(constraintComponentTemplate);
+                Remove(constraintSchema);
             }
         }
 
@@ -329,7 +358,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         private Schema GetNewSchema(SchemaPurpose purpose)
         {
             //init engine
-            Component inputItem = (Component)TestSession.GetObject(CoreCoponentWebDavUrl);
+            Component inputItem = (Component)TestSession.GetObject(CoreComponentWebDavUrl);
 
             // Create TestData Regions
             Publication testPublication = (Publication)inputItem.ContextRepository;
@@ -346,7 +375,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         private ComponentTemplate GetNewComponentTemaplate(Schema relatedSchema)
         {
             //init engine
-            Component inputItem = (Component)TestSession.GetObject(CoreCoponentWebDavUrl);
+            Component inputItem = (Component)TestSession.GetObject(CoreComponentWebDavUrl);
 
             // Create TestData Regions
             Publication testPublication = (Publication)inputItem.ContextRepository;
@@ -362,7 +391,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
         private List<RegionDefinitionTest> GetRenderedRegionDefinitions()
         {
-            Component inputItem = (Component)TestSession.GetObject(CoreCoponentWebDavUrl);
+            Component inputItem = (Component)TestSession.GetObject(CoreComponentWebDavUrl);
             RenderedItem testRenderedItem;
             Package testPackage = RunTemplate(typeof(PublishMappings), inputItem, out testRenderedItem);
             Item testItem = testPackage.GetByName("/Preview/system/mappings/regions.json");

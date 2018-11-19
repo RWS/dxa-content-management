@@ -31,7 +31,7 @@
         internal const string R2PageIncludesPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/R2 Page Includes.tpg";
 
         internal const string Tsi811TestKeyword2WebDavUrl = "/webdav/401 Automated Test Parent/TSI-811 Test Category/Test Keyword 2.tkw";
-        internal const string NavigationMetadataSchemaWebDavUrl = "/webdav/110 DXA Site Type/Building Blocks/Framework/Site Manager/Schemas/Page Navigation Metadata.xsd";
+        internal const string HomePageMetadataSchemaWebDavUrl = "/webdav/100 Master/Building Blocks/Modules/Core/Editor/Schemas/Page Schemas/Home Page.xsd";
         internal const string Tsi811TestCategoryWebDavUrl = "/webdav/401 Automated Test Parent/TSI-811 Test Category";
         internal const string ArticleDcpComponentWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Content/Test/Test Article.xml";
         internal const string ArticleDcpComponentTemplateWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Modules/Test/Test Article %28Dynamic%29.tctcmp";
