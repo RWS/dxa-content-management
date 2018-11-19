@@ -155,7 +155,13 @@ namespace Sdl.Web.Tridion.Templates
         private string GetNavTextFromPageComponents(Page page)
         {
             string title = null;
-            foreach (TcmComponentPresentation cp in page.ComponentPresentations)
+            var pageCps = page.ComponentPresentations;
+            var region = page.Regions.FirstOrDefault(r => r.ComponentPresentations.Any());
+            IEnumerable<TcmComponentPresentation> cps = (!pageCps.Any() && region != null)
+                ? region.ComponentPresentations
+                : pageCps;
+
+            foreach (TcmComponentPresentation cp in cps)
             {
                 title = GetNavTitleFromComponent(cp.Component);
                 if (!string.IsNullOrEmpty(title))
