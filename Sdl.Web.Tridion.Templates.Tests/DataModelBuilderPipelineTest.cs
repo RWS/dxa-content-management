@@ -378,52 +378,17 @@ namespace Sdl.Web.Tridion.Templates.Tests
         [TestMethod]
         public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_ConflictWithDXACPRegions_Success()
         {
-            const string regionName = "Hero";
+            const string regionName = "Main";
+            RenderedItem testRenderedItem;
 
-            // Assign
-            Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return; }
+            //Page with 'Main' native Region that contains CP and same CP (DXA 'Main' Regions) on the Page level
+            Page page = (Page)TestSession.GetObject(TestFixture.MergedRegionsPageDavUrl);
+            PageModelData mergedRegionPm = CreatePageModel(page, out testRenderedItem);
 
-            Page testPage = null;
-            Schema regionSchema = null;
-            try
-            {
-                // Create copy of existing page to do not disturb environment
-                testPage = (Page)samplePage.Copy(samplePage.OrganizationalItem, true);
-
-                // Act
-                RenderedItem testRenderedItem;
-                PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
-
-                testPage.CheckOut();
-                
-                regionSchema = new Schema(TestSession, testPage.ContextRepository.RootFolder.Id)
-                {
-                    Purpose = SchemaPurpose.Region,
-                    Title = regionName,
-                    Description = regionName,
-                };
-                EmbeddedRegion region = new EmbeddedRegion(regionName, regionSchema, testPage, testPage);
-                testPage.Regions.Add(region);
-                testPage.Save(true);
-
-                PageModelData pageModelWithNativeRegion = CreatePageModel(testPage, out testRenderedItem);
-
-                // Assert
-                Assert.AreEqual(pageModel.Regions.Count(r => r.Name == regionName), 1);
-                Assert.AreEqual(pageModelWithNativeRegion.Regions.Count(r => r.Name == regionName), 1);
-
-                RegionModelData regionModelData = pageModel.Regions.First(r => r.Name == regionName);
-                RegionModelData regionModelDataNative = pageModelWithNativeRegion.Regions.First(r => r.Name == regionName);
-
-                Assert.AreEqual(regionModelDataNative.Entities.First().Id, regionModelData.Entities.First().Id);
-            }
-            finally
-            {
-                //cleanup
-                Remove(testPage);
-                Remove(regionSchema);
-            }
+            Assert.IsNotNull(mergedRegionPm.Regions.Single(r => r.Name == regionName),
+                $"Page '{page.Title}' doesn't have '{regionName}' Region");
+            Assert.AreEqual(mergedRegionPm.Regions.First(r => r.Name == regionName).Entities.Count, 2,
+                $"Number of CPs in '{regionName}' Region is different from expected");
         }
 
         /// <summary>

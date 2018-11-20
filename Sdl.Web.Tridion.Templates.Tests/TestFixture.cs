@@ -41,6 +41,9 @@
         internal const string EclComponentWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Modules/MediaManager/Editor/Schemas/SDL Media Manager/566/BDB/ecl:0-mm-415-dist-file.ecl";
         internal const string EclMMComponentWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Modules/MediaManager/Editor/Schemas/SDL Media Manager/BEF/AF8/ecl%3A0-mm-204-dist-file.ecl";
 
+        //Native Region Items
+        internal const string MergedRegionsPageDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/NativeRegionsTests/Page with CP in Native and DXA Regions.tpg";
+
         internal const string BullsEyeComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Images/Large/bulls-eye.jpg";
         internal const string TestComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Test/Test Component.xml";
         internal const string NavConfigurationComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Settings/Core/Site Manager/Navigation Configuration.xml";
