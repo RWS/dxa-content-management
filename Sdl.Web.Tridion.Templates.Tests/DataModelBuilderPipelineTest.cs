@@ -372,11 +372,11 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         /// <summary>
-        /// If RegionModel, that is generated based on CP metadata, is already generated from native region,
-        /// then log a warning and put CP into native region.
+        /// If DXA Region and native Region both have the same name,
+        /// then they will be merged into a single native Region including their entities.
         /// </summary>
         [TestMethod]
-        public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_ConflictWithDXACPRegions_Success()
+        public void CreatePageModel_NativeCmRegions_WithDXACPRegions_Success()
         {
             const string regionName = "Main";
             RenderedItem testRenderedItem;
@@ -385,64 +385,13 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Page page = (Page)TestSession.GetObject(TestFixture.MergedRegionsPageDavUrl);
             PageModelData mergedRegionPm = CreatePageModel(page, out testRenderedItem);
 
-            Assert.IsNotNull(mergedRegionPm.Regions.Single(r => r.Name == regionName),
-                $"Page '{page.Title}' doesn't have '{regionName}' Region");
-            Assert.AreEqual(mergedRegionPm.Regions.First(r => r.Name == regionName).Entities.Count, 2,
-                $"Number of CPs in '{regionName}' Region is different from expected");
-        }
+            RegionModelData mergedRegion = mergedRegionPm.Regions.FirstOrDefault(r => r.Name == regionName);
+            ComponentPresentation pageCp = page.ComponentPresentations.First();
 
-        /// <summary>
-        /// If regionModel with the same name and entity(CP) is generated based on dxa metadata as well as from native region,
-        /// then put the same Entity(CP) into regionModel twice.
-        /// </summary>
-        [TestMethod]
-        public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_DXARegions_SameCP_Success()
-        {
-            const string regionNameHero = "Hero";
-            // Assign
-            Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return; }
-
-            Page testPage = null;
-            Schema regionSchema = null;
-            try
-            {
-                // Create copy of existing page to do not disturb environment
-                testPage = (Page)samplePage.Copy(samplePage.OrganizationalItem, true);
-
-                testPage.CheckOut();
-                regionSchema = new Schema(TestSession, testPage.ContextRepository.RootFolder.Id)
-                {
-                    Purpose = SchemaPurpose.Region,
-                    Title = regionNameHero,
-                    Description = regionNameHero,
-                };
-                EmbeddedRegion region = new EmbeddedRegion(regionNameHero, regionSchema, testPage, testPage);
-                
-                ComponentPresentation componentPresentation = testPage.ComponentPresentations.First(cp =>
-                {
-                    string regionName;
-                    DataModelBuilder.GetRegionMvcData(cp.ComponentTemplate, out regionName);
-                    return regionName == regionNameHero;
-                });
-                region.ComponentPresentations.Add(componentPresentation);
-                testPage.Regions.Add(region);
-                testPage.Save(true);
-
-                // Act
-                RenderedItem testRenderedItem;
-                PageModelData pageModelData = CreatePageModel(testPage, out testRenderedItem);
-
-                // Assert
-                RegionModelData regionModelData = pageModelData.Regions.First(r => r.Name == regionNameHero);
-                Assert.AreEqual(2, regionModelData.Entities.Count(e => e.Id == DataModelBuilder.GetDxaIdentifier(componentPresentation.Component)));
-            }
-            finally
-            {
-                //cleanup
-                Remove(testPage);
-                Remove(regionSchema);
-            }
+            Assert.IsNotNull(mergedRegion, $"Page '{page.Title}' doesn't have '{regionName}' Region");
+            Assert.AreEqual(2, mergedRegion.Entities.Count, $"Number of CPs in '{regionName}' Region is different from expected");
+            Assert.AreEqual(2, mergedRegion.Entities.Count(e => e.Id == DataModelBuilder.GetDxaIdentifier(pageCp.Component)),
+                $"Number of expected CPs in '{regionName}' Region is different from expected");
         }
 
         /// <summary>
