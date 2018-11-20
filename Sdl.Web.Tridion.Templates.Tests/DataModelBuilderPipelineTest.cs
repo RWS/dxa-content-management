@@ -651,6 +651,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
+        [Ignore]
+        //IGNORE until adcevora Publications are returned to Test module package
         public void CreatePageModel_Flickr_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.FlickrTestPageWebDavUrl);
