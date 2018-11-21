@@ -304,51 +304,17 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
 
         /// <summary>
-        /// CM Page contains native region hierarcy (with nested regions and CP).
-        /// Check that generated PageModel reflects that hierarcy.
+        /// Check that generated PageModel reflects hierarcy with native Regions including nested ones
         /// </summary>
         [TestMethod]
-        public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_Success()
+        public void CreatePageModel_NativeNestedCmRegions_Success()
         {
-            // Assign
-            Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return; }
+            RenderedItem testRenderedItem;
 
-            Page testPage = null;
-            Schema regionSchema = null;
-            try
-            {
-                // Create copy of existing page to do not disturb environment
-                testPage = (Page)samplePage.Copy(samplePage.OrganizationalItem, true);
-                testPage.CheckOut();
+            Page page = (Page)TestSession.GetObject(TestFixture.NestedRegionsPageWebDavUrl);
+            PageModelData pageModel = CreatePageModel(page, out testRenderedItem);
 
-                regionSchema = new Schema(TestSession, testPage.ContextRepository.RootFolder.Id)
-                {
-                    Purpose = SchemaPurpose.Region,
-                    Title = "testRegion",
-                    Description = "testRegion",
-                };
-                regionSchema.Save(true);
-
-                EmbeddedRegion region = new EmbeddedRegion("testRegion", regionSchema, testPage, testPage);
-                region.ComponentPresentations.Add(testPage.ComponentPresentations.First());
-                testPage.Regions.Add(region);
-
-                testPage.Save(true);
-
-                // Act
-                RenderedItem testRenderedItem;
-                PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem);
-
-                // Assert
-                AssertCmRegions(testPage.Regions, pageModel.Regions);
-            }
-            finally
-            {
-                //cleanup
-                Remove(testPage);
-                Remove(regionSchema);
-            }
+            AssertCmRegions(page.Regions, pageModel.Regions);
         }
 
         private void AssertCmRegions(IList<IRegion> cmRegions, List<RegionModelData> regionsModelDatas)
@@ -356,9 +322,12 @@ namespace Sdl.Web.Tridion.Templates.Tests
             foreach (var cmRegion in cmRegions)
             {
                 RegionModelData regionModelData = regionsModelDatas.FirstOrDefault(r => r.Name == cmRegion.RegionName);
+                string cmRegionViewName = cmRegion.RegionSchema == null
+                    ? cmRegion.RegionName
+                    : cmRegion.RegionSchema.Title.Split('[', ']')[1];
 
                 Assert.IsNotNull(regionModelData);
-                Assert.AreEqual(regionModelData.MvcData.ViewName, cmRegion.RegionSchema == null ? cmRegion.RegionName : cmRegion.RegionSchema.Title);
+                Assert.AreEqual(regionModelData.MvcData.ViewName, cmRegionViewName);
 
                 foreach (var componentPresentation in cmRegion.ComponentPresentations)
                 {
