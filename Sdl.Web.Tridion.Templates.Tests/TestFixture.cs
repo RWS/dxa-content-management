@@ -29,7 +29,9 @@
         internal const string Tsi2316PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-2316 Test Page.tpg";
         internal const string PredefinedRegionsTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/RegionsTest/Predefined Regions - Empty.tpg";
         internal const string R2PageIncludesPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/R2 Page Includes.tpg";
+        internal const string InvalidRegionSchemaTitleTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/NativeRegionsTests/Invalid Region Schema Title Test.tpg";
 
+        internal const string InvalidRegionSchemaTitleTestSchemaWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Modules/Test/Native Regions/AreaName:ViewName.xsd";
         internal const string Tsi811TestKeyword2WebDavUrl = "/webdav/401 Automated Test Parent/TSI-811 Test Category/Test Keyword 2.tkw";
         internal const string HomePageMetadataSchemaWebDavUrl = "/webdav/100 Master/Building Blocks/Modules/Core/Editor/Schemas/Page Schemas/Home Page.xsd";
         internal const string Tsi811TestCategoryWebDavUrl = "/webdav/401 Automated Test Parent/TSI-811 Test Category";

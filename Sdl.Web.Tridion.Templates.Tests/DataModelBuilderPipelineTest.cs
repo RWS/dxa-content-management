@@ -226,79 +226,40 @@ namespace Sdl.Web.Tridion.Templates.Tests
 
         #region Native Region tests
         [TestMethod]
-        public void CreatePageModel_InvalidTitle_Exception()
+        public void CreatePageModel_InvalidRegionSchemaTitle_Exception()
         {
-            string schemaDescription = "RegionSchema";
-            // Assign
-            Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            Publication parentPublication = (Publication)TestSession.GetObject(samplePage.ContextRepository.Id);
-            PageTemplate defaultPageTemplate = (PageTemplate)TestSession.GetObject(parentPublication.DefaultPageTemplate.Id);
-            if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return; }
+            Page testPage = (Page)TestSession.GetObject(TestFixture.InvalidRegionSchemaTitleTestPageWebDavUrl);
 
-            Page testPage = null;
-            PageTemplate defaultPageTemplateCopy = null;
-            Schema nestedRegionSchema = null;
-            Schema regionSchema = null;
+            // First test with valid Region Schema Title (AreaName:ViewName)
+            RenderedItem testRenderedItem;
+            PageModelData pageModelData = CreatePageModel(testPage, out testRenderedItem);
+            RegionModelData testRegion = pageModelData.Regions[0];
+            Assert.AreEqual("AreaName", testRegion.MvcData.AreaName, "testRegion.MvcData.AreaName");
+            Assert.AreEqual("ViewName", testRegion.MvcData.ViewName, "testRegion.MvcData.ViewName");
+
+            // Now a few invalid ones (note: we change the test Page/Region Schema's title, but revert after the test.
+            Schema testRegionSchema = (Schema)TestSession.GetObject(TestFixture.InvalidRegionSchemaTitleTestSchemaWebDavUrl);
             try
             {
-                // Create copy of existing page to do not disturb environment
-                testPage = (Page)samplePage.Copy(samplePage.OrganizationalItem, true);
-                defaultPageTemplateCopy = (PageTemplate)defaultPageTemplate.Copy(defaultPageTemplate.OrganizationalItem, true);
-                testPage.CheckOut();
-
-                nestedRegionSchema = new Schema(TestSession, testPage.ContextRepository.RootFolder.Id)
-                {
-                    Purpose = SchemaPurpose.Region,
-                    Title = "AreaName:",
-                    Description = "Description"
-                };
-                nestedRegionSchema.Save(true);
-
-                regionSchema = new Schema(TestSession, testPage.ContextRepository.RootFolder.Id)
-                {
-                    Purpose = SchemaPurpose.Region,
-                    Title = schemaDescription,
-                    Description = schemaDescription,
-                    RegionDefinition = { NestedRegions = { new NestedRegion(schemaDescription, nestedRegionSchema) } }
-                };
-                regionSchema.Save(true);
-
-                defaultPageTemplateCopy.CheckOut();
-                defaultPageTemplateCopy.PageSchema = regionSchema;
-                defaultPageTemplateCopy.Save(true);
-
-                testPage.IsPageTemplateInherited = false;
-                testPage.PageTemplate = defaultPageTemplateCopy;
-                testPage.Save(true);
-                
-                // Check 1: 
-                RenderedItem testRenderedItem;
+                testRegionSchema.CheckOut();
+                testRegionSchema.Title = "AreaName:";
+                testRegionSchema.Save(checkInAfterSave: true);
                 AssertThrowsException<DxaException>(() => CreatePageModel(testPage, out testRenderedItem));
 
-                nestedRegionSchema.CheckOut();
-                nestedRegionSchema.Title = ":ViewName";
-                nestedRegionSchema.Save(true);
+                testRegionSchema.CheckOut();
+                testRegionSchema.Title = ":ViewName";
+                testRegionSchema.Save(checkInAfterSave: true);
                 AssertThrowsException<DxaException>(() => CreatePageModel(testPage, out testRenderedItem));
 
-                // Check couple of invalid characters
-                nestedRegionSchema.CheckOut();
-                nestedRegionSchema.Title = "AreaName:ViewName:";
-                nestedRegionSchema.Save(true);
+                testRegionSchema.CheckOut();
+                testRegionSchema.Title = "AreaName:ViewName:";
+                testRegionSchema.Save(checkInAfterSave: true);
                 AssertThrowsException<DxaException>(() => CreatePageModel(testPage, out testRenderedItem));
-                
-                // Check valid format
-                nestedRegionSchema.CheckOut();
-                nestedRegionSchema.Title = "AreaName:ViewName";
-                nestedRegionSchema.Save(true);
-                CreatePageModel(testPage, out testRenderedItem);
+
             }
             finally
             {
-                //cleanup
-                Remove(testPage);
-                Remove(defaultPageTemplateCopy);
-                Remove(regionSchema);
-                Remove(nestedRegionSchema);
+                testRegionSchema.GetVersion(1).Rollback(deleteVersions: true);
             }
         }
 
