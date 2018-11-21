@@ -53,13 +53,13 @@
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Tridion.Web.UI.Core, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+    <Reference Include="Tridion.Web.UI.Core">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-9.0\Tridion.Web.UI.Core.dll</HintPath>
+      <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.Web.UI.Editors.Base, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+    <Reference Include="Tridion.Web.UI.Editors.Base">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-9.0\Tridion.Web.UI.Editors.Base.dll</HintPath>
+      <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Editors.Base.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
