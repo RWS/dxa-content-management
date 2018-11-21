@@ -382,7 +382,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             RenderedItem testRenderedItem;
 
             //Page with 'Main' native Region that contains CP and same CP (DXA 'Main' Regions) on the Page level
-            Page page = (Page)TestSession.GetObject(TestFixture.MergedRegionsPageDavUrl);
+            Page page = (Page)TestSession.GetObject(TestFixture.MergedRegionsPageWebDavUrl);
             PageModelData mergedRegionPm = CreatePageModel(page, out testRenderedItem);
 
             RegionModelData mergedRegion = mergedRegionPm.Regions.FirstOrDefault(r => r.Name == regionName);
@@ -395,118 +395,36 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         /// <summary>
-        /// Add (nested) region metadata into the model.
-        /// If region has already a metadata (from PT), override it (native region has a priority).
+        /// Check that merged Region has metadata fields from DXA Region
+        /// Check that merged Region has metadata fields from native Region
+        /// Check that metadata field from native Region overrides same field from DXA Region
         /// </summary>
         [TestMethod]
-        public void CreatePageModel_ExampleSiteHomePage_NativeCmRegions_MetadataConflict_Success()
+        public void CreatePageModel_NativeCmRegions_MetadataConflict_Success()
         {
-            const string regionNameHero = "Hero";
-            // Assign
-            Page samplePage = (Page)TestSession.GetObject(TestFixture.ExampleSiteHomePageWebDavUrl);
-            if (!Utility.IsNativeRegionsAvailable(samplePage)) { Console.Out.WriteLine("CM model does not support native regions"); return; }
+            RenderedItem testRenderedItem;
 
-            Schema embSchema = null;
-            Schema metadataSchema = null;
-            PageTemplate template = null;
-            Page page = null;
-            Schema regionSchema = null;
+            Schema embeddedSchema = (Schema)TestSession.GetObject(TestFixture.EmbeddedMetadataSchemaWebDavUrl);
+            ItemFields dxaMetaFields = new ItemFields(embeddedSchema);
+            SingleLineTextFieldDefinition dxaMetaField1 = (SingleLineTextFieldDefinition)dxaMetaFields["MergedMetadataField"].Definition;
+            SingleLineTextFieldDefinition dxaMetaField2 = (SingleLineTextFieldDefinition)dxaMetaFields["DxaMetadataField"].Definition;
 
-            try
-            {
-                // Create embeddebed schema
-                embSchema = new Schema(TestSession, samplePage.PageTemplate.OrganizationalItem.Id);
-                embSchema.Title = embSchema.Description = "_EmbSchemaTest";
+            Schema regionSchema = (Schema)TestSession.GetObject(TestFixture.RegionMetadataSchemaWebDavUrl);
+            ItemFields regionMetaFields = new ItemFields(regionSchema);
+            SingleLineTextFieldDefinition regionMetaField1 = (SingleLineTextFieldDefinition)regionMetaFields["MergedMetadataField"].Definition;
+            SingleLineTextFieldDefinition regionMetaField2 = (SingleLineTextFieldDefinition)regionMetaFields["CmRegionMetadataField"].Definition;
 
-                var embFields = new SchemaFields(embSchema);
-                embFields.Fields.Add(new SingleLineTextFieldDefinition("name") { Description = "Name" });
-                embFields.Fields.Add(new SingleLineTextFieldDefinition("view") { Description = "View", DefaultValue = "Hero" });
-                embFields.Fields.Add(new SingleLineTextFieldDefinition("RegionMetadataField1") { Description = "MF1", DefaultValue = "DXA Region Metadata Field 1" });
-                embFields.Fields.Add(new SingleLineTextFieldDefinition("RegionMetadataField2") { Description = "MF2", DefaultValue = "DXA Region Metadata Field 2" });
-                embFields.Fields.Add(new SingleLineTextFieldDefinition("RegionMetadataField3") { Description = "MF3", DefaultValue = "DXA Region Metadata Field 3" });
-                embFields.NamespaceUri = String.Empty;
-                embFields.RootElementName = "EmbedMe";
-                embSchema.Xsd = embFields.ToXsd();
-                embSchema.Purpose = SchemaPurpose.Embedded;
-                embSchema.RootElementName = "EmbedMe";
-                embSchema.Save(true);
+            Page page = (Page)TestSession.GetObject(TestFixture.MergedRegionWithMetadataPageWebDavUrl);
+            PageModelData mergedRegionPm = CreatePageModel(page, out testRenderedItem);
+            ContentModelData regionMetadata = mergedRegionPm.Regions.First(r => r.Name == "Main").Metadata;
 
-                // Create metadata schema with embedded
-                metadataSchema = new Schema(TestSession, samplePage.PageTemplate.OrganizationalItem.Id);
-                metadataSchema.Title = metadataSchema.Description = "_MetaDataSchemaTest";
-                metadataSchema.Purpose = SchemaPurpose.Metadata;
-
-                var metadataFields = new SchemaFields(metadataSchema);
-                var embFieldDefinition = new EmbeddedSchemaFieldDefinition("regions") { Description = "regions", EmbeddedSchema = embSchema };
-                metadataFields.MetadataFields.Add(embFieldDefinition);
-                metadataSchema.Xsd = metadataFields.ToXsd();
-                metadataSchema.Save(true);
-
-                // Create Page Template
-                template =
-                    new PageTemplate(TestSession, samplePage.PageTemplate.OrganizationalItem.Id)
-                    {
-                        Title = "_TestTemplate",
-                        MetadataSchema = metadataSchema
-                    };
-                var embItemFields = new ItemFields(embSchema);
-                ((SingleLineTextField)embItemFields["view"]).Value = "Hero";
-                ((SingleLineTextField)embItemFields["RegionMetadataField1"]).Value = "DXA meta";
-                ((SingleLineTextField)embItemFields["RegionMetadataField2"]).Value = "DXA meta 2";
-                ((SingleLineTextField)embItemFields["RegionMetadataField3"]).Value = "DXA meta 3";
-
-                var metadataItemFields = new ItemFields(metadataSchema);
-                ((EmbeddedSchemaField)metadataItemFields["regions"]).Value = embItemFields;
-                template.Metadata = metadataItemFields.ToXml();
-                template.Save(true);
-
-                // Create Page
-                page = new Page(TestSession, samplePage.OrganizationalItem.Id)
-                {
-                    FileName = "testPage.html",
-                    Title = "Test Page",
-                    PageTemplate = template
-                };
-                page.Save(true);
-
-                // Add dummy region
-                var xml = new XmlDocument();
-                xml.LoadXml("<Metadata xmlns=\"uuid:a94a82b5-5a3e-4256-a75d-52b6014dbf22\"><RegionMetadataField1>Native1</RegionMetadataField1><RegionMetadataField4>Native4</RegionMetadataField4></Metadata>");
-
-                page.CheckOut();
-                regionSchema = new Schema(TestSession, page.ContextRepository.RootFolder.Id)
-                {
-                    Purpose = SchemaPurpose.Region,
-                    Title = regionNameHero,
-                    Description = regionNameHero
-                };
-                EmbeddedRegion region = new EmbeddedRegion(regionNameHero, regionSchema, page, page);
-                region.Metadata = xml.DocumentElement;
-
-                page.Regions.Add(region);
-                page.Save(true);
-
-                //Act
-                RenderedItem testRenderedItem;
-                PageModelData pageModelData = CreatePageModel(page, out testRenderedItem);
-
-                //Assert
-                Assert.AreEqual(1, pageModelData.Regions.Count);
-                Assert.AreEqual(4, pageModelData.Regions[0].Metadata.Count);
-                Assert.AreEqual(true, pageModelData.Regions[0].Metadata.ContainsKey("RegionMetadataField1"));
-                Assert.AreEqual("Native1", pageModelData.Regions[0].Metadata["RegionMetadataField1"]);
-                Assert.AreEqual(true, pageModelData.Regions[0].Metadata.ContainsKey("RegionMetadataField4"));
-                Assert.AreEqual("Native4", pageModelData.Regions[0].Metadata["RegionMetadataField4"]);
-            }
-            finally
-            {
-                // Cleanup
-                Remove(page);
-                Remove(template);
-                Remove(metadataSchema);
-                Remove(embSchema);
-                Remove(regionSchema);
-            }
+            Assert.AreEqual(3, regionMetadata.Count, "Number of metadata fields in the Region is different from expected");
+            Assert.AreEqual(regionMetaField1.DefaultValue, regionMetadata["MergedMetadataField"],
+                $"Value in {regionMetaField1.Name} is different from expected");
+            Assert.AreEqual(regionMetaField2.DefaultValue, regionMetadata["CmRegionMetadataField"],
+                $"Value in {regionMetaField2.Name} is different from expected");
+            Assert.AreEqual(dxaMetaField2.DefaultValue, regionMetadata["DxaMetadataField"],
+                $"Value in {dxaMetaField2.Name} is different from expected");
         }
 
         #endregion Native Region tests
