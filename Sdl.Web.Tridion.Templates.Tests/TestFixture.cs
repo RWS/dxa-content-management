@@ -41,6 +41,14 @@
         internal const string EclComponentWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Modules/MediaManager/Editor/Schemas/SDL Media Manager/566/BDB/ecl:0-mm-415-dist-file.ecl";
         internal const string EclMMComponentWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Modules/MediaManager/Editor/Schemas/SDL Media Manager/BEF/AF8/ecl%3A0-mm-204-dist-file.ecl";
 
+        //Native Region Items
+        internal const string NestedRegionsPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/NativeRegionsTests/Page with Nested Regions.tpg";
+        internal const string MergedRegionsPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/NativeRegionsTests/Page with CP in Native and DXA Regions.tpg";
+        internal const string MergedRegionWithMetadataPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/NativeRegionsTests/Page with Regions Metadata.tpg";
+        internal const string EmbeddedMetadataSchemaWebDavUrl = AutoTestParentWebDavUrl + "/401 Automated Test Parent/Building Blocks/Modules/Test/Native Regions/Embedded Metadata Schema (Native Regions).xsd";
+        internal const string RegionMetadataSchemaWebDavUrl = AutoTestParentWebDavUrl + "/401 Automated Test Parent/Building Blocks/Modules/Test/Native Regions/Region Schema Test [Main].xsd";
+
+
         internal const string BullsEyeComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Images/Large/bulls-eye.jpg";
         internal const string TestComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Test/Test Component.xml";
         internal const string NavConfigurationComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Settings/Core/Site Manager/Navigation Configuration.xml";
