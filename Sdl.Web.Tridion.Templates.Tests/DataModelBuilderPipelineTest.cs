@@ -499,8 +499,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
-        [Ignore]
-        //IGNORE until adcevora Publications are returned to Test module package
+        [Ignore] // Flickr test item should be created in 401 Automated Test Parent Publication
         public void CreatePageModel_Flickr_Success()
         {
             Page testPage = (Page) TestSession.GetObject(TestFixture.FlickrTestPageWebDavUrl);
