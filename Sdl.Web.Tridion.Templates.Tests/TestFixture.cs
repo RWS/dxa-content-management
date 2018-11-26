@@ -29,17 +29,26 @@
         internal const string Tsi2316PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-2316 Test Page.tpg";
         internal const string PredefinedRegionsTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/RegionsTest/Predefined Regions - Empty.tpg";
         internal const string R2PageIncludesPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/R2 Page Includes.tpg";
+        internal const string InvalidRegionSchemaTitleTestPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/NativeRegionsTests/Invalid Region Schema Title Test.tpg";
 
-        internal const string Tsi811TestKeyword2WebDavUrl = "/webdav/401 Automated Test Parent/TSI-811 Test Category/Test Keyword 2.tkw";
-        internal const string NavigationMetadataSchemaWebDavUrl = "/webdav/110 DXA Site Type/Building Blocks/Framework/Site Manager/Schemas/Page Navigation Metadata.xsd";
-        internal const string Tsi811TestCategoryWebDavUrl = "/webdav/401 Automated Test Parent/TSI-811 Test Category";
-        internal const string ArticleDcpComponentWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Content/Test/Test Article.xml";
-        internal const string ArticleDcpComponentTemplateWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Modules/Test/Test Article %28Dynamic%29.tctcmp";
-        internal const string CompanyNewMediaManagerComponentWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Content/Video/Company News Media Manager Video.png";
-        internal const string GenerateDataPresentationCPWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Framework/Developer/Templates/Generate Data Presentation.tctcmp";
-        internal const string TestSchemaWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Modules/Test/Test Schema.xsd";
-        internal const string EclComponentWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Modules/MediaManager/Editor/Schemas/SDL Media Manager/566/BDB/ecl:0-mm-415-dist-file.ecl";
-        internal const string EclMMComponentWebDavUrl = "/webdav/401 Automated Test Parent/Building Blocks/Modules/MediaManager/Editor/Schemas/SDL Media Manager/BEF/AF8/ecl%3A0-mm-204-dist-file.ecl";
+        internal const string InvalidRegionSchemaTitleTestSchemaWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Modules/Test/Native Regions/AreaName:ViewName.xsd";
+        internal const string Tsi811TestKeyword2WebDavUrl = AutoTestParentWebDavUrl + "/TSI-811 Test Category/Test Keyword 2.tkw";
+        internal const string HomePageMetadataSchemaWebDavUrl = "/webdav/100 Master/Building Blocks/Modules/Core/Editor/Schemas/Page Schemas/Home Page.xsd";
+        internal const string Tsi811TestCategoryWebDavUrl = AutoTestParentWebDavUrl + "/TSI-811 Test Category";
+        internal const string ArticleDcpComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Test/Test Article.xml";
+        internal const string ArticleDcpComponentTemplateWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Modules/Test/Test Article %28Dynamic%29.tctcmp";
+        internal const string CompanyNewMediaManagerComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Video/Company News Media Manager Video.png";
+        internal const string GenerateDataPresentationCPWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Framework/Developer/Templates/Generate Data Presentation.tctcmp";
+        internal const string TestSchemaWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Modules/Test/Test Schema.xsd";
+        internal const string EclComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Modules/MediaManager/Editor/Schemas/SDL Media Manager/566/BDB/ecl:0-mm-415-dist-file.ecl";
+        internal const string EclMMComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Modules/MediaManager/Editor/Schemas/SDL Media Manager/BEF/AF8/ecl%3A0-mm-204-dist-file.ecl";
+
+        //Native Region Items
+        internal const string NestedRegionsPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/NativeRegionsTests/Page with Nested Regions.tpg";
+        internal const string MergedRegionsPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/NativeRegionsTests/Page with CP in Native and DXA Regions.tpg";
+        internal const string MergedRegionWithMetadataPageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Acceptance/NativeRegionsTests/Page with Regions Metadata.tpg";
+        internal const string EmbeddedMetadataSchemaWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Modules/Test/Native Regions/Embedded Metadata Schema (Native Regions).xsd";
+        internal const string RegionMetadataSchemaWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Modules/Test/Native Regions/Region Schema Test [Main].xsd";
 
         internal const string BullsEyeComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Images/Large/bulls-eye.jpg";
         internal const string TestComponentWebDavUrl = AutoTestParentWebDavUrl + "/Building Blocks/Content/Test/Test Component.xml";

@@ -137,7 +137,7 @@
     <PostBuildEvent>"$(MSBuildThisFileDirectory)..\packages\ILMerge.2.14.1208\tools\ILMerge.exe"  ^
     /out:Sdl.Web.Tridion.Templates.R2.merged.dll ^
     /targetplatform:v4 ^
-    /lib:C:\_references\cm-8.1 ^
+    /lib:C:\_references\cm-9.0 ^
     Sdl.Web.Tridion.Templates.dll Sdl.Web.Tridion.Templates.R2.dll Sdl.Web.DataModel.dll Newtonsoft.Json.dll
 </PostBuildEvent>
   </PropertyGroup>

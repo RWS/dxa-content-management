@@ -13,7 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DXA.CM.Extensions.DXAResolver.Models</RootNamespace>
     <AssemblyName>DXA.CM.Extensions.DXAResolver.Models</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort />
@@ -44,20 +44,23 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Tridion.Common, Version=8.1.0.150, Culture=neutral, PublicKeyToken=349a39f202fa9b53, processorArchitecture=MSIL">
+    <Reference Include="Tridion.Common">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\_references\cm-8.1\Tridion.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.ContentManager.CoreService.Client, Version=8.1.0.1287, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+    <Reference Include="Tridion.ContentManager.CoreService.Client">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.CoreService.Client.dll</HintPath>
     </Reference>
@@ -81,6 +84,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\DXA.CM.Extensions.DXAResolver.Models.Strings.Designer.cs">
       <DependentUpon>DXA.CM.Extensions.DXAResolver.Models.Strings.resx</DependentUpon>

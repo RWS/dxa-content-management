@@ -8,6 +8,7 @@ using System.Xml;
 using Sdl.Web.DataModel;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
+using Tridion.ContentManager.CommunicationManagement.Regions;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.ContentManagement.Fields;
 using Tridion.ContentManager.Publishing;
@@ -155,7 +156,10 @@ namespace Sdl.Web.Tridion.Templates
         private string GetNavTextFromPageComponents(Page page)
         {
             string title = null;
-            foreach (TcmComponentPresentation cp in page.ComponentPresentations)
+            List<TcmComponentPresentation> cps = new List<TcmComponentPresentation>();
+            GetComponentPresentationsFromRegion(ref cps, page);
+
+            foreach (TcmComponentPresentation cp in cps)
             {
                 title = GetNavTitleFromComponent(cp.Component);
                 if (!string.IsNullOrEmpty(title))
@@ -164,6 +168,15 @@ namespace Sdl.Web.Tridion.Templates
                 }
             }
             return title;
+        }
+
+        private void GetComponentPresentationsFromRegion(ref List<TcmComponentPresentation> cps, IRegion region)
+        {
+            cps.AddRange(region.ComponentPresentations.ToList());
+            foreach (IRegion nestedRegion in region.Regions)
+            {
+                GetComponentPresentationsFromRegion(ref cps, nestedRegion);
+            }
         }
 
         private string GetNavTitleFromComponent(Component component)

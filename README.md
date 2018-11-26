@@ -19,7 +19,7 @@ Note that the `Sdl.Web.Tridion.Templates.csproj` project references CM assemblie
 because these assemblies cannot be distributed without a signed license agreement.
 In order to build the project, the following CM assemblies will have to be obtained from an SDL Web/Tridion distribution and put in the appropriate `_references` subdirectories:
 
-cm-8.1:
+cm-9.0:
 
  - Tridion.Common.dll
  - Tridion.ContentManager.Common.dll

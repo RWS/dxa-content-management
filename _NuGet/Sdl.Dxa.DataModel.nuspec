@@ -23,5 +23,6 @@
     </metadata>
     <files>
         <file src="..\Sdl.Web.DataModel\bin\Release\Sdl.Web.DataModel.dll" target="lib\net462" />
+        <file src="..\Sdl.Web.DataModel\bin\Release\Sdl.Web.DataModel.XML" target="lib\net462" />
     </files>
 </package>
