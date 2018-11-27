@@ -130,18 +130,28 @@ namespace Sdl.Web.DXAResolver
             return null;
         }
 
+        private List<ComponentPresentation> GatherComponentPresentations(IList<IRegion> regions)
+        {
+            List<ComponentPresentation> cps = new List<ComponentPresentation>();
+            if (regions == null) return cps;
+            foreach (var region in regions)
+            {
+                if (region.ComponentPresentations != null)
+                    cps.AddRange(region.ComponentPresentations);
+
+                cps.AddRange(GatherComponentPresentations(region.Regions));
+            }
+            return cps;
+        }
+
         private List<ComponentPresentation> GatherComponentPresentations(Page page)
         {
             _log.Debug("Gathering component presentations for page...");
             List<ComponentPresentation> cps = new List<ComponentPresentation>();
+            // Get root level component presentations that do not appear under any native regions
             cps.AddRange(page.ComponentPresentations);
-            List<IRegion> regions = page.Regions.ToList();
-            while (regions.Count > 0)
-            {
-                IRegion region = regions[regions.Count - 1];
-                cps.AddRange(region.ComponentPresentations);
-                regions.RemoveAt(regions.Count - 1);
-            }
+            // Get all component presentations that appear under native regions
+            cps.AddRange(GatherComponentPresentations(page.Regions));            
             _log.Debug($"Found {cps.Count} component presentations");
             return cps;
         }
