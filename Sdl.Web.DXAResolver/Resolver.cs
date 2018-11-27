@@ -295,9 +295,11 @@ namespace Sdl.Web.DXAResolver
                 }
                 foreach (var x in ResolveItem(item, dataPresentationTemplate, resolved, 0))
                 {
-                    if(!alreadyResolved.Contains(x.Item.Id)) resolvedItems.Add(x);                    
+                    if (alreadyResolved.Contains(x.Item.Id)) continue;
+                    _log.Debug($"  > Resolved item '{x.Item.Title}' with id: {x.Item.Id}");
+                    resolvedItems.Add(x);
                 }
-                t.Stop();
+                t.Stop();              
                 _log.Debug($"DXA Custom Resolver took {t.ElapsedMilliseconds}ms to complete.");
             }
             catch (Exception e)
