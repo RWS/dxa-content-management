@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
+using Tridion.ContentManager.CommunicationManagement.Regions;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.ContentManagement.Fields;
 using Tridion.ContentManager.Publishing;
@@ -127,8 +128,24 @@ namespace Sdl.Web.DXAResolver
                 return new ResolvedItem(component, template);
             }
             return null;
-        }      
-       
+        }
+
+        private List<ComponentPresentation> GatherComponentPresentations(Page page)
+        {
+            _log.Debug("Gathering component presentations for page...");
+            List<ComponentPresentation> cps = new List<ComponentPresentation>();
+            cps.AddRange(page.ComponentPresentations);
+            List<IRegion> regions = page.Regions.ToList();
+            while (regions.Count > 0)
+            {
+                IRegion region = regions[regions.Count - 1];
+                cps.AddRange(region.ComponentPresentations);
+                regions.RemoveAt(regions.Count - 1);
+            }
+            _log.Debug($"Found {cps.Count} component presentations");
+            return cps;
+        }
+
         private List<ResolvedItem> ResolveItem(IdentifiableObject item,
             ComponentTemplate template, HashSet<IdentifiableObject> resolved, int recurseLevel)
         {
@@ -142,14 +159,17 @@ namespace Sdl.Web.DXAResolver
             if (item is Page)
             {
                 var page = (Page) item;
+                _log.Debug($"Attempting to resolve page '{page.Title}' Id={page.Id}");
                 if (resolved.Contains(page))
                 {
+                    _log.Debug("  * already resolved this page, skipping !");
                     return toResolve;
                 }
-                components.AddRange(page.ComponentPresentations.Select(cp => cp.Component));
+                components.AddRange(GatherComponentPresentations(page).Select(cp => cp.Component));
             }
             if (item is Component)
             {
+                _log.Debug($"Attempting to resolve component '{item.Title}' Id={item.Id}");
                 components.Add(item as Component);
             }
             if (components.Count <= 0) return toResolve;
