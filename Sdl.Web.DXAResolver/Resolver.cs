@@ -7,6 +7,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
+using Tridion.ContentManager.CommunicationManagement.Regions;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.ContentManagement.Fields;
 using Tridion.ContentManager.Publishing;
@@ -127,8 +128,34 @@ namespace Sdl.Web.DXAResolver
                 return new ResolvedItem(component, template);
             }
             return null;
-        }      
-       
+        }
+
+        private List<ComponentPresentation> GatherComponentPresentations(IList<IRegion> regions)
+        {
+            List<ComponentPresentation> cps = new List<ComponentPresentation>();
+            if (regions == null) return cps;
+            foreach (var region in regions)
+            {
+                if (region.ComponentPresentations != null)
+                    cps.AddRange(region.ComponentPresentations);
+
+                cps.AddRange(GatherComponentPresentations(region.Regions));
+            }
+            return cps;
+        }
+
+        private List<ComponentPresentation> GatherComponentPresentations(Page page)
+        {
+            _log.Debug("Gathering component presentations for page...");
+            List<ComponentPresentation> cps = new List<ComponentPresentation>();
+            // Get root level component presentations that do not appear under any native regions
+            cps.AddRange(page.ComponentPresentations);
+            // Get all component presentations that appear under native regions
+            cps.AddRange(GatherComponentPresentations(page.Regions));            
+            _log.Debug($"Found {cps.Count} component presentations");
+            return cps;
+        }
+
         private List<ResolvedItem> ResolveItem(IdentifiableObject item,
             ComponentTemplate template, HashSet<IdentifiableObject> resolved, int recurseLevel)
         {
@@ -142,14 +169,17 @@ namespace Sdl.Web.DXAResolver
             if (item is Page)
             {
                 var page = (Page) item;
+                _log.Debug($"Attempting to resolve page '{page.Title}' Id={page.Id}");
                 if (resolved.Contains(page))
                 {
+                    _log.Debug("  * already resolved this page, skipping !");
                     return toResolve;
                 }
-                components.AddRange(page.ComponentPresentations.Select(cp => cp.Component));
+                components.AddRange(GatherComponentPresentations(page).Select(cp => cp.Component));
             }
             if (item is Component)
             {
+                _log.Debug($"Attempting to resolve component '{item.Title}' Id={item.Id}");
                 components.Add(item as Component);
             }
             if (components.Count <= 0) return toResolve;
@@ -275,9 +305,11 @@ namespace Sdl.Web.DXAResolver
                 }
                 foreach (var x in ResolveItem(item, dataPresentationTemplate, resolved, 0))
                 {
-                    if(!alreadyResolved.Contains(x.Item.Id)) resolvedItems.Add(x);                    
+                    if (alreadyResolved.Contains(x.Item.Id)) continue;
+                    _log.Debug($"  > Resolved item '{x.Item.Title}' with id: {x.Item.Id}");
+                    resolvedItems.Add(x);
                 }
-                t.Stop();
+                t.Stop();              
                 _log.Debug($"DXA Custom Resolver took {t.ElapsedMilliseconds}ms to complete.");
             }
             catch (Exception e)
