@@ -138,7 +138,7 @@
     /out:Sdl.Web.Tridion.Templates.R2.merged.dll ^
     /targetplatform:v4 ^
     /lib:C:\_references\cm-9.0 ^
-    Sdl.Web.Tridion.Templates.dll Sdl.Web.Tridion.Templates.R2.dll Sdl.Web.DataModel.dll Newtonsoft.Json.dll
+    Sdl.Web.Tridion.Templates.dll Sdl.Web.Tridion.Templates.R2.dll Sdl.Web.DataModel.dll Newtonsoft.Json.dll Tridion.TopologyManager.Client.dll
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
