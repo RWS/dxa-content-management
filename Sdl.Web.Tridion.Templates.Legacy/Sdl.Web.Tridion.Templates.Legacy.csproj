@@ -137,7 +137,7 @@
     /out:Sdl.Web.Tridion.Templates.Legacy.merged.dll ^
     /targetplatform:v4 ^
     /lib:C:\_references\cm-9.0 ^
-    Sdl.Web.Tridion.Templates.dll Sdl.Web.Tridion.Templates.Legacy.dll Sdl.Web.DataModel.dll DD4T.ContentModel.Contracts.dll DD4T.ContentModel.dll DD4T.Serialization.dll DD4T.Templates.Base.dll Newtonsoft.Json.dll Tridion.TopologyManager.Client.dll
+    Sdl.Web.Tridion.Templates.dll Sdl.Web.Tridion.Templates.Legacy.dll Sdl.Web.DataModel.dll DD4T.ContentModel.Contracts.dll DD4T.ContentModel.dll DD4T.Serialization.dll DD4T.Templates.Base.dll Newtonsoft.Json.dll
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
