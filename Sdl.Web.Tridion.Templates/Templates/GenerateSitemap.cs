@@ -215,25 +215,8 @@ namespace Sdl.Web.Tridion.Templates
             return GetNavTitleFromData(data);          
         }
 
-        private static string GetNavTitleFromField(string fieldname, IEnumerable<XmlElement> data)
-        {
-            string xpath = GetXPathFromFieldName(fieldname);
-            foreach (XmlElement fieldData in data)
-            {
-                XmlNode field = fieldData.SelectSingleNode(xpath);
-                if (field != null)
-                {
-                    return field.InnerText;
-                }
-            }
-            return null;
-        }
-
-        private static string GetXPathFromFieldName(string fieldname)
-        {
-            string[] bits = fieldname.Split('/');
-            return "//" + string.Join("/", bits.Select(f => $"*[local-name()='{f}']"));
-        }
+        private static string GetNavTitleFromField(string fieldname, IEnumerable<XmlElement> data) 
+            => data.Select(fieldData => fieldData.GetTextFieldValue(fieldname)).FirstOrDefault(title => !string.IsNullOrEmpty(title));      
 
         protected string GetUrl(Page page)
         {
@@ -268,11 +251,7 @@ namespace Sdl.Web.Tridion.Templates
             return (Engine.PublishingContext?.PublicationTarget == null) || PublishEngine.IsPublished(page, Engine.PublishingContext.PublicationTarget);
         }
 
-        private static bool IsVisible(string title)
-        {
-            Match match = Regex.Match(title, @"^\d{3}\s");
-            return match.Success;
-        }
+        private static bool IsVisible(string title) => Regex.Match(title, @"^\d{3}\s").Success;
     }
 }
 
