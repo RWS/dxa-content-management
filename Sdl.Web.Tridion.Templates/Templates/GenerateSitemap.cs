@@ -247,8 +247,16 @@ namespace Sdl.Web.Tridion.Templates
 
         private bool IsPublished(Page page)
         {
+            if (Engine.PublishingContext?.PublicationTarget != null)
+            {
+                return PublishEngine.IsPublished(page, Engine.PublishingContext.PublicationTarget, true);
+            }
+            if (Engine.PublishingContext?.TargetType != null)
+            {
+                return PublishEngine.IsPublished(page, Engine.PublishingContext.TargetType, true);
+            }
             //For preview we always return true - to help debugging
-            return (Engine.PublishingContext?.PublicationTarget == null) || PublishEngine.IsPublished(page, Engine.PublishingContext.PublicationTarget);
+            return true;
         }
 
         private static bool IsVisible(string title) => Regex.Match(title, @"^\d{3}\s").Success;
