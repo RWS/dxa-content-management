@@ -166,6 +166,24 @@ namespace Sdl.Web.DXAResolver
                 return toResolve;
             }
             List<Component> components = new List<Component>();
+            if (item is StructureGroup)
+            {
+                var structureGroup = (StructureGroup) item;
+                _log.Debug($"Attempting to resolve structure group '{structureGroup.Title}' Id={structureGroup.Id}");
+                if (resolved.Contains(structureGroup))
+                {
+                    _log.Debug("  * already resolved this structure group, skipping !");
+                    return toResolve;
+                }
+
+                foreach (var x in structureGroup.GetItems())
+                {
+                    if (resolved.Contains(x)) continue;
+                    // Add Page to resolved list and then try to resolve pages cps
+                    toResolve.Add(new ResolvedItem(x, template));
+                    toResolve.AddRange(ResolveItem(x, template, resolved, 0));
+                }
+            }
             if (item is Page)
             {
                 var page = (Page) item;
@@ -305,7 +323,11 @@ namespace Sdl.Web.DXAResolver
                 }
                 foreach (var x in ResolveItem(item, dataPresentationTemplate, resolved, 0))
                 {
-                    if (alreadyResolved.Contains(x.Item.Id)) continue;
+                    if (alreadyResolved.Contains(x.Item.Id))
+                    {
+                        _log.Debug($"  > Already resolved item '{x.Item.Title}' with id: {x.Item.Id}");
+                        continue;
+                    }
                     _log.Debug($"  > Resolved item '{x.Item.Title}' with id: {x.Item.Id}");
                     resolvedItems.Add(x);
                 }
