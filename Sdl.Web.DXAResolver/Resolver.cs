@@ -111,7 +111,7 @@ namespace Sdl.Web.DXAResolver
 
         private ResolvedItem ResolveComponent(Component component, ComponentTemplate template, HashSet<IdentifiableObject> resolved, int recurseLevel)
         {
-            _log.Debug($"Attempting to resolve component: title='{component.Title}' id='{component.Id}'");
+            _log.Debug($"Attempting to resolve component: title='{component.Title}' id='{component.Id}' schema='{component.Schema.Title}'");
             if (!ContinueRecursion(recurseLevel))
             {
                 _log.Debug($"Reached max recusion level when trying to resolve component {component.Id}, skipping.");
@@ -159,35 +159,18 @@ namespace Sdl.Web.DXAResolver
         private List<ResolvedItem> ResolveItem(IdentifiableObject item,
             ComponentTemplate template, HashSet<IdentifiableObject> resolved, int recurseLevel)
         {
+            _log.Debug($"Analyzing item for resolving of type: '{item.GetType().Name}' id: '{item.Id}' title: '{item.Title}'");
             List<ResolvedItem> toResolve = new List<ResolvedItem>();
             if (!ContinueRecursion(recurseLevel))
             {
                 _log.Debug($"Reached max recusion level when trying to resolve item {item.Id}, skipping.");
                 return toResolve;
             }
-            List<Component> components = new List<Component>();
-            if (item is StructureGroup)
-            {
-                var structureGroup = (StructureGroup) item;
-                _log.Debug($"Attempting to resolve structure group '{structureGroup.Title}' Id={structureGroup.Id}");
-                if (resolved.Contains(structureGroup))
-                {
-                    _log.Debug("  * already resolved this structure group, skipping !");
-                    return toResolve;
-                }
-
-                foreach (var x in structureGroup.GetItems())
-                {
-                    if (resolved.Contains(x)) continue;
-                    // Add Page to resolved list and then try to resolve pages cps
-                    toResolve.Add(new ResolvedItem(x, template));
-                    toResolve.AddRange(ResolveItem(x, template, resolved, 0));
-                }
-            }
+            List<Component> components = new List<Component>();           
             if (item is Page)
             {
                 var page = (Page) item;
-                _log.Debug($"Attempting to resolve page '{page.Title}' Id={page.Id}");
+                _log.Debug($"Resolving page '{page.Title}' Id={page.Id}");
                 if (resolved.Contains(page))
                 {
                     _log.Debug("  * already resolved this page, skipping !");
@@ -197,7 +180,7 @@ namespace Sdl.Web.DXAResolver
             }
             if (item is Component)
             {
-                _log.Debug($"Attempting to resolve component '{item.Title}' Id={item.Id}");
+                _log.Debug($"Resolving component '{item.Title}' Id={item.Id}");
                 components.Add(item as Component);
             }
             if (components.Count <= 0) return toResolve;
@@ -298,6 +281,9 @@ namespace Sdl.Web.DXAResolver
             try
             {
                 var sourceItem = (RepositoryLocalObject) item;
+
+                _log.Debug($"Analyzing source item of type: {item.GetType().Name} with id: {item.Id} and title: {item.Title}");
+
                 var contextPublication = (Publication) sourceItem.ContextRepository;
                 var filter = new ComponentTemplatesFilter(item.Session)
                 {
@@ -316,21 +302,28 @@ namespace Sdl.Web.DXAResolver
                 Stopwatch t = new Stopwatch();
                 t.Start();
 
-                HashSet<TcmUri> alreadyResolved =new HashSet<TcmUri>();
+                HashSet<TcmUri> alreadyResolved = new HashSet<TcmUri>();
                 foreach (var x in resolvedItems)
                 {
                     alreadyResolved.Add(x.Item.Id);
                 }
-                foreach (var x in ResolveItem(item, dataPresentationTemplate, resolved, 0))
+
+                List<ResolvedItem> resolvedItemsCopy = new List<ResolvedItem>(resolvedItems);
+                foreach (var x in resolvedItemsCopy)
                 {
-                    if (alreadyResolved.Contains(x.Item.Id))
+                    foreach (var y in ResolveItem(x.Item, dataPresentationTemplate, resolved, 0))
                     {
-                        _log.Debug($"  > Already resolved item '{x.Item.Title}' with id: {x.Item.Id}");
-                        continue;
+                        if (alreadyResolved.Contains(y.Item.Id))
+                        {
+                            _log.Debug($"  > Already resolved item '{y.Item.Title}' with id: {y.Item.Id}");
+                            continue;
+                        }
+                        _log.Debug($"  > Resolved item '{y.Item.Title}' with id: {y.Item.Id}");
+                        alreadyResolved.Add(y.Item.Id);
+                        resolvedItems.Add(y);
                     }
-                    _log.Debug($"  > Resolved item '{x.Item.Title}' with id: {x.Item.Id}");
-                    resolvedItems.Add(x);
                 }
+               
                 t.Stop();              
                 _log.Debug($"DXA Custom Resolver took {t.ElapsedMilliseconds}ms to complete.");
             }
