@@ -156,7 +156,7 @@ namespace Sdl.Web.DXAResolver
             return cps;
         }
 
-        private List<ResolvedItem> ResolveItem(IdentifiableObject item,
+        private List<ResolvedItem> ResolveDataPresentations(IdentifiableObject item,
             ComponentTemplate template, HashSet<IdentifiableObject> resolved, int recurseLevel)
         {
             _log.Debug($"Analyzing item for resolving of type: '{item.GetType().Name}' id: '{item.Id}' title: '{item.Title}'");
@@ -309,18 +309,18 @@ namespace Sdl.Web.DXAResolver
                 }
 
                 List<ResolvedItem> resolvedItemsCopy = new List<ResolvedItem>(resolvedItems);
-                foreach (var x in resolvedItemsCopy)
+                foreach (var resolvedItem in resolvedItemsCopy)
                 {
-                    foreach (var y in ResolveItem(x.Item, dataPresentationTemplate, resolved, 0))
+                    foreach (var dataPresentation in ResolveDataPresentations(resolvedItem.Item, dataPresentationTemplate, resolved, 0))
                     {
-                        if (alreadyResolved.Contains(y.Item.Id))
+                        if (alreadyResolved.Contains(dataPresentation.Item.Id))
                         {
-                            _log.Debug($"  > Already resolved item '{y.Item.Title}' with id: {y.Item.Id}");
+                            _log.Debug($"  > Already resolved item '{dataPresentation.Item.Title}' with id: {dataPresentation.Item.Id}");
                             continue;
                         }
-                        _log.Debug($"  > Resolved item '{y.Item.Title}' with id: {y.Item.Id}");
-                        alreadyResolved.Add(y.Item.Id);
-                        resolvedItems.Add(y);
+                        _log.Debug($"  > Resolved item '{dataPresentation.Item.Title}' with id: {dataPresentation.Item.Id}");
+                        alreadyResolved.Add(dataPresentation.Item.Id);
+                        resolvedItems.Add(dataPresentation);
                     }
                 }
                
@@ -330,7 +330,8 @@ namespace Sdl.Web.DXAResolver
             catch (Exception e)
             {
                 _log.Debug($"Exception occured: {e.Message}");
-                _log.Debug($"Stacktrace: {e.StackTrace}");                
+                _log.Debug($"Stacktrace: {e.StackTrace}");
+                throw;
             }
         }
     }
