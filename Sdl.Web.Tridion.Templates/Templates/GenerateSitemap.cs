@@ -122,25 +122,23 @@ namespace Sdl.Web.Tridion.Templates
             }
             return result;
         }
-
-        protected string GetNavigationTitle(StructureGroup sg)
-        {
-            return StripPrefix(sg.Title);
-        }
-
-        protected string StripPrefix(string title)
-        {
-            return Regex.Replace(title, @"^\d{3}\s", string.Empty);
-        }
+      
+        protected string StripPrefix(string title) => Regex.Replace(title, @"^\d{3}\s", string.Empty);
 
         private static DateTime? GetPublishedDate(Page page, TargetType targetType )
         {
             PublishInfo publishInfo = PublishEngine.GetPublishInfo(page).FirstOrDefault(pi => pi.TargetType == targetType);
-            if (publishInfo == null)
+            return publishInfo?.PublishedAt;
+        }
+
+        protected string GetNavigationTitle(StructureGroup sg)
+        {
+            string title = null;
+            if (_config.NavType == NavigationType.Localizable)
             {
-                return null;
+                title = GetNavTitleFromStructureGroup(sg);
             }
-            return publishInfo.PublishedAt;
+            return string.IsNullOrEmpty(title) ? StripPrefix(sg.Title) : title;
         }
 
         private string GetNavigationTitle(Page page)
@@ -148,12 +146,12 @@ namespace Sdl.Web.Tridion.Templates
             string title = null;
             if (_config.NavType == NavigationType.Localizable)
             {
-                title = GetNavTextFromPageComponents(page);
+                title = GetNavTitleFromPageComponents(page);
             }
             return string.IsNullOrEmpty(title) ? StripPrefix(page.Title) : title;
         }
 
-        private string GetNavTextFromPageComponents(Page page)
+        private string GetNavTitleFromPageComponents(Page page)
         {
             string title = null;
             List<TcmComponentPresentation> cps = new List<TcmComponentPresentation>();
@@ -168,6 +166,29 @@ namespace Sdl.Web.Tridion.Templates
                 }
             }
             return title;
+        }
+
+        private string GetNavTitleFromStructureGroup(StructureGroup sg)
+        {
+            string title = null;
+            if (sg.Metadata != null)
+            {
+                title = GetNavTitleFromData(new List<XmlElement> { sg.Metadata });
+            }
+            return title;
+        }
+
+        private string GetNavTitleFromData(List<XmlElement> data)
+        {
+            foreach (string fieldname in _config.NavTextFieldPaths)
+            {
+                string title = GetNavTitleFromField(fieldname, data);
+                if (!string.IsNullOrEmpty(title))
+                {
+                    return title;
+                }
+            }
+            return null;
         }
 
         private void GetComponentPresentationsFromRegion(ref List<TcmComponentPresentation> cps, IRegion region)
@@ -190,36 +211,12 @@ namespace Sdl.Web.Tridion.Templates
             {
                 data.Add(component.Metadata);
             }
-            foreach (string fieldname in _config.NavTextFieldPaths)
-            {
-                string title = GetNavTitleFromField(fieldname, data);
-                if (!string.IsNullOrEmpty(title))
-                {
-                    return title;
-                }
-            }
-            return null;
+
+            return GetNavTitleFromData(data);          
         }
 
-        private static string GetNavTitleFromField(string fieldname, IEnumerable<XmlElement> data)
-        {
-            string xpath = GetXPathFromFieldName(fieldname);
-            foreach (XmlElement fieldData in data)
-            {
-                XmlNode field = fieldData.SelectSingleNode(xpath);
-                if (field != null)
-                {
-                    return field.InnerText;
-                }
-            }
-            return null;
-        }
-
-        private static string GetXPathFromFieldName(string fieldname)
-        {
-            string[] bits = fieldname.Split('/');
-            return "//" + String.Join("/", bits.Select(f => String.Format("*[local-name()='{0}']", f)));
-        }
+        private static string GetNavTitleFromField(string fieldname, IEnumerable<XmlElement> data) 
+            => data.Select(fieldData => fieldData.GetTextFieldValue(fieldname)).FirstOrDefault(title => !string.IsNullOrEmpty(title));      
 
         protected string GetUrl(Page page)
         {
@@ -250,15 +247,19 @@ namespace Sdl.Web.Tridion.Templates
 
         private bool IsPublished(Page page)
         {
+            if (Engine.PublishingContext?.PublicationTarget != null)
+            {
+                return PublishEngine.IsPublished(page, Engine.PublishingContext.PublicationTarget, true);
+            }
+            if (Engine.PublishingContext?.TargetType != null)
+            {
+                return PublishEngine.IsPublished(page, Engine.PublishingContext.TargetType, true);
+            }
             //For preview we always return true - to help debugging
-            return (Engine.PublishingContext?.PublicationTarget == null) || PublishEngine.IsPublished(page, Engine.PublishingContext.PublicationTarget);
+            return true;
         }
 
-        private static bool IsVisible(string title)
-        {
-            Match match = Regex.Match(title, @"^\d{3}\s");
-            return match.Success;
-        }
+        private static bool IsVisible(string title) => Regex.Match(title, @"^\d{3}\s").Success;
     }
 }
 
