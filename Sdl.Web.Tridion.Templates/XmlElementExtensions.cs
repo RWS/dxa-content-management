@@ -27,9 +27,9 @@ namespace Sdl.Web.Tridion.Templates
         /// <param name="rootElement">The current XML element.</param>
         /// <param name="fieldName">The CM field (XML) name.</param>
         /// <returns>The string values or <c>null</c> if the field does not exist.</returns>
-        public static IEnumerable<string> GetTextFieldValues(this XmlElement rootElement, string fieldName)
+        public static IEnumerable<string> GetTextFieldValues(this XmlElement rootElement, string fieldPath)
         {
-            XmlNodeList fieldElements = rootElement?.SelectNodes(GetXPathFromFieldName(fieldName));
+            XmlNodeList fieldElements = rootElement?.SelectNodes(fieldPath);
             if ((fieldElements == null) || (fieldElements.Count == 0))
             {
                 return null;
@@ -43,9 +43,9 @@ namespace Sdl.Web.Tridion.Templates
         /// <param name="rootElement">The current XML element.</param>
         /// <param name="fieldName">The CM field (XML) name.</param>
         /// <returns>The string value or <c>null</c> if the field does not exist or has no value.</returns>
-        public static string GetTextFieldValue(this XmlElement rootElement, string fieldName)
+        public static string GetTextFieldValue(this XmlElement rootElement, string fieldPath)
         {
-            IEnumerable<string> values = rootElement.GetTextFieldValues(fieldName);
+            IEnumerable<string> values = rootElement.GetTextFieldValues(fieldPath);
             return values?.FirstOrDefault();
         }
 
@@ -55,9 +55,9 @@ namespace Sdl.Web.Tridion.Templates
         /// <param name="rootElement">The current XML element.</param>
         /// <param name="fieldName">The CM field (XML) name.</param>
         /// <returns>The XML element values or <c>null</c> if the field does not exist.</returns>
-        public static IEnumerable<XmlElement> GetEmbeddedFieldValues(this XmlElement rootElement, string fieldName)
+        public static IEnumerable<XmlElement> GetEmbeddedFieldValues(this XmlElement rootElement, string fieldPath)
         {
-            XmlNodeList fieldElements = rootElement?.SelectNodes(GetXPathFromFieldName(fieldName));
+            XmlNodeList fieldElements = rootElement?.SelectNodes(fieldPath);
             if ((fieldElements == null) || (fieldElements.Count == 0))
             {
                 return null;
@@ -126,12 +126,6 @@ namespace Sdl.Web.Tridion.Templates
                 currentElement = currentElement.ParentNode as XmlElement;
             }
             return "/" + string.Join("/", pathSegments);
-        }
-
-        private static string GetXPathFromFieldName(string fieldname)
-        {
-            string[] bits = fieldname.Split('/');
-            return "//" + string.Join("/", bits.Select(f => $"*[local-name()='{f}']"));
-        }
+        }      
     }
 }

@@ -215,22 +215,13 @@ namespace Sdl.Web.Tridion.Templates
             return GetNavTitleFromData(data);
         }
 
-        private static string GetNavTitleFromField(string fieldname, IEnumerable<XmlElement> data)
+        private static string GetNavTitleFromField(string fieldname, IEnumerable<XmlElement> data) 
+            => data.Select(fieldData => fieldData.GetTextFieldValue(GetXPathFromFieldPath(fieldname))).FirstOrDefault(title => !string.IsNullOrEmpty(title));
+
+        private static string GetXPathFromFieldPath(string fieldname)
         {
-            var result = data.Select(fieldData => fieldData.GetTextFieldValue(fieldname)).FirstOrDefault(title => !string.IsNullOrEmpty(title));
-            if (string.IsNullOrEmpty(result))
-            {
-                // failed to find field so check embedded fields for a potential match
-                foreach (XmlElement fieldData in data)
-                {
-                    var field = fieldData.GetEmbeddedFieldValues(fieldname)?.FirstOrDefault();
-                    if (field != null)
-                    {
-                        return field.InnerText;
-                    }
-                }
-            }
-            return result;
+            string[] fieldPathSegments = fieldname.Split('/');
+            return "./" + string.Join("/", fieldPathSegments.Select(f => $"*[local-name()='{f}']"));
         }
 
         protected string GetUrl(Page page)
