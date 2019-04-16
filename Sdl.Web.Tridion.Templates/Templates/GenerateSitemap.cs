@@ -180,9 +180,9 @@ namespace Sdl.Web.Tridion.Templates
 
         private string GetNavTitleFromData(List<XmlElement> data)
         {
-            foreach (string fieldname in _config.NavTextFieldPaths)
+            foreach (string fieldPath in _config.NavTextFieldPaths)
             {
-                string title = GetNavTitleFromField(fieldname, data);
+                string title = GetNavTitleFromField(fieldPath, data);
                 if (!string.IsNullOrEmpty(title))
                 {
                     return title;
@@ -215,12 +215,12 @@ namespace Sdl.Web.Tridion.Templates
             return GetNavTitleFromData(data);
         }
 
-        private static string GetNavTitleFromField(string fieldname, IEnumerable<XmlElement> data) 
-            => data.Select(fieldData => fieldData.GetTextFieldValue(GetXPathFromFieldPath(fieldname))).FirstOrDefault(title => !string.IsNullOrEmpty(title));
+        private static string GetNavTitleFromField(string fieldPath, IEnumerable<XmlElement> data) 
+            => data.Select(fieldData => fieldData.GetTextFieldValue(GetXPathFromFieldPath(fieldPath))).FirstOrDefault(title => !string.IsNullOrEmpty(title));
 
-        private static string GetXPathFromFieldPath(string fieldname)
+        private static string GetXPathFromFieldPath(string fieldPath)
         {
-            string[] fieldPathSegments = fieldname.Split('/');
+            string[] fieldPathSegments = fieldPath.Split('/');
             return "./" + string.Join("/", fieldPathSegments.Select(f => $"*[local-name()='{f}']"));
         }
 
