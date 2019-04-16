@@ -25,7 +25,7 @@ namespace Sdl.Web.Tridion.Templates
         /// Gets string values from a CM text field with a given name under the current XML element.
         /// </summary>
         /// <param name="rootElement">The current XML element.</param>
-        /// <param name="fieldName">The CM field (XML) path.</param>
+        /// <param name="fieldPath">The CM field (XML) path.</param>
         /// <returns>The string values or <c>null</c> if the field does not exist.</returns>
         public static IEnumerable<string> GetTextFieldValues(this XmlElement rootElement, string fieldPath)
         {
