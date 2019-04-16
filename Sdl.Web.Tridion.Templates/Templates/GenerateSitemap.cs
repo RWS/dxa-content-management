@@ -216,13 +216,7 @@ namespace Sdl.Web.Tridion.Templates
         }
 
         private static string GetNavTitleFromField(string fieldPath, IEnumerable<XmlElement> data) 
-            => data.Select(fieldData => fieldData.GetTextFieldValue(GetXPathFromFieldPath(fieldPath))).FirstOrDefault(title => !string.IsNullOrEmpty(title));
-
-        private static string GetXPathFromFieldPath(string fieldPath)
-        {
-            string[] fieldPathSegments = fieldPath.Split('/');
-            return "./" + string.Join("/", fieldPathSegments.Select(f => $"*[local-name()='{f}']"));
-        }
+            => data.Select(fieldData => fieldData.GetTextFieldValue(fieldPath)).FirstOrDefault(title => !string.IsNullOrEmpty(title));       
 
         protected string GetUrl(Page page)
         {
