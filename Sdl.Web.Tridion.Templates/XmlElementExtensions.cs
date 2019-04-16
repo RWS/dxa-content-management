@@ -29,7 +29,7 @@ namespace Sdl.Web.Tridion.Templates
         /// <returns>The string values or <c>null</c> if the field does not exist.</returns>
         public static IEnumerable<string> GetTextFieldValues(this XmlElement rootElement, string fieldName)
         {
-            XmlNodeList fieldElements = rootElement?.SelectNodes($"*[local-name()='{fieldName}']");
+            XmlNodeList fieldElements = rootElement?.SelectNodes(GetXPathFromFieldName(fieldName));
             if ((fieldElements == null) || (fieldElements.Count == 0))
             {
                 return null;
@@ -57,7 +57,7 @@ namespace Sdl.Web.Tridion.Templates
         /// <returns>The XML element values or <c>null</c> if the field does not exist.</returns>
         public static IEnumerable<XmlElement> GetEmbeddedFieldValues(this XmlElement rootElement, string fieldName)
         {
-            XmlNodeList fieldElements = rootElement?.SelectNodes($"*[local-name()='{fieldName}']");
+            XmlNodeList fieldElements = rootElement?.SelectNodes(GetXPathFromFieldName(fieldName));
             if ((fieldElements == null) || (fieldElements.Count == 0))
             {
                 return null;
@@ -92,7 +92,7 @@ namespace Sdl.Web.Tridion.Templates
             {
                 namespaceManager = _defaultNamespaceManager;
             }
-            return (XmlElement) xmlElement.SelectSingleNode(xpath, namespaceManager);
+            return (XmlElement)xmlElement.SelectSingleNode(xpath, namespaceManager);
         }
 
         /// <summary>
@@ -122,10 +122,16 @@ namespace Sdl.Web.Tridion.Templates
             XmlElement currentElement = xmlElement;
             while (currentElement != null)
             {
-                pathSegments.Insert(0,  currentElement.LocalName);
+                pathSegments.Insert(0, currentElement.LocalName);
                 currentElement = currentElement.ParentNode as XmlElement;
             }
             return "/" + string.Join("/", pathSegments);
+        }
+
+        private static string GetXPathFromFieldName(string fieldname)
+        {
+            string[] bits = fieldname.Split('/');
+            return "//" + string.Join("/", bits.Select(f => $"*[local-name()='{f}']"));
         }
     }
 }
