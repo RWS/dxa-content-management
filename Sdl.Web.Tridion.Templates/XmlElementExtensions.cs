@@ -25,7 +25,7 @@ namespace Sdl.Web.Tridion.Templates
         /// Gets string values from a CM text field with a given name under the current XML element.
         /// </summary>
         /// <param name="rootElement">The current XML element.</param>
-        /// <param name="fieldName">The CM field (XML) name.</param>
+        /// <param name="fieldName">The CM field (XML) path.</param>
         /// <returns>The string values or <c>null</c> if the field does not exist.</returns>
         public static IEnumerable<string> GetTextFieldValues(this XmlElement rootElement, string fieldPath)
         {
@@ -41,7 +41,7 @@ namespace Sdl.Web.Tridion.Templates
         /// Gets the string value from a CM text field with a given name under the current XML element.
         /// </summary>
         /// <param name="rootElement">The current XML element.</param>
-        /// <param name="fieldName">The CM field (XML) name.</param>
+        /// <param name="fieldPath">The CM field (XML) path.</param>
         /// <returns>The string value or <c>null</c> if the field does not exist or has no value.</returns>
         public static string GetTextFieldValue(this XmlElement rootElement, string fieldPath)
         {
@@ -53,7 +53,7 @@ namespace Sdl.Web.Tridion.Templates
         /// Gets values from a CM embedded schema field with a given name under the current XML element.
         /// </summary>
         /// <param name="rootElement">The current XML element.</param>
-        /// <param name="fieldName">The CM field (XML) name.</param>
+        /// <param name="fieldPath">The CM field (XML) path.</param>
         /// <returns>The XML element values or <c>null</c> if the field does not exist.</returns>
         public static IEnumerable<XmlElement> GetEmbeddedFieldValues(this XmlElement rootElement, string fieldPath)
         {
