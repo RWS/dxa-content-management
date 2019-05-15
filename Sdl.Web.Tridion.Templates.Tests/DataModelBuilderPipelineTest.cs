@@ -316,12 +316,9 @@ namespace Sdl.Web.Tridion.Templates.Tests
             PageModelData mergedRegionPm = CreatePageModel(page, out testRenderedItem);
 
             RegionModelData mergedRegion = mergedRegionPm.Regions.FirstOrDefault(r => r.Name == regionName);
-            ComponentPresentation pageCp = page.ComponentPresentations.First();
 
             Assert.IsNotNull(mergedRegion, $"Page '{page.Title}' doesn't have '{regionName}' Region");
             Assert.AreEqual(2, mergedRegion.Entities.Count, $"Number of CPs in '{regionName}' Region is different from expected");
-            Assert.AreEqual(2, mergedRegion.Entities.Count(e => e.Id == DataModelBuilder.GetDxaIdentifier(pageCp.Component)),
-                $"Number of expected CPs in '{regionName}' Region is different from expected");
         }
 
         /// <summary>
@@ -349,11 +346,11 @@ namespace Sdl.Web.Tridion.Templates.Tests
             ContentModelData regionMetadata = mergedRegionPm.Regions.First(r => r.Name == "Main").Metadata;
 
             Assert.AreEqual(3, regionMetadata.Count, "Number of metadata fields in the Region is different from expected");
-            Assert.AreEqual(regionMetaField1.DefaultValue, regionMetadata["MergedMetadataField"],
+            Assert.AreEqual("Test Native Region Metadata", regionMetadata["MergedMetadataField"],
                 $"Value in {regionMetaField1.Name} is different from expected");
-            Assert.AreEqual(regionMetaField2.DefaultValue, regionMetadata["CmRegionMetadataField"],
+            Assert.AreEqual("Native Region Metadata Value 1", regionMetadata["CmRegionMetadataField"],
                 $"Value in {regionMetaField2.Name} is different from expected");
-            Assert.AreEqual(dxaMetaField2.DefaultValue, regionMetadata["DxaMetadataField"],
+            Assert.AreEqual("DXA Metadata value 2", regionMetadata["DxaMetadataField"],
                 $"Value in {dxaMetaField2.Name} is different from expected");
         }
 

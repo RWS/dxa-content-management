@@ -115,17 +115,17 @@ namespace Sdl.Web.Tridion.Templates
                 }
                 else
                 {
-                    childSitemapItem = GenerateStructureGroupNavigation((StructureGroup) item);
+                    childSitemapItem = GenerateStructureGroupNavigation((StructureGroup)item);
                 }
 
                 result.Items.Add(childSitemapItem);
             }
             return result;
         }
-      
+
         protected string StripPrefix(string title) => Regex.Replace(title, @"^\d{3}\s", string.Empty);
 
-        private static DateTime? GetPublishedDate(Page page, TargetType targetType )
+        private static DateTime? GetPublishedDate(Page page, TargetType targetType)
         {
             PublishInfo publishInfo = PublishEngine.GetPublishInfo(page).FirstOrDefault(pi => pi.TargetType == targetType);
             return publishInfo?.PublishedAt;
@@ -133,7 +133,7 @@ namespace Sdl.Web.Tridion.Templates
 
         protected string GetNavigationTitle(StructureGroup sg)
         {
-            string title = null;
+            string title = null;           
             if (_config.NavType == NavigationType.Localizable)
             {
                 title = GetNavTitleFromStructureGroup(sg);
@@ -180,9 +180,9 @@ namespace Sdl.Web.Tridion.Templates
 
         private string GetNavTitleFromData(List<XmlElement> data)
         {
-            foreach (string fieldname in _config.NavTextFieldPaths)
+            foreach (string fieldPath in _config.NavTextFieldPaths)
             {
-                string title = GetNavTitleFromField(fieldname, data);
+                string title = GetNavTitleFromField(fieldPath, data);
                 if (!string.IsNullOrEmpty(title))
                 {
                     return title;
@@ -212,11 +212,11 @@ namespace Sdl.Web.Tridion.Templates
                 data.Add(component.Metadata);
             }
 
-            return GetNavTitleFromData(data);          
+            return GetNavTitleFromData(data);
         }
 
-        private static string GetNavTitleFromField(string fieldname, IEnumerable<XmlElement> data) 
-            => data.Select(fieldData => fieldData.GetTextFieldValue(fieldname)).FirstOrDefault(title => !string.IsNullOrEmpty(title));      
+        private static string GetNavTitleFromField(string fieldPath, IEnumerable<XmlElement> data) 
+            => data.Select(fieldData => fieldData.GetTextFieldValue(fieldPath)).FirstOrDefault(title => !string.IsNullOrEmpty(title));       
 
         protected string GetUrl(Page page)
         {
