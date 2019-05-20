@@ -297,35 +297,42 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             XmlDocument xmlDoc = xhtmlElement.OwnerDocument;
             IList<EntityModelData> embeddedEntities = new List<EntityModelData>();
             foreach (XmlElement xlinkElement in xhtmlElement.SelectElements(".//*[starts-with(@xlink:href, 'tcm:')]"))
-            {
+            {                
                 Component linkedComponent = Pipeline.Session.GetObject(xlinkElement) as Component;
                 if (xlinkElement.LocalName == "img" || ShouldBeEmbedded(linkedComponent))
                 {
                     EntityModelData embeddedEntity = Pipeline.CreateEntityModel(linkedComponent, ct: null, expandLinkDepth: 0);
-                    string htmlClasses = xlinkElement.GetAttribute("class");
-                    if (!string.IsNullOrEmpty(htmlClasses))
+
+                    // Map each attribute to a metadata field
+
+                    foreach (XmlAttribute attribute in xlinkElement.Attributes)
                     {
-                        embeddedEntity.HtmlClasses = htmlClasses;
-                    }
-                    string altText = xlinkElement.GetAttribute("alt");
-                    if (!string.IsNullOrEmpty(altText))
-                    {
-                        // The XHTML element has an alt attribute; use this as "altText" metadata field (possibly overwriting the actual metadata field).
+                        if (string.IsNullOrEmpty(attribute.Value) || attribute.Name.StartsWith("xmlns") || 
+                            attribute.Name.StartsWith("xlink:")) continue;
+
+                        if (attribute.Name.Equals("class"))
+                        {
+                            embeddedEntity.HtmlClasses = attribute.Value;
+                            continue;
+                        }
+
                         if (embeddedEntity.Metadata == null)
                         {
                             embeddedEntity.Metadata = new ContentModelData();
                         }
-                        embeddedEntity.Metadata["altText"] = altText;
-                    }
-                    string content = xlinkElement.InnerXml;
-                    if (!string.IsNullOrEmpty(content))
-                    {
-                        //If the item has content (for example the text for a link) we add this as metadata, so it can be used if required
-                        if (embeddedEntity.ExtensionData == null)
+
+                        if (attribute.Name.Equals("alt"))
                         {
-                            embeddedEntity.ExtensionData = new Dictionary<string, object>();
+                            // Backwards compatibility
+                            embeddedEntity.Metadata["altText"] = attribute.Value;
                         }
-                        embeddedEntity.ExtensionData["_content"] = content;
+
+                        embeddedEntity.Metadata[$"html-{attribute.Name}"] = attribute.Value;
+                    }
+                                     
+                    if (!string.IsNullOrEmpty(xlinkElement.InnerText))
+                    {
+                        embeddedEntity.Metadata[$"html-innerText"] = xlinkElement.InnerText;
                     }
                     embeddedEntities.Add(embeddedEntity);
 
@@ -384,17 +391,9 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             return new RichTextData { Fragments = richTextFragments };
         }
 
-        private bool ShouldBeEmbedded(Component linkedComponent)
-        {
-            if (Pipeline.Settings.SchemasForRichTextEmbed == null) return false;
-            Logger.Debug($"Looking for schema {linkedComponent.Schema.Title} in set of schemas configured for rtf embed: {String.Join(";", Pipeline.Settings.SchemasForRichTextEmbed)}");
-            if (Pipeline.Settings.SchemasForRichTextEmbed.Contains(linkedComponent.Schema.Title.ToLower()))
-            {
-                Logger.Debug($"Found!");
-                return true;
-            }
-            return false;
-        }
+        private bool ShouldBeEmbedded(Component linkedComponent) => Pipeline.Settings.SchemaNamespaceUrisForRichTextEmbed == null
+                ? false
+                : Pipeline.Settings.SchemaNamespaceUrisForRichTextEmbed.Contains(linkedComponent.Schema.NamespaceUri) ? true : false;
 
         protected ContentModelData ExtractCustomMetadata(XmlElement metadata, IEnumerable<string> excludeFields)
         {

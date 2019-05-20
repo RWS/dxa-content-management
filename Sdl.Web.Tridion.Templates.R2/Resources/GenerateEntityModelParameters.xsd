@@ -6,7 +6,7 @@
                 <tcm:Label ElementName="includeComponentTemplateData" Metadata="false">Include Component Template related data</tcm:Label>
                 <tcm:Label ElementName="expandLinkDepth" Metadata="false">Depth to expand Component/Keyword links</tcm:Label>
                 <tcm:Label ElementName="modelBuilderTypeNames" Metadata="false">Type names of Model Builders to use (separated by semicolons)</tcm:Label>
-                <tcm:Label ElementName="schemasToEmbedInRichText" Metadata="false">List of schema names which will result in embedded items in Rich text fields (separated by semicolons)</tcm:Label>
+                <tcm:Label ElementName="schemasToEmbedInRichText" Metadata="false">List of schema namespace uris which will result in embedded items in Rich text fields (separated by semicolons)</tcm:Label>
             </tcm:Labels>
         </xsd:appinfo>
     </xsd:annotation>
@@ -29,7 +29,7 @@
                 </xsd:element>
                 <xsd:element name="expandLinkDepth" minOccurs="0" maxOccurs="1" type="xsd:integer" />
                 <xsd:element name="modelBuilderTypeNames" minOccurs="0" maxOccurs="1" type="xsd:normalizedString" />
-                <xsd:element name="schemasToEmbedInRichText" minOccurs="0" maxOccurs="1" type="xsd:normalizedString" />
+                <xsd:element name="schemaToEmbedInRichText" minOccurs="0" maxOccurs="1" type="xsd:normalizedString" />
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>

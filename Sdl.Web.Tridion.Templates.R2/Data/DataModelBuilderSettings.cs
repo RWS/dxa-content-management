@@ -24,8 +24,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         public string Locale { get; set; }
 
         /// <summary>
-        /// Gets or sets the a list of schema names used to determine embed behaviour in Rich text fields
+        /// Gets or sets the a list of schema namespace uris used to determine embed behaviour in Rich text fields
         /// </summary>
-        public List<string> SchemasForRichTextEmbed { get; set; }
+        public List<string> SchemaNamespaceUrisForRichTextEmbed { get; set; }
     }
 }

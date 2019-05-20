@@ -21,7 +21,7 @@ namespace Sdl.Web.Tridion.Templates.R2
                     ExpandLinkDepth = expandLinkDepth,
                     GenerateXpmMetadata = IsXpmEnabled || IsPreview,
                     Locale = GetLocale(),
-                    SchemasForRichTextEmbed = GetSchemasForRichTextEmbed()
+                    SchemaNamespaceUrisForRichTextEmbed = GetSchemaNamespaceUrisForRichTextEmbed()
                 };
             }
         }
@@ -58,13 +58,15 @@ namespace Sdl.Web.Tridion.Templates.R2
             return modelBuilderTypeNamesParam.Split(';');
         }
 
-        protected List<string> GetSchemasForRichTextEmbed()
+        protected List<string> GetSchemaNamespaceUrisForRichTextEmbed()
         {
+            Logger.Info("Checking 'schemasToEmbedInRichText' template parameter for list of schema namespace uris to determine what entities to embedd in Rich Text fields.");
             string schemasForEmbed;
             List<string> schemasForEmbedList = new List<string>();
             TryGetParameter("schemasToEmbedInRichText", out schemasForEmbed);
             if (!string.IsNullOrEmpty(schemasForEmbed))
             {
+                Logger.Info($"schemasToEmbedInRichText set to '{schemasForEmbed}'.");
                 schemasForEmbedList = schemasForEmbed.Split(';').Select(s => s.Trim().ToLower()).ToList();
             }
             return schemasForEmbedList;
