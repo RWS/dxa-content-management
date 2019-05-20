@@ -276,7 +276,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 return Pipeline.CreateEntityModel(linkedComponent, dataPresentationTemplate, false, expandLinkDepth - 1);
             }
 
-            Category category = (Category) linkedKeyword.OrganizationalItem;
+            Category category = (Category)linkedKeyword.OrganizationalItem;
             if (category.UseForNavigation)
             {
                 Logger.Debug($"Not expanding Keyword link because its Category is publishable: {category.FormatIdentifier()}");
@@ -297,7 +297,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             XmlDocument xmlDoc = xhtmlElement.OwnerDocument;
             IList<EntityModelData> embeddedEntities = new List<EntityModelData>();
             foreach (XmlElement xlinkElement in xhtmlElement.SelectElements(".//*[starts-with(@xlink:href, 'tcm:')]"))
-            {                
+            {
                 Component linkedComponent = Pipeline.Session.GetObject(xlinkElement) as Component;
                 if (xlinkElement.LocalName == "img" || ShouldBeEmbedded(linkedComponent))
                 {
@@ -307,7 +307,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
                     foreach (XmlAttribute attribute in xlinkElement.Attributes)
                     {
-                        if (string.IsNullOrEmpty(attribute.Value) || attribute.Name.StartsWith("xmlns") || 
+                        if (string.IsNullOrEmpty(attribute.Value) || attribute.Name.StartsWith("xmlns") ||
                             attribute.Name.StartsWith("xlink:")) continue;
 
                         if (attribute.Name.Equals("class"))
@@ -329,7 +329,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
                         embeddedEntity.Metadata[$"html-{attribute.Name}"] = attribute.Value;
                     }
-                                     
+
                     if (!string.IsNullOrEmpty(xlinkElement.InnerText))
                     {
                         embeddedEntity.Metadata[$"html-innerText"] = xlinkElement.InnerText;
@@ -391,10 +391,22 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             return new RichTextData { Fragments = richTextFragments };
         }
 
-        private bool ShouldBeEmbedded(Component linkedComponent) => Pipeline.Settings.SchemaNamespaceUrisForRichTextEmbed == null
-                ? false
-                : Pipeline.Settings.SchemaNamespaceUrisForRichTextEmbed.Contains(linkedComponent.Schema.NamespaceUri) ? true : false;
+        private bool ShouldBeEmbedded(Component linkedComponent)
+        {
+            if (Pipeline.Settings.SchemaNamespacesForRichTextEmbed == null)
+                return false;
 
+            if (Pipeline.Settings.SchemaNamespacesForRichTextEmbed.Contains(linkedComponent.Schema.Title))
+                return true;
+
+            if (Pipeline.Settings.SchemaNamespacesForRichTextEmbed.Contains(linkedComponent.Schema.NamespaceUri))
+                return true;
+
+            if (Pipeline.Settings.SchemaNamespacesForRichTextEmbed.Contains($"{linkedComponent.Schema.NamespaceUri}:{linkedComponent.Schema.Title}"))
+                return true;
+
+            return false;               
+        }
         protected ContentModelData ExtractCustomMetadata(XmlElement metadata, IEnumerable<string> excludeFields)
         {
             if (metadata == null)

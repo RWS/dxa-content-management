@@ -24,8 +24,11 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         public string Locale { get; set; }
 
         /// <summary>
-        /// Gets or sets the a list of schema namespace uris used to determine embed behaviour in Rich text fields
+        /// Gets or sets the a list of schema namespaces used to determine if an Entity should be embedded 
+        /// in Rich text fields.
+        /// E.g: http://www.sdl.com/web/schemas/core:Article
+        /// </remark>
         /// </summary>
-        public List<string> SchemaNamespaceUrisForRichTextEmbed { get; set; }
+        public List<string> SchemaNamespacesForRichTextEmbed { get; set; }
     }
 }
