@@ -923,7 +923,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 new TestLogger()                
                 );
 
-            testModelBuilderPipeline.Settings.SchemaNamespacesForRichTextEmbed = schemasToEmbedInRichText.ToList();
+            testModelBuilderPipeline.Settings.SchemaNamespacesForRichTextEmbed = schemasToEmbedInRichText?.ToList();
 
             PageModelData result = testModelBuilderPipeline.CreatePageModel(page);
 
