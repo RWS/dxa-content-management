@@ -346,7 +346,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
             ContentModelData regionMetadata = mergedRegionPm.Regions.First(r => r.Name == "Main").Metadata;
 
             Assert.AreEqual(3, regionMetadata.Count, "Number of metadata fields in the Region is different from expected");
-            Assert.AreEqual("Test Native Region Metadata", regionMetadata["MergedMetadataField"],
+            Assert.AreEqual("Native Region Metadata Value 1", regionMetadata["MergedMetadataField"],
                 $"Value in {regionMetaField1.Name} is different from expected");
             Assert.AreEqual("Native Region Metadata Value 1", regionMetadata["CmRegionMetadataField"],
                 $"Value in {regionMetaField2.Name} is different from expected");
