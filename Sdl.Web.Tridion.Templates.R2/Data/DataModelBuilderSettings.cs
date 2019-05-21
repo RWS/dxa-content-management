@@ -17,18 +17,16 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         /// </summary>
         public bool GenerateXpmMetadata { get; set; }
 
-
         /// <summary>
         /// Gets or sets the Locale which is output as <c>og:locale</c> PageModel Meta.
         /// </summary>
         public string Locale { get; set; }
 
         /// <summary>
-        /// Gets or sets the a list of schema namespaces used to determine if an Entity should be embedded 
+        /// Gets or sets the a list of schema identifiers used to determine if an Entity should be embedded 
         /// in Rich text fields.
         /// E.g: http://www.sdl.com/web/schemas/core:Article
-        /// </remark>
         /// </summary>
-        public List<string> SchemaNamespacesForRichTextEmbed { get; set; }
+        public List<string> SchemasForRichTextEmbed { get; set; }
     }
 }

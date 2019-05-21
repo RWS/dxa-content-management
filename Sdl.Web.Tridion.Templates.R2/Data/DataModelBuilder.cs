@@ -393,16 +393,16 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
         private bool ShouldBeEmbedded(Component linkedComponent)
         {
-            if (Pipeline.Settings.SchemaNamespacesForRichTextEmbed == null)
+            if (Pipeline.Settings.SchemasForRichTextEmbed == null)
                 return false;
 
-            if (Pipeline.Settings.SchemaNamespacesForRichTextEmbed.Contains(linkedComponent.Schema.Title))
+            if (Pipeline.Settings.SchemasForRichTextEmbed.Contains(linkedComponent.Schema.Title))
                 return true;
 
-            if (Pipeline.Settings.SchemaNamespacesForRichTextEmbed.Contains(linkedComponent.Schema.NamespaceUri))
+            if (Pipeline.Settings.SchemasForRichTextEmbed.Contains(linkedComponent.Schema.NamespaceUri))
                 return true;
 
-            if (Pipeline.Settings.SchemaNamespacesForRichTextEmbed.Contains($"{linkedComponent.Schema.NamespaceUri}:{linkedComponent.Schema.Title}"))
+            if (Pipeline.Settings.SchemasForRichTextEmbed.Contains($"{linkedComponent.Schema.NamespaceUri}:{linkedComponent.Schema.Title}"))
                 return true;
 
             return false;               
