@@ -71,7 +71,7 @@ namespace Sdl.Web.Tridion.Templates.R2
             if (!string.IsNullOrEmpty(schemasForEmbed))
             {
                 Logger.Info($"schemasToEmbedInRichText set to '{schemasForEmbed}'.");
-                schemasForEmbedList = schemasForEmbed.Split(';').Select(s => s.Trim().ToLower()).ToList();
+                schemasForEmbedList = schemasForEmbed.Split(';').Select(s => s.Trim()).ToList();
             }
             return schemasForEmbedList;
         }
