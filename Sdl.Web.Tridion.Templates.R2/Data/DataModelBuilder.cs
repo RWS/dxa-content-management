@@ -396,7 +396,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             if (Pipeline.Settings.SchemasForRichTextEmbed == null)
                 return false;
 
-            if (Pipeline.Settings.SchemasForRichTextEmbed.Contains(linkedComponent.Schema.RootElementName))
+            if (Pipeline.Settings.SchemasForRichTextEmbed.Contains(linkedComponent.Schema.Title))
                 return true;
 
             if (Pipeline.Settings.SchemasForRichTextEmbed.Contains(linkedComponent.Schema.NamespaceUri))
