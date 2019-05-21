@@ -396,13 +396,13 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             if (Pipeline.Settings.SchemasForRichTextEmbed == null)
                 return false;
 
-            if (Pipeline.Settings.SchemasForRichTextEmbed.Contains(linkedComponent.Schema.Title))
+            if (Pipeline.Settings.SchemasForRichTextEmbed.Contains(linkedComponent.Schema.RootElementName))
                 return true;
 
             if (Pipeline.Settings.SchemasForRichTextEmbed.Contains(linkedComponent.Schema.NamespaceUri))
                 return true;
 
-            if (Pipeline.Settings.SchemasForRichTextEmbed.Contains($"{linkedComponent.Schema.NamespaceUri}:{linkedComponent.Schema.Title}"))
+            if (Pipeline.Settings.SchemasForRichTextEmbed.Contains($"{linkedComponent.Schema.NamespaceUri}:{linkedComponent.Schema.RootElementName}"))
                 return true;
 
             return false;               
