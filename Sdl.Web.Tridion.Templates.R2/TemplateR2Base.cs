@@ -1,4 +1,6 @@
-﻿using Sdl.Web.Tridion.Templates.Common;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Sdl.Web.Tridion.Templates.Common;
 using Sdl.Web.Tridion.Templates.R2.Data;
 
 namespace Sdl.Web.Tridion.Templates.R2
@@ -18,7 +20,8 @@ namespace Sdl.Web.Tridion.Templates.R2
                 {
                     ExpandLinkDepth = expandLinkDepth,
                     GenerateXpmMetadata = IsXpmEnabled || IsPreview,
-                    Locale = GetLocale()
+                    Locale = GetLocale(),
+                    SchemasForRichTextEmbed = GetSchemasForRichTextEmbed()
                 };
             }
         }
@@ -53,6 +56,24 @@ namespace Sdl.Web.Tridion.Templates.R2
             }
 
             return modelBuilderTypeNamesParam.Split(';');
+        }
+
+        /// <summary>
+        /// Gets a list of schema identifiers to determine what Entities to embed in Rich Text fields.
+        /// </summary>
+        /// <returns>List of schema identifiers</returns>
+        protected List<string> GetSchemasForRichTextEmbed()
+        {
+            Logger.Info("Checking 'schemasToEmbedInRichText' template parameter for list of schema identifiers to determine what entities to embed in Rich Text fields.");
+            string schemasForEmbed;
+            List<string> schemasForEmbedList = new List<string>();
+            TryGetParameter("schemasToEmbedInRichText", out schemasForEmbed);
+            if (!string.IsNullOrEmpty(schemasForEmbed))
+            {
+                Logger.Info($"schemasToEmbedInRichText set to '{schemasForEmbed}'.");
+                schemasForEmbedList = schemasForEmbed.Split(';').Select(s => s.Trim()).ToList();
+            }
+            return schemasForEmbedList;
         }
     }
 }

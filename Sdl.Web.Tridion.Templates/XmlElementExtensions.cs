@@ -25,11 +25,11 @@ namespace Sdl.Web.Tridion.Templates
         /// Gets string values from a CM text field with a given name under the current XML element.
         /// </summary>
         /// <param name="rootElement">The current XML element.</param>
-        /// <param name="fieldName">The CM field (XML) name.</param>
+        /// <param name="fieldPath">The CM field (XML) path.</param>
         /// <returns>The string values or <c>null</c> if the field does not exist.</returns>
-        public static IEnumerable<string> GetTextFieldValues(this XmlElement rootElement, string fieldName)
+        public static IEnumerable<string> GetTextFieldValues(this XmlElement rootElement, string fieldPath)
         {
-            XmlNodeList fieldElements = rootElement?.SelectNodes($"*[local-name()='{fieldName}']");
+            XmlNodeList fieldElements = rootElement?.SelectNodes(GetXPathFromFieldPath(fieldPath));
             if ((fieldElements == null) || (fieldElements.Count == 0))
             {
                 return null;
@@ -41,11 +41,11 @@ namespace Sdl.Web.Tridion.Templates
         /// Gets the string value from a CM text field with a given name under the current XML element.
         /// </summary>
         /// <param name="rootElement">The current XML element.</param>
-        /// <param name="fieldName">The CM field (XML) name.</param>
+        /// <param name="fieldPath">The CM field (XML) path.</param>
         /// <returns>The string value or <c>null</c> if the field does not exist or has no value.</returns>
-        public static string GetTextFieldValue(this XmlElement rootElement, string fieldName)
+        public static string GetTextFieldValue(this XmlElement rootElement, string fieldPath)
         {
-            IEnumerable<string> values = rootElement.GetTextFieldValues(fieldName);
+            IEnumerable<string> values = rootElement.GetTextFieldValues(fieldPath);
             return values?.FirstOrDefault();
         }
 
@@ -53,11 +53,11 @@ namespace Sdl.Web.Tridion.Templates
         /// Gets values from a CM embedded schema field with a given name under the current XML element.
         /// </summary>
         /// <param name="rootElement">The current XML element.</param>
-        /// <param name="fieldName">The CM field (XML) name.</param>
+        /// <param name="fieldPath">The CM field (XML) path.</param>
         /// <returns>The XML element values or <c>null</c> if the field does not exist.</returns>
-        public static IEnumerable<XmlElement> GetEmbeddedFieldValues(this XmlElement rootElement, string fieldName)
+        public static IEnumerable<XmlElement> GetEmbeddedFieldValues(this XmlElement rootElement, string fieldPath)
         {
-            XmlNodeList fieldElements = rootElement?.SelectNodes($"*[local-name()='{fieldName}']");
+            XmlNodeList fieldElements = rootElement?.SelectNodes(GetXPathFromFieldPath(fieldPath));
             if ((fieldElements == null) || (fieldElements.Count == 0))
             {
                 return null;
@@ -92,7 +92,7 @@ namespace Sdl.Web.Tridion.Templates
             {
                 namespaceManager = _defaultNamespaceManager;
             }
-            return (XmlElement) xmlElement.SelectSingleNode(xpath, namespaceManager);
+            return (XmlElement)xmlElement.SelectSingleNode(xpath, namespaceManager);
         }
 
         /// <summary>
@@ -122,10 +122,16 @@ namespace Sdl.Web.Tridion.Templates
             XmlElement currentElement = xmlElement;
             while (currentElement != null)
             {
-                pathSegments.Insert(0,  currentElement.LocalName);
+                pathSegments.Insert(0, currentElement.LocalName);
                 currentElement = currentElement.ParentNode as XmlElement;
             }
             return "/" + string.Join("/", pathSegments);
+        }
+
+        private static string GetXPathFromFieldPath(string fieldPath)
+        {
+            string[] fieldPathSegments = fieldPath.Split('/');
+            return "./" + string.Join("/", fieldPathSegments.Select(f => $"*[local-name()='{f}']"));
         }
     }
 }

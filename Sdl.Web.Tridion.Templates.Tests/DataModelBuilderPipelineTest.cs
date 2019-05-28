@@ -316,12 +316,9 @@ namespace Sdl.Web.Tridion.Templates.Tests
             PageModelData mergedRegionPm = CreatePageModel(page, out testRenderedItem);
 
             RegionModelData mergedRegion = mergedRegionPm.Regions.FirstOrDefault(r => r.Name == regionName);
-            ComponentPresentation pageCp = page.ComponentPresentations.First();
 
             Assert.IsNotNull(mergedRegion, $"Page '{page.Title}' doesn't have '{regionName}' Region");
             Assert.AreEqual(2, mergedRegion.Entities.Count, $"Number of CPs in '{regionName}' Region is different from expected");
-            Assert.AreEqual(2, mergedRegion.Entities.Count(e => e.Id == DataModelBuilder.GetDxaIdentifier(pageCp.Component)),
-                $"Number of expected CPs in '{regionName}' Region is different from expected");
         }
 
         /// <summary>
@@ -349,12 +346,14 @@ namespace Sdl.Web.Tridion.Templates.Tests
             ContentModelData regionMetadata = mergedRegionPm.Regions.First(r => r.Name == "Main").Metadata;
 
             Assert.AreEqual(3, regionMetadata.Count, "Number of metadata fields in the Region is different from expected");
-            Assert.AreEqual(regionMetaField1.DefaultValue, regionMetadata["MergedMetadataField"],
+            Assert.AreEqual("Native Region Metadata Value 1", regionMetadata["MergedMetadataField"],
                 $"Value in {regionMetaField1.Name} is different from expected");
-            Assert.AreEqual(regionMetaField2.DefaultValue, regionMetadata["CmRegionMetadataField"],
+            Assert.AreEqual("Native Region Metadata Value 1", regionMetadata["CmRegionMetadataField"],
                 $"Value in {regionMetaField2.Name} is different from expected");
-            Assert.AreEqual(dxaMetaField2.DefaultValue, regionMetadata["DxaMetadataField"],
+            Assert.AreEqual("DXA Metadata value 2", regionMetadata["DxaMetadataField"],
                 $"Value in {dxaMetaField2.Name} is different from expected");
+
+            
         }
 
         #endregion Native Region tests
@@ -833,6 +832,28 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
+        public void CreatePageModel_RTFEmbeddedEntity_Success()
+        {
+            Page testPage = (Page)TestSession.GetObject(TestFixture.CRQ12781PageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem, null,
+                new string[] { "http://www.sdl.com/web/schemas/core:Article" });
+
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData article = mainRegion.Entities.LastOrDefault(e => e.MvcData.ViewName == "Article");
+            Assert.IsNotNull(article, "article");
+            ContentModelData articleBody = (ContentModelData)article.Content["articleBody"];
+            RichTextData content = articleBody["content"] as RichTextData;
+            Assert.IsNotNull(content);
+            Assert.AreEqual(4, content.Fragments.Count);
+            EntityModelData embedded = content.Fragments[3] as EntityModelData;
+            Assert.IsNotNull(embedded);
+            Assert.IsNotNull(embedded.Metadata);
+            Assert.AreEqual("embeddedEntity", embedded.Metadata["html-id"]);
+        }
+
+        [TestMethod]
         public void CreateEntityModel_ArticleDcp_Success()
         {
             Component testComponent = (Component) TestSession.GetObject(TestFixture.ArticleDcpComponentWebDavUrl);
@@ -888,7 +909,7 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
 
-        private PageModelData CreatePageModel(Page page, out RenderedItem renderedItem, IEnumerable<string> modelBuilderTypeNames = null)
+        private PageModelData CreatePageModel(Page page, out RenderedItem renderedItem, IEnumerable<string> modelBuilderTypeNames = null, IEnumerable<string> schemasToEmbedInRichText = null)
         {
             renderedItem = CreateTestRenderedItem(page, page.PageTemplate);
 
@@ -901,8 +922,10 @@ namespace Sdl.Web.Tridion.Templates.Tests
                 renderedItem,
                 _defaultModelBuilderSettings,
                 modelBuilderTypeNames,
-                new TestLogger()
+                new TestLogger()                
                 );
+
+            testModelBuilderPipeline.Settings.SchemasForRichTextEmbed = schemasToEmbedInRichText?.ToList();
 
             PageModelData result = testModelBuilderPipeline.CreatePageModel(page);
 
