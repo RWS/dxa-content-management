@@ -3,6 +3,8 @@
   <UsingTask TaskName="MSBuild.ExtensionPack.Framework.AssemblyInfo" AssemblyFile="MSBuild.ExtensionPack.dll"/>
   <UsingTask TaskName="MSBuild.ExtensionPack.FileSystem.File" AssemblyFile="MSBuild.ExtensionPack.dll"/>
   <UsingTask TaskName="MSBuild.ExtensionPack.Framework.DateAndTime" AssemblyFile="MSBuild.ExtensionPack.dll" />
+  <UsingTask TaskName="MSBuild.ExtensionPack.Compression.DNZip" AssemblyFile="MSBuild.ExtensionPack.dll" />
+  <UsingTask TaskName="MSBuild.ExtensionPack.Xml.XmlFile" AssemblyFile="MSBuild.ExtensionPack.dll"/>
 
   <PropertyGroup>
         <!-- Input parameters -->
@@ -50,6 +52,7 @@
       <ExtensionName Condition="'$(ExtensionName)' == ''">DxaResolver</ExtensionName>
       <ExtensionsDistFolder Condition="'$(ExtensionsDistFolder)' == ''">$(ExtensionsRoot)\dist</ExtensionsDistFolder>
       <PackageFolder>$(ExtensionsDistFolder)\$(ExtensionName)</PackageFolder>
+      <ExtensionPackageFolder>$(ExtensionsDistFolder)\ExtensionPackage</ExtensionPackageFolder>
 
       <SupportedLanguage>(en|de|nl|fr|ja|es|zn-CH)</SupportedLanguage>
       <ExcludeFiles>
@@ -79,6 +82,7 @@
         <CallTarget Targets="PrepareBuild"/>
         <CallTarget Targets="RunBuild"/>
         <CallTarget Targets="CreateDXAResolverExtensionDist"/>
+        <CallTarget Targets="CreateDXAResolverExtensionPackage"/>
         <CallTarget Targets="Test"/>
         <CallTarget Targets="CreatePackages"/>
         <CallTarget Targets="PublishPackages" Condition="'$(NuGetRepositoryUrl)' != ''"/>
@@ -164,6 +168,79 @@
 
         <Message Text="Copying binaries to $(ExtensionBinDist)" Importance="high" />
         <Copy SourceFiles="@(ExtensionEditorsBinFile);@(ExtensionModelsBinFile)" DestinationFolder="$(ExtensionBinDist)\%(RecursiveDir)"/>
+    </Target>
+
+    <Target Name="CreateDXAResolverExtensionPackage">
+        <ItemGroup>
+            <ExtensionEditorsStaticFile Include="$(EditorsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
+            <ExtensionModelsStaticFile Include="$(ModelsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
+            <ResolverFile Include="$(ProjectDirectory)\Sdl.Web.DXAResolver\bin\**\*.DXAResolver.dll" Exclude="$(ExcludeFiles)"/>
+            <ExtensionEditorsBinFile Include="$(EditorsFolder)\bin\**\DXA.CM.Extensions.*dll" Exclude="
+                $(EditorsFolder)\bin\bin\;
+                $(EditorsFolder)\bin\*.config;
+                $(EditorsFolder)\bin\*.pdb;
+            "/>
+            <ExtensionModelsBinFile Include="$(ModelsFolder)\bin\**\DXA.CM.Extensions.*dll" Exclude="
+                $(ModelsFolder)\bin\bin\;
+                $(ModelsFolder)\bin\*.config;
+                $(ModelsFolder)\bin\*.pdb;
+            "/>
+
+            <!-- Secure endpoint configuration in the model web.config -->
+            <ServicesSecureXMLElement Include="$(ExtensionPackageFolder)\Models\Web.config">
+                <XPath>/configuration/system.serviceModel/services/service</XPath>
+                <Name>endpoint</Name>
+                <KeyAttributeName>name</KeyAttributeName>
+                <KeyAttributeValue>ServicesSecure</KeyAttributeValue>
+            </ServicesSecureXMLElement>
+            <ServicesSecureXMLAttributes Include="$(ExtensionPackageFolder)\Models\Web.config">
+                <XPath>/configuration/system.serviceModel/services/service/endpoint[@name='ServicesSecure']</XPath>
+                <Name>address</Name>
+                <Value></Value>
+            </ServicesSecureXMLAttributes>
+            <ServicesSecureXMLAttributes Include="$(ExtensionPackageFolder)\Models\Web.config">
+                <XPath>/configuration/system.serviceModel/services/service/endpoint[@name='ServicesSecure']</XPath>
+                <Name>behaviorConfiguration</Name>
+                <Value>Tridion.Web.UI.ContentManager.WebServices.AspNetAjaxBehavior</Value>
+            </ServicesSecureXMLAttributes>
+            <ServicesSecureXMLAttributes Include="$(ExtensionPackageFolder)\Models\Web.config">
+                <XPath>/configuration/system.serviceModel/services/service/endpoint[@name='ServicesSecure']</XPath>
+                <Name>binding</Name>
+                <Value>webHttpBinding</Value>
+            </ServicesSecureXMLAttributes>
+            <ServicesSecureXMLAttributes Include="$(ExtensionPackageFolder)\Models\Web.config">
+                <XPath>/configuration/system.serviceModel/services/service/endpoint[@name='ServicesSecure']</XPath>
+                <Name>bindingConfiguration</Name>
+                <Value>Tridion.Web.UI.ContentManager.WebServices.WebHttpsBindingConfig</Value>
+            </ServicesSecureXMLAttributes>
+            <ServicesSecureXMLAttributes Include="$(ExtensionPackageFolder)\Models\Web.config">
+                <XPath>/configuration/system.serviceModel/services/service/endpoint[@name='ServicesSecure']</XPath>
+                <Name>contract</Name>
+                <Value>DXA.CM.Extensions.DXAResolver.Models.Interfaces.IServices</Value>
+            </ServicesSecureXMLAttributes>
+        </ItemGroup>
+
+        <Message Text="Cleaning zip folder" Importance="high" />
+        <RemoveDir Directories="$(ExtensionPackageFolder)" />
+
+        <Message Text="Copying static files to $(ExtensionPackageFolder)" Importance="high" />
+        <Copy SourceFiles="@(ExtensionEditorsStaticFile)" DestinationFolder="$(ExtensionPackageFolder)\Editors\%(RecursiveDir)"/>
+        <Copy SourceFiles="@(ExtensionModelsStaticFile)" DestinationFolder="$(ExtensionPackageFolder)\Models\%(RecursiveDir)"/>
+
+        <Message Text="Copying binaries to $(ExtensionPackageFolder)" Importance="high" />
+        <Copy SourceFiles="@(ExtensionEditorsBinFile)" DestinationFolder="$(ExtensionPackageFolder)\Editors\Assemblies\%(RecursiveDir)"/>
+        <Copy SourceFiles="@(ExtensionModelsBinFile)" DestinationFolder="$(ExtensionPackageFolder)\Models\Assemblies\%(RecursiveDir)"/>
+        <Copy SourceFiles="@(ResolverFile)" DestinationFolder="$(ExtensionPackageFolder)\Resolver"/>
+        <Copy SourceFiles="$(ProjectDirectory)\Resources\dxa.png" DestinationFolder="$(ExtensionPackageFolder)\Icons"/>
+        <Copy SourceFiles="$(ProjectDirectory)\Resources\manifest.json" DestinationFolder="$(ExtensionPackageFolder)"/>
+        <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddElement" File="%(ServicesSecureXMLElement.Identity)" Key="%(ServicesSecureXMLElement.KeyAttributeName)" Value="%(ServicesSecureXMLElement.KeyAttributeValue)" Element="%(ServicesSecureXMLElement.Name)" XPath="%(ServicesSecureXMLElement.XPath)" />
+        <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddAttribute" File="%(ServicesSecureXMLAttributes.Identity)" Key="%(ServicesSecureXMLAttributes.Name)" Value="%(ServicesSecureXMLAttributes.Value)" XPath="%(ServicesSecureXMLAttributes.XPath)" />
+        
+        <Message Text="Creating extension zip package" Importance="high" />
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(ExtensionPackageFolder)" ZipFileName="$(ExtensionsDistFolder)\DXAResolver-2.2.0.zip"/>
+
+        <Message Text="Cleaning zip folder" Importance="high" />
+        <RemoveDir Directories="$(ExtensionPackageFolder)" />
     </Target>
 
     <!-- ======================================================================================================================= -->
