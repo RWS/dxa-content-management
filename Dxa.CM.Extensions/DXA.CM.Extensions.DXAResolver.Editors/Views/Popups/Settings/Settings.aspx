@@ -1,4 +1,5 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="DXA.CM.Extensions.DXAResolver.Editors.Views.Popups.Settings" ClassName="Settings" %>
+﻿<%@ Assembly Name="DXA.CM.Extensions.DXAResolver.Editors" %>
+<%@ Page Language="C#" AutoEventWireup="true" Inherits="DXA.CM.Extensions.DXAResolver.Editors.Views.Popups.Settings" ClassName="Settings" %>
 <%@ Import Namespace="Tridion.Web.UI" %>
 
 <%@ Register TagPrefix="cc" Namespace="Tridion.Web.UI.Core.Controls" Assembly="Tridion.Web.UI.Core" %>
