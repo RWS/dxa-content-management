@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -131,7 +131,11 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     currentFieldName = childElement.Name;
                     currentFieldValues = new List<object>();
                 }
-                currentFieldValues.Add(GetFieldValue(childElement, expandLinkDepth));
+                var fieldValue = GetFieldValue(childElement, expandLinkDepth);
+                if (fieldValue != null)
+                {
+                    currentFieldValues.Add(fieldValue);
+                }
             }
 
             if (currentFieldName != null)
