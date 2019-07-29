@@ -196,7 +196,10 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 return BuildRichTextModel(xmlElement);
             }
 
-            if (xmlElement.SelectSingleElement("*") != null)
+            // An empty node is assumed an embedded field where all embedded schema fields are optional
+            // and empty. This should not interfere with regular fields, since empty optional regular
+            // fields do not appear in the XML to begin with.
+            if (xmlElement.SelectSingleElement("*") != null || xmlElement.InnerText == string.Empty)
             {
                 // Embedded field
                 return BuildContentModel(xmlElement, expandLinkDepth);
