@@ -121,7 +121,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
             string currentFieldName = null;
             List<object> currentFieldValues = new List<object>();
-            foreach (XmlElement childElement in xmlElement.SelectElements("*"))
+            foreach (XmlElement childElement in xmlElement.SelectElements("*[@* or node()]")) // Skip empty XML elements
             {
                 if (childElement.Name != currentFieldName)
                 {

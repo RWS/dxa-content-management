@@ -59,5 +59,6 @@
         internal const string Tsi2844PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/TSI-2844/TSI-2844 Inherited Page Metadata.tpg";
 
         internal const string CRQ12781PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/CRQ-12781 Test Page.tpg";
+        internal const string CRQ12801PageWebDavUrl = AutoTestParentWebDavUrl + "/Home/Regression/CRQ-12801 Test Page.tpg";
     }
 }
