@@ -120,12 +120,7 @@ namespace Sdl.Web.Tridion.Templates
                 result.Items.Add(childSitemapItem);
             }
             return result;
-        }
-
-        protected string GetNavigationTitle(StructureGroup sg)
-        {
-            return StripPrefix(sg.Title);
-        }
+        }      
 
         protected string StripPrefix(string title)
         {
@@ -142,17 +137,27 @@ namespace Sdl.Web.Tridion.Templates
             return publishInfo.PublishedAt;
         }
 
+        protected string GetNavigationTitle(StructureGroup sg)
+        {
+            string title = null;
+            if (_config.NavType == NavigationType.Localizable)
+            {
+                title = GetNavTitleFromStructureGroup(sg);
+            }
+            return string.IsNullOrEmpty(title) ? StripPrefix(sg.Title) : title;
+        }
+
         private string GetNavigationTitle(Page page)
         {
             string title = null;
             if (_config.NavType == NavigationType.Localizable)
             {
-                title = GetNavTextFromPageComponents(page);
+                title = GetNavTitleFromPageComponents(page);
             }
             return string.IsNullOrEmpty(title) ? StripPrefix(page.Title) : title;
         }
 
-        private string GetNavTextFromPageComponents(Page page)
+        private string GetNavTitleFromPageComponents(Page page)
         {
             string title = null;
             foreach (TcmComponentPresentation cp in page.ComponentPresentations)
@@ -166,6 +171,16 @@ namespace Sdl.Web.Tridion.Templates
             return title;
         }
 
+        private string GetNavTitleFromStructureGroup(StructureGroup sg)
+        {
+            string title = null;
+            if (sg.Metadata != null)
+            {
+                title = GetNavTitleFromData(new List<XmlElement> { sg.Metadata });
+            }
+            return title;
+        }       
+
         private string GetNavTitleFromComponent(Component component)
         {
             List<XmlElement> data = new List<XmlElement>();
@@ -177,9 +192,15 @@ namespace Sdl.Web.Tridion.Templates
             {
                 data.Add(component.Metadata);
             }
-            foreach (string fieldname in _config.NavTextFieldPaths)
+
+            return GetNavTitleFromData(data);
+        }
+
+        private string GetNavTitleFromData(List<XmlElement> data)
+        {
+            foreach (string fieldPath in _config.NavTextFieldPaths)
             {
-                string title = GetNavTitleFromField(fieldname, data);
+                string title = GetNavTitleFromField(fieldPath, data);
                 if (!string.IsNullOrEmpty(title))
                 {
                     return title;
@@ -188,24 +209,10 @@ namespace Sdl.Web.Tridion.Templates
             return null;
         }
 
-        private static string GetNavTitleFromField(string fieldname, IEnumerable<XmlElement> data)
+        private static string GetNavTitleFromField(string fieldPath, IEnumerable<XmlElement> data)
         {
-            string xpath = GetXPathFromFieldName(fieldname);
-            foreach (XmlElement fieldData in data)
-            {
-                XmlNode field = fieldData.SelectSingleNode(xpath);
-                if (field != null)
-                {
-                    return field.InnerText;
-                }
-            }
-            return null;
-        }
-
-        private static string GetXPathFromFieldName(string fieldname)
-        {
-            string[] bits = fieldname.Split('/');
-            return "//" + String.Join("/", bits.Select(f => String.Format("*[local-name()='{0}']", f)));
+            return data.Select(fieldData => fieldData.GetTextFieldValue(fieldPath))
+                .FirstOrDefault(title => !string.IsNullOrEmpty(title));
         }
 
         protected string GetUrl(Page page)
@@ -234,11 +241,19 @@ namespace Sdl.Web.Tridion.Templates
             string extension = Path.GetExtension(url);
             return string.IsNullOrEmpty(extension) ? url : url.Substring(0, url.Length - extension.Length);
         }
-
+     
         private bool IsPublished(Page page)
         {
+            if (Engine.PublishingContext?.PublicationTarget != null)
+            {
+                return PublishEngine.IsPublished(page, Engine.PublishingContext.PublicationTarget, true);
+            }
+            if (Engine.PublishingContext?.TargetType != null)
+            {
+                return PublishEngine.IsPublished(page, Engine.PublishingContext.TargetType, true);
+            }
             //For preview we always return true - to help debugging
-            return (Engine.PublishingContext?.PublicationTarget == null) || PublishEngine.IsPublished(page, Engine.PublishingContext.PublicationTarget);
+            return true;
         }
 
         private static bool IsVisible(string title)
