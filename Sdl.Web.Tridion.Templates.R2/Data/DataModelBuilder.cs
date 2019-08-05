@@ -159,22 +159,22 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         {
             List<string> strings = fieldValues.OfType<string>().Select(v => v).ToList();
             List<RichTextData> richTextDatas = fieldValues.OfType<RichTextData>().Select(v => v).ToList();
-            if (richTextDatas.Count == fieldValues.Count) return richTextDatas;
-            if (richTextDatas.Count + strings.Count == fieldValues.Count)
+            // If the list of fieldValues contains a combination of string and RTF values, create an array of RichTextData models
+            if (richTextDatas.Count > 0 && strings.Count > 0 && (richTextDatas.Count + strings.Count == fieldValues.Count))
             {
-                RichTextData[] richTextData = new RichTextData[fieldValues.Count];
+                Array typedArray = Array.CreateInstance(typeof(RichTextData), fieldValues.Count);
                 for (int i = 0; i < fieldValues.Count; i++)
                 {
                     if (fieldValues[i] is RichTextData)
                     {
-                        richTextData.SetValue(fieldValues[i], i);
+                        typedArray.SetValue(fieldValues[i], i);
                     }
                     else if (fieldValues[i] is string)
                     {
-                        richTextData.SetValue(new RichTextData { Fragments = new List<object> { fieldValues[i] } }, i);
+                        typedArray.SetValue(new RichTextData { Fragments = new List<object> { fieldValues[i] } }, i);
                     }
                 }
-                return richTextData;
+                return typedArray;
             }
             else
             {
