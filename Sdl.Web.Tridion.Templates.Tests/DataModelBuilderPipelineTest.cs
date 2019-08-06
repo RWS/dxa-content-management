@@ -854,6 +854,29 @@ namespace Sdl.Web.Tridion.Templates.Tests
         }
 
         [TestMethod]
+        public void CreatePageModel_CRQ12801_Success()
+        {
+            Page testPage = (Page)TestSession.GetObject(TestFixture.CRQ12801PageWebDavUrl);
+
+            RenderedItem testRenderedItem;
+            PageModelData pageModel = CreatePageModel(testPage, out testRenderedItem, null);
+
+            RegionModelData mainRegion = GetMainRegion(pageModel);
+            EntityModelData testEntity = mainRegion.Entities[0];
+
+            Assert.IsNotNull(testEntity, "testEntity");
+            Assert.IsFalse(testEntity.Content.ContainsKey("embeddedFields"), "testEntity.Content.ContainsKey('embeddedFields')");
+            object temp;
+            Assert.IsTrue(testEntity.Content.TryGetValue("multiValueEmbeddedFields", out temp), "testEntity.Content.TryGetValue('multiValueEmbeddedFields')");
+            ContentModelData[] multiValueEmbeddedFields = (ContentModelData[])temp;
+            Assert.AreEqual(2, multiValueEmbeddedFields.Length, "multiValueEmbeddedFields.Length");
+            Assert.IsTrue(testEntity.Content.TryGetValue("compLink", out temp), "testEntity.Content.TryGetValue('compLink')");
+            EntityModelData compLink = (EntityModelData)temp;
+            Assert.IsNotNull(compLink, "compLink");
+        }
+
+
+        [TestMethod]
         public void CreateEntityModel_ArticleDcp_Success()
         {
             Component testComponent = (Component) TestSession.GetObject(TestFixture.ArticleDcpComponentWebDavUrl);
