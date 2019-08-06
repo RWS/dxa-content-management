@@ -119,8 +119,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
             string currentFieldName = null;
             List<object> currentFieldValues = new List<object>();
-            foreach (XmlElement childElement in xmlElement.SelectElements("*"))
-            {
+            foreach (XmlElement childElement in xmlElement.SelectElements("*[@* or node()]")) // Skip empty XML elements
+                {
                 if (childElement.Name != currentFieldName)
                 {
                     // New field
@@ -159,7 +159,12 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         {
             List<string> strings = fieldValues.OfType<string>().Select(v => v).ToList();
             List<RichTextData> richTextDatas = fieldValues.OfType<RichTextData>().Select(v => v).ToList();
+<<<<<<< HEAD
             if (richTextDatas.Count == fieldValues.Count) return richTextDatas;
+=======
+            if (richTextDatas.Count == fieldValues.Count) return richTextDatas.ToArray();
+            if (strings.Count == fieldValues.Count) return strings.ToArray();
+>>>>>>> Stash/release/2.0
             if (richTextDatas.Count + strings.Count == fieldValues.Count)
             {
                 RichTextData[] richTextData = new RichTextData[fieldValues.Count];
@@ -292,6 +297,51 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             foreach (XmlElement xlinkElement in xhtmlElement.SelectElements(".//*[starts-with(@xlink:href, 'tcm:')]"))
             {
                 Component linkedComponent = Pipeline.Session.GetObject(xlinkElement) as Component;
+                if (xlinkElement.LocalName == "img" || ShouldBeEmbedded(linkedComponent))
+                {
+                    EntityModelData embeddedEntity = Pipeline.CreateEntityModel(linkedComponent, ct: null, expandLinkDepth: 0);
+
+                    // Map each attribute to a metadata field
+
+                    foreach (XmlAttribute attribute in xlinkElement.Attributes)
+                    {
+                        if (string.IsNullOrEmpty(attribute.Value) || attribute.Name.StartsWith("xmlns") ||
+                            attribute.Name.StartsWith("xlink:")) continue;
+
+                        if (attribute.Name.Equals("class"))
+                        {
+                            embeddedEntity.HtmlClasses = attribute.Value;
+                            continue;
+                        }
+
+                        if (embeddedEntity.Metadata == null)
+                        {
+                            embeddedEntity.Metadata = new ContentModelData();
+                        }
+
+                        if (attribute.Name.Equals("alt"))
+                        {
+                            // Backwards compatibility
+                            embeddedEntity.Metadata["altText"] = attribute.Value;
+                        }
+
+                        embeddedEntity.Metadata[$"html-{attribute.Name}"] = attribute.Value;
+                    }
+
+                    if (!string.IsNullOrEmpty(xlinkElement.InnerText))
+                    {
+                        embeddedEntity.Metadata[$"html-innerText"] = xlinkElement.InnerText;
+                    }
+                    embeddedEntities.Add(embeddedEntity);
+
+                    // Replace entire element with marker XML processing instruction (see below). 
+                    Logger.Debug($"Replacing element with embedded entity {embeddedEntity.Id}");
+                    xlinkElement.ParentNode.ReplaceChild(
+                        xmlDoc.CreateProcessingInstruction("EmbeddedEntity", string.Empty),
+                        xlinkElement
+                        );
+                    continue;
+                }
 
                 if ((xlinkElement.LocalName == "a") && (linkedComponent != null))
                 {
@@ -307,41 +357,10 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     xlinkElement.RemoveXlinkAttributes();
                     continue;
                 }
-
-                if (xlinkElement.LocalName == "img")
-                {
-                    // img element pointing to MM Component is expanded to an embedded Entity Model
-                    EntityModelData embeddedEntity = Pipeline.CreateEntityModel(linkedComponent, ct: null, expandLinkDepth: 0);
-                    string htmlClasses = xlinkElement.GetAttribute("class");
-                    if (!string.IsNullOrEmpty(htmlClasses))
-                    {
-                        embeddedEntity.HtmlClasses = htmlClasses;
-                    }
-                    string altText = xlinkElement.GetAttribute("alt");
-                    if (!string.IsNullOrEmpty(altText))
-                    {
-                        // The XHTML img element has an alt attribute; use this as "altText" metadata field (possibly overwriting the actual metadata field).
-                        if (embeddedEntity.Metadata == null)
-                        {
-                            embeddedEntity.Metadata = new ContentModelData();
-                        }
-                        embeddedEntity.Metadata["altText"] = altText;
-                    }
-                    embeddedEntities.Add(embeddedEntity);
-
-                    // Replace entire img element with marker XML processing instruction (see below). 
-                    xlinkElement.ParentNode.ReplaceChild(
-                        xmlDoc.CreateProcessingInstruction("EmbeddedEntity", string.Empty),
-                        xlinkElement
-                        );
-                }
-                else
-                {
-                    // Hyperlink to MM Component: add the Binary and set the URL as href
-                    string binaryUrl = Pipeline.RenderedItem.AddBinary(linkedComponent).Url;
-                    xlinkElement.SetAttribute("href", binaryUrl);
-                    xlinkElement.RemoveXlinkAttributes();
-                }
+                // Default behaviour: Hyperlink to MM Component: add the Binary and set the URL as href
+                string binaryUrl = Pipeline.RenderedItem.AddBinary(linkedComponent).Url;
+                xlinkElement.SetAttribute("href", binaryUrl);
+                xlinkElement.RemoveXlinkAttributes();
             }
 
             // Remove XHTML namespace declarations
@@ -368,6 +387,23 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             }
 
             return new RichTextData { Fragments = richTextFragments };
+        }
+
+        private bool ShouldBeEmbedded(Component linkedComponent)
+        {
+            if (Pipeline.Settings.SchemasForRichTextEmbed == null)
+                return false;
+
+            if (Pipeline.Settings.SchemasForRichTextEmbed.Contains(linkedComponent.Schema.Title))
+                return true;
+
+            if (Pipeline.Settings.SchemasForRichTextEmbed.Contains(linkedComponent.Schema.NamespaceUri))
+                return true;
+
+            if (Pipeline.Settings.SchemasForRichTextEmbed.Contains($"{linkedComponent.Schema.NamespaceUri}:{linkedComponent.Schema.RootElementName}"))
+                return true;
+
+            return false;
         }
 
         protected ContentModelData ExtractCustomMetadata(XmlElement metadata, IEnumerable<string> excludeFields)

@@ -176,7 +176,7 @@ namespace Sdl.Web.DXAResolver
                     else
                     {
                         depths.Add(linkedComponent, depth + 1);
-                    }                    
+                    }
                 }
             }
             toResolve.AddRange(toProcess.Select(
