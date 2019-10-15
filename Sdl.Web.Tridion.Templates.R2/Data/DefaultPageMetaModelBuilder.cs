@@ -167,7 +167,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                         // New field
                         if (currentFieldName != null)
                         {
-                            result.Add(currentFieldName, currentFieldValue);
+                            AddValue(result, currentFieldName, currentFieldValue);
                         }
                         currentFieldName = childElement.Name;
                         currentFieldValue = fieldValue;
@@ -177,7 +177,19 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
             if (!string.IsNullOrEmpty(currentFieldValue))
             {
-                result.Add(currentFieldName, currentFieldValue);
+                AddValue(result, currentFieldName, currentFieldValue);
+            }
+        }
+
+        private void AddValue(IDictionary<string, string> result, string name, string value)
+        {
+            if (result.ContainsKey(name))
+            {
+                result[name] = $"{result[name]}, {value}";
+            }
+            else
+            {
+                result.Add(name, value);
             }
         }
 
