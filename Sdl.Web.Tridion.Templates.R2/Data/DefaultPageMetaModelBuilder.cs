@@ -181,7 +181,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             }
         }
 
-        private void AddValue(IDictionary<string, string> result, string name, string value)
+        private static void AddValue(IDictionary<string, string> result, string name, string value)
         {
             if (result.ContainsKey(name))
             {
