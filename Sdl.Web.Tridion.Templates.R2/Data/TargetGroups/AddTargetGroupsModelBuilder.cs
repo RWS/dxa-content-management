@@ -21,9 +21,9 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             List<Condition> conditions = new List<Condition>();
             foreach (var condition in cp.Conditions)
             {
-                var mapped = MapConditions(condition.TargetGroup.Conditions);
-                if (mapped == null || mapped.Count <= 0) continue;
-                conditions.AddRange(mapped);
+                var mapped = MapTargetGroupCondition(condition);
+                if (mapped == null) continue;
+                conditions.Add(mapped);
             }
             if (conditions.Count > 0)
             {
