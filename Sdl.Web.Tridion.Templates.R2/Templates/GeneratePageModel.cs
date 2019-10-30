@@ -46,6 +46,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Templates
                 DataModelBuilderPipeline modelBuilderPipeline = new DataModelBuilderPipeline(renderedItem, settings, modelBuilderTypeNames);
                 PageModelData pageModel = modelBuilderPipeline.CreatePageModel(page);
                 OutputJson = JsonSerialize(pageModel, IsPreview, DataModelBinder.SerializerSettings);
+                if (string.IsNullOrEmpty(OutputJson))
+                    throw new DxaException("Output Json is empty!");
             }
             catch (Exception ex)
             {

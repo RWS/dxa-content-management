@@ -97,11 +97,17 @@ namespace Sdl.Web.DXAResolver
                 }
             }
 
+            HashSet<TcmUri> linkedComponents = new HashSet<TcmUri>();
             foreach (var linkField in componentLinkFields)
             {
                 if (linkField.Values != null)
                 {
-                    components.AddRange(linkField.Values);
+                    foreach (var c in linkField.Values)
+                    {
+                        if(linkedComponents.Contains(c.Id)) continue;
+                        linkedComponents.Add(c.Id);
+                        components.Add(c);
+                    }
                 }
             }
             return components;
