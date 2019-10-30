@@ -176,6 +176,9 @@ namespace Sdl.Web.Tridion.Templates.Common
             summaries.Add(summary);
 
             string summariesJson = JsonSerialize(summaries, IsPreview);
+            if (string.IsNullOrEmpty(summariesJson))
+                throw new DxaException("Output Json should not be empty.");
+
             outputItem = Package.CreateStringItem(ContentType.Text, summariesJson);
             Package.PushItem(Package.OutputName, outputItem);
         }

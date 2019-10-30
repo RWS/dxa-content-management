@@ -90,12 +90,16 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             ILogger logger = null
             )
         {
+            string[] typeNames = modelBuilderTypeNames.ToArray();
+            if (typeNames == null || typeNames.Length == 0)
+                throw new DxaException("No model builder type names specified.");
+
             Session = renderedItem.ResolvedItem.Item.Session;
             RenderedItem = renderedItem;
             Settings = settings;
             Logger = logger ?? new TemplatingLoggerAdapter(TemplatingLogger.GetLogger(GetType()));
 
-            foreach (string modelBuilderTypeName in modelBuilderTypeNames)
+            foreach (string modelBuilderTypeName in typeNames)
             {
                 string qualifiedTypeName = modelBuilderTypeName.Contains(".") ? modelBuilderTypeName : $"Sdl.Web.Tridion.Templates.R2.Data.{modelBuilderTypeName}";
                 Type modelBuilderType = Type.GetType(qualifiedTypeName, throwOnError: true);
