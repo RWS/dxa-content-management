@@ -516,6 +516,11 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     Id = $"{GetDxaIdentifier(cp.Component)}-{GetDxaIdentifier(ct)}",
                     Namespace = GetNamespace(cp.Component)
                 };
+
+                // This property is internal so have to set it via reflection. This prevents the
+                // publishing package containing an empty DCP
+                childRenderedItem.GetType().GetProperty("IsRenderedCompletely")
+                    .SetValue(childRenderedItem, false, null);
             }
             else
             {
