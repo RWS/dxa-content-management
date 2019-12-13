@@ -131,7 +131,8 @@ namespace Sdl.Web.Tridion.Templates.Tests
             Condition[] targetGroupConditions = targetGroupConditionsValue as Condition[];
             Assert.IsNotNull(targetGroupConditions, "targetGroupConditions");
             Assert.AreEqual(1, targetGroupConditions.Length, "targetGroupConditions.Length");
-            TrackingKeyCondition trackingKeyCondition = targetGroupConditions[0] as TrackingKeyCondition;
+            TargetGroupCondition targetGroupCondition = targetGroupConditions[0] as TargetGroupCondition;
+            TrackingKeyCondition trackingKeyCondition = targetGroupCondition.TargetGroup.Conditions[0] as TrackingKeyCondition;
             Assert.IsNotNull(trackingKeyCondition, "trackingKeyCondition");
             Assert.AreEqual("Test Keyword 2", trackingKeyCondition.TrackingKeyTitle, "trackingKeyCondition.TrackingKeyTitle");
             Assert.AreEqual(ConditionOperator.Equals, trackingKeyCondition.Operator, "trackingKeyCondition.Operator");
