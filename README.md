@@ -1,15 +1,14 @@
-dxa-content-management
+SDL Digital Experience Accelerator CM-side framework
 ===
-SDL Digital Experience Accelerator Core Template Building Blocks
 
 About
 -----
-The SDL Digital Experience Accelerator (DXA) is a reference implementation of SDL Web 8 and SDL Tridion 2013 SP1(*) intended to help you create, design and publish an SDL Web/Tridion-based website quickly.
+The SDL Digital Experience Accelerator (DXA) is a reference implementation of SDL Tridion Sites 9 and SDL Web 8 intended to help you create, design and publish an SDL Tridion/Web-based website quickly.
 
-It is available for .NET and Java Web Applications and has a modular architecture consisting of a Framework and example web application providing core functionality and separate Modules for additional, optional functionality.
+DXA is available for both .NET and Java web applications. Its modular architecture consists of a framework and example web application, which includes all core SDL Tridion/Web functionality as well as separate Modules for additional, optional functionality.
 
 This repository contains the source code of the DXA Core Template Building Blocks used on the Content Manager side. 
-The full DXA distribution (including CM-side items and installation support) is downloadable from the [SDL Community site](https://community.sdl.com/developers/tridion_developer/m/mediagallery/) 
+The full DXA distribution (including CM-side items and installation support) is downloadable from the [SDL AppStore](https://appstore.sdl.com/list/?search=dxa) 
 or the GitHub Releases of the [dxa-web-application-dotnet](https://github.com/sdl/dxa-web-application-dotnet/releases) or [dxa-web-application-java](https://github.com/sdl/dxa-web-application-java/releases) repositories.
 
 To facilitate upgrades, it is highly recommended to use an official, compiled version of the DXA Core TBBs (part of the DXA distribution) instead of a custom build.
@@ -42,26 +41,25 @@ cm-9.0:
  
 Support
 ---------------
-At SDL we take your investment in Digital Experience very seriously, and will do our best to support you throughout this journey. 
-If you encounter any issues with the Digital Experience Accelerator, please reach out to us via one of the following channels:
+At SDL we take your investment in Digital Experience very seriously, if you encounter any issues with the Digital Experience Accelerator, please use one of the following channels:
 
 - Report issues directly in [this repository](https://github.com/sdl/dxa-content-management/issues)
-- Ask questions 24/7 on the SDL Web Community at https://tridion.stackexchange.com
-- Contact Technical Support through the Customer Support Web Portal at https://www.sdl.com/support
+- Ask questions 24/7 on the SDL Tridion Community at https://tridion.stackexchange.com
+- Contact SDL Professional Services for DXA release management support packages to accelerate your support requirements
 
 
 Documentation
 -------------
-Documentation can be found online in the SDL documentation portal: http://docs.sdl.com/sdldxa2-ctp
+Documentation can be found online in the SDL documentation portal: https://docs.sdl.com/sdldxa
 
 
 Repositories
 ------------
-The following repositories with source code are available:
+The following repositories with DXA source code are available:
 
  - https://github.com/sdl/dxa-content-management - CM-side framework (.NET Template Building Blocks)
  - https://github.com/sdl/dxa-html-design - Whitelabel HTML Design
- - https://github.com/sdl/dxa-model-service - Model Service (Java)
+ - https://github.com/sdl/dxa-model-service - DXA Model Service (Java)
  - https://github.com/sdl/dxa-modules - Modules (.NET and Java)
  - https://github.com/sdl/dxa-web-application-dotnet - ASP.NET MVC web application (incl. framework)
  - https://github.com/sdl/dxa-web-application-java - Java Spring MVC web application (incl. framework)
@@ -89,7 +87,7 @@ Of course, it's also possible (and appreciated) to report an Issue without assoc
 
 License
 -------
-Copyright (c) 2014-2017 SDL Group.
+Copyright (c) 2014-2020 SDL Group.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
