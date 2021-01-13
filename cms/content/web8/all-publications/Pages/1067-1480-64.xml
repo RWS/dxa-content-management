@@ -1,0 +1,40 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Header</tcm:Title>
+      <tcm:FileName>header</tcm:FileName>
+      <tcm:PageTemplate IsInherited="true" xlink:type="simple" xlink:title="Include Page" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Include%20Page.tptcmp" />
+      <tcm:ComponentPresentations>
+        <tcm:ComponentPresentation>
+          <tcm:Component xlink:type="simple" xlink:title="Language Selector Configuration" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Settings/Core/Site%20Manager/Language%20Selector%20Configuration.xml" />
+          <tcm:ComponentTemplate xlink:type="simple" xlink:title="Language Selector [Nav]" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Language%20Selector%20%5BNav%5D.tctcmp" />
+          <tcm:Conditions />
+        </tcm:ComponentPresentation>
+        <tcm:ComponentPresentation>
+          <tcm:Component xlink:type="simple" xlink:title="Navigation Configuration" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Settings/Core/Site%20Manager/Navigation%20Configuration.xml" />
+          <tcm:ComponentTemplate xlink:type="simple" xlink:title="Top Navigation [Nav]" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Top%20Navigation%20%5BNav%5D.tctcmp" />
+          <tcm:Conditions />
+        </tcm:ComponentPresentation>
+        <tcm:ComponentPresentation>
+          <tcm:Component xlink:type="simple" xlink:title="Old Browser bar" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Structure/Header/Old%20Browser%20bar.xml" />
+          <tcm:ComponentTemplate xlink:type="simple" xlink:title="Old Browser Notification Bar [Info]" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Old%20Browser%20Notification%20Bar%20%5BInfo%5D.tctcmp" />
+          <tcm:Conditions />
+        </tcm:ComponentPresentation>
+      </tcm:ComponentPresentations>
+      <tcm:MetadataSchema xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+      <tcm:Metadata />
+      <tcm:RegionSchema xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+      <tcm:Regions />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/110%20DXA%20Site%20Type" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemStructureGroup" itemUrl="/webdav/110%20DXA%20Site%20Type/Home/_System/include" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="ComponentPresentationComponent" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Settings/Core/Site%20Manager/Language%20Selector%20Configuration.xml" linkName="ComponentPresentations[0]/Component" />
+    <Dependency dependencyType="ComponentPresentationComponent" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Settings/Core/Site%20Manager/Navigation%20Configuration.xml" linkName="ComponentPresentations[1]/Component" />
+    <Dependency dependencyType="ComponentPresentationComponent" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Structure/Header/Old%20Browser%20bar.xml" linkName="ComponentPresentations[2]/Component" />
+    <Dependency dependencyType="ComponentPresentationComponentTemplate" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Language%20Selector%20%5BNav%5D.tctcmp" linkName="ComponentPresentations[0]/ComponentTemplate" />
+    <Dependency dependencyType="ComponentPresentationComponentTemplate" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Top%20Navigation%20%5BNav%5D.tctcmp" linkName="ComponentPresentations[1]/ComponentTemplate" />
+    <Dependency dependencyType="ComponentPresentationComponentTemplate" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Old%20Browser%20Notification%20Bar%20%5BInfo%5D.tctcmp" linkName="ComponentPresentations[2]/ComponentTemplate" />
+  </Dependencies>
+</PackageItem>

@@ -1,0 +1,42 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>News Article</tcm:Title>
+      <tcm:Type>Normal</tcm:Type>
+      <tcm:Schema xlink:type="simple" xlink:title="News Article" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/News%20Article.xsd" IsMandatory="false" />
+      <tcm:Content>
+        <NewsArticle xmlns="http://www.sdl.com/web/schemas/core">
+          <headline>News Article</headline>
+          <image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/Another%20Large%20Image.jpg" xlink:title="Another Large Image" />
+          <articleBody>
+            <subheading>Like an article but for news</subheading>
+            <content>
+              <p xmlns="http://www.w3.org/1999/xhtml">Sed id blandit nisi. Aliquam id sodales mauris, non gravida quam. Phasellus pulvinar varius turpis eget rhoncus. In cursus, tortor non vulputate tincidunt, turpis eros suscipit urna, fermentum fermentum risus odio sed turpis. Nullam nec egestas nisl, id malesuada diam. Vivamus elementum erat non ipsum condimentum consectetur. Praesent eget felis turpis. Etiam posuere velit eget risus venenatis, in convallis velit pulvinar. Fusce porttitor porta dolor, in tristique erat pellentesque nec. Donec turpis tortor, dictum a tristique at, varius in ligula.</p>
+            </content>
+            <media xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/YouTube%20Video.jpg" xlink:title="YouTube Video" />
+            <caption>News Article Media Caption</caption>
+          </articleBody>
+        </NewsArticle>
+      </tcm:Content>
+      <tcm:Metadata>
+        <Metadata xmlns="http://www.sdl.com/web/schemas/core">
+          <standardMeta>
+            <dateCreated>2014-08-31T10:00:00</dateCreated>
+            <description>News Article Meta Description.</description>
+            <name>News Article Short Title</name>
+            <introText>Phasellus pulvinar varius turpis eget rhoncus.</introText>
+          </standardMeta>
+        </Metadata>
+      </tcm:Metadata>
+      <tcm:IsBasedOnTridionWebSchema>true</tcm:IsBasedOnTridionWebSchema>
+      <tcm:MultimediaType xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/110%20DXA%20Site%20Type" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemFolder" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/Another%20Large%20Image.jpg" linkName="Content" xpath="*[local-name() = 'NewsArticle'][1]/*[local-name() = 'image'][1]/@xlink:href" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/YouTube%20Video.jpg" linkName="Content" xpath="*[local-name() = 'NewsArticle'][1]/*[local-name() = 'articleBody'][1]/*[local-name() = 'media'][1]/@xlink:href" />
+    <Dependency dependencyType="Schema" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/News%20Article.xsd" linkName="Schema" />
+  </Dependencies>
+</PackageItem>
