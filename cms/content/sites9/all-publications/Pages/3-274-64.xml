@@ -1,0 +1,47 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>000 Home</tcm:Title>
+      <tcm:FileName>index</tcm:FileName>
+      <tcm:PageTemplate IsInherited="false" xlink:type="simple" xlink:title="Home Page" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates/Home%20Page.tptcmp" />
+      <tcm:ComponentPresentations />
+      <tcm:MetadataSchema xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+      <tcm:Metadata />
+      <tcm:RegionSchema xlink:type="simple" xlink:title="Home Page" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Page%20Schemas/Home%20Page.xsd" />
+      <tcm:Regions>
+        <tcm:Region Type="EmbeddedRegionData">
+          <tcm:RegionName>Hero</tcm:RegionName>
+          <tcm:RegionSchema xlink:type="simple" xlink:title="[Hero] Region" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas/%5BHero%5D%20Region.xsd" />
+          <tcm:Metadata />
+          <tcm:ComponentPresentations />
+          <tcm:Regions />
+        </tcm:Region>
+        <tcm:Region Type="EmbeddedRegionData">
+          <tcm:RegionName>Article</tcm:RegionName>
+          <tcm:RegionSchema xlink:type="simple" xlink:title="[Article] Region" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas/%5BArticle%5D%20Region.xsd" />
+          <tcm:Metadata />
+          <tcm:ComponentPresentations />
+          <tcm:Regions />
+        </tcm:Region>
+        <tcm:Region Type="EmbeddedRegionData">
+          <tcm:RegionName>Further Info</tcm:RegionName>
+          <tcm:RegionSchema xlink:type="simple" xlink:title="[Multi-Column] Region" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas/%5BMulti-Column%5D%20Region.xsd" />
+          <tcm:Metadata>
+            <Metadata xmlns="uuid:a975ac89-7964-4e7e-951d-d4b05d03b638" />
+          </tcm:Metadata>
+          <tcm:ComponentPresentations />
+          <tcm:Regions />
+        </tcm:Region>
+      </tcm:Regions>
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/110%20DXA%20Site%20Type" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemStructureGroup" itemUrl="/webdav/110%20DXA%20Site%20Type/Home" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="PageTemplate" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates/Home%20Page.tptcmp" linkName="PageTemplate" />
+    <Dependency dependencyType="PageRegionSchema" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Page%20Schemas/Home%20Page.xsd" linkName="RegionSchema" />
+    <Dependency dependencyType="PageRegionSchema" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas/%5BHero%5D%20Region.xsd" linkName="Regions[0]/RegionSchema" />
+    <Dependency dependencyType="PageRegionSchema" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas/%5BArticle%5D%20Region.xsd" linkName="Regions[1]/RegionSchema" />
+    <Dependency dependencyType="PageRegionSchema" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas/%5BMulti-Column%5D%20Region.xsd" linkName="Regions[2]/RegionSchema" />
+  </Dependencies>
+</PackageItem>

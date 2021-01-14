@@ -1,0 +1,45 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Content List</tcm:Title>
+      <tcm:Type>Normal</tcm:Type>
+      <tcm:Schema xlink:type="simple" xlink:title="Item List" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Item%20List.xsd" IsMandatory="false" />
+      <tcm:Content>
+        <ItemList xmlns="http://www.sdl.com/web/schemas/core">
+          <headline>Content List Heading</headline>
+          <itemListElement>
+            <subheading>First Item Subheading</subheading>
+            <content>
+              <p xmlns="http://www.w3.org/1999/xhtml">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus rutrum tincidunt feugiat. Curabitur eget luctus nibh. Quisque nec metus dignissim, ullamcorper lorem nec, aliquam dui. Morbi adipiscing rutrum lorem ut pharetra. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+            </content>
+          </itemListElement>
+          <itemListElement>
+            <subheading>Second Item Subheading</subheading>
+            <content>
+              <p xmlns="http://www.w3.org/1999/xhtml">Fusce placerat mollis posuere. Ut imperdiet nisi eget metus aliquam cursus. Etiam pretium in lacus at sollicitudin. Praesent ut mi luctus, congue ipsum a, pulvinar metus. Ut placerat sem quis luctus tempor. Donec blandit dui nec egestas egestas. Fusce interdum egestas lacus vel pharetra.</p>
+            </content>
+            <media xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/Medium%20Image.jpg" xlink:title="Medium Image" />
+          </itemListElement>
+        </ItemList>
+      </tcm:Content>
+      <tcm:Metadata>
+        <Metadata xmlns="http://www.sdl.com/web/schemas/core">
+          <standardMeta>
+            <dateCreated>2014-08-31T10:00:00</dateCreated>
+            <description>Pellentesque risus tellus, fermentum vel elit a, pharetra vulputate justo. </description>
+            <name>Short Title Content List</name>
+            <introText>Vivamus fringilla odio ligula, nec aliquam ante tempus et.</introText>
+          </standardMeta>
+        </Metadata>
+      </tcm:Metadata>
+      <tcm:IsBasedOnTridionWebSchema>true</tcm:IsBasedOnTridionWebSchema>
+      <tcm:MultimediaType xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/110%20DXA%20Site%20Type" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemFolder" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/Medium%20Image.jpg" linkName="Content" xpath="*[local-name() = 'ItemList'][1]/*[local-name() = 'itemListElement'][2]/*[local-name() = 'media'][1]/@xlink:href" />
+    <Dependency dependencyType="Schema" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Item%20List.xsd" linkName="Schema" />
+  </Dependencies>
+</PackageItem>

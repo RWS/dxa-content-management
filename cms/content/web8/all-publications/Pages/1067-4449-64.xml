@@ -1,0 +1,26 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Left Navigation</tcm:Title>
+      <tcm:FileName>left-navigation</tcm:FileName>
+      <tcm:PageTemplate IsInherited="true" xlink:type="simple" xlink:title="Include Page" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Include%20Page.tptcmp" />
+      <tcm:ComponentPresentations>
+        <tcm:ComponentPresentation>
+          <tcm:Component xlink:type="simple" xlink:title="Navigation Configuration" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Settings/Core/Site%20Manager/Navigation%20Configuration.xml" />
+          <tcm:ComponentTemplate xlink:type="simple" xlink:title="Left Navigation [Left]" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Left%20Navigation%20%5BLeft%5D.tctcmp" />
+          <tcm:Conditions />
+        </tcm:ComponentPresentation>
+      </tcm:ComponentPresentations>
+      <tcm:MetadataSchema xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+      <tcm:Metadata />
+      <tcm:RegionSchema xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+      <tcm:Regions />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/110%20DXA%20Site%20Type" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemStructureGroup" itemUrl="/webdav/110%20DXA%20Site%20Type/Home/_System/include" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="ComponentPresentationComponent" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Settings/Core/Site%20Manager/Navigation%20Configuration.xml" linkName="ComponentPresentations[0]/Component" />
+    <Dependency dependencyType="ComponentPresentationComponentTemplate" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Left%20Navigation%20%5BLeft%5D.tctcmp" linkName="ComponentPresentations[0]/ComponentTemplate" />
+  </Dependencies>
+</PackageItem>

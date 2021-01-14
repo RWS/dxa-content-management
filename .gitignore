@@ -7,3 +7,5 @@ TestResults/
 CoverageReports/
 TestResults.trx
 _NuGet/
+dist/
+.vs/

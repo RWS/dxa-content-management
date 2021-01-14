@@ -1,0 +1,29 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Bootstrap Configuration</tcm:Title>
+      <tcm:Type>Normal</tcm:Type>
+      <tcm:Schema xlink:type="simple" xlink:title="Bootstrap Configuration" xlink:href="/webdav/100%20Master/Building%20Blocks/Framework/Site%20Manager/Schemas/Bootstrap%20Configuration.xsd" IsMandatory="false" />
+      <tcm:Content>
+        <LessVariables xmlns="http://www.sdl.com/web/schemas/html-design/less">
+          <brand-primary>#4B6E93</brand-primary>
+          <navbar-default-bg>#fff</navbar-default-bg>
+          <body-bg>#fff</body-bg>
+          <page-footer-bg-color>#4B6E93</page-footer-bg-color>
+          <font-family-sans-serif>"Helvetica Neue", Helvetica, Arial, sans-serif</font-family-sans-serif>
+          <text-color>@gray-dark</text-color>
+          <headings-font-family>"Helvetica Neue", Helvetica, Arial, sans-serif</headings-font-family>
+          <headings-color>inherit</headings-color>
+        </LessVariables>
+      </tcm:Content>
+      <tcm:Metadata />
+      <tcm:IsBasedOnTridionWebSchema>true</tcm:IsBasedOnTridionWebSchema>
+      <tcm:MultimediaType xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/100%20Master" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemFolder" itemUrl="/webdav/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="Schema" itemUrl="/webdav/100%20Master/Building%20Blocks/Framework/Site%20Manager/Schemas/Bootstrap%20Configuration.xsd" linkName="Schema" />
+  </Dependencies>
+</PackageItem>

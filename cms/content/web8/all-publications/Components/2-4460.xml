@@ -1,0 +1,36 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>HTML Design Configuration</tcm:Title>
+      <tcm:Type>Normal</tcm:Type>
+      <tcm:Schema xlink:type="simple" xlink:title="HTML Design Configuration" xlink:href="/webdav/100%20Master/Building%20Blocks/Framework/Site%20Manager/Schemas/HTML%20Design%20Configuration.xsd" IsMandatory="false" />
+      <tcm:Content>
+        <HtmlDesignConfig xmlns="http://www.sdl.com/web/schemas/html-design">
+          <design xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="/webdav/100%20Master/Building%20Blocks/Modules/Core/Admin/HTML%20Design.zip" xlink:title="HTML Design" />
+          <build xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="/webdav/100%20Master/Building%20Blocks/Modules/Core/Admin/Build%20Files.zip" xlink:title="Build Files" />
+          <version>v2.141</version>
+          <favicon xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="/webdav/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager/Favicon.ico" xlink:title="Favicon" />
+          <variables xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="/webdav/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager/Bootstrap%20Configuration.xml" xlink:title="Bootstrap Configuration" />
+          <code>@ribbon-bg: fadeout(#000, 70%);
+
+.main-nav{
+	text-transform:uppercase;
+}
+</code>
+        </HtmlDesignConfig>
+      </tcm:Content>
+      <tcm:Metadata />
+      <tcm:IsBasedOnTridionWebSchema>true</tcm:IsBasedOnTridionWebSchema>
+      <tcm:MultimediaType xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/100%20Master" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemFolder" itemUrl="/webdav/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/100%20Master/Building%20Blocks/Modules/Core/Admin/HTML%20Design.zip" linkName="Content" xpath="*[local-name() = 'HtmlDesignConfig'][1]/*[local-name() = 'design'][1]/@xlink:href" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/100%20Master/Building%20Blocks/Modules/Core/Admin/Build%20Files.zip" linkName="Content" xpath="*[local-name() = 'HtmlDesignConfig'][1]/*[local-name() = 'build'][1]/@xlink:href" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager/Favicon.ico" linkName="Content" xpath="*[local-name() = 'HtmlDesignConfig'][1]/*[local-name() = 'favicon'][1]/@xlink:href" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager/Bootstrap%20Configuration.xml" linkName="Content" xpath="*[local-name() = 'HtmlDesignConfig'][1]/*[local-name() = 'variables'][1]/@xlink:href" />
+    <Dependency dependencyType="Schema" itemUrl="/webdav/100%20Master/Building%20Blocks/Framework/Site%20Manager/Schemas/HTML%20Design%20Configuration.xsd" linkName="Schema" />
+  </Dependencies>
+</PackageItem>
