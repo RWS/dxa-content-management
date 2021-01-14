@@ -1,0 +1,377 @@
+<Index dataContractVersion="201701" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Item id="tcm:0-0-0" selected="false" exported="true">
+    <ApplicationIds>
+      <ApplicationId>CustomPages</ApplicationId>
+      <ApplicationId>http://www.sdl.com/tridion/SemanticMapping/vocabularies</ApplicationId>
+    </ApplicationIds>
+    <Item id="tcm:0-1-1" title="000%20Empty" itemType="Publication" selected="false" exported="true">
+      <Item id="tcm:1-1-2" title="Building%20Blocks" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+        <Item id="tcm:1-2-2" title="Default%20Templates" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+          <Item id="tcm:1-11-2048" title="Cleanup%20Template" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-17-2048" title="Convert%20Xml%20to%20Html" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-16-8" title="Convert%20Xml%20to%20Html" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-36-32" title="Default%20Component%20Template" extension="tctcmp" itemType="ComponentTemplate" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-30-2048" title="Default%20Dreamweaver%20Component%20Design" extension="dwt" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-31-2048" title="Default%20Dreamweaver%20Page%20Design" extension="dwt" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-34-2048" title="Default%20Finish%20Actions" extension="tbbcmp" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-33-8" title="Default%20Finish%20Actions" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-35-128" title="Default%20Page%20Template" extension="tptcmp" itemType="PageTemplate" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-29-8" title="Dreamweaver%20Region%20Selection" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-20-2048" title="Extract%20Components%20from%20Page" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-21-2048" title="Extract%20Components%20from%20Regions" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-25-2048" title="Link%20Resolver" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-24-8" title="Link%20Resolver" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-27-2048" title="Publish%20Binaries%20in%20Package" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-26-8" title="Publish%20Binaries%20in%20Package" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-28-2048" title="Target%20Group%20Personalization" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="tcm:1-55-2048" title="Tridion%2EExtensions%2EContextExpressions%2ETemplates" extension="tbbasm" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
+        </Item>
+        <Item id="tcm:1-9-8" title="Default%20Multimedia%20Schema" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="LocalItem" selected="false" exported="true" />
+      </Item>
+      <Item id="tcm:1-6-4" title="Home" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true" />
+      <Item id="tcm:1-1-131074" title="Task%20Process" extension="tpd" itemType="ProcessDefinition" blueprintStatus="LocalItem" selected="false" exported="true" />
+    </Item>
+    <Item id="tcm:0-2-1" title="100%20Master" itemType="Publication" selected="false" exported="true">
+      <Item id="tcm:2-1-2" title="Building%20Blocks" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+        <Item id="d92b43045edf46a8b2b04a2130ce5ef5" title="Default%20Templates" itemType="Folder" selected="false" exported="false">
+          <Item id="tcm:2-36-32" title="Default%20Component%20Template" extension="tctcmp" itemType="ComponentTemplate" blueprintStatus="SharedItem" selected="false" exported="true" />
+          <Item id="tcm:2-31-2048" title="Default%20Dreamweaver%20Page%20Design" extension="dwt" itemType="TemplateBuildingBlock" blueprintStatus="SharedItem" selected="false" exported="true" />
+        </Item>
+        <Item id="tcm:2-8-2" title="Framework" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+          <Item id="tcm:2-9-2" title="Developer" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+            <Item id="tcm:2-10-2" title="Schemas" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+              <Item id="tcm:2-91-8" title="Component%20Template%20Metadata" extension="xsd" itemType="Schema" subtype="3" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-151-8" title="Module%20Configuration" extension="xsd" itemType="Schema" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-148-8" title="Module%20Dependency" extension="xsd" itemType="Schema" subtype="2" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-68-8" title="Page%20Template%20Metadata" extension="xsd" itemType="Schema" subtype="3" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-67-8" title="Region%20Metadata" extension="xsd" itemType="Schema" subtype="2" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-77-8" title="ZIP%20file" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+            </Item>
+            <Item id="tcm:2-11-2" title="Templates" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+              <Item id="tcm:2-22-2" title="DXA%2ELegacy" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+                <Item id="tcm:2-155-2048" title="Add%20Target%20Groups" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-204-2048" title="Add%20inherited%20metadata%20to%20component" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-203-8" title="Add%20inherited%20metadata%20to%20component" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-115-2048" title="Add%20inherited%20metadata%20to%20page" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-112-8" title="Add%20inherited%20metadata%20to%20page" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-240-2048" title="Compress%20Output" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-114-2048" title="DD4T%2ETemplates%2EMerged" extension="tbbasm" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-231-2048" title="Default%20Component%20Template%20Finish%20Actions%20%28Legacy%29" extension="tbbcmp" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-161-2048" title="Default%20Page%20Template%20Finish%20Actions%20%28Legacy%29" extension="tbbcmp" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-202-2048" title="Generate%20Dynamic%20Component%20%28DXA%29" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-201-8" title="Generate%20Dynamic%20Component%20%28DXA%29" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-142-2048" title="Generate%20Dynamic%20Page%20%28DXA%29" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-141-8" title="Generate%20Dynamic%20Page%20%28DXA%29" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-198-2048" title="Generate%20Resources" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-197-8" title="Generate%20Resources" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-239-2048" title="Generate%20Sitemap" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-222-2048" title="Generate%20dynamic%20component%20presentation" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-221-8" title="Generate%20dynamic%20component%20presentation" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-195-2048" title="Generate%20dynamic%20component" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-187-8" title="Generate%20dynamic%20component" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-158-2048" title="Generate%20dynamic%20page" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-113-8" title="Generate%20dynamic%20page" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-118-2048" title="Preview%20page" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-110-2048" title="Publish%20Configuration" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-81-2048" title="Publish%20HTML%20Design" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-79-8" title="Publish%20HTML%20Design" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-169-2048" title="Publish%20Mappings" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-168-8" title="Publish%20Mappings" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-227-2048" title="Publish%20Resources" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-230-2048" title="Publish%20binaries%20for%20component" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-229-8" title="Publish%20binaries%20for%20component" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-212-2048" title="Publish%20binaries%20for%20page" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-101-8" title="Publish%20binaries%20for%20page" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-249-2048" title="Render%20Component%20Content%20%28Legacy%29" extension="tbbcmp" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-166-2048" title="Render%20Component%20Presentations" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-143-2048" title="Render%20Page%20Content%20%28Legacy%29" extension="tbbcmp" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-160-2048" title="Resolve%20Rich%20Text" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-159-8" title="Resolve%20Rich%20Text" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-80-2048" title="Sdl%2EWeb%2ETridion%2ETemplates%2ELegacy%2Emerged" extension="tbbasm" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+              </Item>
+              <Item id="tcm:2-12-2" title="DXA%2ER2" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+                <Item id="tcm:2-95-2048" title="Default%20Component%20Template%20Finish%20Actions" extension="tbbcmp" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-73-2048" title="Default%20Page%20Template%20Finish%20Actions" extension="tbbcmp" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-93-2048" title="Generate%20DXA%20R2%20Entity%20Model" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-92-8" title="Generate%20DXA%20R2%20Entity%20Model" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-71-2048" title="Generate%20DXA%20R2%20Page%20Model" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-69-8" title="Generate%20DXA%20R2%20Page%20Model" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-190-2048" title="Generate%20Sitemap" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-135-2048" title="Publish%20Configuration" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-215-2048" title="Publish%20HTML%20Design" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-117-8" title="Publish%20HTML%20Design" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-153-2048" title="Publish%20Mappings" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-152-8" title="Publish%20Mappings" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-147-2048" title="Publish%20Resources" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-94-2048" title="Render%20Component%20Content" extension="tbbcmp" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-137-2048" title="Render%20Component%20Presentations" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-72-2048" title="Render%20Page%20Content" extension="tbbcmp" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+                <Item id="tcm:2-70-2048" title="Sdl%2EWeb%2ETridion%2ETemplates%2ER2%2Emerged" extension="tbbasm" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="true" exported="true" />
+              </Item>
+              <Item id="tcm:2-46-2" title="DXA%2EUpgrade" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-191-32" title="Generate%20Navigation" extension="tctcmp" itemType="ComponentTemplate" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-138-128" title="JSON" extension="tptcmp" itemType="PageTemplate" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-154-32" title="Publish%20Settings" extension="tctcmp" itemType="ComponentTemplate" blueprintStatus="LocalItem" selected="true" exported="true" />
+            </Item>
+          </Item>
+          <Item id="tcm:2-31-2" title="Site%20Manager" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+            <Item id="tcm:2-32-2" title="Schemas" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+              <Item id="tcm:2-111-8" title="Bootstrap%20Configuration" extension="xsd" itemType="Schema" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-149-8" title="Favicon" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-108-8" title="General%20Configuration" extension="xsd" itemType="Schema" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-150-8" title="HTML%20Design%20Configuration" extension="xsd" itemType="Schema" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-116-8" title="Module%20Design%20Configuration" extension="xsd" itemType="Schema" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-107-8" title="Name%20Value%20Pair" extension="xsd" itemType="Schema" subtype="2" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-220-8" title="Publication%20Metadata" extension="xsd" itemType="Schema" subtype="3" blueprintStatus="LocalItem" selected="true" exported="true" />
+            </Item>
+          </Item>
+        </Item>
+        <Item id="tcm:2-14-2" title="Modules" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+          <Item id="tcm:2-15-2" title="Core" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+            <Item id="tcm:2-21-2" title="Admin" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+              <Item id="tcm:2-176" title="Build%20Files" extension="zip" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="false" exported="true" />
+              <Item id="tcm:2-180" title="Core" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="false" exported="true" />
+              <Item id="tcm:2-78" title="HTML%20Design" extension="zip" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="false" exported="true" />
+            </Item>
+            <Item id="tcm:2-16-2" title="Editor" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+              <Item id="tcm:2-18-2" title="Schemas" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+                <Item id="tcm:2-19-2" title="Page%20Schemas" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+                  <Item id="tcm:2-75-8" title="Content%20Page" extension="xsd" itemType="Schema" subtype="8" blueprintStatus="LocalItem" selected="false" exported="true" />
+                  <Item id="tcm:2-139-8" title="Include%20Page" extension="xsd" itemType="Schema" subtype="8" blueprintStatus="LocalItem" selected="false" exported="true" />
+                </Item>
+                <Item id="tcm:2-20-2" title="Region%20Schemas" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+                  <Item id="tcm:2-74-8" title="%5BMain%5D%20Region" extension="xsd" itemType="Schema" subtype="8" blueprintStatus="LocalItem" selected="false" exported="true" />
+                </Item>
+              </Item>
+              <Item id="tcm:2-17-2" title="Templates" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+                <Item id="tcm:2-76-128" title="Content%20Page" extension="tptcmp" itemType="PageTemplate" blueprintStatus="LocalItem" selected="false" exported="true" />
+              </Item>
+            </Item>
+            <Item id="tcm:2-26-2" title="Site%20Manager" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+              <Item id="tcm:2-28-2" title="Schemas" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+                <Item id="tcm:2-145-8" title="Language%20Selector%20Configuration" extension="xsd" itemType="Schema" blueprintStatus="LocalItem" selected="false" exported="true" />
+                <Item id="tcm:2-189-8" title="Navigation%20Configuration" extension="xsd" itemType="Schema" blueprintStatus="LocalItem" selected="false" exported="true" />
+                <Item id="tcm:2-172-8" title="Resources%20-%20Core" extension="xsd" itemType="Schema" blueprintStatus="LocalItem" selected="false" exported="true" />
+                <Item id="tcm:2-174-8" title="Resources%20-%20Custom" extension="xsd" itemType="Schema" blueprintStatus="LocalItem" selected="false" exported="true" />
+              </Item>
+              <Item id="tcm:2-27-2" title="Templates" itemType="Folder" blueprintStatus="LocalItem" selected="false" exported="true">
+                <Item id="tcm:2-140-128" title="Include%20Page" extension="tptcmp" itemType="PageTemplate" blueprintStatus="LocalItem" selected="false" exported="true" />
+              </Item>
+            </Item>
+          </Item>
+        </Item>
+        <Item id="tcm:2-33-2" title="Settings" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+          <Item id="tcm:2-34-2" title="Core" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+            <Item id="tcm:2-35-2" title="Admin" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+              <Item id="tcm:2-130" title="Environment%20Configuration" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            </Item>
+            <Item id="tcm:2-38-2" title="Site%20Manager" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+              <Item id="tcm:2-178" title="Bootstrap%20Configuration" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-173" title="Core%20Resources" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-175" title="Custom%20Resources" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-177" title="Favicon" extension="ico" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-179" title="HTML%20Design%20Configuration" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-146" title="Language%20Selector%20Configuration" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-171" title="Localization%20Configuration" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-193" title="Navigation%20Configuration" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:2-170" title="Site%20Configuration" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            </Item>
+          </Item>
+        </Item>
+        <Item id="tcm:2-9-8" title="Default%20Multimedia%20Schema" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="SharedItem" selected="false" exported="true" />
+      </Item>
+      <Item id="tcm:2-6-4" title="Home" itemType="StructureGroup" blueprintStatus="SharedItem" selected="true" exported="true">
+        <Item id="tcm:2-36-4" title="_System" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true">
+          <Item id="tcm:2-44-4" title="config" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:2-37-4" title="include" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:2-45-4" title="mappings" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:2-40-4" title="resources" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:2-181-64" title="Publish%20Settings" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+        </Item>
+        <Item id="tcm:2-194-64" title="_Navigation" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+      </Item>
+      <Item id="tcm:2-42-512" title="Navigation%20Type" itemType="Category" blueprintStatus="LocalItem" selected="false" exported="true">
+        <Item id="tcm:2-192-1024" title="Localizable%20-%20Based%20on%20Component%20content%2Fmetadata%20field%20values" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="false" exported="true" />
+        <Item id="tcm:2-188-1024" title="Simple%20-%20Based%20on%20Page%20and%20Structure%20Group%20titles" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="false" exported="true" />
+      </Item>
+      <Item id="tcm:2-13-512" title="Sitemap%20%5BNavigation%5D" itemType="Category" blueprintStatus="LocalItem" selected="false" exported="true" />
+      <Item id="tcm:2-1-131074" title="Task%20Process" extension="tpd" itemType="ProcessDefinition" blueprintStatus="SharedItem" selected="false" exported="true" />
+    </Item>
+    <Item id="tcm:0-13-65544" title="Bitmap%20image" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-19-65544" title="Cascading%20style%20sheets" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-21-65544" title="Configuration%20settings" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-17-65568" title="Developer" extension="tgp" itemType="Group" selected="true" exported="true" />
+    <Item id="tcm:0-7-65568" title="Editor" extension="tgp" itemType="Group" selected="true" exported="true" />
+    <Item id="105f2b9977154f10878cfeac92d7b4fb" title="Everyone" extension="tgp" itemType="Group" selected="false" exported="false" />
+    <Item id="tcm:0-5-65544" title="Excel%20sheet" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-11-65544" title="Executable" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-22-65544" title="External%20Content%20Library" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-24-65544" title="Favicon" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-18-65544" title="Flash%20file" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-1-65544" title="Gif%20image" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-20-65544" title="Java%20script" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-2-65544" title="Jpeg%20image" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-12-65544" title="MSAccess%20database" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-16-65544" title="Mp3%20music" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-17-65544" title="Mpeg%20video" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-7-65544" title="Pdf%20document" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-9-65544" title="Plain%20text" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-3-65544" title="Png%20image" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-6-65544" title="Powerpoint%20presentation" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-15-65544" title="QuickTime%20movie" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-14-65544" title="Real%20player" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-10-65544" title="Rich%20text" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-25-65544" title="Scalable%20Vector%20Graphics" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-16-65568" title="Site%20Manager" extension="tgp" itemType="Group" selected="true" exported="true" />
+    <Item id="tcm:0-8-65544" title="Sound%20file" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-4-65544" title="Word%20document" extension="tmt" itemType="MultimediaType" selected="false" exported="true">
+      <ApplicationIds>
+        <ApplicationId>cme:MMType:16</ApplicationId>
+        <ApplicationId>cme:MMType:16:LastModified</ApplicationId>
+        <ApplicationId>cme:MMType:48</ApplicationId>
+        <ApplicationId>cme:MMType:48:LastModified</ApplicationId>
+      </ApplicationIds>
+    </Item>
+    <Item id="tcm:0-23-65544" title="Zip%20file" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+  </Item>
+</Index>

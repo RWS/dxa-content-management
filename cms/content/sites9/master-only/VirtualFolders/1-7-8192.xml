@@ -1,0 +1,30 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Modified in the last 7 days</tcm:Title>
+      <tcm:TypeSchema xlink:type="simple" xlink:title="Search Folder" xlink:href="tcm:0-1-8" />
+      <tcm:Configuration>
+        <SearchFolder xmlns="http://www.tridion.com/ContentManager/5.1/SearchFolder">
+          <GeneralParameters>
+            <SearchQuery />
+            <SearchIn xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/webdav/000%20Empty/Building%20Blocks" Recursive="true" xlink:title="Building Blocks" />
+          </GeneralParameters>
+          <AdvancedParameters>
+            <Modified>
+              <LastDays>7</LastDays>
+            </Modified>
+          </AdvancedParameters>
+        </SearchFolder>
+      </tcm:Configuration>
+      <tcm:MetadataSchema xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+      <tcm:Metadata />
+      <tcm:Description>Items modified in the last 7 days</tcm:Description>
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/000%20Empty" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemFolder" itemUrl="/webdav/000%20Empty/Building%20Blocks" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="VirtualFolderConfiguration" itemUrl="/webdav/000%20Empty/Building%20Blocks" linkName="Configuration" xpath="*[local-name() = 'SearchFolder'][1]/*[local-name() = 'GeneralParameters'][1]/*[local-name() = 'SearchIn'][1]/@xlink:href" />
+    <Dependency dependencyType="VirtualFolderTypeSchema" itemUrl="/webdav//Search%20Folder.xsd" linkName="TypeSchema" />
+  </Dependencies>
+</PackageItem>
