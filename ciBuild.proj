@@ -76,8 +76,7 @@
     <Target Name="Build">
         <Message Text="Start build..." Importance="high" />
         <CallTarget Targets="PrepareBuild"/>
-        <CallTarget Targets="RunBuild"/>
-        <CallTarget Targets="Test"/>
+        <CallTarget Targets="RunBuild"/>        
         <CallTarget Targets="CreatePackages"/>      
     </Target>
 
@@ -236,21 +235,20 @@
     <!-- ======================================================================================================================= -->
     <Target Name="PublishPackages" Condition="'$(BuildConfiguration)' == 'Release' And '$(NuGetRepositoryUrl)' != ''">
         <Message Text="Publishing NuGet packages to '$(NuGetRepositoryUrl)' ..." Importance="high" />
-        <!--
-        <Exec Command="$(NuGet) push Sdl.Dxa.DataModel.$(PackageVersion).nupkg -Source $(NuGetRepositoryUrl) -Verbosity detailed" WorkingDirectory="$(NuGetPackageDirectory)" />
-		    <Exec Command="$(NuGet) push Sdl.Dxa.Tridion.Templates.$(PackageVersion).nupkg -Source $(NuGetRepositoryUrl) -Verbosity detailed" WorkingDirectory="$(NuGetPackageDirectory)" />
-      -->
+       
+        <Exec Command="$(NuGet) push Sdl.Dxa.DataModel.$(PackageVersion).nupkg -Source $(NuGetRepositoryUrl) -Verbosity detailed" WorkingDirectory="$(NuGetPackageDirectory)" />		   
+      
     </Target>
 
   
     <!-- ======================================================================================================================= -->
     <Target Name="Test" Condition="'$(BuildConfiguration)' == 'Release'">
         <Message Text="Running unit tests..." />
-        <!--
+        
         <Exec Command='packages\OpenCover.4.6.519\tools\OpenCover.Console.exe -register:user "-target:$(MsTestExe)" "-targetargs:/testcontainer:Sdl.Web.Tridion.Templates.Tests\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.Tests.dll /testsettings:MsTest.testsettings /resultsfile:TestResults.trx" "-filter:+[Sdl.*]* -[*Test*]*" -output:CoverageReports\Coverage.xml"'/>
 
         <Exec Command='packages\ReportGenerator.2.4.4.0\tools\ReportGenerator.exe "-reports:CoverageReports\Coverage.xml" "-targetdir:CoverageReports"'/>
-      -->
+      
     </Target>
 
     <!-- ========================================================================================================================== -->

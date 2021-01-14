@@ -45,10 +45,28 @@ You can also specify a build version to tag your artifacts:
 msbuild ciBuild.proj /p:Version=Major.Minor.Path.Build
 ```
 
+Testing
+-------
+To run the unit tests and code coverage of the built artifacts you can run:
+```
+msbuild ciBuild.proj /t:Test
+```
+
+Generating Release Artifacts
+----------------------------
 To generate all the artifacts (after you have built the repository) you can use the following target:
 ```
 msbuild ciBuild.proj /t:Artifacts
 ```
+
+Publishing the Data Model to Public Repository
+----------------------------------------------
+The Data Model used by the Template Building Blocks and the DXA framework is contained within the Sdl.Web.DataModel project. The template building blocks use this project to generate the data model that ulitimatly gets serialized to Json and published into the broker DB. The data model is also used by the DXA framework to deserialize the Json. Since this is a shared project, any changes that are made should be published to the public nuget.org repository. You can do this with the following:
+```
+msbuild ciBuild.prog /t:PublishPackages /p:NuGetRepositoryUrl="nuget.org"
+```
+To publish to NuGet.org you must have the correct API key registered.
+
 
 
 Repositories
