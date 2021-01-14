@@ -5,19 +5,19 @@ Param (
     [string]$module = "Core",
 
     # Set this to the DXA Development CMS URL
-    [string]$cmsUrl = "http://cm.dev.dxa.sdldev.net:7086",
+    [string]$cmsUrl = "http://localhost:80",
 
     # CD Layout target dir
-    [string]$targetDir = 'C:\Temp\DXA\cd-layout-target',
+    [string]$targetDir = 'C:\Temp\DXA',
 
 	# Comma separated list of Groups to export rights and permissions from
     [string]$groups = "Everyone,Developer,Editor,Site Manager",
 
 	# User name that is used to connect to CM
-    [string]$cmsUserName = "vagrant",
+    [string]$cmsUserName,
     
 	# User password that is used to connect to CM
-    [string]$cmsUserPassword = "vagrant"
+    [string]$cmsUserPassword
 )
 
 
@@ -178,13 +178,13 @@ function Export-Permissions($publicationTitle, $organizationalItemPath, $recursi
 
 # Initialization
 $tempFolder = Join-Path $env:ALLUSERSPROFILE "DXA_export_permissions\"
-$commonDir = Join-Path $targetDir "cd-layout-common\"
 
 if (!(Test-Path $tempFolder)) {
     New-Item -ItemType Directory -Path $tempFolder | Out-Null
 }
-$dllsFolder = Join-Path $commonDir "ImportExport\sites9\"
-$cmsFolder = Join-Path $commonDir "cms\"
+
+$dllsFolder = Join-Path $PSScriptRoot "..\ImportExport\sites9\"
+$cmsFolder = Join-Path $targetDir "cms\"
 
 Invoke-InitDlls
 $groupList = $groups.Split(",")
@@ -194,7 +194,7 @@ if (!(Test-Path $cmsFolder)) {
 $xmlFile = Join-Path $cmsFolder "permissions.xml"
 if ($module -ne "Core")
 {
-	$moduleFolder = Join-Path $commonDir "modules\$module"
+	$moduleFolder = Join-Path $targetDir "modules\$module"
 	if (!(Test-Path $moduleFolder)) {
 		New-Item -Path $moduleFolder -ItemType Directory | Out-Null
 	}

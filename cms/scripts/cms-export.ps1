@@ -5,26 +5,25 @@ Param (
     [string]$exportType = "all-publications", 
 
     # The URL of the CMS to export from
-	[string]$cmsUrl = "http://cm.dev.dxa.sdldev.net:7086",
+	[string]$cmsUrl = "http://localhost:80",
 
-    # CD Layout target dir
+    # Exported content
 	[string]$targetDir = 'C:\Temp\DXA',
 
     # The Target Data Contract Version for the export (defaults to SDL Tridion 9.0)
     [int]$targetDataContractVersion = 201701,
     
 	# User name that is used to connect to CM
-    [string]$cmsUserName = "vagrant",
+    [string]$cmsUserName,
     
 	# User password that is used to connect to CM
-    [string]$cmsUserPassword = "vagrant"
+    [string]$cmsUserPassword
 )
 
 #Terminate script on first occurred exception
 $ErrorActionPreference = "Stop"
 
 $cmsAuth = "Windows"
-$commonDir = Join-Path $targetDir "cd-layout-common\"
 
 #Include functions from ContentManagerUtils.ps1
 $importExportFolder = Join-Path $PSScriptRoot "..\ImportExport"
@@ -34,8 +33,8 @@ $importExportFolder = Join-Path $PSScriptRoot "..\ImportExport"
 if (!$cmsUrl.EndsWith("/")) { $cmsUrl = $cmsUrl + "/" }
 $tempFolder = Get-TempFolder "DXA_export"
 
-$exportPackageFolder = Join-Path $commonDir "cms\"
-$modulesFolder = Join-Path $commonDir "modules\"
+$exportPackageFolder = Join-Path $targetDir "cms\"
+$modulesFolder = Join-Path $targetDir "modules\"
 
 Initialize-ImportExport $importExportFolder $tempFolder
 $coreServiceClient = Get-CoreServiceClient "Service"
@@ -66,208 +65,265 @@ $exportInstruction.ApplicationDataCategoryIds = $appDataCategories
 
 
 function Remove-ContentMashupContentType
-{
+{	
 	$result = $false
-    Write-Host "Remove 'Content Mashup' Content Type"
-    $applicationId = "SiteEdit"
-    $readOptions = New-Object "Tridion.ContentManager.CoreService.Client.ReadOptions"
-    $itemId = $coreServiceClient.Read("/webdav/110 DXA Site Type", $readOptions).Id.ToString()
-
-	$applicationData = [Tridion.ContentManager.CoreService.Client.ApplicationData]$coreServiceClient.ReadApplicationData($itemId, $applicationId)
-	$content = [System.Text.Encoding]::UTF8.GetString($applicationData.Data)
-
-	[xml]$appDataXml = New-Object System.Xml.XmlDocument
-	[void]$appDataXml.LoadXml($content)
-
-	$ns = New-Object System.Xml.XmlNamespaceManager($appDataXml.NameTable)
-	$ns.AddNamespace("ns", $appDataXml.DocumentElement.NamespaceURI)
-	$ns.AddNamespace("xlink", "http://www.w3.org/1999/xlink")
-
-	$contentType = $appDataXml.SelectSingleNode('//ns:configuration/ns:Publication/ns:ContentTypes/ns:ContentType[@Title="Tridion Docs"]', $ns)
-	if ($contentType)
+	try
 	{
-		$result = $true
-		Write-Host 'Static Widget is found and will be removed'
-		$contentType.ParentNode.RemoveChild($contentType)    
-			
-		$component = $coreServiceClient.TryRead("/webdav/110 DXA Site Type/Building Blocks/Modules Content/TridionDocsMashup/Content/_Cloneable Content/Tridion Docs Static Widget.xml", $readOptions)
-		if ($component)
+		Write-Host "Remove 'Content Mashup' Content Type"
+		$applicationId = "SiteEdit"
+		$readOptions = New-Object "Tridion.ContentManager.CoreService.Client.ReadOptions"
+		$itemId = $coreServiceClient.Read("/webdav/110 DXA Site Type", $readOptions).Id.ToString()
+
+		$applicationData = [Tridion.ContentManager.CoreService.Client.ApplicationData]$coreServiceClient.ReadApplicationData($itemId, $applicationId)
+		$content = [System.Text.Encoding]::UTF8.GetString($applicationData.Data)
+
+		[xml]$appDataXml = New-Object System.Xml.XmlDocument
+		[void]$appDataXml.LoadXml($content)
+
+		$ns = New-Object System.Xml.XmlNamespaceManager($appDataXml.NameTable)
+		$ns.AddNamespace("ns", $appDataXml.DocumentElement.NamespaceURI)
+		$ns.AddNamespace("xlink", "http://www.w3.org/1999/xlink")
+
+		$contentType = $appDataXml.SelectSingleNode('//ns:configuration/ns:Publication/ns:ContentTypes/ns:ContentType[@Title="Tridion Docs"]', $ns)
+		if ($contentType)
 		{
-			$componentId = 	$component.Id.ToString()		
-			$appDataXml.SelectNodes("//ns:ContentType[@xlink:href='$componentId']", $ns) | ForEach-Object { $_.ParentNode.RemoveChild($_)}
+			$result = $true
+			Write-Host 'Static Widget is found and will be removed'
+			$contentType.ParentNode.RemoveChild($contentType)    
+				
+			$component = $coreServiceClient.TryRead("/webdav/110 DXA Site Type/Building Blocks/Modules Content/TridionDocsMashup/Content/_Cloneable Content/Tridion Docs Static Widget.xml", $readOptions)
+			if ($component)
+			{
+				$componentId = 	$component.Id.ToString()		
+				$appDataXml.SelectNodes("//ns:ContentType[@xlink:href='$componentId']", $ns) | ForEach-Object { $_.ParentNode.RemoveChild($_)}
+			}
+				
 		}
-			
+		else
+		{
+			Write-Warning "Tridion Docs Content Type not found"
+		}
+
+		$bicyclePageTemplateId =  Get-TcmUri '/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/TridionDocsMashup/Editor/Templates/Bicycle%20Page%20With%20Static%20Region.tptcmp'
+		$pageTemplateElement = $appDataXml.SelectSingleNode("/ns:configuration/ns:Publication/ns:PageTemplateSettings/ns:PageTemplate[@xlink:href='$bicyclePageTemplateId']", $ns)
+		if ($pageTemplateElement)
+		{
+			$result = $true
+			Write-Host "Bicycle Page Template found and will be removed"
+			$pageTemplateElement.ParentNode.RemoveChild($pageTemplateElement)
+		}
+		else
+		{
+			Write-Warning "Bicycle Page Template not found"
+		}
+
+		if ($result)
+		{
+			$appDataAdapter = New-Object Tridion.ContentManager.CoreService.Client.ApplicationDataAdapter $applicationId, $appDataXml.configuration
+			$appData = $appDataAdapter.ApplicationData
+			$coreServiceClient.SaveApplicationData($itemId, $appData)
+		}
 	}
-    else
-    {
-        Write-Warning "Tridion Docs Content Type not found"
-    }
-
-    $bicyclePageTemplateId =  Get-TcmUri '/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/TridionDocsMashup/Editor/Templates/Bicycle%20Page%20With%20Static%20Region.tptcmp'
-	$pageTemplateElement = $appDataXml.SelectSingleNode("/ns:configuration/ns:Publication/ns:PageTemplateSettings/ns:PageTemplate[@xlink:href='$bicyclePageTemplateId']", $ns)
-	if ($pageTemplateElement)
-    {
-        $result = $true
-        Write-Host "Bicycle Page Template found and will be removed"
-        $pageTemplateElement.ParentNode.RemoveChild($pageTemplateElement)
-    }
-    else
-    {
-        Write-Warning "Bicycle Page Template not found"
-    }
-
-    if ($result)
-    {
-		$appDataAdapter = New-Object Tridion.ContentManager.CoreService.Client.ApplicationDataAdapter $applicationId, $appDataXml.configuration
-		$appData = $appDataAdapter.ApplicationData
-		$coreServiceClient.SaveApplicationData($itemId, $appData)
-    }
+	catch 
+	{
+		Write-Warning "Unable to remove Content Mashup content type $_"		
+	}
 
 	return $result
 }
 
 function Remove-Search-Dependencies
 {
-    Remove-MetadataFromItem "/webdav/110 DXA Site Type/Home/_Error Page Not Found.tpg"
-    Remove-MetadataFromItem "/webdav/100 Master/Home/_System"
-    Remove-TemplateFromCompound "/webdav/100 Master/Building Blocks/Modules/Search/Developer/Search Template Building Blocks/Enable Search Indexing.tbbcmp" `
-                              "/webdav/100 Master/Building Blocks/Framework/Developer/Templates/DXA.R2/Default Page Template Finish Actions.tbbcmp"
-    Remove-ComponentPresentation "/webdav/400 Example Site/Building Blocks/Modules Content/Search/Search Box Configuration.xml" `
-                                 "/webdav/400 Example Site/Building Blocks/Modules/Search/Site Manager/Templates/Search Box.tctcmp" `
-                                 "/webdav/400 Example Site/Home/_System/include/Header.tpg"
+	try
+	{
+		Remove-MetadataFromItem "/webdav/110 DXA Site Type/Home/_Error Page Not Found.tpg"
+		Remove-MetadataFromItem "/webdav/100 Master/Home/_System"
+		Remove-TemplateFromCompound "/webdav/100 Master/Building Blocks/Modules/Search/Developer/Search Template Building Blocks/Enable Search Indexing.tbbcmp" `
+								  "/webdav/100 Master/Building Blocks/Framework/Developer/Templates/DXA.R2/Default Page Template Finish Actions.tbbcmp"
+		Remove-ComponentPresentation "/webdav/400 Example Site/Building Blocks/Modules Content/Search/Search Box Configuration.xml" `
+									 "/webdav/400 Example Site/Building Blocks/Modules/Search/Site Manager/Templates/Search Box.tctcmp" `
+									 "/webdav/400 Example Site/Home/_System/include/Header.tpg"
+	}
+	catch
+	{
+		Write-Warning "Unable to remove Search dependencies $_"
+	}
 }
 
 function Add-Search-Dependencies
 {
-    Add-ComponentPresentation "/webdav/400 Example Site/Building Blocks/Modules Content/Search/Search Box Configuration.xml" `
-                              "/webdav/400 Example Site/Building Blocks/Modules/Search/Site Manager/Templates/Search Box.tctcmp" `
-							  "/webdav/400 Example Site/Home/_System/include/Header.tpg" `
-							   -regionName "Nav"
-    Add-TemplateToCompound "/webdav/100 Master/Building Blocks/Modules/Search/Developer/Search Template Building Blocks/Enable Search Indexing.tbbcmp" `
-                           "/webdav/100 Master/Building Blocks/Framework/Developer/Templates/DXA.R2/Default Page Template Finish Actions.tbbcmp"
-    Add-MetadataToItem "/webdav/100 Master/Home/_System" `
-					   "/webdav/100 Master/Building Blocks/Modules/Search/Editor/Schemas/Search Indexing Metadata.xsd" `
-                       "<Metadata xmlns=""http://www.sdl.com/web/schemas/search""><NoIndex>Yes</NoIndex></Metadata>"
-    Add-MetadataToItem "/webdav/110 DXA Site Type/Home/_Error Page Not Found.tpg" `
-					   "/webdav/110 DXA Site Type/Building Blocks/Modules/Search/Editor/Schemas/Search Indexing Metadata.xsd" `
-					   "<Metadata xmlns=""http://www.sdl.com/web/schemas/search""><NoIndex>Yes</NoIndex></Metadata>"
+	try
+	{
+		Add-ComponentPresentation "/webdav/400 Example Site/Building Blocks/Modules Content/Search/Search Box Configuration.xml" `
+								  "/webdav/400 Example Site/Building Blocks/Modules/Search/Site Manager/Templates/Search Box.tctcmp" `
+								  "/webdav/400 Example Site/Home/_System/include/Header.tpg" `
+								   -regionName "Nav"
+		Add-TemplateToCompound "/webdav/100 Master/Building Blocks/Modules/Search/Developer/Search Template Building Blocks/Enable Search Indexing.tbbcmp" `
+							   "/webdav/100 Master/Building Blocks/Framework/Developer/Templates/DXA.R2/Default Page Template Finish Actions.tbbcmp"
+		Add-MetadataToItem "/webdav/100 Master/Home/_System" `
+						   "/webdav/100 Master/Building Blocks/Modules/Search/Editor/Schemas/Search Indexing Metadata.xsd" `
+						   "<Metadata xmlns=""http://www.sdl.com/web/schemas/search""><NoIndex>Yes</NoIndex></Metadata>"
+		Add-MetadataToItem "/webdav/110 DXA Site Type/Home/_Error Page Not Found.tpg" `
+						   "/webdav/110 DXA Site Type/Building Blocks/Modules/Search/Editor/Schemas/Search Indexing Metadata.xsd" `
+						   "<Metadata xmlns=""http://www.sdl.com/web/schemas/search""><NoIndex>Yes</NoIndex></Metadata>"
+	}
+	catch
+	{
+		Write-Warning "Unable to add Search dependencies $_"
+	}
 }
 
 function Remove-AudienceManager-Dependencies
 {
-    Remove-ComponentPresentation "/webdav/400 Example Site/Building Blocks/Modules Content/AudienceManager/Current User Widget.xml" `
+	try
+	{
+		Remove-ComponentPresentation "/webdav/400 Example Site/Building Blocks/Modules Content/AudienceManager/Current User Widget.xml" `
 								 "/webdav/400 Example Site/Building Blocks/Modules/AudienceManager/Site Manager/Templates/Current User Widget.tctcmp" `
 							     "/webdav/400 Example Site/Home/_System/include/Header.tpg"
+	}
+	catch
+	{
+		Write-Warning "Unable to remove Audience Manager dependencies $_"
+	}
 }
 
 function Add-AudienceManager-Dependencies
 {
-    Add-ComponentPresentation "/webdav/400 Example Site/Building Blocks/Modules Content/AudienceManager/Current User Widget.xml" `
+	try
+	{
+		Add-ComponentPresentation "/webdav/400 Example Site/Building Blocks/Modules Content/AudienceManager/Current User Widget.xml" `
 							  "/webdav/400 Example Site/Building Blocks/Modules/AudienceManager/Site Manager/Templates/Current User Widget.tctcmp" `
 							  "/webdav/400 Example Site/Home/_System/include/Header.tpg" `
 							  3 `
 							  "Nav"
+	}
+	catch
+	{
+		Write-Warning "Unable to add Audience Manager dependencies $_"
+	}
 }
 
 function Remove-GoogleAnalytics-Dependencies
 {
-    Remove-ComponentPresentation "/webdav/400 Example Site/Building Blocks/Settings/GoogleAnalytics/Site Manager/Google Analytics Configuration.xml" `
+	try
+	{
+		Remove-ComponentPresentation "/webdav/400 Example Site/Building Blocks/Settings/GoogleAnalytics/Site Manager/Google Analytics Configuration.xml" `
 								 "/webdav/400 Example Site/Building Blocks/Modules/GoogleAnalytics/Site Manager/Templates/Google Analytics.tctcmp" `
 								 "/webdav/400 Example Site/Home/_System/include/Footer.tpg"
+	}
+	catch
+	{
+		Write-Warning "Unable to remove Google Analytics dependencies $_"
+	}
 }
 
 function Add-GoogleAnalytics-Dependencies
 {
-    Add-ComponentPresentation "/webdav/400 Example Site/Building Blocks/Settings/GoogleAnalytics/Site Manager/Google Analytics Configuration.xml" `
+	try
+	{
+		Add-ComponentPresentation "/webdav/400 Example Site/Building Blocks/Settings/GoogleAnalytics/Site Manager/Google Analytics Configuration.xml" `
 							  "/webdav/400 Example Site/Building Blocks/Modules/GoogleAnalytics/Site Manager/Templates/Google Analytics.tctcmp" `
-							  "/webdav/400 Example Site/Home/_System/include/Footer.tpg" `
+							  "/webdav/400 Example Site/Home/_System/include/Footer.tpg" `							
 							  -regionName "Links"
+	}
+	catch
+	{
+		Write-Warning "Unable to add Google Analytics dependencies $_"
+	}
+	
 }
 
 function Add-ContentMashupContentType
 {
-    Write-Host "Add 'Content Mashup' Content Type"
-    $applicationId = "SiteEdit"
-	$readOptions = New-Object "Tridion.ContentManager.CoreService.Client.ReadOptions"
-
-	$itemId = $coreServiceClient.Read("/webdav/110 DXA Site Type", $readOptions).Id.ToString()
-
-	$componentId = $coreServiceClient.Read("/webdav/110 DXA Site Type/Building Blocks/Modules Content/TridionDocsMashup/Content/_Cloneable Content/Tridion Docs Static Widget.xml", $readOptions).Id.ToString()
-	$componentTemplateId = $coreServiceClient.Read("/webdav/100 Master/Building Blocks/Modules/TridionDocsMashup/Editor/Templates/Tridion Docs Static Widget.tctcmp", $readOptions).Id.ToString()
-	$folderId = $coreServiceClient.Read("/webdav/110 DXA Site Type/Building Blocks/Modules Content/TridionDocsMashup/Content/Tridion Docs", $readOptions).Id.ToString()
-	$pageTemplateId = $coreServiceClient.Read("/webdav/110 DXA Site Type/Building Blocks/Modules/TridionDocsMashup/Editor/Templates/Bicycle Page With Static Region.tptcmp", $readOptions).Id.ToString()
-
-	$applicationData = $coreServiceClient.ReadApplicationData($itemId, $applicationId)
-	$content = [System.Text.Encoding]::UTF8.GetString($applicationData.Data)
-
-	# Some of the method calls are being casted to [void] to prevent from being printed to the output
-	[xml]$appDataXml = New-Object System.Xml.XmlDocument
-	[void]$appDataXml.LoadXml($content)
-
-	$ns = New-Object System.Xml.XmlNamespaceManager($appDataXml.NameTable)
-	$ns.AddNamespace("ns", $appDataXml.DocumentElement.NamespaceURI)
-	$ns.AddNamespace("xlink", "http://www.w3.org/1999/xlink")
-
-	$contentType = $appDataXml.SelectSingleNode('//ns:configuration/ns:Publication/ns:ContentTypes/ns:ContentType[@Title="Tridion Docs"]', $ns)
-
-	if (-not $contentType)
+	try
 	{
-		$contentType = $appDataXml.CreateElement("ContentType", $appDataXml.configuration.NamespaceURI)
-		[void]$contentType.SetAttribute("Title", "Tridion Docs")
-		[void]$contentType.SetAttribute("InsertPosition", "bottom")
-		[void]$contentType.SetAttribute("Description", "DXA Content Type for Tridion Docs Mashup.")
+		Write-Host "Add 'Content Mashup' Content Type"
+		$applicationId = "SiteEdit"
+		$readOptions = New-Object "Tridion.ContentManager.CoreService.Client.ReadOptions"
 
-		$contentTitle = $appDataXml.CreateElement("ContentTitle", $appDataXml.configuration.NamespaceURI)
-		[void]$contentTitle.SetAttribute("Type", "prompt")
+		$itemId = $coreServiceClient.Read("/webdav/110 DXA Site Type", $readOptions).Id.ToString()
 
-		$component = $appDataXml.CreateElement("Component", $appDataXml.configuration.NamespaceURI)
-		$xlink = $appDataXml.CreateAttribute("xlink", "href", $ns.LookupNamespace("xlink"))
-		$xlink.Value = $componentId
-		[void]$component.SetAttributeNode($xlink)
+		$componentId = $coreServiceClient.Read("/webdav/110 DXA Site Type/Building Blocks/Modules Content/TridionDocsMashup/Content/_Cloneable Content/Tridion Docs Static Widget.xml", $readOptions).Id.ToString()
+		$componentTemplateId = $coreServiceClient.Read("/webdav/100 Master/Building Blocks/Modules/TridionDocsMashup/Editor/Templates/Tridion Docs Static Widget.tctcmp", $readOptions).Id.ToString()
+		$folderId = $coreServiceClient.Read("/webdav/110 DXA Site Type/Building Blocks/Modules Content/TridionDocsMashup/Content/Tridion Docs", $readOptions).Id.ToString()
+		$pageTemplateId = $coreServiceClient.Read("/webdav/110 DXA Site Type/Building Blocks/Modules/TridionDocsMashup/Editor/Templates/Bicycle Page With Static Region.tptcmp", $readOptions).Id.ToString()
 
-		$componentTemplate = $appDataXml.CreateElement("ComponentTemplate", $appDataXml.configuration.NamespaceURI)
-		$xlink = $appDataXml.CreateAttribute("xlink", "href", $ns.LookupNamespace("xlink"))
-		$xlink.Value = $componentTemplateId
-		[void]$componentTemplate.SetAttributeNode($xlink)
+		$applicationData = $coreServiceClient.ReadApplicationData($itemId, $applicationId)
+		$content = [System.Text.Encoding]::UTF8.GetString($applicationData.Data)
 
-		$folder = $appDataXml.CreateElement("Folder", $appDataXml.configuration.NamespaceURI)
-		$xlink = $appDataXml.CreateAttribute("xlink", "href", $ns.LookupNamespace("xlink"))
-		$xlink.Value = $folderId
-		[void]$folder.SetAttributeNode($xlink)
-		$folder.SetAttribute("CanChange", "no")
+		# Some of the method calls are being casted to [void] to prevent from being printed to the output
+		[xml]$appDataXml = New-Object System.Xml.XmlDocument
+		[void]$appDataXml.LoadXml($content)
 
-		[void]$contentType.AppendChild($contentTitle)
-		[void]$contentType.AppendChild($component)
-		[void]$contentType.AppendChild($componentTemplate)
-		[void]$contentType.AppendChild($folder)
+		$ns = New-Object System.Xml.XmlNamespaceManager($appDataXml.NameTable)
+		$ns.AddNamespace("ns", $appDataXml.DocumentElement.NamespaceURI)
+		$ns.AddNamespace("xlink", "http://www.w3.org/1999/xlink")
 
-		[void]$appDataXml.configuration.Publication.ContentTypes.AppendChild($contentType)
+		$contentType = $appDataXml.SelectSingleNode('//ns:configuration/ns:Publication/ns:ContentTypes/ns:ContentType[@Title="Tridion Docs"]', $ns)
 
-		$pageTemplate = $appDataXml.SelectSingleNode('//ns:configuration/ns:Publication/ns:PageTemplateSettings/ns:PageTemplate[@xlink:href="' + $pageTemplateId + '"]', $ns)
-
-		if (-not $pageTemplate)
+		if (-not $contentType)
 		{
-			$pageTemplate = $appDataXml.CreateElement("PageTemplate", $appDataXml.configuration.NamespaceURI)
-			$xlink = $appDataXml.CreateAttribute("xlink", "href", $ns.LookupNamespace("xlink"))
-			$xlink.Value = $pageTemplateId
-			[void]$pageTemplate.SetAttributeNode($xlink)
-			[void]$pageTemplate.SetAttribute("usePredefinedContentTypes", "true")
-			[void]$appDataXml.configuration.Publication.PageTemplateSettings.AppendChild($pageTemplate)
-		}
-		
-		foreach ($pageTemplate in $appDataXml.configuration.Publication.PageTemplateSettings.PageTemplate)
-		{
-			$contentTypeCheck = $appDataXml.CreateElement("se:ContentType", $appDataXml.configuration.NamespaceURI)
+			$contentType = $appDataXml.CreateElement("ContentType", $appDataXml.configuration.NamespaceURI)
+			[void]$contentType.SetAttribute("Title", "Tridion Docs")
+			[void]$contentType.SetAttribute("InsertPosition", "bottom")
+			[void]$contentType.SetAttribute("Description", "DXA Content Type for Tridion Docs Mashup.")
+
+			$contentTitle = $appDataXml.CreateElement("ContentTitle", $appDataXml.configuration.NamespaceURI)
+			[void]$contentTitle.SetAttribute("Type", "prompt")
+
+			$component = $appDataXml.CreateElement("Component", $appDataXml.configuration.NamespaceURI)
 			$xlink = $appDataXml.CreateAttribute("xlink", "href", $ns.LookupNamespace("xlink"))
 			$xlink.Value = $componentId
-			[void]$contentTypeCheck.SetAttributeNode($xlink)
-			[void]$pageTemplate.AppendChild($contentTypeCheck)
+			[void]$component.SetAttributeNode($xlink)
+
+			$componentTemplate = $appDataXml.CreateElement("ComponentTemplate", $appDataXml.configuration.NamespaceURI)
+			$xlink = $appDataXml.CreateAttribute("xlink", "href", $ns.LookupNamespace("xlink"))
+			$xlink.Value = $componentTemplateId
+			[void]$componentTemplate.SetAttributeNode($xlink)
+
+			$folder = $appDataXml.CreateElement("Folder", $appDataXml.configuration.NamespaceURI)
+			$xlink = $appDataXml.CreateAttribute("xlink", "href", $ns.LookupNamespace("xlink"))
+			$xlink.Value = $folderId
+			[void]$folder.SetAttributeNode($xlink)
+			$folder.SetAttribute("CanChange", "no")
+
+			[void]$contentType.AppendChild($contentTitle)
+			[void]$contentType.AppendChild($component)
+			[void]$contentType.AppendChild($componentTemplate)
+			[void]$contentType.AppendChild($folder)
+
+			[void]$appDataXml.configuration.Publication.ContentTypes.AppendChild($contentType)
+
+			$pageTemplate = $appDataXml.SelectSingleNode('//ns:configuration/ns:Publication/ns:PageTemplateSettings/ns:PageTemplate[@xlink:href="' + $pageTemplateId + '"]', $ns)
+
+			if (-not $pageTemplate)
+			{
+				$pageTemplate = $appDataXml.CreateElement("PageTemplate", $appDataXml.configuration.NamespaceURI)
+				$xlink = $appDataXml.CreateAttribute("xlink", "href", $ns.LookupNamespace("xlink"))
+				$xlink.Value = $pageTemplateId
+				[void]$pageTemplate.SetAttributeNode($xlink)
+				[void]$pageTemplate.SetAttribute("usePredefinedContentTypes", "true")
+				[void]$appDataXml.configuration.Publication.PageTemplateSettings.AppendChild($pageTemplate)
+			}
+			
+			foreach ($pageTemplate in $appDataXml.configuration.Publication.PageTemplateSettings.PageTemplate)
+			{
+				$contentTypeCheck = $appDataXml.CreateElement("se:ContentType", $appDataXml.configuration.NamespaceURI)
+				$xlink = $appDataXml.CreateAttribute("xlink", "href", $ns.LookupNamespace("xlink"))
+				$xlink.Value = $componentId
+				[void]$contentTypeCheck.SetAttributeNode($xlink)
+				[void]$pageTemplate.AppendChild($contentTypeCheck)
+			}
+
+			$appDataAdapter = New-Object Tridion.ContentManager.CoreService.Client.ApplicationDataAdapter $applicationId, $appDataXml.configuration
+			$appData = $appDataAdapter.ApplicationData
+
+			$coreServiceClient.SaveApplicationData($itemId, $appData)
 		}
-
-		$appDataAdapter = New-Object Tridion.ContentManager.CoreService.Client.ApplicationDataAdapter $applicationId, $appDataXml.configuration
-		$appData = $appDataAdapter.ApplicationData
-
-		$coreServiceClient.SaveApplicationData($itemId, $appData)
+	}
+	catch
+	{
+		Write-Warning "Unable to add Content Mashup content type $_"
 	}
 }
 
