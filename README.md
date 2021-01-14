@@ -14,30 +14,6 @@ or the GitHub Releases of the [dxa-web-application-dotnet](https://github.com/sd
 To facilitate upgrades, it is highly recommended to use an official, compiled version of the DXA Core TBBs (part of the DXA distribution) instead of a custom build.
 If you really have to modify the DXA Core TBBs, we kindly request you to submit your changes as a Contribution; see below. 
 
-Note that the `Sdl.Web.Tridion.Templates.csproj` project references CM assemblies in `_references` subdirectories which are **not** included in this repository, 
-because these assemblies cannot be distributed without a signed license agreement.
-In order to build the project, the following CM assemblies will have to be obtained from an SDL Web/Tridion distribution and put in the appropriate `_references` subdirectories:
-
-cm-9.0:
-
- - Tridion.Common.dll
- - Tridion.ContentManager.Common.dll
- - Tridion.ContentManager.dll
- - Tridion.ContentManager.Publishing.dll
- - Tridion.ContentManager.TemplateTypes.dll
- - Tridion.ContentManager.Templating.dll
- - Tridion.ContentManager.TypeRegistration.dll
- - Tridion.ExternalContentLibrary.dll
- - Tridion.ExternalContentLibrary.V2.dll
- - Tridion.Logging.dll
- - Tridion.TopologyManager.Client.dll
- - Microsoft.OData.Client.dll
- - Microsoft.OData.Core.dll
- - Microsoft.OData.Edm.dll
- - Microsoft.Spatial.dll
- - Newtonsoft.Json.dll
-
-(*) SDL Tridion 2013 SP1 is only supported up to DXA version 1.6.
  
 Support
 ---------------
@@ -51,6 +27,28 @@ At SDL we take your investment in Digital Experience very seriously, if you enco
 Documentation
 -------------
 Documentation can be found online in the SDL documentation portal: https://docs.sdl.com/sdldxa
+
+Building
+---------
+In order to build this repository you must first make sure you restore all the required packages from nuget.org using the build target 'Restore':
+
+```
+msbuild ciBuild.proj /t:Restore
+```
+
+After restoring all packages you can build the repository:
+```
+msbuild ciBuild.proj
+```
+You can also specify a build version to tag your artifacts:
+```
+msbuild ciBuild.proj /p:Version=Major.Minor.Path.Build
+```
+
+To generate all the artifacts (after you have built the repository) you can use the following target:
+```
+msbuild ciBuild.proj /t:Artifacts
+```
 
 
 Repositories
@@ -87,7 +85,7 @@ Of course, it's also possible (and appreciated) to report an Issue without assoc
 
 License
 -------
-Copyright (c) 2014-2020 SDL Group.
+Copyright (c) 2014-2021 SDL Group.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
