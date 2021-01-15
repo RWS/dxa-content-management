@@ -166,8 +166,8 @@ $tempFolder = Join-Path $env:ALLUSERSPROFILE "DXA_export_permissions\"
 if (!(Test-Path $tempFolder)) {
     New-Item -ItemType Directory -Path $tempFolder | Out-Null
 }
-$dllsFolder = Join-Path (Split-Path $MyInvocation.MyCommand.Path) "..\ImportExport\"
-$cmsFolder = Join-Path (Split-Path $MyInvocation.MyCommand.Path) "..\cd-layout-static-common\cms\"
+$dllsFolder = Join-Path $PSScriptRoot "..\ImportExport\sites9\"
+$cmsFolder = Join-Path $targetDir "cms\"
 
 Invoke-InitDlls
 $groupList = $groups.Split(",")
@@ -177,7 +177,11 @@ if (!(Test-Path $cmsFolder)) {
 $xmlFile = Join-Path $cmsFolder "permissions.xml"
 if ($module -ne "Core")
 {
-	$xmlFile = Join-Path (Split-Path $MyInvocation.MyCommand.Path) "..\cd-layout-static-common\modules\$module\permissions.xml"
+	$moduleFolder = Join-Path $targetDir "modules\$module"
+	if (!(Test-Path $moduleFolder)) {
+		New-Item -Path $moduleFolder -ItemType Directory | Out-Null
+	}
+	$xmlFile = Join-Path $moduleFolder "permissions.xml"
 }
 
 Write-Host "CMS: '$cmsUrl'"

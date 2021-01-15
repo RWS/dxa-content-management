@@ -6,6 +6,9 @@ Param (
     # The URL of the CMS to export from
     [string]$cmsUrl = "http://dxadevweb8.ams.dev",
 
+    # Exported content
+	[string]$targetDir = 'C:\Temp\DXA',
+
     # The ID of the "100 Master" publication
     [string]$masterPubId = "tcm:0-2-1",
 
@@ -35,8 +38,8 @@ $importExportFolder = Join-Path $PSScriptDir "..\ImportExport"
 # Initialization
 if (!$cmsUrl.EndsWith("/")) { $cmsUrl = $cmsUrl + "/" }
 $tempFolder = Get-TempFolder "DXA_export"
-$exportPackageFolder = Join-Path $PSScriptDir "..\cd-layout-static-common\cms\"
-$modulesFolder = Join-Path $PSScriptDir "..\cd-layout-static-common\modules\"
+$exportPackageFolder = Join-Path $targetDir "cms\"
+$modulesFolder = Join-Path $targetDir "modules\"
 Initialize-ImportExport $importExportFolder $tempFolder
 
 # Prepare export
