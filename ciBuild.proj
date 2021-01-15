@@ -1,28 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.5">
 
+    <!-- Remember to run msbuild ciBuild.csproj /t:Restore first so the MSBuild extension package is installed from nuget -->
+    <Import Project="packages\MSBuild.Extension.Pack.1.9.1\build\net40\MSBuild.Extension.Pack.targets" Condition="Exists('packages\MSBuild.Extension.Pack.1.9.1\build\net40\MSBuild.Extension.Pack.targets')"/>
+  
     <PropertyGroup>
-        <!-- Input parameters -->
-        <Version Condition="'$(VERSION)' == ''">0.0.0.0</Version>
-        <Version Condition="'$(VERSION)' != ''">$(VERSION)</Version>
-        <IsPreRelease>true</IsPreRelease>
         <BuildConfiguration>Release</BuildConfiguration>
         <ProjectDirectory>$(MSBuildProjectDirectory)</ProjectDirectory>
-        <TemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.merged.dll</TemplatesDll>
-        <CmsTargetDefinitionFile>dxadevweb8.xml</CmsTargetDefinitionFile>
-        
+
+        <!-- Input parameters -->
+        <Version Condition="'$(VERSION)' == ''">0.0.0.0</Version>
+        <Version Condition="'$(VERSION)' != ''">$(VERSION)</Version>        
         <VersionMajor>$(Version.Split('.')[0])</VersionMajor>
         <VersionMinor>$(Version.Split('.')[1])</VersionMinor>
         <VersionPatch>$(Version.Split('.')[2])</VersionPatch>
         <VersionBuild>$(Version.Split('.')[3])</VersionBuild>
-        <PreReleaseLabel Condition="'$(IsPreRelease)' == 'true'">-alpha-$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</PreReleaseLabel>
-        <PackageVersion>$(VersionMajor).$(VersionMinor).$(VersionPatch)$(PreReleaseLabel)</PackageVersion>
+        <PackageVersion>$(VersionMajor).$(VersionMinor).$(VersionPatch)</PackageVersion>
         
-        <!--Tools-->
-        <MsBuildExe>C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe</MsBuildExe>
-        <CmToolsDir>C:\_cm_tools</CmToolsDir>
+        <!--Tools-->      
+        <NuGet>&quot;$(ProjectDirectory)\_tools\NuGet.exe&quot;</NuGet>
+        <NuGetPackageDirectory>$(ProjectDirectory)\_NuGet</NuGetPackageDirectory>
+   
+        <MsTestExe Condition="'$(MsTestExe)'=='' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio 14.0\Common7\IDE\MSTest.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio 14.0\Common7\IDE\MSTest.exe</MsTestExe>
+        <MsTestExe Condition="'$(MsTestExe)'=='' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio 12.0\Common7\IDE\MSTest.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio 12.0\Common7\IDE\MSTest.exe</MsTestExe>
+        <MsTestExe Condition="'$(MsTestExe)'=='' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\MSTest.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\MSTest.exe</MsTestExe>
     
   </PropertyGroup>
+
+    <!-- ======================================================================================================================= -->
+    <!-- You should run msbuild with this target first to make sure all packages are installed before building everything else   -->
+    <!-- ======================================================================================================================= -->
+    <Target Name="Restore">
+        <Message Text="Clearing NuGet cache..."/>
+        <Exec Command="$(NuGet) locals all -Clear" />
+        <Message Text="Restoring NuGet packages..."/>
+        <Exec Command="_tools\RestorePackages DxaContentManagement.sln" WorkingDirectory="$(ProjectDirectory)" />
+    </Target>
 
 
     <!-- =============================================================================================================================================  -->
@@ -37,19 +50,29 @@
     <!-- =============================================================================================================================================  -->
     <Target Name="PrepareBuild">
         <Message Text="Preparing build..." Importance="high" />
+        <Message Text="Setting Assembly Info"/>
 
-        <Message Text="Restoring NuGet packages..."/>
-        <Exec Command="_tools\RestorePackages DxaContentManagement.sln" WorkingDirectory="$(ProjectDirectory)" />
-        
         <ItemGroup>
-            <AssemblyInfo Include="[assembly: AssemblyVersion(&quot;$(VersionMajor).$(VersionMinor).$(VersionPatch).0&quot;)]" />
-            <AssemblyInfo Include="[assembly: AssemblyFileVersion(&quot;$(Version)&quot;)]" />
-            <AssemblyInfo Include="[assembly: AssemblyInformationalVersion(&quot;$(PackageVersion)&quot;)]" />
-            <AssemblyInfo Include="[assembly: AssemblyCopyright(&quot;Copyright © 2014-$([System.DateTime]::Now.ToString(&quot;yyyy&quot;)) SDL Group&quot;)]" />
+            <AssemblyInfoFile Include="$(ProjectDirectory)\CommonAssemblyInfo.cs">
+            <Attributes>Normal</Attributes>
+            </AssemblyInfoFile>
         </ItemGroup>
 
-        <Message Text="Updating CommonAssemblyInfo..."/>
-        <WriteLinesToFile File="$(ProjectDirectory)\CommonAssemblyInfo.cs" Overwrite="False" Lines="@(AssemblyInfo)" />
+        <Message Text="Setting Assembly Info @(AssemblyInfoFile)"/>
+
+        <MSBuild.ExtensionPack.Framework.DateAndTime TaskAction="Get" Format="yyyy">
+            <Output TaskParameter="Result" PropertyName="Year"/>
+        </MSBuild.ExtensionPack.Framework.DateAndTime>
+
+        <MSBuild.ExtensionPack.FileSystem.File TaskAction="SetAttributes" Files="@(AssemblyInfoFile)"/>
+
+        <MSBuild.ExtensionPack.Framework.AssemblyInfo
+            AssemblyInfoFiles="@(AssemblyInfoFile)"
+            AssemblyVersion="$(Version)"
+            AssemblyFileVersion="$(VersionMajor).$(VersionMinor).$(VersionPatch).$(VersionBuild)"
+            AssemblyCopyright="Copyright &#169; 2014-$(Year) SDL Group"
+            SkipVersioning="false"
+        />
     </Target>
 
     <!-- =============================================================================================================================================  -->
@@ -58,12 +81,67 @@
 
         <MSBuild Projects="$(ProjectDirectory)\Sdl.Web.Tridion.Templates\Sdl.Web.Tridion.Templates.csproj" Properties="Configuration=$(BuildConfiguration);Platform=AnyCPU" StopOnFirstFailure="true" />
     </Target>
+   
+    <!-- ========================================================================================================================== -->
+    <Target Name="Artifacts">
+        <Message Text="Generating artifacts ..." Importance="high" />
 
-    <!-- =============================================================================================================================================  -->
-    <Target Name="DeployOutput">
-      <Message Text="Deploying '$(TemplatesDll)' to CMS..." />
-        
-        <Exec Command="TcmUploadAssembly.exe $(CmsTargetDefinitionFile) /folder:tcm:2-17-2 /verbose &quot;$(TemplatesDll)&quot;" WorkingDirectory="$(CmToolsDir)" />
+        <PropertyGroup>
+          <DstFolder>$(ProjectDirectory)\dist\cms</DstFolder>
+
+          <CmContentFolder>$(ProjectDirectory)\cms\content</CmContentFolder>
+          <CmScriptsFolder>$(ProjectDirectory)\cms\scripts</CmScriptsFolder>
+
+          <TBBFolder>$(ProjectDirectory)\Sdl.Web.Tridion.Templates\bin\$(BuildConfiguration)</TBBFolder>
+
+          <TemplatesDll>Sdl.Web.Tridion.Templates.merged.dll</TemplatesDll>
+
+          <!-- TBBs in export package. Note that if you re-export CM content you may need to adjust these IDs incase they change during export -->          
+          <TemplatesTbb>2-152-2048.tbbasm</TemplatesTbb>
+        </PropertyGroup>
+
+        <ItemGroup>
+          <ImportExportScripts Include="$(CmScriptsFolder)\..\ImportExport\**\*.*" />
+        </ItemGroup>
+
+        <RemoveDir Directories="$(DstFolder)" />
+
+        <!-- Copy TBBs to dist folder -->
+        <Copy SourceFiles="$(TBBFolder)\$(TemplatesDll)" DestinationFolder="$(DstFolder)\TBBs"/>
+
+        <!-- Copy TBBs to CM content folder  -->
+        <Copy SourceFiles="$(TBBFolder)\$(TemplatesDll)" DestinationFolder="$(DstFolder)\tmp"/>
+
+        <!-- Update the CM content with the newly built TBBs -->
+        <Move SourceFiles="$(DstFolder)\tmp\$(TemplatesDll)" DestinationFiles="$(DstFolder)\tmp\$(TemplatesTbb)" />       
+        <Copy SourceFiles="$(DstFolder)\tmp\$(TemplatesTbb)" DestinationFolder="$(CmContentFolder)\all-publications\Binaries" />
+        <Copy SourceFiles="$(DstFolder)\tmp\$(TemplatesTbb)" DestinationFolder="$(CmContentFolder)\master-only\Binaries" />   
+
+        <!-- Copy cm content  -->
+        <Message Text="Creating CM Content artifacts ..." Importance="high" />
+
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\all-publications" ZipFileName="$(DstFolder)\tmp\all-publications.zip"/>        
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\master-only" ZipFileName="$(DstFolder)\tmp\master-only.zip"/>
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\example-publications" ZipFileName="$(DstFolder)\tmp\example-publications.zip"/>
+        <Copy SourceFiles="$(DstFolder)\tmp\all-publications.zip" DestinationFolder="$(DstFolder)" />        
+        <Copy SourceFiles="$(DstFolder)\tmp\master-only.zip" DestinationFolder="$(DstFolder)" />
+        <Copy SourceFiles="$(DstFolder)\tmp\example-publications.zip" DestinationFolder="$(DstFolder)" />
+        <Copy SourceFiles="$(CmContentFolder)\permissions.xml" DestinationFolder="$(DstFolder)" />
+
+        <!-- Copy scripts -->
+        <Message Text="Copying scripts..." Importance="high" />
+        <Copy SourceFiles="$(CmScriptsFolder)\cms-import.ps1" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\cms-export.ps1" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\cms-export-permissions.ps1" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\cms-upgrade.ps1" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\ttm-prepare.ps1" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\all-publications.xml" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\master-only.xml" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\website-only.xml" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\DXA Application Data Definition.xml" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="@(ImportExportScripts)" DestinationFolder="$(DstFolder)\..\ImportExport\%(RecursiveDir)"/>
+
+        <RemoveDir Directories="$(DstFolder)\tmp" />
     </Target>
- 
+
 </Project>

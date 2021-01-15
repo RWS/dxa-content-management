@@ -31,28 +31,28 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DD4T.ContentModel, Version=2.0.7.0, Culture=neutral, PublicKeyToken=4450e3c7f68bf872, processorArchitecture=MSIL">
+    <Reference Include="DD4T.ContentModel">
       <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.ContentModel.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DD4T.ContentModel.Contracts, Version=2.0.7.0, Culture=neutral, PublicKeyToken=4450e3c7f68bf872, processorArchitecture=MSIL">
+    <Reference Include="DD4T.ContentModel.Contracts">
       <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.ContentModel.Contracts.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DD4T.Serialization, Version=2.0.7.0, Culture=neutral, PublicKeyToken=4450e3c7f68bf872, processorArchitecture=MSIL">
+    <Reference Include="DD4T.Serialization">
       <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.Serialization.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DD4T.Templates.Base, Version=2.0.8.0, Culture=neutral, PublicKeyToken=4450e3c7f68bf872, processorArchitecture=MSIL">
+    <Reference Include="DD4T.Templates.Base">
       <HintPath>..\packages\DD4T.Templates.Base.2.0.8\lib\net45\DD4T.Templates.Base.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.OData.Client">
-      <HintPath>C:\_references\cm-8.1\Microsoft.OData.Client.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Microsoft.OData.Client.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+    <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
@@ -66,36 +66,36 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Tridion.Common">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Common.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Tridion.ContentManager">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.ContentManager.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Tridion.ContentManager.Common">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Common.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.ContentManager.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Tridion.ContentManager.Publishing">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Publishing.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.ContentManager.Publishing.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Tridion.ContentManager.Templating">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Templating.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.ContentManager.Templating.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Tridion.Logging">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Logging.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.Logging.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Tridion.TopologyManager.Client">
-      <HintPath>C:\_references\cm-8.1\Tridion.TopologyManager.Client.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.TopologyManager.Client.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -146,10 +146,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe"  ^
+    <PostBuildEvent>"$(MSBuildThisFileDirectory)..\packages\ILMerge.2.14.1208\tools\ILMerge.exe"  ^
     /out:Sdl.Web.Tridion.Templates.merged.dll ^
     /targetplatform:v4 ^
-    /lib:C:\_references\cm-8.1 ^
+    /lib:$(MSBuildThisFileDirectory)..\_references\cm-8.1 ^
     Sdl.Web.Tridion.Templates.dll DD4T.ContentModel.Contracts.dll DD4T.ContentModel.dll DD4T.Serialization.dll DD4T.Templates.Base.dll Newtonsoft.Json.dll
 </PostBuildEvent>
   </PropertyGroup>

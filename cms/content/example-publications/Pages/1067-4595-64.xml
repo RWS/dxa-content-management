@@ -1,0 +1,34 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Redirect Page</tcm:Title>
+      <tcm:FileName>_redirect</tcm:FileName>
+      <tcm:PageTemplate IsInherited="false" xlink:type="simple" xlink:title="Redirect Page" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates/Redirect%20Page.tptcmp" />
+      <tcm:ComponentPresentations />
+      <tcm:MetadataSchema xlink:type="simple" xlink:title="Redirect Page Metadata" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Metadata/Redirect%20Page%20Metadata.xsd" />
+      <tcm:Metadata>
+        <Metadata xmlns="uuid:320362bd-6ca2-4561-bc46-f1458d6894ae">
+          <redirect>
+            <linkText xmlns:xlink="http://www.w3.org/1999/xlink">Link Text</linkText>
+          </redirect>
+        </Metadata>
+      </tcm:Metadata>
+      <tcm:RegionSchema xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+      <tcm:Regions />
+    </tcm:Data>
+  </Data>
+  <ApplicationDataCollection>
+    <ApplicationData>
+      <ApplicationId>SiteEdit</ApplicationId>
+      <TypeId>XmlElement:configuration, http://www.sdltridion.com/2011/SiteEdit</TypeId>
+      <BinaryData>PGNvbmZpZ3VyYXRpb24geG1sbnM9Imh0dHA6Ly93d3cuc2RsdHJpZGlvbi5jb20vMjAxMS9TaXRlRWRpdCI+PFBhZ2UgeG1sbnM9Imh0dHA6Ly93d3cuc2RsdHJpZGlvbi5jb20vMjAxMS9TaXRlRWRpdCI+PFBhZ2VUeXBlPjxFbmFibGVkPnRydWU8L0VuYWJsZWQ+PERlc2NyaXB0aW9uPkRYQSBSZWRpcmVjdCBQYWdlPC9EZXNjcmlwdGlvbj48L1BhZ2VUeXBlPjwvUGFnZT48L2NvbmZpZ3VyYXRpb24+</BinaryData>
+      <IsInherited>false</IsInherited>
+    </ApplicationData>
+  </ApplicationDataCollection>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/110%20DXA%20Site%20Type" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemStructureGroup" itemUrl="/webdav/110%20DXA%20Site%20Type/Home/_Page%20Types" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="MetadataSchema" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Metadata/Redirect%20Page%20Metadata.xsd" linkName="MetadataSchema" />
+    <Dependency dependencyType="PageTemplate" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates/Redirect%20Page.tptcmp" linkName="PageTemplate" />
+  </Dependencies>
+</PackageItem>

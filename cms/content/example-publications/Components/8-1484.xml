@@ -1,0 +1,39 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Footer</tcm:Title>
+      <tcm:Type>Normal</tcm:Type>
+      <tcm:Schema xlink:type="simple" xlink:title="Link List" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Schemas/Link%20List.xsd" IsMandatory="false" />
+      <tcm:Content>
+        <LinkList xmlns="http://www.sdl.com/web/schemas/core">
+          <headline>© 2014 Your Company Name Here</headline>
+          <link>
+          <linkText>Privacy</linkText>
+          <internalLink xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Content/About/Privacy%20Policy.xml" xlink:title="Privacy Policy" />
+          <alternateText>View our privacy policy</alternateText>
+        </link>
+          <link>
+          <linkText>Terms of Use</linkText>
+          <internalLink xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Content/About/Terms%20of%20Use.xml" xlink:title="Terms of Use" />
+          <alternateText>Read our terms of use</alternateText>
+        </link>
+          <link>
+            <linkText>Sitemap</linkText>
+            <internalLink xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Content/Sitemap.xml" xlink:title="Sitemap" />
+          </link>
+        </LinkList>
+      </tcm:Content>
+      <tcm:Metadata />
+      <tcm:IsBasedOnTridionWebSchema>true</tcm:IsBasedOnTridionWebSchema>
+      <tcm:MultimediaType xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/400%20Example%20Site" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemFolder" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Content/About/Privacy%20Policy.xml" linkName="Content" xpath="*[local-name() = 'LinkList'][1]/*[local-name() = 'link'][1]/*[local-name() = 'internalLink'][1]/@xlink:href" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Content/About/Terms%20of%20Use.xml" linkName="Content" xpath="*[local-name() = 'LinkList'][1]/*[local-name() = 'link'][2]/*[local-name() = 'internalLink'][1]/@xlink:href" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Content/Sitemap.xml" linkName="Content" xpath="*[local-name() = 'LinkList'][1]/*[local-name() = 'link'][3]/*[local-name() = 'internalLink'][1]/@xlink:href" />
+    <Dependency dependencyType="Schema" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Schemas/Link%20List.xsd" linkName="Schema" />
+  </Dependencies>
+</PackageItem>

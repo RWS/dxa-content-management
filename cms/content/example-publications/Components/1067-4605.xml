@@ -1,0 +1,45 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Place</tcm:Title>
+      <tcm:Type>Normal</tcm:Type>
+      <tcm:Schema xlink:type="simple" xlink:title="Place" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Place.xsd" IsMandatory="false" />
+      <tcm:Content>
+        <Place xmlns="uuid:b20afe06-9041-4648-8a9f-678d8e34c6a5">
+          <name>SDL Amsterdam</name>
+          <image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/Large%20Image.jpg" xlink:title="Large Image" />
+          <address>
+            <p xmlns="http://www.w3.org/1999/xhtml">Hoogoorddreef 60</p>
+<p xmlns="http://www.w3.org/1999/xhtml">1101 BE Amsterdam</p>
+<p xmlns="http://www.w3.org/1999/xhtml">THE NETHERLANDS</p></address>
+          <telephone>+31 20 20 10 500</telephone>
+          <faxNumber>+31 20 20 10 501</faxNumber>
+          <email>info@sdl.com</email>
+        </Place>
+      </tcm:Content>
+      <tcm:Metadata>
+        <Metadata xmlns="uuid:b20afe06-9041-4648-8a9f-678d8e34c6a5">
+          <location xmlns:xlink="http://www.w3.org/1999/xlink">
+            <latitude>52.310714</latitude>
+            <longitude>4.944688</longitude>
+            <query>Hoogoorddreef 60, Amsterdam Zuidoost, Nederland</query>
+          </location>
+          <standardMeta>
+            <dateCreated>2014-08-31T10:00:00</dateCreated>
+            <description>Place Meta Description Sed a dolor fermentum tellus suscipit dapibus convallis ac felis. Praesent feugiat lacus gravida, vestibulum turpis non, convallis odio.</description>
+            <name>Place Short Title</name>
+            <introText>Mauris quis urna non nisl tempus vulputate sit amet sit amet diam.</introText>
+          </standardMeta>
+        </Metadata>
+      </tcm:Metadata>
+      <tcm:IsBasedOnTridionWebSchema>true</tcm:IsBasedOnTridionWebSchema>
+      <tcm:MultimediaType xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/110%20DXA%20Site%20Type" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemFolder" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/Large%20Image.jpg" linkName="Content" xpath="*[local-name() = 'Place'][1]/*[local-name() = 'image'][1]/@xlink:href" />
+    <Dependency dependencyType="Schema" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Place.xsd" linkName="Schema" />
+  </Dependencies>
+</PackageItem>

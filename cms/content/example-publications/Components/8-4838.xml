@@ -1,0 +1,29 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Cookie bar</tcm:Title>
+      <tcm:Type>Normal</tcm:Type>
+      <tcm:Schema xlink:type="simple" xlink:title="Notification Bar" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Schemas/Notification%20Bar.xsd" IsMandatory="false" />
+      <tcm:Content>
+        <NotificationBar xmlns="http://www.sdl.com/web/schemas/core">
+          <headline xmlns="http://www.sdl.com/web/schemas/core" xmlns:xlink="http://www.w3.org/1999/xlink">Cookies</headline>
+          <text xmlns="http://www.sdl.com/web/schemas/core" xmlns:xlink="http://www.w3.org/1999/xlink">We use cookies to ensure that we give you the best experience on our website. If you continue, we'll assume that you are happy to receive all cookies on this website.</text>
+          <continue xmlns="http://www.sdl.com/web/schemas/core" xmlns:xlink="http://www.w3.org/1999/xlink">Continue</continue>
+          <link>
+            <linkText>Find out more</linkText>
+            <internalLink xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Content/About/Privacy%20Policy.xml" xlink:title="Privacy Policy" />
+          </link>
+        </NotificationBar>
+      </tcm:Content>
+      <tcm:Metadata />
+      <tcm:IsBasedOnTridionWebSchema>true</tcm:IsBasedOnTridionWebSchema>
+      <tcm:MultimediaType xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/400%20Example%20Site" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemFolder" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Content/_Structure/Header" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Content/About/Privacy%20Policy.xml" linkName="Content" xpath="*[local-name() = 'NotificationBar'][1]/*[local-name() = 'link'][1]/*[local-name() = 'internalLink'][1]/@xlink:href" />
+    <Dependency dependencyType="Schema" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Schemas/Notification%20Bar.xsd" linkName="Schema" />
+  </Dependencies>
+</PackageItem>
