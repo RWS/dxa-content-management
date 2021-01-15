@@ -115,9 +115,7 @@
         <!-- Update the CM content with the newly built TBBs -->
         <Move SourceFiles="$(DstFolder)\tmp\$(TemplatesDll)" DestinationFiles="$(DstFolder)\tmp\$(TemplatesTbb)" />       
         <Copy SourceFiles="$(DstFolder)\tmp\$(TemplatesTbb)" DestinationFolder="$(CmContentFolder)\all-publications\Binaries" />
-        <Copy SourceFiles="$(DstFolder)\tmp\$(TemplatesTbb)" DestinationFolder="$(CmContentFolder)\master-only\Binaries" />
-        <Copy SourceFiles="$(DstFolder)\tmp\$(TemplatesTbb)" DestinationFolder="$(CmContentFolder)\example-publications\Binaries" />
-    
+        <Copy SourceFiles="$(DstFolder)\tmp\$(TemplatesTbb)" DestinationFolder="$(CmContentFolder)\master-only\Binaries" />   
 
         <!-- Copy cm content  -->
         <Message Text="Creating CM Content artifacts ..." Importance="high" />
