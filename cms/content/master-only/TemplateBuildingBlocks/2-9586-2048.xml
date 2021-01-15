@@ -1,0 +1,21 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Add inherited metadata to page</tcm:Title>
+      <tcm:Type>CSharpTemplate</tcm:Type>
+      <tcm:Content>
+        <tcm:PublisherScript>/* This template was generated through the Tridion Assembly Template Upload */
+&lt;%RunTemplate Template="/webdav/100%20Master/Building%20Blocks/Framework/Developer/Templates/DD4T%2ETemplates/DD4T%2ETemplates%2EMerged.tbbasm" Class="DD4T.Templates.InheritMetadataPage"%&gt;</tcm:PublisherScript>
+      </tcm:Content>
+      <tcm:MetadataSchema xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+      <tcm:ParameterSchema xlink:type="simple" xlink:title="Add inherited metadata to page" xlink:href="/webdav/100%20Master/Building%20Blocks/Framework/Developer/Templates/DD4T%2ETemplates/Add%20inherited%20metadata%20to%20page.xsd" />
+      <tcm:Metadata />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/100%20Master" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemFolder" itemUrl="/webdav/100%20Master/Building%20Blocks/Framework/Developer/Templates/DD4T%2ETemplates" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="ParameterSchema" itemUrl="/webdav/100%20Master/Building%20Blocks/Framework/Developer/Templates/DD4T%2ETemplates/Add%20inherited%20metadata%20to%20page.xsd" linkName="ParameterSchema" />
+    <Dependency dependencyType="TemplateLinkedItem" itemUrl="/webdav/100%20Master/Building%20Blocks/Framework/Developer/Templates/DD4T%2ETemplates/DD4T%2ETemplates%2EMerged.tbbasm" linkName="ExtractedReferences[0]" />
+  </Dependencies>
+</PackageItem>

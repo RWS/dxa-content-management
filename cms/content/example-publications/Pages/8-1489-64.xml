@@ -1,0 +1,55 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <PrimaryBlueprintParentUrl>/webdav/110%20DXA%20Site%20Type/Home/_System/include/Footer.tpg</PrimaryBlueprintParentUrl>
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Footer</tcm:Title>
+      <tcm:FileName>footer</tcm:FileName>
+      <tcm:PageTemplate IsInherited="true" xlink:type="simple" xlink:title="Include Page" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Include%20Page.tptcmp" />
+      <tcm:ComponentPresentations>
+        <tcm:ComponentPresentation>
+          <tcm:Component xlink:type="simple" xlink:title="Footer" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer/Footer.xml" />
+          <tcm:ComponentTemplate xlink:type="simple" xlink:title="Footer Links [Links]" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Footer%20Links%20%5BLinks%5D.tctcmp" />
+          <tcm:Conditions />
+        </tcm:ComponentPresentation>
+        <tcm:ComponentPresentation>
+          <tcm:Component xlink:type="simple" xlink:title="Footer Link Group - Products" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer/Footer%20Link%20Group%20-%20Products.xml" />
+          <tcm:ComponentTemplate xlink:type="simple" xlink:title="Footer Link Group [4-Column]" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Footer%20Link%20Group%20%5B4-Column%5D.tctcmp" />
+          <tcm:Conditions />
+        </tcm:ComponentPresentation>
+        <tcm:ComponentPresentation>
+          <tcm:Component xlink:type="simple" xlink:title="Footer Link Group - Site Sections" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer/Footer%20Link%20Group%20-%20Site%20Sections.xml" />
+          <tcm:ComponentTemplate xlink:type="simple" xlink:title="Footer Link Group [4-Column]" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Footer%20Link%20Group%20%5B4-Column%5D.tctcmp" />
+          <tcm:Conditions />
+        </tcm:ComponentPresentation>
+        <tcm:ComponentPresentation>
+          <tcm:Component xlink:type="simple" xlink:title="Footer Link Group - Useful Links" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer/Footer%20Link%20Group%20-%20Useful%20Links.xml" />
+          <tcm:ComponentTemplate xlink:type="simple" xlink:title="Footer Link Group [4-Column]" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Footer%20Link%20Group%20%5B4-Column%5D.tctcmp" />
+          <tcm:Conditions />
+        </tcm:ComponentPresentation>
+        <tcm:ComponentPresentation>
+          <tcm:Component xlink:type="simple" xlink:title="Social Network Pages" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer/Social%20Network%20Pages.xml" />
+          <tcm:ComponentTemplate xlink:type="simple" xlink:title="Social Links [4-Column]" xlink:href="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Social%20Links%20%5B4-Column%5D.tctcmp" />
+          <tcm:Conditions />
+        </tcm:ComponentPresentation>
+      </tcm:ComponentPresentations>
+      <tcm:MetadataSchema xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+      <tcm:Metadata />
+      <tcm:RegionSchema xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+      <tcm:Regions />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/400%20Example%20Site" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemStructureGroup" itemUrl="/webdav/400%20Example%20Site/Home/_System/include" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="ComponentPresentationComponent" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer/Footer.xml" linkName="ComponentPresentations[0]/Component" />
+    <Dependency dependencyType="ComponentPresentationComponent" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer/Footer%20Link%20Group%20-%20Products.xml" linkName="ComponentPresentations[1]/Component" />
+    <Dependency dependencyType="ComponentPresentationComponent" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer/Footer%20Link%20Group%20-%20Site%20Sections.xml" linkName="ComponentPresentations[2]/Component" />
+    <Dependency dependencyType="ComponentPresentationComponent" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer/Footer%20Link%20Group%20-%20Useful%20Links.xml" linkName="ComponentPresentations[3]/Component" />
+    <Dependency dependencyType="ComponentPresentationComponent" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer/Social%20Network%20Pages.xml" linkName="ComponentPresentations[4]/Component" />
+    <Dependency dependencyType="ComponentPresentationComponentTemplate" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Footer%20Links%20%5BLinks%5D.tctcmp" linkName="ComponentPresentations[0]/ComponentTemplate" />
+    <Dependency dependencyType="ComponentPresentationComponentTemplate" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Footer%20Link%20Group%20%5B4-Column%5D.tctcmp" linkName="ComponentPresentations[1]/ComponentTemplate" />
+    <Dependency dependencyType="ComponentPresentationComponentTemplate" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Footer%20Link%20Group%20%5B4-Column%5D.tctcmp" linkName="ComponentPresentations[2]/ComponentTemplate" />
+    <Dependency dependencyType="ComponentPresentationComponentTemplate" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Footer%20Link%20Group%20%5B4-Column%5D.tctcmp" linkName="ComponentPresentations[3]/ComponentTemplate" />
+    <Dependency dependencyType="ComponentPresentationComponentTemplate" itemUrl="/webdav/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates/Social%20Links%20%5B4-Column%5D.tctcmp" linkName="ComponentPresentations[4]/ComponentTemplate" />
+  </Dependencies>
+</PackageItem>

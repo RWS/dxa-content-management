@@ -1,0 +1,31 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Teaser</tcm:Title>
+      <tcm:Type>Normal</tcm:Type>
+      <tcm:Schema xlink:type="simple" xlink:title="Teaser" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Teaser.xsd" IsMandatory="false" />
+      <tcm:Content>
+        <Teaser xmlns="http://www.sdl.com/web/schemas/core">
+          <headline>Teaser Heading</headline>
+          <content>Teaser Content</content>
+          <media xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/Medium%20Image.jpg" xlink:title="Medium Image" />
+          <link>
+            <linkText>Teaser Link Text</linkText>
+            <internalLink xmlns:xlink="http://www.w3.org/1999/xlink" xlink:type="simple" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/Article.xml" xlink:title="Article" />
+            <alternateText>Teaser Alternate Link Text</alternateText>
+          </link>
+        </Teaser>
+      </tcm:Content>
+      <tcm:Metadata />
+      <tcm:IsBasedOnTridionWebSchema>true</tcm:IsBasedOnTridionWebSchema>
+      <tcm:MultimediaType xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/110%20DXA%20Site%20Type" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemFolder" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/Medium%20Image.jpg" linkName="Content" xpath="*[local-name() = 'Teaser'][1]/*[local-name() = 'media'][1]/@xlink:href" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/Article.xml" linkName="Content" xpath="*[local-name() = 'Teaser'][1]/*[local-name() = 'link'][1]/*[local-name() = 'internalLink'][1]/@xlink:href" />
+    <Dependency dependencyType="Schema" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Teaser.xsd" linkName="Schema" />
+  </Dependencies>
+</PackageItem>
