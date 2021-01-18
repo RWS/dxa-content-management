@@ -309,9 +309,9 @@
         <!-- Copy cm content (web8) -->
         <Message Text="Creating CM Content artifacts (web8)..." Importance="high" />
 
-        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\web8\all-publications" ZipFileName="$(DstFolder)\tmp\all-publications.zip"/>        
-        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\web8\master-only" ZipFileName="$(DstFolder)\tmp\master-only.zip"/>
-        <Copy SourceFiles="$(DstFolder)\tmp\all-publications.zip" DestinationFolder="$(DstFolder)\web8" />        
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\web8\all-publications" ZipFileName="$(DstFolder)\tmp\all-publications.zip" RemoveRoot="$(CmContentFolder)\web8\all-publications" />
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\web8\master-only" ZipFileName="$(DstFolder)\tmp\master-only.zip" RemoveRoot="$(CmContentFolder)\web8\master-only" />
+        <Copy SourceFiles="$(DstFolder)\tmp\all-publications.zip" DestinationFolder="$(DstFolder)\web8" />
         <Copy SourceFiles="$(DstFolder)\tmp\master-only.zip" DestinationFolder="$(DstFolder)\web8" />
         <Copy SourceFiles="$(CmContentFolder)\web8\permissions.xml" DestinationFolder="$(DstFolder)\web8" />
 
@@ -319,9 +319,9 @@
         <!-- Copy cm content (sites9) -->
         <Message Text="Creating CM Content artifacts (sites9)..." Importance="high" />
 
-        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\sites9\all-publications" ZipFileName="$(DstFolder)\tmp\all-publications.zip"/>
-        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\sites9\framework-only" ZipFileName="$(DstFolder)\tmp\framework-only.zip"/>
-        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\sites9\master-only" ZipFileName="$(DstFolder)\tmp\master-only.zip"/>
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\sites9\all-publications" ZipFileName="$(DstFolder)\tmp\all-publications.zip" RemoveRoot="$(CmContentFolder)\sites9\all-publications" />
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\sites9\framework-only" ZipFileName="$(DstFolder)\tmp\framework-only.zip" RemoveRoot="$(CmContentFolder)\sites9\framework-only"/>
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\sites9\master-only" ZipFileName="$(DstFolder)\tmp\master-only.zip" RemoveRoot="$(CmContentFolder)\sites9\master-only"/>
 
         <Copy SourceFiles="$(DstFolder)\tmp\all-publications.zip" DestinationFolder="$(DstFolder)\sites9" />
         <Copy SourceFiles="$(DstFolder)\tmp\framework-only.zip" DestinationFolder="$(DstFolder)\sites9" />
