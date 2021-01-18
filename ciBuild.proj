@@ -120,9 +120,9 @@
         <!-- Copy cm content  -->
         <Message Text="Creating CM Content artifacts ..." Importance="high" />
 
-        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\all-publications" ZipFileName="$(DstFolder)\tmp\all-publications.zip"/>        
-        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\master-only" ZipFileName="$(DstFolder)\tmp\master-only.zip"/>
-        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\example-publications" ZipFileName="$(DstFolder)\tmp\example-publications.zip"/>
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\all-publications" ZipFileName="$(DstFolder)\tmp\all-publications.zip" RemoveRoot="$(CmContentFolder)\all-publications"/>        
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\master-only" ZipFileName="$(DstFolder)\tmp\master-only.zip" RemoveRoot="$(CmContentFolder)\master-only"/>
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\example-publications" ZipFileName="$(DstFolder)\tmp\example-publications.zip" RemoveRoot="$(CmContentFolder)\example-publications"/>
         <Copy SourceFiles="$(DstFolder)\tmp\all-publications.zip" DestinationFolder="$(DstFolder)" />        
         <Copy SourceFiles="$(DstFolder)\tmp\master-only.zip" DestinationFolder="$(DstFolder)" />
         <Copy SourceFiles="$(DstFolder)\tmp\example-publications.zip" DestinationFolder="$(DstFolder)" />
