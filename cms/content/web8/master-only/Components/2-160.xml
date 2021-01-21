@@ -1,0 +1,39 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Core Resources</tcm:Title>
+      <tcm:Type>Normal</tcm:Type>
+      <tcm:Schema xlink:type="simple" xlink:title="Resources - Core" xlink:href="/webdav/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Schemas/Resources%20-%20Core.xsd" IsMandatory="false" />
+      <tcm:Content>
+        <ResourcesCore xmlns="http://www.sdl.com/web/schemas/core">
+          <readMoreLinkText>Read More</readMoreLinkText>
+          <toggleNavigationText>Toggle Navigation</toggleNavigationText>
+          <sectionErrorMessage>A problem occurred while rendering this section</sectionErrorMessage>
+          <todayText>Today</todayText>
+          <yesterdayText>Yesterday</yesterdayText>
+          <xDaysAgoText>{0} days ago</xDaysAgoText>
+          <showingItemsText>Showing items {0} to {1}</showingItemsText>
+          <addressHeadingText>Address</addressHeadingText>
+          <placeContactHeadingText>Contact Details</placeContactHeadingText>
+          <teleponeCaptionText>Telephone:</teleponeCaptionText>
+          <faxCaptionText>Fax:</faxCaptionText>
+          <emailCaptionText>Email:</emailCaptionText>
+          <directionsLinkText>Directions to this location</directionsLinkText>
+          <largeMapLinkText>View Large Map</largeMapLinkText>
+          <visitUsSocialLinkTitle>Visit us on {0}</visitUsSocialLinkTitle>
+          <shareOnSocialCaption>Share:</shareOnSocialCaption>
+          <shareOnSocialLinkTitle>Share this page on {0}</shareOnSocialLinkTitle>
+          <redirectEditorHintText>Edit redirect URL in page metadata</redirectEditorHintText>
+        </ResourcesCore>
+      </tcm:Content>
+      <tcm:Metadata />
+      <tcm:IsBasedOnTridionWebSchema>true</tcm:IsBasedOnTridionWebSchema>
+      <tcm:MultimediaType xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/100%20Master" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemFolder" itemUrl="/webdav/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="Schema" itemUrl="/webdav/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Schemas/Resources%20-%20Core.xsd" linkName="Schema" />
+  </Dependencies>
+</PackageItem>

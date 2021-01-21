@@ -1,0 +1,39 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Section</tcm:Title>
+      <tcm:Type>Normal</tcm:Type>
+      <tcm:Schema xlink:type="simple" xlink:title="Article" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Article.xsd" IsMandatory="false" />
+      <tcm:Content>
+        <Article xmlns="http://www.sdl.com/web/schemas/core">
+          <headline>Section Heading</headline>
+          <image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/Large%20Image.jpg" xlink:title="Large Image" />
+          <articleBody>
+            <subheading>Section Subheading</subheading>
+            <content>
+              <p xmlns="http://www.w3.org/1999/xhtml">A Section just starts with an <strong>Article</strong>, and is then followed by some <strong>Teasers</strong>. These teasers can be in a single, two or three column layout.</p>
+<p xmlns="http://www.w3.org/1999/xhtml">It is also possible to add teasers with a map (Place), a YouTube video, and even a <strong>Content Query</strong>.</p></content>
+          </articleBody>
+        </Article>
+      </tcm:Content>
+      <tcm:Metadata>
+        <Metadata xmlns="http://www.sdl.com/web/schemas/core">
+          <standardMeta>
+            <dateCreated>2014-08-31T10:00:00</dateCreated>
+            <description>Section Meta Description Nam ut leo vel purus aliquam mollis et sit amet orci. Proin dignissim ligula a arcu lacinia dictum. </description>
+            <name>Section Short Title</name>
+            <introText>Nam ut leo vel purus aliquam mollis et sit amet orci. Proin dignissim ligula a arcu lacinia dictum. </introText>
+          </standardMeta>
+        </Metadata>
+      </tcm:Metadata>
+      <tcm:IsBasedOnTridionWebSchema>true</tcm:IsBasedOnTridionWebSchema>
+      <tcm:MultimediaType xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/110%20DXA%20Site%20Type" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemFolder" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="LinkedComponent" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content/Large%20Image.jpg" linkName="Content" xpath="*[local-name() = 'Article'][1]/*[local-name() = 'image'][1]/@xlink:href" />
+    <Dependency dependencyType="Schema" itemUrl="/webdav/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Article.xsd" linkName="Schema" />
+  </Dependencies>
+</PackageItem>

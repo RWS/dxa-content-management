@@ -1,0 +1,283 @@
+<Mappings xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <ItemSet role="Publication">
+    <Mapping exportTitle="000%20Empty" importTitle="" />
+    <Mapping exportTitle="100%20Master" importTitle="" />
+  </ItemSet>
+  <ItemSet role="Folder">
+    <Mapping exportContext="/000%20Empty" exportTitle="Building%20Blocks" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master" exportTitle="Building%20Blocks" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks" exportTitle="Content" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks" exportTitle="Framework" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework" exportTitle="Developer" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer" exportTitle="Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates" exportTitle="DXA%2ELegacy" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates" exportTitle="DXA%2ER2" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates" exportTitle="DXA%2EUpgrade" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework" exportTitle="Site%20Manager" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Site%20Manager" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks" exportTitle="Modules" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks" exportTitle="Modules%20Content" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules" exportTitle="Core" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core" exportTitle="Admin" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core" exportTitle="Editor" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Embedded" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Metadata" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Page%20Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Region%20Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor" exportTitle="Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core" exportTitle="Site%20Manager" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Schemas" exportTitle="Embedded" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager" exportTitle="Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks" exportTitle="Settings" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Settings" exportTitle="Core" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Settings/Core" exportTitle="Admin" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Settings/Core" exportTitle="Site%20Manager" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="StructureGroup">
+    <Mapping exportContext="/000%20Empty" exportTitle="Home" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master" exportTitle="Home" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Home" exportTitle="_System" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Home/_System" exportTitle="config" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Home/_System" exportTitle="include" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Home/_System" exportTitle="mappings" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Home/_System" exportTitle="resources" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="Schema">
+    <Mapping exportContext="" exportTitle="Search%20Folder.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Schemas" exportTitle="Component%20Template%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Schemas" exportTitle="Module%20Configuration.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Schemas" exportTitle="Module%20Dependency.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Schemas" exportTitle="Page%20Template%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Schemas" exportTitle="Region%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Schemas" exportTitle="ZIP%20file.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Add%20inherited%20metadata%20to%20component.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Add%20inherited%20metadata%20to%20page.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Generate%20Dynamic%20Component%20%28DXA%29.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Generate%20dynamic%20component%20presentation.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Generate%20dynamic%20component.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Generate%20Dynamic%20Page%20%28DXA%29.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Generate%20dynamic%20page.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Generate%20Resources.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Publish%20binaries%20for%20component.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Publish%20binaries%20for%20page.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Publish%20HTML%20Design.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Publish%20Mappings.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Resolve%20Rich%20Text.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Generate%20DXA%20R2%20Entity%20Model.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Generate%20DXA%20R2%20Page%20Model.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Publish%20HTML%20Design.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Publish%20Mappings.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Site%20Manager/Schemas" exportTitle="Bootstrap%20Configuration.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Site%20Manager/Schemas" exportTitle="Favicon.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Site%20Manager/Schemas" exportTitle="General%20Configuration.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Site%20Manager/Schemas" exportTitle="HTML%20Design%20Configuration.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Site%20Manager/Schemas" exportTitle="Module%20Design%20Configuration.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Site%20Manager/Schemas" exportTitle="Name%20Value%20Pair.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Site%20Manager/Schemas" exportTitle="Publication%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Article.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Content%20Query.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Download.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Embedded" exportTitle="Item%20List%20Element.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Embedded" exportTitle="Link.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Embedded" exportTitle="Location%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Embedded" exportTitle="Paragraph.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Embedded" exportTitle="Standard%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Image.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Item%20List.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Link%20List.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Metadata" exportTitle="Redirect%20Page%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="News%20Article.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Page%20Schemas" exportTitle="Content%20Page.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Page%20Schemas" exportTitle="Home%20Page.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Page%20Schemas" exportTitle="Include%20Page%20%28Footer%29.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Page%20Schemas" exportTitle="Include%20Page%20%28Header%29.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Page%20Schemas" exportTitle="Include%20Page%20%28Left%29.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Page%20Schemas" exportTitle="Include%20Page%20%28Tools%29.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Page%20Schemas" exportTitle="Include%20Page.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Page%20Schemas" exportTitle="News%20Page.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Page%20Schemas" exportTitle="Redirect%20Page.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Page%20Schemas" exportTitle="Section%20Page.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Place.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas" exportTitle="%5BArticle%5D%20Region.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas" exportTitle="%5BContent%5D%20Region.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas" exportTitle="%5BHero%5D%20Region.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas" exportTitle="%5BInfo%5D%20Region.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas" exportTitle="%5BLeft%5D%20Region.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas" exportTitle="%5BLinks%5D%20Region.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas" exportTitle="%5BLogo%5D%20Region.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas" exportTitle="%5BMain%20Section%5D%20Region.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas" exportTitle="%5BMain%5D%20Region.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas" exportTitle="%5BMulti-Column%5D%20Region.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas" exportTitle="%5BNav%5D%20Region.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Region%20Schemas" exportTitle="%5BTools%5D%20Region.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Teaser.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="YouTube%20Video.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Schemas/Embedded" exportTitle="Social%20Link.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Schemas" exportTitle="Language%20Selector%20Configuration.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Schemas" exportTitle="Navigation%20Configuration.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Schemas" exportTitle="Notification%20Bar.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Schemas" exportTitle="Resources%20-%20Core.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Schemas" exportTitle="Resources%20-%20Custom.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Schemas" exportTitle="Social%20Links.xsd" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="Component">
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Admin" exportTitle="Build%20Files.zip" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Admin" exportTitle="Core.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Admin" exportTitle="HTML%20Design.zip" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Settings/Core/Admin" exportTitle="Environment%20Configuration.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="Bootstrap%20Configuration.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="Core%20Resources.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="Custom%20Resources.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="Favicon.ico" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="HTML%20Design%20Configuration.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="Language%20Selector%20Configuration.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="Localization%20Configuration.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="Navigation%20Configuration.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="Site%20Configuration.xml" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="ComponentTemplate">
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates" exportTitle="Generate%20Data%20Presentation.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates" exportTitle="Generate%20Navigation.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates" exportTitle="Publish%20HTML%20Design.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates" exportTitle="Publish%20Settings.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Accordion.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Article.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Carousel.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Download.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="List.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Paged%20List.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Place.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Tab.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Teaser%20-%20Image%20Overlay.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Teaser%20Map.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Teaser.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Thumbnail%20List.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="YouTube%20Video.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Breadcrumb.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Cookie%20Notification%20Bar.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Footer%20Link%20Group.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Footer%20Links.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Header%20Links.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Header%20Logo.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Language%20Selector.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Left%20Navigation.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Old%20Browser%20Notification%20Bar.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Sitemap.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Social%20Links.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Social%20Sharing.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Top%20Navigation.tctcmp" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="Page">
+    <Mapping exportContext="/100%20Master/Home" exportTitle="_Navigation.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Home/_System" exportTitle="Publish%20Settings.tpg" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="PageTemplate">
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates" exportTitle="JSON.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Content%20Page%20Without%20Navigation.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Content%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Home%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Include%20Page%20%28Footer%29.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Include%20Page%20%28Header%29.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Include%20Page%20%28Left%29.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Include%20Page%20%28Tools%29.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="News%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Redirect%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Section%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Include%20Page.tptcmp" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="Category">
+    <Mapping exportContext="/100%20Master" exportTitle="Content%20Type" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master" exportTitle="List%20Sort%20Type" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master" exportTitle="Navigation%20Type" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master" exportTitle="Sitemap%20%5BNavigation%5D" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master" exportTitle="Social%20Networks" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="Keyword">
+    <Mapping exportContext="/100%20Master/Content%20Type" exportTitle="Article.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Content%20Type" exportTitle="News%20Article.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/List%20Sort%20Type" exportTitle="Content%20Date%20%28metadata%29.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/List%20Sort%20Type" exportTitle="Item%20Title.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/List%20Sort%20Type" exportTitle="Last%20Published%20Date.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/List%20Sort%20Type" exportTitle="No%20Sorting.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Navigation%20Type" exportTitle="Localizable%20-%20Based%20on%20Component%20content%2Fmetadata%20field%20values.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Navigation%20Type" exportTitle="Simple%20-%20Based%20on%20Page%20and%20Structure%20Group%20titles.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Social%20Networks" exportTitle="Facebook.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Social%20Networks" exportTitle="Google%2B.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Social%20Networks" exportTitle="LinkedIn.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Social%20Networks" exportTitle="Pinterest.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Social%20Networks" exportTitle="Twitter.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Social%20Networks" exportTitle="YouTube.tkw" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="TemplateBuildingBlock">
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Add%20inherited%20metadata%20to%20component.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Add%20inherited%20metadata%20to%20page.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Add%20Target%20Groups.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Compress%20Output.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="DD4T%2ETemplates%2EMerged.tbbasm" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Default%20Component%20Template%20Finish%20Actions%20%28Legacy%29.tbbcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Default%20Page%20Template%20Finish%20Actions%20%28Legacy%29.tbbcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Generate%20Dynamic%20Component%20%28DXA%29.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Generate%20dynamic%20component%20presentation.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Generate%20dynamic%20component.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Generate%20Dynamic%20Page%20%28DXA%29.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Generate%20dynamic%20page.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Generate%20Resources.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Generate%20Sitemap.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Preview%20page.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Publish%20binaries%20for%20component.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Publish%20binaries%20for%20page.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Publish%20Configuration.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Publish%20HTML%20Design.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Publish%20Mappings.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Publish%20Resources.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Render%20Component%20Content%20%28Legacy%29.tbbcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Render%20Component%20Presentations.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Render%20Page%20Content%20%28Legacy%29.tbbcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Resolve%20Rich%20Text.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Sdl%2EWeb%2ETridion%2ETemplates%2ELegacy%2Emerged.tbbasm" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Default%20Component%20Template%20Finish%20Actions.tbbcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Default%20Page%20Template%20Finish%20Actions.tbbcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Generate%20DXA%20R2%20Entity%20Model.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Generate%20DXA%20R2%20Page%20Model.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Generate%20Sitemap.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Publish%20Configuration.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Publish%20HTML%20Design.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Publish%20Mappings.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Publish%20Resources.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Render%20Component%20Content.tbbcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Render%20Component%20Presentations.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Render%20Page%20Content.tbbcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Sdl%2EWeb%2ETridion%2ETemplates%2ER2%2Emerged.tbbasm" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="VirtualFolder">
+    <Mapping exportContext="/000%20Empty/Building%20Blocks" exportTitle="Modified%20in%20the%20last%207%20days" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="MultimediaType">
+    <Mapping exportTitle="Bitmap%20image.tmt" importTitle="" />
+    <Mapping exportTitle="Cascading%20style%20sheets.tmt" importTitle="" />
+    <Mapping exportTitle="Configuration%20settings.tmt" importTitle="" />
+    <Mapping exportTitle="Excel%20sheet.tmt" importTitle="" />
+    <Mapping exportTitle="Executable.tmt" importTitle="" />
+    <Mapping exportTitle="Favicon.tmt" importTitle="" />
+    <Mapping exportTitle="Flash%20file.tmt" importTitle="" />
+    <Mapping exportTitle="Gif%20image.tmt" importTitle="" />
+    <Mapping exportTitle="Java%20script.tmt" importTitle="" />
+    <Mapping exportTitle="Jpeg%20image.tmt" importTitle="" />
+    <Mapping exportTitle="Mp3%20music.tmt" importTitle="" />
+    <Mapping exportTitle="Mpeg%20video.tmt" importTitle="" />
+    <Mapping exportTitle="MSAccess%20database.tmt" importTitle="" />
+    <Mapping exportTitle="Pdf%20document.tmt" importTitle="" />
+    <Mapping exportTitle="Plain%20text.tmt" importTitle="" />
+    <Mapping exportTitle="Png%20image.tmt" importTitle="" />
+    <Mapping exportTitle="Powerpoint%20presentation.tmt" importTitle="" />
+    <Mapping exportTitle="QuickTime%20movie.tmt" importTitle="" />
+    <Mapping exportTitle="Real%20player.tmt" importTitle="" />
+    <Mapping exportTitle="Rich%20text.tmt" importTitle="" />
+    <Mapping exportTitle="Sound%20file.tmt" importTitle="" />
+    <Mapping exportTitle="Word%20document.tmt" importTitle="" />
+    <Mapping exportTitle="Zip%20file.tmt" importTitle="" />
+  </ItemSet>
+</Mappings>

@@ -1,0 +1,27 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>_Navigation</tcm:Title>
+      <tcm:FileName>navigation</tcm:FileName>
+      <tcm:PageTemplate IsInherited="false" xlink:type="simple" xlink:title="JSON" xlink:href="/webdav/100%20Master/Building%20Blocks/Framework/Developer/Templates/JSON.tptcmp" />
+      <tcm:ComponentPresentations>
+        <tcm:ComponentPresentation>
+          <tcm:Component xlink:type="simple" xlink:title="Navigation Configuration" xlink:href="/webdav/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager/Navigation%20Configuration.xml" />
+          <tcm:ComponentTemplate xlink:type="simple" xlink:title="Generate Navigation" xlink:href="/webdav/100%20Master/Building%20Blocks/Framework/Developer/Templates/Generate%20Navigation.tctcmp" />
+          <tcm:Conditions />
+        </tcm:ComponentPresentation>
+      </tcm:ComponentPresentations>
+      <tcm:MetadataSchema xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+      <tcm:Metadata />
+      <tcm:RegionSchema xlink:type="simple" xlink:title="" xlink:href="tcm:0-0-0" />
+      <tcm:Regions />
+    </tcm:Data>
+  </Data>
+  <Dependencies>
+    <Dependency dependencyType="Publication" itemUrl="/webdav/100%20Master" linkName="LocationInfo/ContextRepository" />
+    <Dependency dependencyType="OrganizationalItemStructureGroup" itemUrl="/webdav/100%20Master/Home" linkName="LocationInfo/OrganizationalItem" />
+    <Dependency dependencyType="ComponentPresentationComponent" itemUrl="/webdav/100%20Master/Building%20Blocks/Settings/Core/Site%20Manager/Navigation%20Configuration.xml" linkName="ComponentPresentations[0]/Component" />
+    <Dependency dependencyType="ComponentPresentationComponentTemplate" itemUrl="/webdav/100%20Master/Building%20Blocks/Framework/Developer/Templates/Generate%20Navigation.tctcmp" linkName="ComponentPresentations[0]/ComponentTemplate" />
+    <Dependency dependencyType="PageTemplate" itemUrl="/webdav/100%20Master/Building%20Blocks/Framework/Developer/Templates/JSON.tptcmp" linkName="PageTemplate" />
+  </Dependencies>
+</PackageItem>

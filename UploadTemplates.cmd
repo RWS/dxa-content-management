@@ -1,1 +1,0 @@
-msbuild ciBuild.proj /t:DeployOutput /property:BuildConfiguration=Debug

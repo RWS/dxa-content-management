@@ -1,0 +1,141 @@
+<export>
+  <publication path="/webdav/000%20Empty">
+    <rights group="Editor">None</rights>
+    <rights group="Site Manager">None</rights>
+    <rights group="Developer">PublicationAccess,FolderManagement,ComponentTemplateManagement,PageTemplateManagement,TemplateBuildingBlockManagement,VirtualFolderManagement</rights>
+  </publication>
+  <publication path="/webdav/100%20Master">
+    <rights group="Editor">PublicationAccess,FolderManagement,ComponentManagement,PageManagement,PublishManagement,VirtualFolderManagement</rights>
+    <rights group="Site Manager">PublicationAccess,FolderManagement,StructureGroupManagement,ComponentManagement,PageManagement,PublishManagement,WorkflowManagement,CategoryManagement,VirtualFolderManagement,BundleManagement</rights>
+    <rights group="Developer">PublicationAccess,FolderManagement,ComponentTemplateManagement,PageTemplateManagement,TemplateBuildingBlockManagement,VirtualFolderManagement</rights>
+  </publication>
+  <publication path="/webdav/110%20DXA%20Site%20Type">
+    <rights group="Editor">PublicationAccess,FolderManagement,ComponentManagement,PageManagement,PublishManagement,VirtualFolderManagement</rights>
+    <rights group="Site Manager">PublicationAccess,FolderManagement,StructureGroupManagement,ComponentManagement,PageManagement,PublishManagement,WorkflowManagement,CategoryManagement,VirtualFolderManagement,BundleManagement</rights>
+    <rights group="Developer">PublicationAccess,FolderManagement,ComponentTemplateManagement,PageTemplateManagement,TemplateBuildingBlockManagement,VirtualFolderManagement</rights>
+  </publication>
+  <publication path="/webdav/200%20Example%20Content">
+    <rights group="Editor">PublicationAccess,FolderManagement,ComponentManagement,PageManagement,PublishManagement,VirtualFolderManagement</rights>
+    <rights group="Site Manager">PublicationAccess,FolderManagement,StructureGroupManagement,ComponentManagement,PageManagement,PublishManagement,WorkflowManagement,CategoryManagement,VirtualFolderManagement,BundleManagement</rights>
+    <rights group="Developer">PublicationAccess,FolderManagement,ComponentTemplateManagement,PageTemplateManagement,TemplateBuildingBlockManagement,VirtualFolderManagement</rights>
+  </publication>
+  <publication path="/webdav/400%20Example%20Site">
+    <rights group="Editor">PublicationAccess,FolderManagement,ComponentManagement,PageManagement,PublishManagement,VirtualFolderManagement</rights>
+    <rights group="Site Manager">PublicationAccess,FolderManagement,StructureGroupManagement,ComponentManagement,PageManagement,PublishManagement,WorkflowManagement,CategoryManagement,VirtualFolderManagement,BundleManagement</rights>
+    <rights group="Developer">PublicationAccess,FolderManagement,ComponentTemplateManagement,PageTemplateManagement,TemplateBuildingBlockManagement,VirtualFolderManagement</rights>
+  </publication>
+  <organizationalItem path="/webdav/000%20Empty/Building%20Blocks">
+    <permissions group="Everyone">All</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">None</permissions>
+    <permissions group="Developer">None</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/000%20Empty/Building%20Blocks/Default%20Templates">
+    <permissions group="Everyone">None</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">None</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/000%20Empty/Home">
+    <permissions group="Everyone">Read</permissions>
+    <permissions group="Editor">All</permissions>
+    <permissions group="Site Manager">All</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Building%20Blocks/Framework">
+    <permissions group="Everyone">Read</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">None</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Building%20Blocks/Framework/Developer">
+    <permissions group="Everyone">None</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">None</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Building%20Blocks/Framework/Site%20Manager">
+    <permissions group="Everyone">None</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">Read</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Building%20Blocks/Modules">
+    <permissions group="Everyone">Read</permissions>
+    <permissions group="Editor">All</permissions>
+    <permissions group="Site Manager">All</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Building%20Blocks/Settings">
+    <permissions group="Everyone">Read</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">All</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Content%20Type">
+    <permissions group="Everyone">Read</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">Read,Write,Localize</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/List%20Sort%20Type">
+    <permissions group="Everyone">Read</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">None</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Navigation%20Type">
+    <permissions group="Everyone">Read</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">None</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Social%20Networks">
+    <permissions group="Everyone">Read</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">None</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Building%20Blocks/Modules/Core/Admin">
+    <permissions group="Everyone">Read</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">None</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Building%20Blocks/Modules/Core/Editor">
+    <permissions group="Everyone">Read</permissions>
+    <permissions group="Editor">All</permissions>
+    <permissions group="Site Manager">All</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager">
+    <permissions group="Everyone">Read</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">All</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Schemas">
+    <permissions group="Everyone">None</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">All</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Schemas/Embedded">
+    <permissions group="Everyone">Read</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">All</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates">
+    <permissions group="Everyone">None</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">All</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+  <organizationalItem path="/webdav/100%20Master/Building%20Blocks/Settings/Core/Admin">
+    <permissions group="Everyone">Read</permissions>
+    <permissions group="Editor">None</permissions>
+    <permissions group="Site Manager">None</permissions>
+    <permissions group="Developer">All</permissions>
+  </organizationalItem>
+</export>
