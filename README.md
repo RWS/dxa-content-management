@@ -2,7 +2,7 @@ SDL Digital Experience Accelerator CM-side framework
 ===
 Build status
 ------------
-- 1.8: [![Build Status](https://travis-ci.com/sdl/dxa-content-management.svg?branch=release%2F1.8)](https://travis-ci.com/sdl/dxa-content-management)
+- 1.8: ![Build Status](https://github.com/sdl/dxa-content-management/workflows/Build/badge.svg?branch=release/1.8)
 
 About
 -----
