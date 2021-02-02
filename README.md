@@ -3,7 +3,6 @@ SDL Digital Experience Accelerator CM-side framework
 Build status
 ------------
 - Develop: ![Build Status](https://github.com/sdl/dxa-content-management/workflows/Build/badge.svg?branch=develop)
-- 2.2: ![Build Status](https://github.com/sdl/dxa-content-management/workflows/Build/badge.svg?branch=release/2.2)
 - 1.8: ![Build Status](https://github.com/sdl/dxa-content-management/workflows/Build/badge.svg?branch=release/1.8)
 
 About
