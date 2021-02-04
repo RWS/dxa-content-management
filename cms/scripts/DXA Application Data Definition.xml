@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ApplicationDataCategories xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Configuration/2013">
+  <ApplicationDataCategory name="Digital Experience Accelerator" description="Digital Experience Accelerator">
+	<ApplicationId pattern="http://www.sdl.com/tridion/SemanticMapping/vocabularies" tcmUriXPath="" />
+	<ApplicationId pattern="http://www.sdl.com/tridion/SemanticMapping/typeof" tcmUriXPath="//@xlink:href" />
+  </ApplicationDataCategory>
+</ApplicationDataCategories>

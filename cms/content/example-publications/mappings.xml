@@ -1,0 +1,509 @@
+<Mappings xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <ItemSet role="Publication">
+    <Mapping exportTitle="000%20Empty" importTitle="" />
+    <Mapping exportTitle="100%20Master" importTitle="" />
+    <Mapping exportTitle="110%20DXA%20Site%20Type" importTitle="" />
+    <Mapping exportTitle="200%20Example%20Content" importTitle="" />
+    <Mapping exportTitle="400%20Example%20Site" importTitle="" />
+  </ItemSet>
+  <ItemSet role="Folder">
+    <Mapping exportContext="/000%20Empty" exportTitle="Building%20Blocks" importContext="" importTitle="" />
+    <Mapping exportContext="/000%20Empty/Building%20Blocks" exportTitle="Default%20Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master" exportTitle="Building%20Blocks" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks" exportTitle="Content" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks" exportTitle="Framework" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework" exportTitle="Developer" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer" exportTitle="Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates" exportTitle="DXA%2ER2" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework" exportTitle="Site%20Manager" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Site%20Manager" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks" exportTitle="Modules" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules" exportTitle="Core" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core" exportTitle="Admin" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core" exportTitle="Editor" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Embedded" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Metadata" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor" exportTitle="Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core" exportTitle="Site%20Manager" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager" exportTitle="Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type" exportTitle="Building%20Blocks" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks" exportTitle="Content" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content" exportTitle="_Cloneable%20Content" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content" exportTitle="_Structure" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Structure" exportTitle="Footer" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Structure" exportTitle="Header" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content" exportTitle="Articles" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/Articles" exportTitle="News" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content" exportTitle="Images" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content" exportTitle="Video" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks" exportTitle="Default%20Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks" exportTitle="Framework" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Framework" exportTitle="Developer" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Framework/Developer" exportTitle="Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Framework" exportTitle="Site%20Manager" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Framework/Site%20Manager" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks" exportTitle="Modules" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules" exportTitle="Core" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core" exportTitle="Editor" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Metadata" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor" exportTitle="Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core" exportTitle="Site%20Manager" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager" exportTitle="Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks" exportTitle="Settings" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Settings" exportTitle="Core" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Settings/Core" exportTitle="Site%20Manager" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content" exportTitle="Building%20Blocks" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks" exportTitle="Content" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content" exportTitle="_Structure" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/_Structure" exportTitle="Header" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content" exportTitle="About" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content" exportTitle="Articles" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Articles" exportTitle="News" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content" exportTitle="Downloads" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content" exportTitle="Further%20Information" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content" exportTitle="Homepage" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content" exportTitle="Images" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Images" exportTitle="Large" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content" exportTitle="Video" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks" exportTitle="Default%20Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks" exportTitle="Modules" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Modules" exportTitle="Core" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Modules/Core" exportTitle="Editor" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Modules/Core/Editor" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Modules/Core/Editor" exportTitle="Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site" exportTitle="Building%20Blocks" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks" exportTitle="Content" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content" exportTitle="_Cloneable%20Content" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content" exportTitle="_Structure" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure" exportTitle="Footer" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure" exportTitle="Header" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content" exportTitle="About" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content" exportTitle="Articles" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Articles" exportTitle="News" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content" exportTitle="Downloads" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content" exportTitle="Further%20Information" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content" exportTitle="Homepage" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content" exportTitle="Images" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Images" exportTitle="Large" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content" exportTitle="Video" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks" exportTitle="Default%20Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks" exportTitle="Framework" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Framework" exportTitle="Site%20Manager" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Framework/Site%20Manager" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks" exportTitle="Modules" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules" exportTitle="Core" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core" exportTitle="Editor" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor" exportTitle="Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core" exportTitle="Site%20Manager" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager" exportTitle="Schemas" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager" exportTitle="Templates" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks" exportTitle="Settings" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Settings" exportTitle="Core" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Settings/Core" exportTitle="Site%20Manager" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="StructureGroup">
+    <Mapping exportContext="/100%20Master" exportTitle="Home" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Home" exportTitle="_System" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Home/_System" exportTitle="config" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Home/_System" exportTitle="include" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Home/_System" exportTitle="mappings" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Home/_System" exportTitle="resources" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type" exportTitle="Home" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home" exportTitle="_Page%20Types" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home" exportTitle="_System" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System" exportTitle="assets" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System/assets" exportTitle="css" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System/assets" exportTitle="fonts" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System/assets" exportTitle="images" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System/assets" exportTitle="scripts" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System" exportTitle="config" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System" exportTitle="include" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System" exportTitle="mappings" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System" exportTitle="resources" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site" exportTitle="Home" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home" exportTitle="_System" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/_System" exportTitle="include" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home" exportTitle="010%20Articles" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/010%20Articles" exportTitle="010%20News" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home" exportTitle="020%20Further%20Information" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home" exportTitle="About" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="Schema">
+    <Mapping exportContext="/000%20Empty/Building%20Blocks" exportTitle="Default%20Multimedia%20Schema.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Schemas" exportTitle="Page%20Template%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Schemas" exportTitle="Region%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Site%20Manager/Schemas" exportTitle="Publication%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Article.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Download.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Embedded" exportTitle="Link.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Embedded" exportTitle="Paragraph.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Embedded" exportTitle="Standard%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Image.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas/Metadata" exportTitle="Redirect%20Page%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="News%20Article.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="YouTube%20Video.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks" exportTitle="Default%20Multimedia%20Schema.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Framework/Site%20Manager/Schemas" exportTitle="Page%20Navigation%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Article.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Content%20Query.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Image.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Item%20List.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas/Metadata" exportTitle="Redirect%20Page%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="News%20Article.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Place.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Teaser.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="YouTube%20Video.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Schemas" exportTitle="Notification%20Bar.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Schemas" exportTitle="Social%20Links.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks" exportTitle="Default%20Multimedia%20Schema.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Article.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Content%20Query.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Download.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Image.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Item%20List.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="News%20Article.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Place.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="YouTube%20Video.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks" exportTitle="Default%20Multimedia%20Schema.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Framework/Site%20Manager/Schemas" exportTitle="Page%20Navigation%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Framework/Site%20Manager/Schemas" exportTitle="Publication%20Metadata.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Article.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Link%20List.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Schemas" exportTitle="Teaser.xsd" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Schemas" exportTitle="Notification%20Bar.xsd" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="Component">
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Admin" exportTitle="Core.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Another%20Large%20Image.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Article.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Content%20List.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Content%20Query.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Heading.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Image%20List.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Item%20List.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Large%20Image.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Medium%20Image.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="News%20Article.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Place.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Section.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Teaser.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="YouTube%20Video.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Structure" exportTitle="Error%20Page%20Not%20Found.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Structure/Footer" exportTitle="Social%20Network%20Pages.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Structure/Header" exportTitle="Old%20Browser%20bar.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Content/_Structure" exportTitle="Social%20Sharing%20Links.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="HTML%20Design%20Configuration.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="Language%20Selector%20Configuration.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="Navigation%20Configuration.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/_Structure/Header" exportTitle="Company%20Logo%20540%20px.png" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/About" exportTitle="Company%20Information.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/About" exportTitle="Contact%20Tab%20Content.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/About" exportTitle="Head%20Office%20Location.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/About" exportTitle="Privacy%20Policy.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/About" exportTitle="Terms%20of%20Use.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Articles" exportTitle="All%20Articles%20Index.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Articles" exportTitle="All%20Articles%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Articles" exportTitle="Articles%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Articles" exportTitle="Latest%20News.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Articles" exportTitle="News%20Articles%20Index.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Articles" exportTitle="News%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Articles/News" exportTitle="Example%20News%201.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Articles/News" exportTitle="Example%20News%202.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Articles/News" exportTitle="Example%20News%203.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Articles/News" exportTitle="Example%20News%204.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Downloads" exportTitle="Company%20Report%202013.pdf" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Downloads" exportTitle="Company%20Report%202014.pdf" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Further%20Information" exportTitle="Downloads%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Further%20Information" exportTitle="FAQ%20Content.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Further%20Information" exportTitle="FAQ%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Further%20Information" exportTitle="Further%20Information%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Further%20Information" exportTitle="Image%20Library%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Further%20Information" exportTitle="Image%20Library.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Homepage" exportTitle="Homepage%20List.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Homepage" exportTitle="Homepage%20Welcome.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Images/Large" exportTitle="ballon-burner.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Images/Large" exportTitle="balloons.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Images/Large" exportTitle="blueprint.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Images/Large" exportTitle="bridge.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Images/Large" exportTitle="bulls-eye.JPG" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Images/Large" exportTitle="calculator.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Images/Large" exportTitle="map.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Images/Large" exportTitle="planes.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Images/Large" exportTitle="skyline.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Images/Large" exportTitle="skyscrapers.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Images/Large" exportTitle="wall.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Images/Large" exportTitle="wine-cellar.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Content/Video" exportTitle="Company%20News%20Media%20Manager%20Video.png" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Another%20Large%20Image.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Article.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Content%20List.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Content%20Query.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Heading.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Image%20List.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Item%20List.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Large%20Image.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Medium%20Image.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="News%20Article.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Place.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Section.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="Teaser.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Cloneable%20Content" exportTitle="YouTube%20Video.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure" exportTitle="Error%20Page%20Not%20Found.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer" exportTitle="Footer%20Link%20Group%20-%20Products.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer" exportTitle="Footer%20Link%20Group%20-%20Site%20Sections.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer" exportTitle="Footer%20Link%20Group%20-%20Useful%20Links.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer" exportTitle="Footer.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure/Footer" exportTitle="Social%20Network%20Pages.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure/Header" exportTitle="Company%20Logo%20540%20px.png" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure/Header" exportTitle="Cookie%20bar.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure/Header" exportTitle="Header%20Links.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure/Header" exportTitle="Header.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure/Header" exportTitle="Old%20Browser%20bar.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/_Structure" exportTitle="Social%20Sharing%20Links.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/About" exportTitle="Company%20Information.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/About" exportTitle="Contact%20Tab%20Content.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/About" exportTitle="Head%20Office%20Location.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/About" exportTitle="Privacy%20Policy.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/About" exportTitle="Terms%20of%20Use.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Articles" exportTitle="All%20Articles%20Index.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Articles" exportTitle="All%20Articles%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Articles" exportTitle="Articles%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Articles" exportTitle="Latest%20News.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Articles" exportTitle="News%20Articles%20Index.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Articles" exportTitle="News%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Articles/News" exportTitle="Example%20News%201.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Articles/News" exportTitle="Example%20News%202.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Articles/News" exportTitle="Example%20News%203.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Articles/News" exportTitle="Example%20News%204.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Downloads" exportTitle="Company%20Report%202013.pdf" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Downloads" exportTitle="Company%20Report%202014.pdf" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Further%20Information" exportTitle="Downloads%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Further%20Information" exportTitle="FAQ%20Content.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Further%20Information" exportTitle="FAQ%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Further%20Information" exportTitle="Further%20Information%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Further%20Information" exportTitle="Image%20Library%20Intro.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Further%20Information" exportTitle="Image%20Library.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Homepage" exportTitle="Homepage%20List.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Homepage" exportTitle="Homepage%20Welcome.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Images/Large" exportTitle="ballon-burner.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Images/Large" exportTitle="balloons.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Images/Large" exportTitle="blueprint.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Images/Large" exportTitle="bridge.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Images/Large" exportTitle="bulls-eye.JPG" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Images/Large" exportTitle="calculator.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Images/Large" exportTitle="map.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Images/Large" exportTitle="planes.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Images/Large" exportTitle="skyline.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Images/Large" exportTitle="skyscrapers.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Images/Large" exportTitle="wall.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Images/Large" exportTitle="wine-cellar.jpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content" exportTitle="Sitemap.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Content/Video" exportTitle="Company%20News%20Media%20Manager%20Video.png" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="Language%20Selector%20Configuration.xml" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Settings/Core/Site%20Manager" exportTitle="Navigation%20Configuration.xml" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="ComponentTemplate">
+    <Mapping exportContext="/000%20Empty/Building%20Blocks/Default%20Templates" exportTitle="Default%20Component%20Template.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates" exportTitle="Publish%20Settings.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Default%20Templates" exportTitle="Default%20Component%20Template.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Framework/Developer/Templates" exportTitle="Publish%20HTML%20Design.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Accordion.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Article.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Carousel%20%5BHero%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Download.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="List%20%5B3-Column%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Paged%20List.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Place.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Tab.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Teaser%20%5B2-Column%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Teaser%20%5B3-Column%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Teaser%20Map%20%5B2-Column%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Teaser%20Map%20%5B3-Column%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Thumbnail%20List.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="YouTube%20Video.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Breadcrumb%20%5BTools%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Language%20Selector%20%5BNav%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Left%20Navigation%20%5BLeft%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Old%20Browser%20Notification%20Bar%20%5BInfo%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Social%20Links%20%5B4-Column%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Social%20Sharing%20%5BTools%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Top%20Navigation%20%5BNav%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Default%20Templates" exportTitle="Default%20Component%20Template.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Default%20Templates" exportTitle="Default%20Component%20Template.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Accordion.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Article.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Carousel%20%5BHero%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Download.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="List%20%5B3-Column%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Paged%20List.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Place.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Tab.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Teaser%20-%20Image%20Overlay%20%5B3-Column%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Teaser%20Map%20%5B3-Column%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Thumbnail%20List.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="YouTube%20Video%20%5B3-Column%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Cookie%20Notification%20Bar%20%5BInfo%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Footer%20Link%20Group%20%5B4-Column%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Footer%20Links%20%5BLinks%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Header%20Links%20%5BNav%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Header%20Logo%20%5BLogo%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Language%20Selector%20%5BNav%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Old%20Browser%20Notification%20Bar%20%5BInfo%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Sitemap.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Social%20Links%20%5B4-Column%5D.tctcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Top%20Navigation%20%5BNav%5D.tctcmp" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="Page">
+    <Mapping exportContext="/100%20Master/Home/_System" exportTitle="Publish%20Settings.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home" exportTitle="_Error%20Page%20Not%20Found.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_Page%20Types" exportTitle="Accordion%20Page.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_Page%20Types" exportTitle="Article%20Page.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_Page%20Types" exportTitle="Dynamic%20List.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_Page%20Types" exportTitle="Gallery%20Page.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_Page%20Types" exportTitle="Location%20Page.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_Page%20Types" exportTitle="News%20Article%20Page.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_Page%20Types" exportTitle="Redirect%20Page.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_Page%20Types" exportTitle="Section%20Page%20with%20Carousel.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_Page%20Types" exportTitle="Section%20Page.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_Page%20Types" exportTitle="Tabbed%20Content%20Page.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System/include" exportTitle="Content%20Tools.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System/include" exportTitle="Footer.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System/include" exportTitle="Header.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System/include" exportTitle="Left%20Navigation.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System" exportTitle="Publish%20HTML%20Design.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home/_System" exportTitle="Publish%20Settings.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Home" exportTitle="000%20Home.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/_System/include" exportTitle="Footer.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/_System/include" exportTitle="Header.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home" exportTitle="000%20Home.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/010%20Articles" exportTitle="000%20Articles%20Index.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/010%20Articles" exportTitle="010%20All%20Articles.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/010%20Articles/010%20News" exportTitle="000%20News%20Index.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/010%20Articles/010%20News" exportTitle="Example%20News%201.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/010%20Articles/010%20News" exportTitle="Example%20News%202.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/010%20Articles/010%20News" exportTitle="Example%20News%203.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/010%20Articles/010%20News" exportTitle="Example%20News%204.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/020%20Further%20Information" exportTitle="000%20Index.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/020%20Further%20Information" exportTitle="010%20FAQ.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/020%20Further%20Information" exportTitle="020%20Image%20Library.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/020%20Further%20Information" exportTitle="030%20Downloads.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/About" exportTitle="000%20Company%20Information.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/About" exportTitle="020%20Office%20Location.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/About" exportTitle="030%20Contact.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/About" exportTitle="040%20Terms%20of%20use.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home/About" exportTitle="050%20Privacy%20Policy.tpg" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Home" exportTitle="Sitemap.tpg" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="PageTemplate">
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates" exportTitle="JSON.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Content%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Modules/Core/Site%20Manager/Templates" exportTitle="Include%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Content%20Page%20Without%20Navigation.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Content%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Home%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Redirect%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Section%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Content%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Content%20Page%20Without%20Navigation.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Content%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Home%20Page.tptcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Modules/Core/Editor/Templates" exportTitle="Section%20Page.tptcmp" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="Category">
+    <Mapping exportContext="/100%20Master" exportTitle="Content%20Type" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master" exportTitle="List%20Sort%20Type" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master" exportTitle="Social%20Networks" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type" exportTitle="Content%20Type" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type" exportTitle="List%20Sort%20Type" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type" exportTitle="Sitemap%20%5BNavigation%5D" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type" exportTitle="Social%20Networks" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content" exportTitle="Content%20Type" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content" exportTitle="List%20Sort%20Type" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site" exportTitle="Sitemap%20%5BNavigation%5D" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="Keyword">
+    <Mapping exportContext="/100%20Master/Content%20Type" exportTitle="Article.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Content%20Type" exportTitle="News%20Article.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/List%20Sort%20Type" exportTitle="Content%20Date%20%28metadata%29.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/List%20Sort%20Type" exportTitle="Last%20Published%20Date.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Social%20Networks" exportTitle="Facebook.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Social%20Networks" exportTitle="Google%2B.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Social%20Networks" exportTitle="LinkedIn.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Social%20Networks" exportTitle="Pinterest.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Social%20Networks" exportTitle="Twitter.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Content%20Type" exportTitle="Article.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/List%20Sort%20Type" exportTitle="Last%20Published%20Date.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Social%20Networks" exportTitle="Facebook.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Social%20Networks" exportTitle="Google%2B.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Social%20Networks" exportTitle="LinkedIn.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Social%20Networks" exportTitle="Pinterest.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Social%20Networks" exportTitle="Twitter.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Content%20Type" exportTitle="Article.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Content%20Type" exportTitle="News%20Article.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/List%20Sort%20Type" exportTitle="Content%20Date%20%28metadata%29.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/List%20Sort%20Type" exportTitle="Last%20Published%20Date.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Sitemap%20%5BNavigation%5D" exportTitle="000%20Home.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Sitemap%20%5BNavigation%5D" exportTitle="010%20Articles.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Sitemap%20%5BNavigation%5D" exportTitle="010%20News.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Sitemap%20%5BNavigation%5D" exportTitle="020%20Further%20Information.tkw" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Sitemap%20%5BNavigation%5D" exportTitle="About.tkw" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="TemplateBuildingBlock">
+    <Mapping exportContext="/000%20Empty/Building%20Blocks/Default%20Templates" exportTitle="Default%20Dreamweaver%20Component%20Design.dwt" importContext="" importTitle="" />
+    <Mapping exportContext="/000%20Empty/Building%20Blocks/Default%20Templates" exportTitle="Default%20Dreamweaver%20Page%20Design.dwt" importContext="" importTitle="" />
+    <Mapping exportContext="/000%20Empty/Building%20Blocks/Default%20Templates" exportTitle="Default%20Finish%20Actions.tbbcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Default%20Page%20Template%20Finish%20Actions.tbbcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Render%20Component%20Presentations.tbbcs" importContext="" importTitle="" />
+    <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ER2" exportTitle="Render%20Page%20Content.tbbcmp" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type/Building%20Blocks/Default%20Templates" exportTitle="Default%20Dreamweaver%20Page%20Design.dwt" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content/Building%20Blocks/Default%20Templates" exportTitle="Default%20Dreamweaver%20Page%20Design.dwt" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site/Building%20Blocks/Default%20Templates" exportTitle="Default%20Dreamweaver%20Page%20Design.dwt" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="BusinessProcessType">
+    <Mapping exportContext="/110%20DXA%20Site%20Type" exportTitle="DXA%20Development" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type" exportTitle="DXA%20Staging%2FLive" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site" exportTitle="DXA%20Staging%2FLive" importContext="" importTitle="" />
+  </ItemSet>
+  <ItemSet role="MultimediaType">
+    <Mapping exportTitle="Bitmap%20image.tmt" importTitle="" />
+    <Mapping exportTitle="Cascading%20style%20sheets.tmt" importTitle="" />
+    <Mapping exportTitle="Configuration%20settings.tmt" importTitle="" />
+    <Mapping exportTitle="Excel%20sheet.tmt" importTitle="" />
+    <Mapping exportTitle="Executable.tmt" importTitle="" />
+    <Mapping exportTitle="Favicon.tmt" importTitle="" />
+    <Mapping exportTitle="Flash%20file.tmt" importTitle="" />
+    <Mapping exportTitle="Gif%20image.tmt" importTitle="" />
+    <Mapping exportTitle="Java%20script.tmt" importTitle="" />
+    <Mapping exportTitle="Jpeg%20image.tmt" importTitle="" />
+    <Mapping exportTitle="Mp3%20music.tmt" importTitle="" />
+    <Mapping exportTitle="Mpeg%20video.tmt" importTitle="" />
+    <Mapping exportTitle="MSAccess%20database.tmt" importTitle="" />
+    <Mapping exportTitle="Pdf%20document.tmt" importTitle="" />
+    <Mapping exportTitle="Plain%20text.tmt" importTitle="" />
+    <Mapping exportTitle="Png%20image.tmt" importTitle="" />
+    <Mapping exportTitle="Powerpoint%20presentation.tmt" importTitle="" />
+    <Mapping exportTitle="QuickTime%20movie.tmt" importTitle="" />
+    <Mapping exportTitle="Real%20player.tmt" importTitle="" />
+    <Mapping exportTitle="Rich%20text.tmt" importTitle="" />
+    <Mapping exportTitle="Sound%20file.tmt" importTitle="" />
+    <Mapping exportTitle="Word%20document.tmt" importTitle="" />
+    <Mapping exportTitle="Zip%20file.tmt" importTitle="" />
+  </ItemSet>
+  <ItemSet role="Group">
+    <Mapping exportTitle="Developer.tgp" importTitle="" />
+    <Mapping exportTitle="Editor.tgp" importTitle="" />
+    <Mapping exportTitle="Everyone.tgp" importTitle="" />
+    <Mapping exportTitle="Site%20Manager.tgp" importTitle="" />
+  </ItemSet>
+  <ItemSet role="ProcessDefinition">
+    <Mapping exportContext="/000%20Empty" exportTitle="Task%20Process.tpd" importContext="" importTitle="" />
+    <Mapping exportContext="/110%20DXA%20Site%20Type" exportTitle="Task%20Process.tpd" importContext="" importTitle="" />
+    <Mapping exportContext="/200%20Example%20Content" exportTitle="Task%20Process.tpd" importContext="" importTitle="" />
+    <Mapping exportContext="/400%20Example%20Site" exportTitle="Task%20Process.tpd" importContext="" importTitle="" />
+  </ItemSet>
+</Mappings>

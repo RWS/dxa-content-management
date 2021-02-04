@@ -1,0 +1,680 @@
+<Index dataContractVersion="201501" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Item id="tcm:0-0-0" selected="false" exported="true">
+    <ApplicationIds>
+      <ApplicationId>http://www.sdl.com/tridion/SemanticMapping/vocabularies</ApplicationId>
+    </ApplicationIds>
+    <Item id="9d83f147916147b5abe24f9058e2fd0c" title="000%20Empty" itemType="Publication" selected="false" exported="false">
+      <Item id="3861f9c609044f06b3ca76c2578d9ac5" title="Building%20Blocks" itemType="Folder" selected="false" exported="false">
+        <Item id="f0adacaee2b44a84aeb226b14b7f2bf8" title="Default%20Templates" itemType="Folder" selected="false" exported="false">
+          <Item id="tcm:1-34-32" title="Default%20Component%20Template" extension="tctcmp" itemType="ComponentTemplate" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="8dee8274dabd43d78f3a7a7cdfdf3fce" title="Default%20Dreamweaver%20Component%20Design" extension="dwt" itemType="TemplateBuildingBlock" selected="false" exported="false" />
+          <Item id="tcm:1-29-2048" title="Default%20Dreamweaver%20Page%20Design" extension="dwt" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
+          <Item id="2e20f3a47c3d4fc29f2afa69a33e8fd5" title="Default%20Finish%20Actions" extension="tbbcmp" itemType="TemplateBuildingBlock" selected="false" exported="false" />
+        </Item>
+        <Item id="tcm:1-8-8" title="Default%20Multimedia%20Schema" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="LocalItem" selected="false" exported="true" />
+      </Item>
+      <Item id="tcm:1-1-131074" title="Task%20Process" extension="tpd" itemType="ProcessDefinition" blueprintStatus="LocalItem" selected="false" exported="true" />
+    </Item>
+    <Item id="6b64bc4db8144e189568db63c35806ac" title="100%20Master" itemType="Publication" selected="false" exported="false">
+      <Item id="d02168e2a96f489b99e71bdf036b73ca" title="Building%20Blocks" itemType="Folder" selected="false" exported="false">
+        <Item id="tcm:2-329-2" title="Content" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true" />
+        <Item id="a3b488d8c7274c1c8b1c07abf6f15a49" title="Framework" itemType="Folder" selected="false" exported="false">
+          <Item id="5a4b2287dbf247eab42c1ba347dae1a9" title="Developer" itemType="Folder" selected="false" exported="false">
+            <Item id="633d7470dc8b4077bd7bbf00a286d552" title="Schemas" itemType="Folder" selected="false" exported="false">
+              <Item id="tcm:2-4444-8" title="Page%20Template%20Metadata" extension="xsd" itemType="Schema" subtype="3" blueprintStatus="LocalItem" selected="false" exported="true" />
+              <Item id="7b3ed9113a6f4103b86886b4729eb8c8" title="Region%20Metadata" extension="xsd" itemType="Schema" selected="false" exported="false" />
+            </Item>
+            <Item id="6b48c15ae22e4487b195a18fda966c23" title="Templates" itemType="Folder" selected="false" exported="false">
+              <Item id="f9e400e52ef84dc6a768accbf74510c0" title="DXA%2ER2" itemType="Folder" selected="false" exported="false">
+                <Item id="eef7e2c8b4d9424ba4d72118646d660a" title="Default%20Page%20Template%20Finish%20Actions" extension="tbbcmp" itemType="TemplateBuildingBlock" selected="false" exported="false" />
+                <Item id="830f42b8a2c04321b31ab59707dd980a" title="Render%20Component%20Presentations" extension="tbbcs" itemType="TemplateBuildingBlock" selected="false" exported="false" />
+                <Item id="55882949eafb4715a8d565514e4833c5" title="Render%20Page%20Content" extension="tbbcmp" itemType="TemplateBuildingBlock" selected="false" exported="false" />
+              </Item>
+              <Item id="tcm:2-155-128" title="JSON" extension="tptcmp" itemType="PageTemplate" blueprintStatus="LocalItem" selected="false" exported="true" />
+              <Item id="8bd5c6ddb5054f7d82909a549d388368" title="Publish%20Settings" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+            </Item>
+          </Item>
+          <Item id="34d1cb6a2236450c9d819db2e35405ae" title="Site%20Manager" itemType="Folder" selected="false" exported="false">
+            <Item id="b868363947324259aa941a0c19bd1acd" title="Schemas" itemType="Folder" selected="false" exported="false">
+              <Item id="tcm:2-5060-8" title="Publication%20Metadata" extension="xsd" itemType="Schema" subtype="3" blueprintStatus="LocalItem" selected="false" exported="true" />
+            </Item>
+          </Item>
+        </Item>
+        <Item id="2aa2ce3f729a4746ad559772302d5933" title="Modules" itemType="Folder" selected="false" exported="false">
+          <Item id="178c1deffbbb418ab6ba017f2afa7e37" title="Core" itemType="Folder" selected="false" exported="false">
+            <Item id="0bf8455b96c64eaebae630394d2ed7b2" title="Admin" itemType="Folder" selected="false" exported="false">
+              <Item id="bfe6f7ed85d747bc95091d9b6a6ed4a4" title="Core" extension="xml" itemType="Component" selected="false" exported="false" />
+            </Item>
+            <Item id="70d7c9485e2c404d8c70371b6a743d62" title="Editor" itemType="Folder" selected="false" exported="false">
+              <Item id="9f7c9e39a3794909b24b5ac4b278214d" title="Schemas" itemType="Folder" selected="false" exported="false">
+                <Item id="3cbf0fd3c1e147dd8b633550660c2ad5" title="Embedded" itemType="Folder" selected="false" exported="false">
+                  <Item id="35af21c0e24e464bbc5a1b01512ef56e" title="Link" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                  <Item id="2e1239a46e2948288448e37d5c68610f" title="Paragraph" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                  <Item id="5c2dcf41a94b443eb40f04942d2dab98" title="Standard%20Metadata" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                </Item>
+                <Item id="f1c61670b9134ff2b49d55a3c63629a0" title="Metadata" itemType="Folder" selected="false" exported="false">
+                  <Item id="tcm:2-2744-8" title="Redirect%20Page%20Metadata" extension="xsd" itemType="Schema" subtype="3" blueprintStatus="LocalItem" selected="false" exported="true" />
+                </Item>
+                <Item id="tcm:2-80-8" title="Article" extension="xsd" itemType="Schema" blueprintStatus="LocalItem" selected="false" exported="true">
+                  <ApplicationIds>
+                    <ApplicationId>http://www.sdl.com/tridion/SemanticMapping/typeof</ApplicationId>
+                  </ApplicationIds>
+                </Item>
+                <Item id="tcm:2-4465-8" title="Download" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="LocalItem" selected="false" exported="true" />
+                <Item id="tcm:2-79-8" title="Image" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="LocalItem" selected="false" exported="true">
+                  <ApplicationIds>
+                    <ApplicationId>http://www.sdl.com/tridion/SemanticMapping/typeof</ApplicationId>
+                  </ApplicationIds>
+                </Item>
+                <Item id="tcm:2-3273-8" title="News%20Article" extension="xsd" itemType="Schema" blueprintStatus="LocalItem" selected="false" exported="true">
+                  <ApplicationIds>
+                    <ApplicationId>http://www.sdl.com/tridion/SemanticMapping/typeof</ApplicationId>
+                  </ApplicationIds>
+                </Item>
+                <Item id="tcm:2-2829-8" title="YouTube%20Video" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="LocalItem" selected="false" exported="true" />
+              </Item>
+              <Item id="2d12504162234f91aa4369b8b18c8aa8" title="Templates" itemType="Folder" selected="false" exported="false">
+                <Item id="tcm:2-225-128" title="Content%20Page" extension="tptcmp" itemType="PageTemplate" blueprintStatus="LocalItem" selected="false" exported="true" />
+              </Item>
+            </Item>
+            <Item id="43940a127bcd4a9884edbb4d4057c2bc" title="Site%20Manager" itemType="Folder" selected="false" exported="false">
+              <Item id="a7305d25637840d78244eba53bcacfd9" title="Templates" itemType="Folder" selected="false" exported="false">
+                <Item id="tcm:2-244-128" title="Include%20Page" extension="tptcmp" itemType="PageTemplate" blueprintStatus="LocalItem" selected="false" exported="true" />
+              </Item>
+            </Item>
+          </Item>
+        </Item>
+      </Item>
+      <Item id="d2125a4017794cbd80e30e6116a2f008" title="Content%20Type" itemType="Category" selected="false" exported="false">
+        <Item id="tcm:2-3262-1024" title="Article" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="false" exported="true" />
+        <Item id="tcm:2-3278-1024" title="News%20Article" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="false" exported="true" />
+      </Item>
+      <Item id="fae2b17f07404bca9f01e9d8a7f2dafa" title="Home" itemType="StructureGroup" selected="false" exported="false">
+        <Item id="tcm:2-34-4" title="_System" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true">
+          <Item id="tcm:2-35-4" title="config" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:2-42-4" title="include" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:2-50-4" title="mappings" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:2-41-4" title="resources" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:2-156-64" title="Publish%20Settings" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+        </Item>
+      </Item>
+      <Item id="fc028dcfc6174e3a99b8a59fdb348c28" title="List%20Sort%20Type" itemType="Category" selected="false" exported="false">
+        <Item id="tcm:2-4550-1024" title="Content%20Date%20%28metadata%29" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="false" exported="true" />
+        <Item id="tcm:2-4549-1024" title="Last%20Published%20Date" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="false" exported="true" />
+      </Item>
+      <Item id="239d05e23d604db589d42e3fd7b9e523" title="Social%20Networks" itemType="Category" selected="false" exported="false">
+        <Item id="tcm:2-4426-1024" title="Facebook" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="false" exported="true" />
+        <Item id="tcm:2-4433-1024" title="Google%2B" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="false" exported="true" />
+        <Item id="tcm:2-4427-1024" title="LinkedIn" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="false" exported="true" />
+        <Item id="tcm:2-4429-1024" title="Pinterest" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="false" exported="true" />
+        <Item id="tcm:2-4425-1024" title="Twitter" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="false" exported="true" />
+      </Item>
+    </Item>
+    <Item id="tcm:0-1067-1" title="110%20DXA%20Site%20Type" itemType="Publication" selected="true" exported="true">
+      <ApplicationIds>
+        <ApplicationId>SiteEdit</ApplicationId>
+      </ApplicationIds>
+      <Item id="bd3389dea70040bbad4494fb129c6d16" title="Building%20Blocks" itemType="Folder" selected="false" exported="false">
+        <Item id="3dfad0ca71884d3ea41a0904a20c351e" title="Content" itemType="Folder" selected="false" exported="false">
+          <Item id="tcm:1067-330-2" title="Articles" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+            <Item id="tcm:1067-1345-2" title="News" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:1067-336-2" title="Images" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:1067-1313-2" title="Video" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:1067-1346-2" title="_Cloneable%20Content" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+            <Item id="tcm:1067-4714" title="Another%20Large%20Image" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4599" title="Article" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4730" title="Content%20List" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4609" title="Content%20Query" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4729" title="Heading" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4727" title="Image%20List" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4715" title="Item%20List" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4597" title="Large%20Image" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4720" title="Medium%20Image" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4725" title="News%20Article" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4605" title="Place" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4615" title="Section" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4608" title="Teaser" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4598" title="YouTube%20Video" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:1067-606-2" title="_Structure" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+            <Item id="tcm:1067-608-2" title="Footer" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+              <Item id="tcm:1067-4440" title="Social%20Network%20Pages" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            </Item>
+            <Item id="tcm:1067-607-2" title="Header" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+              <Item id="tcm:1067-4839" title="Old%20Browser%20bar" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            </Item>
+            <Item id="tcm:1067-4843" title="Error%20Page%20Not%20Found" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4441" title="Social%20Sharing%20Links" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+          </Item>
+        </Item>
+        <Item id="6f36e56dc1af45939e95eefd1acfd31b" title="Default%20Templates" itemType="Folder" selected="false" exported="false">
+          <Item id="tcm:1067-34-32" title="Default%20Component%20Template" extension="tctcmp" itemType="ComponentTemplate" blueprintStatus="SharedItem" selected="false" exported="true" />
+          <Item id="tcm:1067-29-2048" title="Default%20Dreamweaver%20Page%20Design" extension="dwt" itemType="TemplateBuildingBlock" blueprintStatus="SharedItem" selected="false" exported="true" />
+        </Item>
+        <Item id="ca8beb429c1d4380bb8556560f09d7ae" title="Framework" itemType="Folder" selected="false" exported="false">
+          <Item id="4b11bdf136ec4d918bf449a919a9b69a" title="Developer" itemType="Folder" selected="false" exported="false">
+            <Item id="734861021cf24f79971b1fbe93b71ef6" title="Templates" itemType="Folder" selected="false" exported="false">
+              <Item id="5ac247327ef049ffaa298cee13d8c0fa" title="Publish%20HTML%20Design" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+            </Item>
+          </Item>
+          <Item id="a40acfd139a24ab9a230c15fe11b1dec" title="Site%20Manager" itemType="Folder" selected="false" exported="false">
+            <Item id="50806f670e0244d892317e107b0f87f5" title="Schemas" itemType="Folder" selected="false" exported="false">
+              <Item id="tcm:1067-10015-8" title="Page%20Navigation%20Metadata" extension="xsd" itemType="Schema" subtype="3" blueprintStatus="LocalItem" selected="true" exported="true" />
+            </Item>
+          </Item>
+        </Item>
+        <Item id="45262106d02e419086c81c535ac2b7d5" title="Modules" itemType="Folder" selected="false" exported="false">
+          <Item id="b4cd5edb56ae4b19a6a4cb82d7ef406d" title="Core" itemType="Folder" selected="false" exported="false">
+            <Item id="c9591a0b978949a6a7caa107052a5bf6" title="Editor" itemType="Folder" selected="false" exported="false">
+              <Item id="35d04ff27f0c4fe19c6f9715bdbd1bc9" title="Schemas" itemType="Folder" selected="false" exported="false">
+                <Item id="9891064857154314b29b2bb8908a276e" title="Metadata" itemType="Folder" selected="false" exported="false">
+                  <Item id="tcm:1067-2744-8" title="Redirect%20Page%20Metadata" extension="xsd" itemType="Schema" subtype="3" blueprintStatus="SharedItem" selected="false" exported="true" />
+                </Item>
+                <Item id="tcm:1067-80-8" title="Article" extension="xsd" itemType="Schema" blueprintStatus="SharedItem" selected="false" exported="true">
+                  <ApplicationIds>
+                    <ApplicationId>http://www.sdl.com/tridion/SemanticMapping/typeof</ApplicationId>
+                  </ApplicationIds>
+                </Item>
+                <Item id="1ed52386f9da4b47ae1ffcd8c56ce56b" title="Content%20Query" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                <Item id="tcm:1067-79-8" title="Image" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="SharedItem" selected="false" exported="true">
+                  <ApplicationIds>
+                    <ApplicationId>http://www.sdl.com/tridion/SemanticMapping/typeof</ApplicationId>
+                  </ApplicationIds>
+                </Item>
+                <Item id="a0b672df1b594997972e3467e828eeff" title="Item%20List" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                <Item id="tcm:1067-3273-8" title="News%20Article" extension="xsd" itemType="Schema" blueprintStatus="SharedItem" selected="false" exported="true">
+                  <ApplicationIds>
+                    <ApplicationId>http://www.sdl.com/tridion/SemanticMapping/typeof</ApplicationId>
+                  </ApplicationIds>
+                </Item>
+                <Item id="e9a40363e7524202b7da56698eac795c" title="Place" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                <Item id="249fb5a86e48462f89caa2cf38f62d43" title="Teaser" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                <Item id="tcm:1067-2829-8" title="YouTube%20Video" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="SharedItem" selected="false" exported="true" />
+              </Item>
+              <Item id="23c104a89191401a8f744fe54504d1e9" title="Templates" itemType="Folder" selected="false" exported="false">
+                <Item id="5c42ff017fb04bf0a3006e840214c4ff" title="Accordion" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="975f4c2dc94448a3a302d2b4775c7e56" title="Article" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="92e883e5a5d043b6a198d393b5081202" title="Carousel%20%5BHero%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="e91095ff5ab9470886e0aeb996f34551" title="Content%20Page%20Without%20Navigation" extension="tptcmp" itemType="PageTemplate" selected="false" exported="false" />
+                <Item id="tcm:1067-225-128" title="Content%20Page" extension="tptcmp" itemType="PageTemplate" blueprintStatus="SharedItem" selected="false" exported="true" />
+                <Item id="5d6ba31499c44067b0edaaf68b574de0" title="Download" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="7df1102c47c34899b40c6e00355559ac" title="Home%20Page" extension="tptcmp" itemType="PageTemplate" selected="false" exported="false" />
+                <Item id="37fa9f9344c441e08c0f3cd9554432f4" title="List%20%5B3-Column%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="a20ded11cedd4fb289b002243751dc25" title="Paged%20List" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="16f36685eb10467d878ce5371619d49c" title="Place" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="6c678f900202482d9e1927cd7cd24dd8" title="Redirect%20Page" extension="tptcmp" itemType="PageTemplate" selected="false" exported="false" />
+                <Item id="d1e9afcd1bce42a498602ae61839f682" title="Section%20Page" extension="tptcmp" itemType="PageTemplate" selected="false" exported="false" />
+                <Item id="f2494cd5599f4f078700fb8296eac9c1" title="Tab" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="2bbff7f20f544c7893506297d817c2e3" title="Teaser%20%5B2-Column%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="78022271b3bd4b1e94447c1fcfe3ee59" title="Teaser%20%5B3-Column%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="ae8642835c0945789e884e55136697ca" title="Teaser%20Map%20%5B2-Column%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="34680d030c2f4b36b07c5989cf00f2a9" title="Teaser%20Map%20%5B3-Column%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="ca01bac06db5475289c135f831cd581b" title="Thumbnail%20List" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="8959eac2878d4b75bddee40a753ab2ba" title="YouTube%20Video" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+              </Item>
+            </Item>
+            <Item id="26b9c5ae2896498c87d180ef92d1a11d" title="Site%20Manager" itemType="Folder" selected="false" exported="false">
+              <Item id="6f30592e0a3646048454f2933f1f8f69" title="Schemas" itemType="Folder" selected="false" exported="false">
+                <Item id="428642edc51144c6a46b6dbdb94347f6" title="Notification%20Bar" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                <Item id="637d2ec5b16b4c2fb50fb184c3e98e2f" title="Social%20Links" extension="xsd" itemType="Schema" selected="false" exported="false" />
+              </Item>
+              <Item id="c9daad049abb4c26a67ef21e6757c0a1" title="Templates" itemType="Folder" selected="false" exported="false">
+                <Item id="94341b9eb5414842869f30a6d54db4aa" title="Breadcrumb%20%5BTools%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="a663d321227a491ea8b744382d8cc56b" title="Language%20Selector%20%5BNav%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="0dc3c079414841f5ab9ce061e4ad04c2" title="Left%20Navigation%20%5BLeft%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="3319c174bcd74d799e173c2797a5bed1" title="Old%20Browser%20Notification%20Bar%20%5BInfo%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="f0cf3071c337479c85413f0bf4ee8507" title="Social%20Links%20%5B4-Column%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="490192f30d2a4aa3ac903d67f4c4cf73" title="Social%20Sharing%20%5BTools%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="4f707ce2dfe34201814dcc8041cf757a" title="Top%20Navigation%20%5BNav%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+              </Item>
+            </Item>
+          </Item>
+        </Item>
+        <Item id="234ea2921a374906814c5f7563e9e1f9" title="Settings" itemType="Folder" selected="false" exported="false">
+          <Item id="e7dd987b23f949ed9081f3d1cb57ed8b" title="Core" itemType="Folder" selected="false" exported="false">
+            <Item id="c6f2c1cd63b54c0eaf603f3cf719d669" title="Site%20Manager" itemType="Folder" selected="false" exported="false">
+              <Item id="ee245de647814269b5c2b4f02eb643dc" title="HTML%20Design%20Configuration" extension="xml" itemType="Component" selected="false" exported="false" />
+              <Item id="7dc5b61dbb4e44baa14cc13dec2ac4bf" title="Language%20Selector%20Configuration" extension="xml" itemType="Component" selected="false" exported="false" />
+              <Item id="28d938c2ad2f4cb985ad8c351a9d90a3" title="Navigation%20Configuration" extension="xml" itemType="Component" selected="false" exported="false" />
+            </Item>
+          </Item>
+        </Item>
+        <Item id="tcm:1067-8-8" title="Default%20Multimedia%20Schema" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="SharedItem" selected="false" exported="true" />
+      </Item>
+      <Item id="ae43f85e216d4064b863e02e18954cc3" title="Content%20Type" itemType="Category" selected="false" exported="false">
+        <Item id="tcm:1067-3262-1024" title="Article" extension="tkw" itemType="Keyword" blueprintStatus="SharedItem" selected="false" exported="true" />
+      </Item>
+      <Item id="tcm:1067-2548-4096" title="DXA%20Development" itemType="BusinessProcessType" blueprintStatus="LocalItem" selected="true" exported="true" />
+      <Item id="tcm:1067-2551-4096" title="DXA%20Staging%2FLive" itemType="BusinessProcessType" blueprintStatus="LocalItem" selected="true" exported="true" />
+      <Item id="98bd5122c43743fc837546543aeb0a50" title="Home" itemType="StructureGroup" selected="false" exported="false">
+        <Item id="tcm:1067-605-4" title="_Page%20Types" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true">
+          <Item id="tcm:1067-4592-64" title="Accordion%20Page" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true">
+            <ApplicationIds>
+              <ApplicationId>SiteEdit</ApplicationId>
+            </ApplicationIds>
+          </Item>
+          <Item id="tcm:1067-4588-64" title="Article%20Page" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true">
+            <ApplicationIds>
+              <ApplicationId>SiteEdit</ApplicationId>
+            </ApplicationIds>
+          </Item>
+          <Item id="tcm:1067-4594-64" title="Dynamic%20List" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true">
+            <ApplicationIds>
+              <ApplicationId>SiteEdit</ApplicationId>
+            </ApplicationIds>
+          </Item>
+          <Item id="tcm:1067-4591-64" title="Gallery%20Page" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true">
+            <ApplicationIds>
+              <ApplicationId>SiteEdit</ApplicationId>
+            </ApplicationIds>
+          </Item>
+          <Item id="tcm:1067-4590-64" title="Location%20Page" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true">
+            <ApplicationIds>
+              <ApplicationId>SiteEdit</ApplicationId>
+            </ApplicationIds>
+          </Item>
+          <Item id="tcm:1067-4589-64" title="News%20Article%20Page" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true">
+            <ApplicationIds>
+              <ApplicationId>SiteEdit</ApplicationId>
+            </ApplicationIds>
+          </Item>
+          <Item id="tcm:1067-4595-64" title="Redirect%20Page" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true">
+            <ApplicationIds>
+              <ApplicationId>SiteEdit</ApplicationId>
+            </ApplicationIds>
+          </Item>
+          <Item id="tcm:1067-4587-64" title="Section%20Page%20with%20Carousel" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true">
+            <ApplicationIds>
+              <ApplicationId>SiteEdit</ApplicationId>
+            </ApplicationIds>
+          </Item>
+          <Item id="tcm:1067-4586-64" title="Section%20Page" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true">
+            <ApplicationIds>
+              <ApplicationId>SiteEdit</ApplicationId>
+            </ApplicationIds>
+          </Item>
+          <Item id="tcm:1067-4593-64" title="Tabbed%20Content%20Page" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true">
+            <ApplicationIds>
+              <ApplicationId>SiteEdit</ApplicationId>
+            </ApplicationIds>
+          </Item>
+        </Item>
+        <Item id="tcm:1067-34-4" title="_System" itemType="StructureGroup" blueprintStatus="SharedItem" selected="true" exported="true">
+          <Item id="tcm:1067-1307-4" title="assets" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true">
+            <Item id="tcm:1067-1308-4" title="css" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-1309-4" title="fonts" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-1311-4" title="images" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-1310-4" title="scripts" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:1067-35-4" title="config" itemType="StructureGroup" blueprintStatus="SharedItem" selected="true" exported="true" />
+          <Item id="tcm:1067-42-4" title="include" itemType="StructureGroup" blueprintStatus="SharedItem" selected="true" exported="true">
+            <Item id="tcm:1067-4447-64" title="Content%20Tools" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-1489-64" title="Footer" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-1480-64" title="Header" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1067-4449-64" title="Left%20Navigation" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:1067-50-4" title="mappings" itemType="StructureGroup" blueprintStatus="SharedItem" selected="true" exported="true" />
+          <Item id="tcm:1067-41-4" title="resources" itemType="StructureGroup" blueprintStatus="SharedItem" selected="true" exported="true" />
+          <Item id="tcm:1067-4455-64" title="Publish%20HTML%20Design" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:1067-156-64" title="Publish%20Settings" extension="tpg" itemType="Page" blueprintStatus="SharedItem" selected="true" exported="true" />
+        </Item>
+        <Item id="tcm:1067-640-64" title="000%20Home" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+        <Item id="tcm:1067-4844-64" title="_Error%20Page%20Not%20Found" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+      </Item>
+      <Item id="2a2b05482ae4479c90652a5d551fa188" title="List%20Sort%20Type" itemType="Category" selected="false" exported="false">
+        <Item id="tcm:1067-4549-1024" title="Last%20Published%20Date" extension="tkw" itemType="Keyword" blueprintStatus="SharedItem" selected="false" exported="true" />
+      </Item>
+      <Item id="tcm:1067-2680-512" title="Sitemap%20%5BNavigation%5D" itemType="Category" blueprintStatus="LocalItem" selected="true" exported="true" />
+      <Item id="553854bdd43e4fef8cb558de0164ad96" title="Social%20Networks" itemType="Category" selected="false" exported="false">
+        <Item id="tcm:1067-4426-1024" title="Facebook" extension="tkw" itemType="Keyword" blueprintStatus="SharedItem" selected="false" exported="true" />
+        <Item id="tcm:1067-4433-1024" title="Google%2B" extension="tkw" itemType="Keyword" blueprintStatus="SharedItem" selected="false" exported="true" />
+        <Item id="tcm:1067-4427-1024" title="LinkedIn" extension="tkw" itemType="Keyword" blueprintStatus="SharedItem" selected="false" exported="true" />
+        <Item id="tcm:1067-4429-1024" title="Pinterest" extension="tkw" itemType="Keyword" blueprintStatus="SharedItem" selected="false" exported="true" />
+        <Item id="tcm:1067-4425-1024" title="Twitter" extension="tkw" itemType="Keyword" blueprintStatus="SharedItem" selected="false" exported="true" />
+      </Item>
+      <Item id="tcm:1067-1-131074" title="Task%20Process" extension="tpd" itemType="ProcessDefinition" blueprintStatus="SharedItem" selected="false" exported="true" />
+    </Item>
+    <Item id="tcm:0-1068-1" title="200%20Example%20Content" itemType="Publication" selected="true" exported="true">
+      <Item id="f77b948699914542814ad8831039a2c2" title="Building%20Blocks" itemType="Folder" selected="false" exported="false">
+        <Item id="543a96a819d74e5aaedc0eb47fde08df" title="Content" itemType="Folder" selected="false" exported="false">
+          <Item id="tcm:1068-604-2" title="About" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+            <Item id="tcm:1068-1458" title="Company%20Information" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-4478" title="Contact%20Tab%20Content" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-4479" title="Head%20Office%20Location" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-1461" title="Privacy%20Policy" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-1460" title="Terms%20of%20Use" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+          </Item>
+          <Item id="59798e2bd6864cd9891c2d4da4e9f442" title="Articles" itemType="Folder" selected="false" exported="false">
+            <Item id="53b20c0c934e44f19d17d37477cf3a2a" title="News" itemType="Folder" selected="false" exported="false">
+              <Item id="tcm:1068-4565" title="Example%20News%201" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-4566" title="Example%20News%202" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-4567" title="Example%20News%203" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-4568" title="Example%20News%204" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            </Item>
+            <Item id="tcm:1068-3286" title="All%20Articles%20Index" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-4575" title="All%20Articles%20Intro" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-1468" title="Articles%20Intro" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-3287" title="Latest%20News" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-4573" title="News%20Articles%20Index" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-1467" title="News%20Intro" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:1068-332-2" title="Downloads" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+            <Item id="tcm:1068-4476" title="Company%20Report%202013" extension="pdf" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-4475" title="Company%20Report%202014" extension="pdf" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:1068-335-2" title="Further%20Information" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+            <Item id="tcm:1068-1464" title="Downloads%20Intro" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-4477" title="FAQ%20Content" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-1462" title="FAQ%20Intro" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-1465" title="Further%20Information%20Intro" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-1463" title="Image%20Library%20Intro" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-3285" title="Image%20Library" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:1068-334-2" title="Homepage" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+            <Item id="tcm:1068-1472" title="Homepage%20List" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:1068-4975" title="Homepage%20Welcome" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+          </Item>
+          <Item id="24390ef048af42ec846c583576a56ca0" title="Images" itemType="Folder" selected="false" exported="false">
+            <Item id="tcm:1068-337-2" title="Large" itemType="Folder" blueprintStatus="LocalItem" selected="true" exported="true">
+              <Item id="tcm:1068-755" title="ballon-burner" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-756" title="balloons" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-757" title="blueprint" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-758" title="bridge" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-759" title="bulls-eye" extension="JPG" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-760" title="calculator" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-761" title="map" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-762" title="planes" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-763" title="skyline" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-764" title="skyscrapers" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-765" title="wall" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:1068-766" title="wine-cellar" extension="jpg" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+            </Item>
+          </Item>
+          <Item id="fa7d555a6ab24e67b7526364415e4749" title="Video" itemType="Folder" selected="false" exported="false">
+            <Item id="tcm:1068-4480" title="Company%20News%20Media%20Manager%20Video" extension="png" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+          </Item>
+          <Item id="7ba661b5ace34c43a1862f6d0c741886" title="_Structure" itemType="Folder" selected="false" exported="false">
+            <Item id="122cd8cb19c44feb9f2d4408c3ac97be" title="Header" itemType="Folder" selected="false" exported="false">
+              <Item id="tcm:1068-1482" title="Company%20Logo%20540%20px" extension="png" itemType="Component" subtype="1" blueprintStatus="LocalItem" selected="true" exported="true" />
+            </Item>
+          </Item>
+        </Item>
+        <Item id="7dac4a100a91440db7b07d9542e06436" title="Default%20Templates" itemType="Folder" selected="false" exported="false">
+          <Item id="tcm:1068-34-32" title="Default%20Component%20Template" extension="tctcmp" itemType="ComponentTemplate" blueprintStatus="SharedItem" selected="false" exported="true" />
+          <Item id="tcm:1068-29-2048" title="Default%20Dreamweaver%20Page%20Design" extension="dwt" itemType="TemplateBuildingBlock" blueprintStatus="SharedItem" selected="false" exported="true" />
+        </Item>
+        <Item id="02c8ea4c86ac402b930c115109f58459" title="Modules" itemType="Folder" selected="false" exported="false">
+          <Item id="445879798cde4349b6a18c2695f29955" title="Core" itemType="Folder" selected="false" exported="false">
+            <Item id="d96378df5e314867970b69741a0ec51f" title="Editor" itemType="Folder" selected="false" exported="false">
+              <Item id="ed313c438e474b769c7d53fe7a7999d8" title="Schemas" itemType="Folder" selected="false" exported="false">
+                <Item id="5acc690edae448cea9cf0b7773c5fd32" title="Article" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                <Item id="6dd7dffe6f544e598afba91e6860176e" title="Content%20Query" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                <Item id="tcm:1068-4465-8" title="Download" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="SharedItem" selected="false" exported="true" />
+                <Item id="tcm:1068-79-8" title="Image" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="SharedItem" selected="false" exported="true">
+                  <ApplicationIds>
+                    <ApplicationId>http://www.sdl.com/tridion/SemanticMapping/typeof</ApplicationId>
+                  </ApplicationIds>
+                </Item>
+                <Item id="ed3d7748925b4cb38374e657cbd1a4bb" title="Item%20List" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                <Item id="957a44dd4a27450691a78b04d6d01085" title="News%20Article" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                <Item id="9a460caab67b4a48a28ea2a94e2e0c47" title="Place" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                <Item id="c3c9f41270a345fca299b03d0883c214" title="YouTube%20Video" extension="xsd" itemType="Schema" selected="false" exported="false" />
+              </Item>
+              <Item id="e380badd86354a2db705a73f76f7a19f" title="Templates" itemType="Folder" selected="false" exported="false">
+                <Item id="tcm:1068-225-128" title="Content%20Page" extension="tptcmp" itemType="PageTemplate" blueprintStatus="SharedItem" selected="false" exported="true" />
+              </Item>
+            </Item>
+          </Item>
+        </Item>
+        <Item id="tcm:1068-8-8" title="Default%20Multimedia%20Schema" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="SharedItem" selected="false" exported="true" />
+      </Item>
+      <Item id="b2d19cb7ce3d49df81060d63f7daec63" title="Content%20Type" itemType="Category" selected="false" exported="false">
+        <Item id="tcm:1068-3262-1024" title="Article" extension="tkw" itemType="Keyword" blueprintStatus="SharedItem" selected="false" exported="true" />
+        <Item id="tcm:1068-3278-1024" title="News%20Article" extension="tkw" itemType="Keyword" blueprintStatus="SharedItem" selected="false" exported="true" />
+      </Item>
+      <Item id="d6456e9c9c7e4e9ea0b10b422666eccc" title="List%20Sort%20Type" itemType="Category" selected="false" exported="false">
+        <Item id="tcm:1068-4550-1024" title="Content%20Date%20%28metadata%29" extension="tkw" itemType="Keyword" blueprintStatus="SharedItem" selected="false" exported="true" />
+        <Item id="tcm:1068-4549-1024" title="Last%20Published%20Date" extension="tkw" itemType="Keyword" blueprintStatus="SharedItem" selected="false" exported="true" />
+      </Item>
+      <Item id="tcm:1068-1-131074" title="Task%20Process" extension="tpd" itemType="ProcessDefinition" blueprintStatus="SharedItem" selected="false" exported="true" />
+    </Item>
+    <Item id="tcm:0-8-1" title="400%20Example%20Site" itemType="Publication" selected="true" exported="true">
+      <ApplicationIds>
+        <ApplicationId>SiteEdit</ApplicationId>
+      </ApplicationIds>
+      <Item id="5722ab63698440019e0b7c3fe34b5e63" title="Building%20Blocks" itemType="Folder" selected="false" exported="false">
+        <Item id="tcm:8-329-2" title="Content" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+          <Item id="tcm:8-604-2" title="About" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+            <Item id="tcm:8-1458" title="Company%20Information" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4478" title="Contact%20Tab%20Content" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4479" title="Head%20Office%20Location" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-1461" title="Privacy%20Policy" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-1460" title="Terms%20of%20Use" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:8-330-2" title="Articles" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+            <Item id="tcm:8-1345-2" title="News" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+              <Item id="tcm:8-4565" title="Example%20News%201" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-4566" title="Example%20News%202" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-4567" title="Example%20News%203" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-4568" title="Example%20News%204" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            </Item>
+            <Item id="tcm:8-3286" title="All%20Articles%20Index" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4575" title="All%20Articles%20Intro" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-1468" title="Articles%20Intro" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-3287" title="Latest%20News" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4573" title="News%20Articles%20Index" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-1467" title="News%20Intro" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:8-332-2" title="Downloads" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+            <Item id="tcm:8-4476" title="Company%20Report%202013" extension="pdf" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4475" title="Company%20Report%202014" extension="pdf" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:8-335-2" title="Further%20Information" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+            <Item id="tcm:8-1464" title="Downloads%20Intro" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4477" title="FAQ%20Content" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-1462" title="FAQ%20Intro" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-1465" title="Further%20Information%20Intro" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-1463" title="Image%20Library%20Intro" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-3285" title="Image%20Library" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:8-334-2" title="Homepage" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+            <Item id="tcm:8-1472" title="Homepage%20List" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4975" title="Homepage%20Welcome" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:8-336-2" title="Images" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+            <Item id="tcm:8-337-2" title="Large" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+              <Item id="tcm:8-755" title="ballon-burner" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-756" title="balloons" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-757" title="blueprint" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-758" title="bridge" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-759" title="bulls-eye" extension="JPG" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-760" title="calculator" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-761" title="map" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-762" title="planes" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-763" title="skyline" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-764" title="skyscrapers" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-765" title="wall" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-766" title="wine-cellar" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+            </Item>
+          </Item>
+          <Item id="tcm:8-1313-2" title="Video" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+            <Item id="tcm:8-4480" title="Company%20News%20Media%20Manager%20Video" extension="png" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:8-1346-2" title="_Cloneable%20Content" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+            <Item id="tcm:8-4714" title="Another%20Large%20Image" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4599" title="Article" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4730" title="Content%20List" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4609" title="Content%20Query" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4729" title="Heading" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4727" title="Image%20List" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4715" title="Item%20List" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4597" title="Large%20Image" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4720" title="Medium%20Image" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4725" title="News%20Article" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4605" title="Place" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4615" title="Section" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4608" title="Teaser" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4598" title="YouTube%20Video" extension="jpg" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:8-606-2" title="_Structure" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+            <Item id="tcm:8-608-2" title="Footer" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+              <Item id="tcm:8-1486" title="Footer%20Link%20Group%20-%20Products" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:8-1485" title="Footer%20Link%20Group%20-%20Site%20Sections" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:8-1487" title="Footer%20Link%20Group%20-%20Useful%20Links" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:8-1484" title="Footer" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:8-4440" title="Social%20Network%20Pages" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            </Item>
+            <Item id="tcm:8-607-2" title="Header" itemType="Folder" blueprintStatus="SharedItem" selected="true" exported="true">
+              <Item id="tcm:8-1482" title="Company%20Logo%20540%20px" extension="png" itemType="Component" subtype="1" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-4838" title="Cookie%20bar" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:8-1483" title="Header%20Links" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:8-1488" title="Header" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+              <Item id="tcm:8-4839" title="Old%20Browser%20bar" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            </Item>
+            <Item id="tcm:8-4843" title="Error%20Page%20Not%20Found" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+            <Item id="tcm:8-4441" title="Social%20Sharing%20Links" extension="xml" itemType="Component" blueprintStatus="SharedItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:8-4858" title="Sitemap" extension="xml" itemType="Component" blueprintStatus="LocalItem" selected="true" exported="true" />
+        </Item>
+        <Item id="6ce418b7c0214576b800cc9170760bc0" title="Default%20Templates" itemType="Folder" selected="false" exported="false">
+          <Item id="tcm:8-34-32" title="Default%20Component%20Template" extension="tctcmp" itemType="ComponentTemplate" blueprintStatus="SharedItem" selected="false" exported="true" />
+          <Item id="tcm:8-29-2048" title="Default%20Dreamweaver%20Page%20Design" extension="dwt" itemType="TemplateBuildingBlock" blueprintStatus="SharedItem" selected="false" exported="true" />
+        </Item>
+        <Item id="a7bb08859e6e449990706dd1daae4a21" title="Framework" itemType="Folder" selected="false" exported="false">
+          <Item id="a324c1f672084c94a046055f4d08e972" title="Site%20Manager" itemType="Folder" selected="false" exported="false">
+            <Item id="e18d73417e834da199000497862393cf" title="Schemas" itemType="Folder" selected="false" exported="false">
+              <Item id="tcm:8-10015-8" title="Page%20Navigation%20Metadata" extension="xsd" itemType="Schema" subtype="3" blueprintStatus="SharedItem" selected="true" exported="true" />
+              <Item id="tcm:8-5060-8" title="Publication%20Metadata" extension="xsd" itemType="Schema" subtype="3" blueprintStatus="SharedItem" selected="false" exported="true" />
+            </Item>
+          </Item>
+        </Item>
+        <Item id="7fc803f49ac647aeb3bc5c23c31567ae" title="Modules" itemType="Folder" selected="false" exported="false">
+          <Item id="3cd7a326652247ea9ca386ad8be4f922" title="Core" itemType="Folder" selected="false" exported="false">
+            <Item id="8375367a30c44eb7bb50f0414565931b" title="Editor" itemType="Folder" selected="false" exported="false">
+              <Item id="37c5ded427304e7190c13c0e16576ec0" title="Schemas" itemType="Folder" selected="false" exported="false">
+                <Item id="e460d3055ab743d4be07953fba7c6feb" title="Article" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                <Item id="469e94655d9d47768dfa3f458759d1d3" title="Link%20List" extension="xsd" itemType="Schema" selected="false" exported="false" />
+                <Item id="71b168f717324258b75b4c2bfb326f20" title="Teaser" extension="xsd" itemType="Schema" selected="false" exported="false" />
+              </Item>
+              <Item id="03abb0ccefe14499bb97662cce009b3d" title="Templates" itemType="Folder" selected="false" exported="false">
+                <Item id="303b1654f7624de8a0f112fcce095f6e" title="Accordion" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="58e80bbee25d4152ba18ca7f46918342" title="Article" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="ce523852e57a4053923e2620311a0405" title="Carousel%20%5BHero%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="1e493a96c3b24066a127656b095e63f1" title="Content%20Page%20Without%20Navigation" extension="tptcmp" itemType="PageTemplate" selected="false" exported="false" />
+                <Item id="tcm:8-225-128" title="Content%20Page" extension="tptcmp" itemType="PageTemplate" blueprintStatus="SharedItem" selected="false" exported="true" />
+                <Item id="b376723680c34d37b559c9b32ca9858b" title="Download" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="ed63bf9a52b047e3a5df5a65e3a2bb0c" title="Home%20Page" extension="tptcmp" itemType="PageTemplate" selected="false" exported="false" />
+                <Item id="00b5c86078d94197992ee0818ceba4a5" title="List%20%5B3-Column%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="fbfd93f8601b4533ae6b3b69cf1ba081" title="Paged%20List" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="74f9e90300294ad18d495b71bd85d0c9" title="Place" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="99c0274f63c243bcb7c1f9bf57a3d590" title="Section%20Page" extension="tptcmp" itemType="PageTemplate" selected="false" exported="false" />
+                <Item id="cbbc790fcd17441ea228f0c21f4546cd" title="Tab" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="581f6c5df39e4d0dbeb6ae8a645370d0" title="Teaser%20-%20Image%20Overlay%20%5B3-Column%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="7e7d4d52a7884d95886104a74e632d1d" title="Teaser%20Map%20%5B3-Column%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="dd3fc21531334a82b5b13f3838d71f96" title="Thumbnail%20List" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="c8e8f61f5eb54fd2b6b1181e72e8e7ff" title="YouTube%20Video%20%5B3-Column%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+              </Item>
+            </Item>
+            <Item id="ef7599dff04247aabd353279587ec15f" title="Site%20Manager" itemType="Folder" selected="false" exported="false">
+              <Item id="8eff9f8d6b5c4951becf6ae8d858f8c9" title="Schemas" itemType="Folder" selected="false" exported="false">
+                <Item id="af75541374bb454d9fa179de888643c5" title="Notification%20Bar" extension="xsd" itemType="Schema" selected="false" exported="false" />
+              </Item>
+              <Item id="1df8edb719124e13b4c2a216a221f78d" title="Templates" itemType="Folder" selected="false" exported="false">
+                <Item id="02e6906d40294a0c8a5fb1fb178cb270" title="Cookie%20Notification%20Bar%20%5BInfo%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="38b30c4bbf604d7687e54fec327278d1" title="Footer%20Link%20Group%20%5B4-Column%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="40ee77958fce460b9b67bce936083bcf" title="Footer%20Links%20%5BLinks%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="02b8f97ee63c4ef3a8efddefba69353d" title="Header%20Links%20%5BNav%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="dd9a343a9ea34f8eafbafadc81428bd0" title="Header%20Logo%20%5BLogo%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="8142d12c3263444684ac4c31a0961345" title="Language%20Selector%20%5BNav%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="6ddfd88c246641ceac9f2984497042a6" title="Old%20Browser%20Notification%20Bar%20%5BInfo%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="bb79d6e721384b40814b3f41928af8cf" title="Sitemap" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="344a57e7354e47668fcfdb8b181d9228" title="Social%20Links%20%5B4-Column%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+                <Item id="90da0f9c041f4ed19e1b73025e2c1e27" title="Top%20Navigation%20%5BNav%5D" extension="tctcmp" itemType="ComponentTemplate" selected="false" exported="false" />
+              </Item>
+            </Item>
+          </Item>
+        </Item>
+        <Item id="07aefc229791451ea9bc1edbd903bbf4" title="Settings" itemType="Folder" selected="false" exported="false">
+          <Item id="0e1a383d0b8f4799be2a33699b3b24df" title="Core" itemType="Folder" selected="false" exported="false">
+            <Item id="aeca8e7d0f2141fd8983b55d3b267dd3" title="Site%20Manager" itemType="Folder" selected="false" exported="false">
+              <Item id="f70bccad79b2480eb3580ef05f6a20fd" title="Language%20Selector%20Configuration" extension="xml" itemType="Component" selected="false" exported="false" />
+              <Item id="7fe4fedd9d3142caadced6b2dafa4ba6" title="Navigation%20Configuration" extension="xml" itemType="Component" selected="false" exported="false" />
+            </Item>
+          </Item>
+        </Item>
+        <Item id="tcm:8-8-8" title="Default%20Multimedia%20Schema" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="SharedItem" selected="false" exported="true" />
+      </Item>
+      <Item id="tcm:8-2551-4096" title="DXA%20Staging%2FLive" itemType="BusinessProcessType" blueprintStatus="SharedItem" selected="true" exported="true" />
+      <Item id="bc49090d24a24576bfff186125b28832" title="Home" itemType="StructureGroup" selected="false" exported="false">
+        <Item id="tcm:8-282-4" title="010%20Articles" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true">
+          <Item id="tcm:8-286-4" title="010%20News" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true">
+            <Item id="tcm:8-642-64" title="000%20News%20Index" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:8-4569-64" title="Example%20News%201" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:8-4570-64" title="Example%20News%202" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:8-4571-64" title="Example%20News%203" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+            <Item id="tcm:8-4572-64" title="Example%20News%204" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+          </Item>
+          <Item id="tcm:8-643-64" title="000%20Articles%20Index" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:8-4574-64" title="010%20All%20Articles" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+        </Item>
+        <Item id="tcm:8-284-4" title="020%20Further%20Information" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true">
+          <Item id="tcm:8-644-64" title="000%20Index" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:8-645-64" title="010%20FAQ" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:8-646-64" title="020%20Image%20Library" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:8-647-64" title="030%20Downloads" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+        </Item>
+        <Item id="tcm:8-285-4" title="About" itemType="StructureGroup" blueprintStatus="LocalItem" selected="true" exported="true">
+          <Item id="tcm:8-648-64" title="000%20Company%20Information" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:8-649-64" title="020%20Office%20Location" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:8-650-64" title="030%20Contact" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:8-651-64" title="040%20Terms%20of%20use" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+          <Item id="tcm:8-652-64" title="050%20Privacy%20Policy" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+        </Item>
+        <Item id="7be3f53e35d246e68767690ae1aba485" title="_System" itemType="StructureGroup" selected="false" exported="false">
+          <Item id="f7ba1f57e1d24c478c0fcf792290c040" title="include" itemType="StructureGroup" selected="false" exported="false">
+            <Item id="tcm:8-1489-64" title="Footer" extension="tpg" itemType="Page" blueprintStatus="LocalizedItem" selected="true" exported="true" />
+            <Item id="tcm:8-1480-64" title="Header" extension="tpg" itemType="Page" blueprintStatus="LocalizedItem" selected="true" exported="true" />
+          </Item>
+        </Item>
+        <Item id="tcm:8-640-64" title="000%20Home" extension="tpg" itemType="Page" blueprintStatus="LocalizedItem" selected="true" exported="true" />
+        <Item id="tcm:8-4859-64" title="Sitemap" extension="tpg" itemType="Page" blueprintStatus="LocalItem" selected="true" exported="true" />
+      </Item>
+      <Item id="tcm:8-2680-512" title="Sitemap%20%5BNavigation%5D" itemType="Category" blueprintStatus="SharedItem" selected="true" exported="true">
+        <Item id="tcm:8-10021-1024" title="000%20Home" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="true" exported="true" />
+        <Item id="tcm:8-10017-1024" title="010%20Articles" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="true" exported="true" />
+        <Item id="tcm:8-10020-1024" title="010%20News" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="true" exported="true" />
+        <Item id="tcm:8-10018-1024" title="020%20Further%20Information" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="true" exported="true" />
+        <Item id="tcm:8-10019-1024" title="About" extension="tkw" itemType="Keyword" blueprintStatus="LocalItem" selected="true" exported="true" />
+      </Item>
+      <Item id="tcm:8-1-131074" title="Task%20Process" extension="tpd" itemType="ProcessDefinition" blueprintStatus="SharedItem" selected="false" exported="true" />
+    </Item>
+    <Item id="tcm:0-13-65544" title="Bitmap%20image" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-19-65544" title="Cascading%20style%20sheets" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-21-65544" title="Configuration%20settings" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="1fec16b39bfb48148039ba80b0c1194a" title="Developer" extension="tgp" itemType="Group" selected="false" exported="false" />
+    <Item id="7a80d91b7b6a48fda7cd14990eefff00" title="Editor" extension="tgp" itemType="Group" selected="false" exported="false" />
+    <Item id="2ce15e43a67948819ac517e25e004096" title="Everyone" extension="tgp" itemType="Group" selected="false" exported="false" />
+    <Item id="tcm:0-5-65544" title="Excel%20sheet" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-11-65544" title="Executable" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-23-65544" title="Favicon" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-18-65544" title="Flash%20file" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-1-65544" title="Gif%20image" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-20-65544" title="Java%20script" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-2-65544" title="Jpeg%20image" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-12-65544" title="MSAccess%20database" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-16-65544" title="Mp3%20music" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-17-65544" title="Mpeg%20video" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-7-65544" title="Pdf%20document" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-9-65544" title="Plain%20text" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-3-65544" title="Png%20image" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-6-65544" title="Powerpoint%20presentation" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-15-65544" title="QuickTime%20movie" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-14-65544" title="Real%20player" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-10-65544" title="Rich%20text" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="5c47b47416144a098979fa00f64cc851" title="Site%20Manager" extension="tgp" itemType="Group" selected="false" exported="false" />
+    <Item id="tcm:0-8-65544" title="Sound%20file" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-4-65544" title="Word%20document" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+    <Item id="tcm:0-22-65544" title="Zip%20file" extension="tmt" itemType="MultimediaType" selected="false" exported="true" />
+  </Item>
+</Index>

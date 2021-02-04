@@ -47,13 +47,13 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Web" />
-    <Reference Include="Tridion.Web.UI.Core, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+    <Reference Include="Tridion.Web.UI.Core">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Core.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.Web.UI.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Tridion.Web.UI.Editors.Base, Version=8.1.0.194, Culture=neutral, PublicKeyToken=ddfc895746e5ee6b, processorArchitecture=MSIL">
+    <Reference Include="Tridion.Web.UI.Editors.Base">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\_references\cm-8.1\Tridion.Web.UI.Editors.Base.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.Web.UI.Editors.Base.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

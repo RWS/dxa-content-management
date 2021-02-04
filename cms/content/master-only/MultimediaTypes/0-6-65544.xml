@@ -1,0 +1,13 @@
+<PackageItem xmlns:tcm="http://www.tridion.com/ContentManager/5.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.sdltridion.com/ContentManager/ImportExport/Package/2013">
+  <Data>
+    <tcm:Data>
+      <tcm:Title>Powerpoint presentation</tcm:Title>
+      <tcm:MIMEType>application/ms-powerpoint</tcm:MIMEType>
+      <tcm:FileExtensions>
+        <tcm:FileExtension>ppt</tcm:FileExtension>
+        <tcm:FileExtension>pps</tcm:FileExtension>
+        <tcm:FileExtension>pptx</tcm:FileExtension>
+      </tcm:FileExtensions>
+    </tcm:Data>
+  </Data>
+</PackageItem>

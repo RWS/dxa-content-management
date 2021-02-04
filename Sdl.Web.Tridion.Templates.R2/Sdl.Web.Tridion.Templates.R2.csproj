@@ -46,25 +46,25 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.Common">
-      <HintPath>C:\_references\cm-8.1\Tridion.Common.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.Common.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.ContentManager">
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.ContentManager.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.ContentManager.Common">
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Common.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.ContentManager.Common.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.ContentManager.Publishing">
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Publishing.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.ContentManager.Publishing.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.ContentManager.Templating">
-      <HintPath>C:\_references\cm-8.1\Tridion.ContentManager.Templating.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.ContentManager.Templating.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.ExternalContentLibrary">
-      <HintPath>C:\_references\cm-8.1\Tridion.ExternalContentLibrary.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.ExternalContentLibrary.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.ExternalContentLibrary.V2">
-      <HintPath>C:\_references\cm-8.1\Tridion.ExternalContentLibrary.V2.dll</HintPath>
+      <HintPath>..\_references\cm-8.1\Tridion.ExternalContentLibrary.V2.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -126,10 +126,10 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files (x86)\Microsoft\ILMerge\ILMerge.exe"  ^
+    <PostBuildEvent>"$(MSBuildThisFileDirectory)..\packages\ILMerge.2.14.1208\tools\ILMerge.exe"  ^
     /out:Sdl.Web.Tridion.Templates.R2.merged.dll ^
     /targetplatform:v4 ^
-    /lib:C:\_references\cm-8.1 ^
+    /lib:$(MSBuildThisFileDirectory)..\_references\cm-8.1 ^
     Sdl.Web.Tridion.Templates.dll Sdl.Web.Tridion.Templates.R2.dll Sdl.Web.DataModel.dll Newtonsoft.Json.dll
 </PostBuildEvent>
   </PropertyGroup>

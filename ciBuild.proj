@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.5">
-  <UsingTask TaskName="MSBuild.ExtensionPack.Framework.AssemblyInfo" AssemblyFile="MSBuild.ExtensionPack.dll"/>
-  <UsingTask TaskName="MSBuild.ExtensionPack.FileSystem.File" AssemblyFile="MSBuild.ExtensionPack.dll"/>
-  <UsingTask TaskName="MSBuild.ExtensionPack.Framework.DateAndTime" AssemblyFile="MSBuild.ExtensionPack.dll" />
 
+    <!-- Remember to run msbuild ciBuild.csproj /t:Restore first so the MSBuild extension package is installed from nuget -->
+    <Import Project="packages\MSBuild.Extension.Pack.1.9.1\build\net40\MSBuild.Extension.Pack.targets" Condition="Exists('packages\MSBuild.Extension.Pack.1.9.1\build\net40\MSBuild.Extension.Pack.targets')"/>
+   
   <PropertyGroup>
-        <!-- Input parameters -->
+        <BuildConfiguration>Release</BuildConfiguration>
+        <ProjectDirectory>$(MSBuildProjectDirectory)</ProjectDirectory>    
+
+        <!-- Version -->
         <Version Condition="'$(VERSION)' == ''">0.0.0.0</Version>
         <Version Condition="'$(VERSION)' != ''">$(VERSION)</Version>
-        <IsPreRelease>true</IsPreRelease>
-        <BuildConfiguration>Release</BuildConfiguration>
-        <ProjectDirectory>$(MSBuildProjectDirectory)</ProjectDirectory>
-
-        <!-- TBBs -->
-        <LegacyTemplatesFolder>tcm:2-2744-2</LegacyTemplatesFolder>
-        <R2TemplatesFolder>tcm:2-2743-2</R2TemplatesFolder>
-        <LegacyTemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Legacy\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.Legacy.merged.dll</LegacyTemplatesDll>
-        <R2TemplatesDll>$(ProjectDirectory)\Sdl.Web.Tridion.Templates.R2\bin\$(BuildConfiguration)\Sdl.Web.Tridion.Templates.R2.merged.dll</R2TemplatesDll>
-
+        <VersionMajor>$(Version.Split('.')[0])</VersionMajor>
+        <VersionMinor>$(Version.Split('.')[1])</VersionMinor>
+        <VersionPatch>$(Version.Split('.')[2])</VersionPatch>
+        <VersionBuild>$(Version.Split('.')[3])</VersionBuild>
+        <PackageVersion>$(VersionMajor).$(VersionMinor).$(VersionPatch)</PackageVersion>
+      
         <CmsTargetDefinitionFile>dxadevweb85.xml</CmsTargetDefinitionFile>
         <NuGetRepositoryUrl></NuGetRepositoryUrl>
 
@@ -31,12 +30,15 @@
         <PreReleaseLabel Condition="'$(IsPreRelease)' == 'true'">-beta-$([System.DateTime]::Now.ToString("yyyyMMddHHmm"))</PreReleaseLabel>
         <PackageVersion>$(VersionMajor).$(VersionMinor).$(VersionPatch)$(PreReleaseLabel)</PackageVersion>
 
-        <!--Tools-->
-        <MsBuildExe>C:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe</MsBuildExe>
-        <CmToolsDir>C:\_cm_tools</CmToolsDir>
+        <!--Tools-->        
+        <NuGet>&quot;$(ProjectDirectory)\_tools\NuGet.exe&quot;</NuGet>
+        <NuGetPackageDirectory>$(ProjectDirectory)\_NuGet</NuGetPackageDirectory>
 
+    
         <MsTestExe Condition="'$(MsTestExe)'=='' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio 14.0\Common7\IDE\MSTest.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio 14.0\Common7\IDE\MSTest.exe</MsTestExe>
         <MsTestExe Condition="'$(MsTestExe)'=='' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio 12.0\Common7\IDE\MSTest.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio 12.0\Common7\IDE\MSTest.exe</MsTestExe>
+        <MsTestExe Condition="'$(MsTestExe)'=='' And Exists('$(MSBuildProgramFiles32)\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\MSTest.exe')">$(MSBuildProgramFiles32)\Microsoft Visual Studio\2017\TestAgent\Common7\IDE\MSTest.exe</MsTestExe>
+
 
       <ExtensionsRoot>$(ProjectDirectory)\Dxa.CM.Extensions</ExtensionsRoot>
 
@@ -70,6 +72,15 @@
       <ExtensionBinDist>$(PackageFolder)\bin</ExtensionBinDist>
   </PropertyGroup>
 
+  <!-- ======================================================================================================================= -->
+    <!-- You should run msbuild with this target first to make sure all packages are installed before building everything else   -->
+    <!-- ======================================================================================================================= -->
+    <Target Name="Restore">
+        <Message Text="Clearing NuGet cache..."/>
+        <Exec Command="$(NuGet) locals all -Clear" />
+        <Message Text="Restoring NuGet packages..."/>
+        <Exec Command="_tools\RestorePackages DxaContentManagement.sln" WorkingDirectory="$(ProjectDirectory)" />
+    </Target>
 
     <!-- ======================================================================================================================= -->
     <Target Name="Build">
@@ -78,22 +89,12 @@
         <CallTarget Targets="PrepareBuild"/>
         <CallTarget Targets="RunBuild"/>
         <CallTarget Targets="CreateDXAResolverExtensionDist"/>
-        <CallTarget Targets="Test"/>
         <CallTarget Targets="CreatePackages"/>
-        <CallTarget Targets="PublishPackages" Condition="'$(NuGetRepositoryUrl)' != ''"/>
-        <!-- NOTE: Not calling DeployOutput here; should be called separately by Jenkins build -->
     </Target>
 
-    <!-- ======================================================================================================================= -->
+     <!-- ======================================================================================================================= -->
     <Target Name="PrepareBuild">
         <Message Text="Preparing build..." Importance="high" />
-
-        <Message Text="Clearing NuGet cache..."/>
-        <Exec Command="$(NuGet) locals all -Clear" />
-
-        <Message Text="Restoring NuGet packages..."/>
-        <Exec Command="_tools\RestorePackages DxaContentManagement.sln" WorkingDirectory="$(ProjectDirectory)" />
-
         <Message Text="Setting Assembly Info"/>
 
        <ItemGroup>
@@ -202,4 +203,85 @@
 
         <Exec Command='packages\ReportGenerator.2.4.4.0\tools\ReportGenerator.exe "-reports:CoverageReports\Coverage.xml" "-targetdir:CoverageReports"'/>
     </Target>
+
+  <!-- ========================================================================================================================== -->
+    <Target Name="Artifacts">
+        <Message Text="Generating artifacts ..." Importance="high" />
+
+        <PropertyGroup>
+          <DstFolder>$(ProjectDirectory)\dist\cms</DstFolder>
+
+          <CmContentFolder>$(ProjectDirectory)\cms\content</CmContentFolder>
+          <CmScriptsFolder>$(ProjectDirectory)\cms\scripts</CmScriptsFolder>
+
+          <LegacyTBBFolder>$(ProjectDirectory)\Sdl.Web.Tridion.Templates.Legacy\bin\$(BuildConfiguration)</LegacyTBBFolder>
+          <R2TBBFolder>$(ProjectDirectory)\Sdl.Web.Tridion.Templates.R2\bin\$(BuildConfiguration)</R2TBBFolder>
+
+          <LegacyTemplatesDll>Sdl.Web.Tridion.Templates.Legacy.merged.dll</LegacyTemplatesDll>
+
+          <R2TemplatesDll>Sdl.Web.Tridion.Templates.R2.merged.dll</R2TemplatesDll>
+
+          <!-- TBBs in export package. Note that if you re-export CM content you may need to adjust these IDs incase they change during export -->          
+          <LegacyTemplatesTbb>tcm:2-2744-2.tbbasm</LegacyTemplatesTbb>
+          <R2TemplatesTbb>tcm:2-2743-2.tbbasm</R2TemplatesTbb>
+
+        </PropertyGroup>
+
+        <ItemGroup>
+          <ImportExportScripts Include="$(CmScriptsFolder)\..\ImportExport\**\*.*" />
+        </ItemGroup>
+      
+        <RemoveDir Directories="$(DstFolder)" />
+
+         <!-- CM UI Extension -->
+        <CallTarget Targets="CreateDXAResolverExtensionDist"/>
+        <CallTarget Targets="CreateDXAResolverExtensionPackage"/>
+
+        <!-- Copy TBBs to dist folder -->
+        <Copy SourceFiles="$(LegacyTBBFolder)\$(LegacyTemplatesDll)" DestinationFolder="$(DstFolder)\TBBs"/>
+        <Copy SourceFiles="$(R2TBBFolder)\$(R2TemplatesDll)" DestinationFolder="$(DstFolder)\TBBs"/>   
+
+        <!-- Copy TBBs to CM content folder  -->
+        <Copy SourceFiles="$(LegacyTBBFolder)\$(LegacyTemplatesDll)" DestinationFolder="$(DstFolder)\tmp"/>
+        <Copy SourceFiles="$(R2TBBFolder)\$(R2TemplatesDll)" DestinationFolder="$(DstFolder)\tmp"/>
+
+        <!-- Update the CM content with the newly built TBBs -->
+        <Move SourceFiles="$(DstFolder)\tmp\$(LegacyTemplatesDll)" DestinationFiles="$(DstFolder)\tmp\$(LegacyTemplatesTbb)" />       
+        <Copy SourceFiles="$(DstFolder)\tmp\$(LegacyTemplatesTbb)" DestinationFolder="$(CmContentFolder)\sites9\all-publications\Binaries" />
+        <Copy SourceFiles="$(DstFolder)\tmp\$(LegacyTemplatesTbb)" DestinationFolder="$(CmContentFolder)\sites9\framework-only\Binaries" />        
+        <Copy SourceFiles="$(DstFolder)\tmp\$(LegacyTemplatesTbb)" DestinationFolder="$(CmContentFolder)\sites9\master-only\Binaries" />
+
+        <Move SourceFiles="$(DstFolder)\tmp\$(R2TemplatesDll)" DestinationFiles="$(DstFolder)\tmp\$(R2TemplatesTbb)" />
+        <Copy SourceFiles="$(DstFolder)\tmp\$(R2TemplatesTbb)" DestinationFolder="$(CmContentFolder)\sites9\all-publications\Binaries" />
+        <Copy SourceFiles="$(DstFolder)\tmp\$(R2TemplatesTbb)" DestinationFolder="$(CmContentFolder)\sites9\framework-only\Binaries" />
+        <Copy SourceFiles="$(DstFolder)\tmp\$(R2TemplatesTbb)" DestinationFolder="$(CmContentFolder)\sites9\master-only\Binaries" />
+
+        <!-- Copy custom resolver -->
+        <Copy SourceFiles="$(ProjectDirectory)\Sdl.Web.DXAResolver\bin\$(BuildConfiguration)\Sdl.Web.DXAResolver.dll" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\cms-customresolver.ps1" DestinationFolder="$(DstFolder)"/>
+
+        <!-- Copy cm content -->
+        <Message Text="Creating CM Content artifacts ..." Importance="high" />
+
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\all-publications" ZipFileName="$(DstFolder)\tmp\all-publications.zip" RemoveRoot="$(CmContentFolder)\all-publications" />
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\master-only" ZipFileName="$(DstFolder)\tmp\example-publications.zip" RemoveRoot="$(CmContentFolder)\example-publications" />
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(CmContentFolder)\master-only" ZipFileName="$(DstFolder)\tmp\master-only.zip" RemoveRoot="$(CmContentFolder)\master-only" />
+        <Copy SourceFiles="$(DstFolder)\tmp\all-publications.zip" DestinationFolder="$(DstFolder)" />
+        <Copy SourceFiles="$(DstFolder)\tmp\example-publications.zip" DestinationFolder="$(DstFolder)" />
+        <Copy SourceFiles="$(DstFolder)\tmp\master-only.zip" DestinationFolder="$(DstFolder)" />
+        <Copy SourceFiles="$(CmContentFolder)\permissions.xml" DestinationFolder="$(DstFolder)" />
+
+        <!-- Copy scripts -->
+        <Message Text="Copying scripts..." Importance="high" />
+        <Copy SourceFiles="$(CmScriptsFolder)\cms-import.ps1" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\cms-export.ps1" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\cms-export-permissions.ps1" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\cms-upgrade.ps1" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\ttm-prepare.ps1" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="$(CmScriptsFolder)\DXA Application Data Definition.xml" DestinationFolder="$(DstFolder)"/>
+        <Copy SourceFiles="@(ImportExportScripts)" DestinationFolder="$(DstFolder)\..\ImportExport\%(RecursiveDir)"/>
+
+        <RemoveDir Directories="$(DstFolder)\tmp" />
+
+    </Target>    
 </Project>
