@@ -4,7 +4,7 @@ Param (
     [string]$exportType = "all-publications", 
 
     # The URL of the CMS to export from
-    [string]$cmsUrl = "http://dxadevweb8.ams.dev",
+    [string]$cmsUrl = "http://localhost",
 
     # Exported content
 	[string]$targetDir = 'C:\Temp\DXA',

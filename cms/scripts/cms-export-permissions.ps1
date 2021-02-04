@@ -5,7 +5,7 @@ Param (
     [string]$module = "Core",
 
     # Set this to the DXA Development CMS URL
-    [string]$cmsUrl = "http://dxadevweb8.ams.dev",
+    [string]$cmsUrl = "http://localhost",
 	
 	# Comma separated list of Groups to export rights and permissions from
     [string]$groups = "Everyone,Developer,Editor,Site Manager"
