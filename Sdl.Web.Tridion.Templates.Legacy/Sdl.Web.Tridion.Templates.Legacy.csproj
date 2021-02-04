@@ -125,10 +125,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(MSBuildThisFileDirectory)..\packages\ILMerge.2.14.1208\tools\ILMerge.exe"  ^
+    <PostBuildEvent>"$(MSBuildThisFileDirectory)..\_tools\ILMerge.exe"  ^
     /out:Sdl.Web.Tridion.Templates.Legacy.merged.dll ^
     /targetplatform:v4 ^
-    /lib:$(MSBuildThisFileDirectory)..\cm-8.1 ^
+    /lib:$(MSBuildThisFileDirectory)..\_references\cm-8.1 ^
     Sdl.Web.Tridion.Templates.dll Sdl.Web.Tridion.Templates.Legacy.dll Sdl.Web.DataModel.dll DD4T.ContentModel.Contracts.dll DD4T.ContentModel.dll DD4T.Serialization.dll DD4T.Templates.Base.dll Newtonsoft.Json.dll
 </PostBuildEvent>
   </PropertyGroup>

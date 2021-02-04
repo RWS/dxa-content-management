@@ -49,11 +49,11 @@
     <Reference Include="System.Web" />
     <Reference Include="Tridion.Web.UI.Core">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\_references\cm-8.1\Tridion.Web.UI.Core.dll</HintPath>
+      <HintPath>..\..\_references\cm-8.1\Tridion.Web.UI.Core.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.Web.UI.Editors.Base">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\_references\cm-8.1\Tridion.Web.UI.Editors.Base.dll</HintPath>
+      <HintPath>..\..\_references\cm-8.1\Tridion.Web.UI.Editors.Base.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
