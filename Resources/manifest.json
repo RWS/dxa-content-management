@@ -1,0 +1,71 @@
+{
+    "manifestVersion": "1.0",
+    "version": "2.2.0",
+    "id": "DXAResolver",
+    "name": "DXA Resolver",
+    "author": "SDL Tridion",
+    "description": "DXA Resolver addon including extensions for UIEditor and UIModel. The Digital Experience Accelerator (DXA) for SDL Tridion Sites is a fully functional website implementation. Based on years of best practice, it provides a quick-start foundation for web projects, decreasing your website implementation time dramatically. You can use it as the basis for a full web implementation or smaller initiatives such as campaign sites. DXA is provided at no cost, and its source code is available under an Apache 2.0 license.",
+    "icon": "Icons/dxa.png",
+    "minVersion": "9.1.0.0",
+    "maxVersion": "9.1.0.99999",
+    "extensions": [
+      {
+        "type": "UIEditor",
+        "name": "DXA Resolver Editor",
+        "properties": {
+          "name": "DXAResolver",
+          "contentFolder": "Editors",
+          "configurationPath": "Editors\\Configuration\\DXAResolver.Editor.config",
+          "globalResourcesFolder": "Editors\\Resources",
+          "assembliesFolder": "Editors\\Assemblies"
+        }
+      },
+      {
+        "type": "UIModel",
+        "name": "DXA Resolver Model",
+        "properties": {
+          "name": "DXAResolver",
+          "contentFolder": "Models",
+          "configurationPath": "Models\\Configuration\\DXAResolver.Model.config",
+          "globalResourcesFolder": "Models\\Resources",
+          "assembliesFolder": "Models\\Assemblies"
+        }
+      },
+      {
+          "type": "CMResolver",
+          "name":"DXA Page Resolver",
+          "properties": {
+            "type": "Sdl.Web.DXAResolver.Resolver",
+            "itemType": "Tridion.ContentManager.CommunicationManagement.Page",
+            "assemblyFileSource": "Resolver\\Sdl.Web.DXAResolver.dll"
+          }
+      },
+      {
+          "type": "CMResolver",
+          "name":"DXA Component Resolver",
+          "properties": {
+            "type": "Sdl.Web.DXAResolver.Resolver",
+            "itemType": "Tridion.ContentManager.ContentManagement.Component",
+            "assemblyFileSource": "Resolver\\Sdl.Web.DXAResolver.dll"
+          }
+      },
+      {
+          "type": "CMResolver",
+          "name":"DXA Component Template Resolver",
+          "properties": {
+            "type": "Sdl.Web.DXAResolver.Resolver",
+            "itemType": "Tridion.ContentManager.CommunicationManagement.ComponentTemplate",
+            "assemblyFileSource": "Resolver\\Sdl.Web.DXAResolver.dll"
+          }
+      },
+      {
+          "type": "CMResolver",
+          "name":"DXA Structure Group Resolver",
+          "properties": {
+            "type": "Sdl.Web.DXAResolver.Resolver",
+            "itemType": "Tridion.ContentManager.CommunicationManagement.StructureGroup",
+            "assemblyFileSource": "Resolver\\Sdl.Web.DXAResolver.dll"
+          }
+      }
+    ]
+  }

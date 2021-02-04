@@ -51,6 +51,7 @@
       <ExtensionName Condition="'$(ExtensionName)' == ''">DxaResolver</ExtensionName>
       <ExtensionsDistFolder Condition="'$(ExtensionsDistFolder)' == ''">$(ExtensionsRoot)\dist</ExtensionsDistFolder>
       <PackageFolder>$(ExtensionsDistFolder)\$(ExtensionName)</PackageFolder>
+      <ExtensionPackageFolder>$(ExtensionsDistFolder)\ExtensionPackage</ExtensionPackageFolder>
 
       <SupportedLanguage>(en|de|nl|fr|ja|es|zn-CH)</SupportedLanguage>
       <ExcludeFiles>
@@ -166,6 +167,79 @@
         <Copy SourceFiles="@(ExtensionEditorsBinFile);@(ExtensionModelsBinFile)" DestinationFolder="$(ExtensionBinDist)\%(RecursiveDir)"/>
     </Target>
 
+  <Target Name="CreateDXAResolverExtensionPackage">
+        <ItemGroup>
+            <ExtensionEditorsStaticFile Include="$(EditorsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
+            <ExtensionModelsStaticFile Include="$(ModelsFolder)\**\*.*" Exclude="$(ExcludeFiles)"/>
+            <ResolverFile Include="$(ProjectDirectory)\Sdl.Web.DXAResolver\bin\**\*.DXAResolver.dll" Exclude="$(ExcludeFiles)"/>
+            <ExtensionEditorsBinFile Include="$(EditorsFolder)\bin\**\DXA.CM.Extensions.*dll" Exclude="
+                $(EditorsFolder)\bin\bin\;
+                $(EditorsFolder)\bin\*.config;
+                $(EditorsFolder)\bin\*.pdb;
+            "/>
+            <ExtensionModelsBinFile Include="$(ModelsFolder)\bin\**\DXA.CM.Extensions.*dll" Exclude="
+                $(ModelsFolder)\bin\bin\;
+                $(ModelsFolder)\bin\*.config;
+                $(ModelsFolder)\bin\*.pdb;
+            "/>
+
+            <!-- Secure endpoint configuration in the model web.config -->
+            <ServicesSecureXMLElement Include="$(ExtensionPackageFolder)\Models\Web.config">
+                <XPath>/configuration/system.serviceModel/services/service</XPath>
+                <Name>endpoint</Name>
+                <KeyAttributeName>name</KeyAttributeName>
+                <KeyAttributeValue>ServicesSecure</KeyAttributeValue>
+            </ServicesSecureXMLElement>
+            <ServicesSecureXMLAttributes Include="$(ExtensionPackageFolder)\Models\Web.config">
+                <XPath>/configuration/system.serviceModel/services/service/endpoint[@name='ServicesSecure']</XPath>
+                <Name>address</Name>
+                <Value></Value>
+            </ServicesSecureXMLAttributes>
+            <ServicesSecureXMLAttributes Include="$(ExtensionPackageFolder)\Models\Web.config">
+                <XPath>/configuration/system.serviceModel/services/service/endpoint[@name='ServicesSecure']</XPath>
+                <Name>behaviorConfiguration</Name>
+                <Value>Tridion.Web.UI.ContentManager.WebServices.AspNetAjaxBehavior</Value>
+            </ServicesSecureXMLAttributes>
+            <ServicesSecureXMLAttributes Include="$(ExtensionPackageFolder)\Models\Web.config">
+                <XPath>/configuration/system.serviceModel/services/service/endpoint[@name='ServicesSecure']</XPath>
+                <Name>binding</Name>
+                <Value>webHttpBinding</Value>
+            </ServicesSecureXMLAttributes>
+            <ServicesSecureXMLAttributes Include="$(ExtensionPackageFolder)\Models\Web.config">
+                <XPath>/configuration/system.serviceModel/services/service/endpoint[@name='ServicesSecure']</XPath>
+                <Name>bindingConfiguration</Name>
+                <Value>Tridion.Web.UI.ContentManager.WebServices.WebHttpsBindingConfig</Value>
+            </ServicesSecureXMLAttributes>
+            <ServicesSecureXMLAttributes Include="$(ExtensionPackageFolder)\Models\Web.config">
+                <XPath>/configuration/system.serviceModel/services/service/endpoint[@name='ServicesSecure']</XPath>
+                <Name>contract</Name>
+                <Value>DXA.CM.Extensions.DXAResolver.Models.Interfaces.IServices</Value>
+            </ServicesSecureXMLAttributes>
+        </ItemGroup>
+
+        <Message Text="Cleaning zip folder" Importance="high" />
+        <RemoveDir Directories="$(ExtensionPackageFolder)" />
+
+        <Message Text="Copying static files to $(ExtensionPackageFolder)" Importance="high" />
+        <Copy SourceFiles="@(ExtensionEditorsStaticFile)" DestinationFolder="$(ExtensionPackageFolder)\Editors\%(RecursiveDir)"/>
+        <Copy SourceFiles="@(ExtensionModelsStaticFile)" DestinationFolder="$(ExtensionPackageFolder)\Models\%(RecursiveDir)"/>
+
+        <Message Text="Copying binaries to $(ExtensionPackageFolder)" Importance="high" />
+        <Copy SourceFiles="@(ExtensionEditorsBinFile)" DestinationFolder="$(ExtensionPackageFolder)\Editors\Assemblies\%(RecursiveDir)"/>
+        <Copy SourceFiles="@(ExtensionModelsBinFile)" DestinationFolder="$(ExtensionPackageFolder)\Models\Assemblies\%(RecursiveDir)"/>
+        <Copy SourceFiles="@(ResolverFile)" DestinationFolder="$(ExtensionPackageFolder)\Resolver"/>
+        <Copy SourceFiles="$(ProjectDirectory)\Resources\dxa.png" DestinationFolder="$(ExtensionPackageFolder)\Icons"/>
+        <Copy SourceFiles="$(ProjectDirectory)\Resources\manifest.json" DestinationFolder="$(ExtensionPackageFolder)"/>
+        <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddElement" File="%(ServicesSecureXMLElement.Identity)" Key="%(ServicesSecureXMLElement.KeyAttributeName)" Value="%(ServicesSecureXMLElement.KeyAttributeValue)" Element="%(ServicesSecureXMLElement.Name)" XPath="%(ServicesSecureXMLElement.XPath)" />
+        <MSBuild.ExtensionPack.Xml.XmlFile TaskAction="AddAttribute" File="%(ServicesSecureXMLAttributes.Identity)" Key="%(ServicesSecureXMLAttributes.Name)" Value="%(ServicesSecureXMLAttributes.Value)" XPath="%(ServicesSecureXMLAttributes.XPath)" />
+        
+        <Message Text="Creating extension zip package" Importance="high" />
+        <MSBuild.ExtensionPack.Compression.DNZip TaskAction="Create" CompressPath="$(ExtensionPackageFolder)" ZipFileName="$(ExtensionsDistFolder)\DXAResolver-$(PackageVersion).zip"/>
+
+        <Message Text="Cleaning zip folder" Importance="high" />
+        <RemoveDir Directories="$(ExtensionPackageFolder)" />
+    </Target>    
+
     <!-- ======================================================================================================================= -->
     <Target Name="CreatePackages" Condition="'$(BuildConfiguration)' == 'Release'">
         <Message Text="Creating NuGet packages in '$(NuGetPackageDirectory)' ..." Importance="high" />
@@ -222,8 +296,8 @@
           <R2TemplatesDll>Sdl.Web.Tridion.Templates.R2.merged.dll</R2TemplatesDll>
 
           <!-- TBBs in export package. Note that if you re-export CM content you may need to adjust these IDs incase they change during export -->          
-          <LegacyTemplatesTbb>tcm:2-2744-2.tbbasm</LegacyTemplatesTbb>
-          <R2TemplatesTbb>tcm:2-2743-2.tbbasm</R2TemplatesTbb>
+          <LegacyTemplatesTbb>2-2744-2.tbbasm</LegacyTemplatesTbb>
+          <R2TemplatesTbb>2-2743-2.tbbasm</R2TemplatesTbb>
 
         </PropertyGroup>
 
@@ -247,14 +321,14 @@
 
         <!-- Update the CM content with the newly built TBBs -->
         <Move SourceFiles="$(DstFolder)\tmp\$(LegacyTemplatesDll)" DestinationFiles="$(DstFolder)\tmp\$(LegacyTemplatesTbb)" />       
-        <Copy SourceFiles="$(DstFolder)\tmp\$(LegacyTemplatesTbb)" DestinationFolder="$(CmContentFolder)\sites9\all-publications\Binaries" />
-        <Copy SourceFiles="$(DstFolder)\tmp\$(LegacyTemplatesTbb)" DestinationFolder="$(CmContentFolder)\sites9\framework-only\Binaries" />        
-        <Copy SourceFiles="$(DstFolder)\tmp\$(LegacyTemplatesTbb)" DestinationFolder="$(CmContentFolder)\sites9\master-only\Binaries" />
+        <Copy SourceFiles="$(DstFolder)\tmp\$(LegacyTemplatesTbb)" DestinationFolder="$(CmContentFolder)\all-publications\Binaries" />
+        <Copy SourceFiles="$(DstFolder)\tmp\$(LegacyTemplatesTbb)" DestinationFolder="$(CmContentFolder)\example-publications\Binaries" />        
+        <Copy SourceFiles="$(DstFolder)\tmp\$(LegacyTemplatesTbb)" DestinationFolder="$(CmContentFolder)\master-only\Binaries" />
 
         <Move SourceFiles="$(DstFolder)\tmp\$(R2TemplatesDll)" DestinationFiles="$(DstFolder)\tmp\$(R2TemplatesTbb)" />
-        <Copy SourceFiles="$(DstFolder)\tmp\$(R2TemplatesTbb)" DestinationFolder="$(CmContentFolder)\sites9\all-publications\Binaries" />
-        <Copy SourceFiles="$(DstFolder)\tmp\$(R2TemplatesTbb)" DestinationFolder="$(CmContentFolder)\sites9\framework-only\Binaries" />
-        <Copy SourceFiles="$(DstFolder)\tmp\$(R2TemplatesTbb)" DestinationFolder="$(CmContentFolder)\sites9\master-only\Binaries" />
+        <Copy SourceFiles="$(DstFolder)\tmp\$(R2TemplatesTbb)" DestinationFolder="$(CmContentFolder)\all-publications\Binaries" />
+        <Copy SourceFiles="$(DstFolder)\tmp\$(R2TemplatesTbb)" DestinationFolder="$(CmContentFolder)\example-publications\Binaries" />
+        <Copy SourceFiles="$(DstFolder)\tmp\$(R2TemplatesTbb)" DestinationFolder="$(CmContentFolder)\master-only\Binaries" />
 
         <!-- Copy custom resolver -->
         <Copy SourceFiles="$(ProjectDirectory)\Sdl.Web.DXAResolver\bin\$(BuildConfiguration)\Sdl.Web.DXAResolver.dll" DestinationFolder="$(DstFolder)"/>
