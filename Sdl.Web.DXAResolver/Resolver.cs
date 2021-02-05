@@ -250,7 +250,24 @@ namespace Sdl.Web.DXAResolver
                 _log.Debug(e.Message);
                 _maxRecurseDepth = -1;
             }
+
+            try
+            {
+                string depth = Environment.GetEnvironmentVariable("DXA_RESOLVER_DEPTH");
+                int idepth = _maxRecurseDepth;
+                if (int.TryParse(depth, out idepth))
+                {
+                    _log.Debug($"DXA_RESOLVER_DEPTH env var specified as '{depth}', attempting to use this as the max recursion depth");
+                    _maxRecurseDepth = idepth;
+                }
+            }
+            catch(Exception e)
+            {
+                _log.Debug("Problem looking for env var DXA_RESOLVER_DEPTH");
+                _log.Debug(e.Message);
+            }
             
+
             _log.Debug($"Using _maxRecurseDepth={_maxRecurseDepth}");
 
             try
