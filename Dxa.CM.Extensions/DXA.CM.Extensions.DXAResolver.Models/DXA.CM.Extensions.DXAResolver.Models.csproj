@@ -58,15 +58,19 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Tridion.Common">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_references\cm-8.1\Tridion.Common.dll</HintPath>
+      <HintPath>..\..\_references\cm-9.1\Tridion.Common.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.ContentManager.CoreService.Client">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_references\cm-8.1\Tridion.ContentManager.CoreService.Client.dll</HintPath>
+      <HintPath>..\..\_references\cm-9.1\Tridion.ContentManager.CoreService.Client.dll</HintPath>
     </Reference>
     <Reference Include="Tridion.Logging">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\_references\cm-8.1\Tridion.Logging.dll</HintPath>
+      <HintPath>..\..\_references\cm-9.1\Tridion.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Tridion.Security">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\_references\cm-9.1\Tridion.Security.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

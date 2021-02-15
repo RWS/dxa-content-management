@@ -80,8 +80,16 @@ namespace DXA.CM.Extensions.DXAResolver.Models
                 if (IsSamlSupported())
                 {
                     // Our own LDAP or SSO authentication has been used. Use the ClaimSet it provided as client credentials.
-                    var user = (ClaimsPrincipal)HttpContext.Current.User;
-                    clientCredentials.Claims = user.Claims;
+                    var user = HttpContext.Current.User as ClaimsPrincipal;
+                    if (user == null)
+                    {
+                        var tridionUser = HttpContext.Current.User as Tridion.Security.ClaimsPrincipal;
+                        clientCredentials.Claims = tridionUser.Claims;
+                    }
+                    else
+                    {
+                        clientCredentials.Claims = user.Claims;
+                    }
                 }
                 else
                 {
@@ -98,7 +106,9 @@ namespace DXA.CM.Extensions.DXAResolver.Models
             using (Tracer.GetTracer().StartTrace())
             {
                 var user = HttpContext.Current.User as ClaimsPrincipal;
-                return user != null;
+                var trdidionUser = HttpContext.Current.User as Tridion.Security.ClaimsPrincipal;
+               
+                return user != null || trdidionUser!= null;
             }
         }
     }
