@@ -61,6 +61,7 @@ namespace Sdl.Web.Tridion.Templates
 
         public PublishMappings()
         {
+            InternalLogger.Debug("PublishMappings TBB constructed");
             foreach (KeyValuePair<string, string> ns in _namespaces)
             {
                 _namespaceManager.AddNamespace(ns.Key, ns.Value);
@@ -69,6 +70,7 @@ namespace Sdl.Web.Tridion.Templates
 
         public override void Transform(Engine engine, Package package)
         {
+            InternalLogger.Debug("Transform called");
             Initialize(engine, package);
 
             package.TryGetParameter("retrofitMode", out _retrofitMode, Logger);
@@ -88,6 +90,7 @@ namespace Sdl.Web.Tridion.Templates
             AddBootstrapJsonBinary(binaries, inputComponent, mappingsStructureGroup, "mapping");
 
             OutputSummary("Publish Mappings", binaries.Select(b => b?.Url));
+            InternalLogger.Debug("Transform completed");
         }
 
         private Binary PublishSemanticVocabularies(StructureGroup structureGroup, Component relatedComponent)
@@ -271,6 +274,7 @@ namespace Sdl.Web.Tridion.Templates
 
         private Binary PublishPageIncludes(StructureGroup structureGroup, Component relatedComponent)
         {
+            InternalLogger.Debug($"PublishPageIncludes(structureGroup='{structureGroup.Title}, {structureGroup.Id}', relatedComponent='{relatedComponent.Title}, {relatedComponent.Id}')");
             IDictionary<string, string[]> pageIncludes = new Dictionary<string, string[]>();
 
             RepositoryItemsFilter pageTemplatesFilter = new RepositoryItemsFilter(Session)
@@ -278,11 +282,20 @@ namespace Sdl.Web.Tridion.Templates
                 ItemTypes = new[] { ItemType.PageTemplate },
                 Recursive = true
             };
-
+            InternalLogger.Debug("Getting all page templates from publication...");
             IEnumerable<PageTemplate> pageTemplates = Publication.GetItems(pageTemplatesFilter).Cast<PageTemplate>();
+            InternalLogger.Debug($"Found {pageTemplates.Count()} page templates... Checking page template metadata if it exists...");
             foreach (PageTemplate pt in pageTemplates.Where(pt => pt.MetadataSchema != null && pt.Metadata != null))
             {
+                InternalLogger.Debug($" page template '{pt.Title}' with id '{pt.Id}' contains metadata with metadata schema '{pt.MetadataSchema.Title}', id = '{pt.MetadataSchema.Id}'...");
                 ItemFields ptMetadataFields = new ItemFields(pt.Metadata, pt.MetadataSchema);
+
+                InternalLogger.Debug($"Looking for metadata field values with fieldname 'includes'..");
+                var includeFields = ptMetadataFields.GetTextValues("includes");
+                foreach (var includeField in includeFields)
+                {
+                    InternalLogger.Debug($"Found include with value = {includeField} !");
+                }
                 string[] includes = ptMetadataFields.GetTextValues("includes").Select(id => GetPublishPath(id)).ToArray();
                 pageIncludes.Add(pt.Id.ItemId.ToString(), includes);
             }
@@ -292,17 +305,30 @@ namespace Sdl.Web.Tridion.Templates
 
         private string GetPublishPath(string pageId)
         {
-            string result;
-            if (TcmUri.IsValid(pageId) || pageId.StartsWith("/webdav/"))
+            try
             {
-                Page page = (Page)Session.GetObject(pageId);
-                result = page.PublishLocationUrl.Substring(1);
+                InternalLogger.Debug($"GetPublishPath(pageId = {pageId}) called");
+                string result;
+                if (TcmUri.IsValid(pageId) || pageId.StartsWith("/webdav/", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    InternalLogger.Debug("  PageId is a valid tcm uri or begins with /webdav/ -- attempting to get page object from session");
+                    Page page = (Page) Session.GetObject(pageId);
+                    result = page.PublishLocationUrl.Substring(1);
+                    InternalLogger.Debug($"  Page object from session = {result}");
+                }
+                else
+                {
+                    InternalLogger.Debug($"  Using pageId '{pageId}'");
+                    result = pageId;
+                }
+                return result;
             }
-            else
+            catch
             {
-                result = pageId;
+                InternalLogger.Debug($"  Using pageId '{pageId}'");
             }
-            return result;
+
+            return pageId;
         }
 
         private SemanticSchemaData GetSemanticSchema(Schema schema)
