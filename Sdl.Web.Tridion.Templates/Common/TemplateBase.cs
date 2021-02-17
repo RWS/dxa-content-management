@@ -31,6 +31,7 @@ namespace Sdl.Web.Tridion.Templates.Common
             "</?tcdl:ComponentPresentation[^>]*>", RegexOptions.Compiled);
 
         private TemplatingLogger _logger;
+        private InternalLogger _internalLogger;
         private Session _session;
         private Engine _engine;
         private Package _package;
@@ -74,7 +75,17 @@ namespace Sdl.Web.Tridion.Templates.Common
         /// </summary>
         protected Publication Publication
         {
-            get { return _publication ?? (_publication = GetPublication()); }
+            get
+            {
+                if (_publication == null)
+                {
+                    InternalLogger.Debug("Getting publication...");
+                    _publication = GetPublication();
+                    InternalLogger.Debug($" Found publication id='{_publication.Id}', title='{Publication.Title}', webDavUrl='{Publication.WebDavUrl}'");
+                }
+
+                return _publication;
+            }
             set
             {
                 // Allows dependency injection for unit test purposes.
@@ -87,7 +98,26 @@ namespace Sdl.Web.Tridion.Templates.Common
         /// </summary>
         protected Session Session
         {
-            get { return _session ?? (_session = Engine.GetSession()); }
+            get
+            {
+                if (_session == null)
+                {
+                    InternalLogger.Debug("Getting session from Engine..");
+                    _session = Engine.GetSession();
+
+                    if (_session == null)
+                    {
+                        InternalLogger.Debug(" strange, session was null!");
+                    }
+                    else
+                    {
+                        InternalLogger.Debug("Session details:");
+                        InternalLogger.Debug($"  webDavUrl prefix : {_session.WebDavUrlPrefix}");
+                    }
+                }
+
+                return _session;
+            }
             set
             {
                 // Allows dependency injection for unit test purposes.
@@ -99,6 +129,10 @@ namespace Sdl.Web.Tridion.Templates.Common
         /// Returns the current Logger
         /// </summary>
         protected TemplatingLogger Logger => _logger ?? (_logger = TemplatingLogger.GetLogger(GetType()));
+
+        protected InternalLogger InternalLogger => _internalLogger ??
+                                                   (_internalLogger =
+                                                       new InternalLogger(TemplatingLogger.GetLogger(GetType())));
 
         /// <summary>
         /// Attempts to return value of a parameter

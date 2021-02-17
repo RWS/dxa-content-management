@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -95,6 +94,7 @@
     <Compile Include="Common\TemplateBase.cs" />
     <Compile Include="Common\Utility.cs" />
     <Compile Include="ContextExpressionUtils.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="Templates\GenerateSitemap.cs" />
     <Compile Include="Templates\PublishConfiguration.cs" />
