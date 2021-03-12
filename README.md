@@ -3,7 +3,6 @@ SDL Digital Experience Accelerator CM-side framework
 Build status
 ------------
 - Develop: ![Build Status](https://github.com/sdl/dxa-content-management/workflows/Build/badge.svg?branch=develop)
-- 2.2: ![Build Status](https://github.com/sdl/dxa-content-management/workflows/Build/badge.svg?branch=release/2.2)
 - 1.8: ![Build Status](https://github.com/sdl/dxa-content-management/workflows/Build/badge.svg?branch=release/1.8)
 
 Prerequisites
@@ -82,22 +81,13 @@ To publish to NuGet.org you must have the correct API key registered.
 
 Repositories
 ------------
-The following repositories with DXA source code are available:
-
- - https://github.com/sdl/dxa-content-management - CM-side framework (.NET Template Building Blocks)
- - https://github.com/sdl/dxa-html-design - Whitelabel HTML Design
- - https://github.com/sdl/dxa-model-service - DXA Model Service (Java)
- - https://github.com/sdl/dxa-modules - Modules (.NET and Java)
- - https://github.com/sdl/dxa-web-application-dotnet - ASP.NET MVC web application (incl. framework)
- - https://github.com/sdl/dxa-web-application-java - Java Spring MVC web application (incl. framework)
-
+You can find all the DXA related repositories [here](https://github.com/sdl/?q=dxa&type=source&language=)
 
 Branches and Contributions
 --------------------------
 We are using the following branching strategy:
 
- - `master` - Represents the latest stable version. This may be a pre-release version (tagged as `DXA x.y Sprint z`). Updated each development Sprint (approx. bi-weekly).
- - `develop` - Represents the latest development version. Updated very frequently (typically nightly).
+ - `develop` - Represents the latest development version.
  - `release/x.y` - Represents the x.y Release. If hotfixes are applicable, they will be applied to the appropriate release branch, so that the release branch actually represent the initial release plus hotfixes.
 
 All releases (including pre-releases and hotfix releases) are tagged. 
