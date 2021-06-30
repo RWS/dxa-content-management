@@ -137,8 +137,6 @@
     <Mapping exportContext="/000%20Empty/Building%20Blocks/Default%20Templates" exportTitle="Extract%20Components%20from%20Regions.tbbcs" importContext="" importTitle="" />
     <Mapping exportContext="/000%20Empty/Building%20Blocks/Default%20Templates" exportTitle="Link%20Resolver.tbbcs" importContext="" importTitle="" />
     <Mapping exportContext="/000%20Empty/Building%20Blocks/Default%20Templates" exportTitle="Publish%20Binaries%20in%20Package.tbbcs" importContext="" importTitle="" />
-    <Mapping exportContext="/000%20Empty/Building%20Blocks/Default%20Templates" exportTitle="Target%20Group%20Personalization.tbbcs" importContext="" importTitle="" />
-    <Mapping exportContext="/000%20Empty/Building%20Blocks/Default%20Templates" exportTitle="Tridion%2EExtensions%2EContextExpressions%2ETemplates.tbbasm" importContext="" importTitle="" />
     <Mapping exportContext="/100%20Master/Building%20Blocks/Default%20Templates" exportTitle="Default%20Dreamweaver%20Page%20Design.dwt" importContext="" importTitle="" />
     <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Add%20inherited%20metadata%20to%20component.tbbcs" importContext="" importTitle="" />
     <Mapping exportContext="/100%20Master/Building%20Blocks/Framework/Developer/Templates/DXA%2ELegacy" exportTitle="Add%20inherited%20metadata%20to%20page.tbbcs" importContext="" importTitle="" />

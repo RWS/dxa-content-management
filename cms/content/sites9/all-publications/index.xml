@@ -23,8 +23,6 @@
           <Item id="tcm:1-24-8" title="Link%20Resolver" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="false" exported="true" />
           <Item id="tcm:1-27-2048" title="Publish%20Binaries%20in%20Package" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
           <Item id="tcm:1-26-8" title="Publish%20Binaries%20in%20Package" extension="xsd" itemType="Schema" subtype="6" blueprintStatus="LocalItem" selected="false" exported="true" />
-          <Item id="tcm:1-28-2048" title="Target%20Group%20Personalization" extension="tbbcs" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
-          <Item id="tcm:1-55-2048" title="Tridion%2EExtensions%2EContextExpressions%2ETemplates" extension="tbbasm" itemType="TemplateBuildingBlock" blueprintStatus="LocalItem" selected="false" exported="true" />
         </Item>
         <Item id="tcm:1-7-8192" title="Modified%20in%20the%20last%207%20days" itemType="VirtualFolder" blueprintStatus="LocalItem" selected="true" exported="true" />
         <Item id="tcm:1-9-8" title="Default%20Multimedia%20Schema" extension="xsd" itemType="Schema" subtype="1" blueprintStatus="LocalItem" selected="false" exported="true" />
