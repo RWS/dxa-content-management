@@ -217,7 +217,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             if (xmlElement.SelectSingleElement("xhtml:*") != null)
             {
                 // XHTML field
-                return BuildRichTextModel(xmlElement);
+                return BuildRichTextModel(xmlElement, expandLinkDepth);
             }
 
             if (xmlElement.SelectSingleElement("*") != null)
@@ -292,7 +292,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             return Pipeline.CreateKeywordModel(linkedKeyword, expandLinkDepth - 1);
         }
 
-        protected RichTextData BuildRichTextModel(XmlElement xhtmlElement)
+        protected RichTextData BuildRichTextModel(XmlElement xhtmlElement, int expandLinkDepth = 0)
         {
             XmlDocument xmlDoc = xhtmlElement.OwnerDocument;
             IList<EntityModelData> embeddedEntities = new List<EntityModelData>();
@@ -301,7 +301,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 Component linkedComponent = Pipeline.Session.GetObject(xlinkElement) as Component;
                 if (xlinkElement.LocalName == "img" || ShouldBeEmbedded(linkedComponent))
                 {
-                    EntityModelData embeddedEntity = Pipeline.CreateEntityModel(linkedComponent, ct: null, expandLinkDepth: 0);
+                    EntityModelData embeddedEntity = Pipeline.CreateEntityModel(linkedComponent, ct: null, expandLinkDepth: expandLinkDepth);
 
                     // Map each attribute to a metadata field
 
