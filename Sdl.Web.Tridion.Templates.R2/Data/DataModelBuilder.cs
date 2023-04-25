@@ -9,6 +9,7 @@ using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Templating;
+using Tridion.ExternalContentLibrary.V2;
 
 namespace Sdl.Web.Tridion.Templates.R2.Data
 {
@@ -359,8 +360,31 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     xlinkElement.RemoveXlinkAttributes();
                     continue;
                 }
-                // Default behaviour: Hyperlink to MM Component: add the Binary and set the URL as href
-                string binaryUrl = Pipeline.RenderedItem.AddBinary(linkedComponent).Url;
+                string binaryUrl = string.Empty;
+                
+                // if binary is ECL item then use GetDirectLinkToPublished for binaryUrl
+                if (IsEclItem(linkedComponent))
+                {
+                    ExternalContentLibrary externalContentLibrary = new ExternalContentLibrary(Pipeline);
+                    IContentLibraryContext eclContext;
+                    IContentLibraryMultimediaItem eclItem = externalContentLibrary.GetEclItem(linkedComponent.Id, out eclContext);
+                    using (eclContext)
+                    {
+                        if (eclItem != null)
+                        {
+                            IList<ITemplateAttribute> emptyAttributes = new List<ITemplateAttribute>();
+                            binaryUrl = eclItem.GetDirectLinkToPublished(emptyAttributes);
+                            
+                        }
+                    }
+                }
+                else
+                {
+                    // Default behaviour: Hyperlink to MM Component: add the Binary and set the URL as href
+                    binaryUrl = Pipeline.RenderedItem.AddBinary(linkedComponent).Url;
+                    
+                }
+                
                 xlinkElement.SetAttribute("href", binaryUrl);
                 xlinkElement.RemoveXlinkAttributes();
             }
