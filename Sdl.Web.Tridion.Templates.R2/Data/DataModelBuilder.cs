@@ -360,23 +360,24 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     xlinkElement.RemoveXlinkAttributes();
                     continue;
                 }
-                string binaryUrl = string.Empty;
                 
+                string binaryUrl = string.Empty;
                 // if binary is ECL item then use GetDirectLinkToPublished for binaryUrl
                 if (IsEclItem(linkedComponent))
                 {
-                    EntityModelData embeddedEntity = Pipeline.CreateEntityModel(linkedComponent, ct: null, expandLinkDepth: expandLinkDepth);
-                    if(embeddedEntity != null && embeddedEntity.BinaryContent != null)
+                    //expandLinkDepth is 0, because we are only trying to fetch binary url
+                    EntityModelData embeddedEntity = Pipeline.CreateEntityModel(linkedComponent, ct: null, expandLinkDepth: 0);
+                    if(embeddedEntity == null || embeddedEntity.BinaryContent == null)
                     {
-                        binaryUrl = embeddedEntity.BinaryContent.Url ;
+                        throw new DxaException($"Unable to determine binary URL for ECL item: {linkedComponent.Id}");
                     }
+                    binaryUrl = embeddedEntity.BinaryContent.Url;
                 }
-                else if (string.IsNullOrEmpty(binaryUrl)) 
+                else  
                 {
                     // Default behaviour: Hyperlink to MM Component: add the Binary and set the URL as href
                     binaryUrl = Pipeline.RenderedItem.AddBinary(linkedComponent).Url;
                 }
-                
                 xlinkElement.SetAttribute("href", binaryUrl);
                 xlinkElement.RemoveXlinkAttributes();
             }
