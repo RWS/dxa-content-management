@@ -9,7 +9,6 @@ using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
 using Tridion.ContentManager.Templating;
-using Tridion.ExternalContentLibrary.V2;
 
 namespace Sdl.Web.Tridion.Templates.R2.Data
 {
@@ -361,17 +360,17 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     continue;
                 }
                 
-                string binaryUrl = string.Empty;
+                string binaryUrl;
                 // if binary is ECL item then use GetDirectLinkToPublished for binaryUrl
                 if (IsEclItem(linkedComponent))
                 {
                     //expandLinkDepth is 0, because we are only trying to fetch binary url
-                    EntityModelData embeddedEntity = Pipeline.CreateEntityModel(linkedComponent, ct: null, expandLinkDepth: 0);
-                    if(embeddedEntity == null || embeddedEntity.BinaryContent == null)
+                    EntityModelData linkedEntity = Pipeline.CreateEntityModel(linkedComponent, ct: null, expandLinkDepth: 0);
+                    if(linkedEntity == null || linkedEntity.BinaryContent == null)
                     {
                         throw new DxaException($"Unable to determine binary URL for ECL item: {linkedComponent.Id}");
                     }
-                    binaryUrl = embeddedEntity.BinaryContent.Url;
+                    binaryUrl = linkedEntity.BinaryContent.Url;
                 }
                 else  
                 {
