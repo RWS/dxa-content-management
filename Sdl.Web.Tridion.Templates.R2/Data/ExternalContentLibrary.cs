@@ -68,7 +68,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             }
         }
 
-        internal IContentLibraryMultimediaItem GetEclItem(string eclStubComponentId, out IContentLibraryContext eclContext)
+        private IContentLibraryMultimediaItem GetEclItem(string eclStubComponentId, out IContentLibraryContext eclContext)
         {
             IEclUri eclUri = _eclSession.TryGetEclUriFromTcmUri(eclStubComponentId);
             if (eclUri == null)

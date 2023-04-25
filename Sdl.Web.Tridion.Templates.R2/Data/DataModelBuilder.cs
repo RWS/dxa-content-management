@@ -365,24 +365,16 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 // if binary is ECL item then use GetDirectLinkToPublished for binaryUrl
                 if (IsEclItem(linkedComponent))
                 {
-                    ExternalContentLibrary externalContentLibrary = new ExternalContentLibrary(Pipeline);
-                    IContentLibraryContext eclContext;
-                    IContentLibraryMultimediaItem eclItem = externalContentLibrary.GetEclItem(linkedComponent.Id, out eclContext);
-                    using (eclContext)
+                    EntityModelData embeddedEntity = Pipeline.CreateEntityModel(linkedComponent, ct: null, expandLinkDepth: expandLinkDepth);
+                    if(embeddedEntity != null && embeddedEntity.BinaryContent != null)
                     {
-                        if (eclItem != null)
-                        {
-                            IList<ITemplateAttribute> emptyAttributes = new List<ITemplateAttribute>();
-                            binaryUrl = eclItem.GetDirectLinkToPublished(emptyAttributes);
-                            
-                        }
+                        binaryUrl = embeddedEntity.BinaryContent.Url ;
                     }
                 }
-                else
+                else if (string.IsNullOrEmpty(binaryUrl)) 
                 {
                     // Default behaviour: Hyperlink to MM Component: add the Binary and set the URL as href
                     binaryUrl = Pipeline.RenderedItem.AddBinary(linkedComponent).Url;
-                    
                 }
                 
                 xlinkElement.SetAttribute("href", binaryUrl);
