@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -8,6 +9,7 @@ using Tridion;
 using Tridion.ContentManager;
 using Tridion.ContentManager.CommunicationManagement;
 using Tridion.ContentManager.ContentManagement;
+using Tridion.ContentManager.Publishing.Rendering;
 using Tridion.ContentManager.Templating;
 
 namespace Sdl.Web.Tridion.Templates.R2.Data
@@ -359,8 +361,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                     xlinkElement.RemoveXlinkAttributes();
                     continue;
                 }
-                // Default behaviour: Hyperlink to MM Component: add the Binary and set the URL as href
-                string binaryUrl = Pipeline.RenderedItem.AddBinary(linkedComponent).Url;
+                // Default behaviour: Hyperlink to MM Component: add the Binary and set the URL as href               
+                string binaryUrl = AddBinary(linkedComponent).Url;
                 xlinkElement.SetAttribute("href", binaryUrl);
                 xlinkElement.RemoveXlinkAttributes();
             }
@@ -405,8 +407,40 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
             if (Pipeline.Settings.SchemasForRichTextEmbed.Contains($"{linkedComponent.Schema.NamespaceUri}:{linkedComponent.Schema.RootElementName}"))
                 return true;
 
-            return false;               
+            return false;
         }
+        protected Binary AddBinary(Component multimediaComponent)
+        {
+            if (IsUniqueFilenameRequired(multimediaComponent))
+            {
+                return Pipeline.RenderedItem.AddBinary(multimediaComponent);
+            }
+            else
+            {
+                using (Stream stream = new MemoryStream())
+                {
+                    multimediaComponent.BinaryContent.WriteToStream(stream);
+                    return Pipeline.RenderedItem.AddBinary(stream, GetFilename(multimediaComponent), "no-tcm", multimediaComponent, multimediaComponent.BinaryContent.MultimediaType.MimeType);
+                }
+            }
+        }
+
+        private string GetFilename(Component component) { return component.BinaryContent.Filename; }
+
+        private bool IsUniqueFilenameRequired(Component multimediaComponent)
+        {
+            if (Pipeline.Settings.SchemasForAsIsMultimediaUrls != null)
+            {
+                Logger.Debug($"Looking for schema {multimediaComponent.Schema.Title} in set of schemas configured for as is url: {String.Join(";", Pipeline.Settings.SchemasForAsIsMultimediaUrls)}");
+                if (Pipeline.Settings.SchemasForAsIsMultimediaUrls.Contains(multimediaComponent.Schema.Title.ToLower()))
+                {
+                    Logger.Debug($"Found!");
+                    return false;
+                }
+            }
+            return true;
+        }
+
         protected ContentModelData ExtractCustomMetadata(XmlElement metadata, IEnumerable<string> excludeFields)
         {
             if (metadata == null)
@@ -414,7 +448,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 return null;
             }
 
-            XmlElement customMetadata = (XmlElement) metadata.CloneNode(deep: true);
+            XmlElement customMetadata = (XmlElement)metadata.CloneNode(deep: true);
             string excludeXPathPredicate = string.Join(" or ", excludeFields.Select(name => $"local-name()='{name}'"));
             XmlElement[] excludeElements = customMetadata.SelectElements($"*[{excludeXPathPredicate}]").ToArray();
 

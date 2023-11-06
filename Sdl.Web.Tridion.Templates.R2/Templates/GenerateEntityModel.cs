@@ -34,7 +34,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Templates
 
             int expandLinkDepth;
             package.TryGetParameter("expandLinkDepth", out expandLinkDepth, Logger);
-            
+
             string[] modelBuilderTypeNames = GetModelBuilderTypeNames();
 
             RenderedItem renderedItem = Engine.PublishingContext.RenderedItem;
@@ -47,14 +47,15 @@ namespace Sdl.Web.Tridion.Templates.R2.Templates
                 {
                     ExpandLinkDepth = expandLinkDepth,
                     GenerateXpmMetadata = IsXpmEnabled || IsPreview,
-                    SchemasForRichTextEmbed = GetSchemasForRichTextEmbed()
+                    SchemasForRichTextEmbed = GetSchemasForRichTextEmbed(),
+                    SchemasForAsIsMultimediaUrls = GetSchemasForAsIsMultimediaUrls()
                 };
 
                 DataModelBuilderPipeline modelBuilderPipeline = new DataModelBuilderPipeline(renderedItem, settings, modelBuilderTypeNames);
                 EntityModelData entityModel = modelBuilderPipeline.CreateEntityModel(component, ct, includeComponentTemplateData);
                 OutputJson = JsonSerialize(entityModel, IsPreview, DataModelBinder.SerializerSettings);
 
-                if(string.IsNullOrEmpty(OutputJson))
+                if (string.IsNullOrEmpty(OutputJson))
                     throw new DxaException("Output Json is empty!");
             }
             catch (Exception ex)

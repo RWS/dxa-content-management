@@ -88,9 +88,9 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 StructureGroupId = GetDxaIdentifier(structureGroup),
                 SchemaId = GetDxaIdentifier(page.MetadataSchema),
                 Meta = null, // Default Model builder does not set PageModel.Meta; see DefaultPageMetaModelBuilder.
-                Title = StripSequencePrefix(page.Title, out sequencePrefix) , // See DefaultPageMetaModelBuilder
+                Title = StripSequencePrefix(page.Title, out sequencePrefix), // See DefaultPageMetaModelBuilder
                 UrlPath = GetUrlPath(page),
-                Regions = regionModels.Values.ToList(),                
+                Regions = regionModels.Values.ToList(),
                 Metadata = pageModelMetadata,
                 MvcData = GetPageMvcData(pt),
                 HtmlClasses = GetHtmlClasses(pt),
@@ -197,7 +197,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
             return new BinaryContentData
             {
-                Url = Pipeline.RenderedItem.AddBinary(component).Url,
+                Url = AddBinary(component).Url,
                 FileName = binaryContent.Filename,
                 FileSize = binaryContent.Size,
                 MimeType = binaryContent.MultimediaType.MimeType
@@ -313,7 +313,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 Page includePage;
                 try
                 {
-                    includePage = (Page) Pipeline.Session.GetObject(includePageId);
+                    includePage = (Page)Pipeline.Session.GetObject(includePageId);
                     includePage.Load(LoadFlags.None); // Force load the Page
                 }
                 catch (Exception ex)
@@ -370,7 +370,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 {
                     webDavUrlBuilder.Append("_System");
                 }
-                else if (i == pathSegments.Length -1)
+                else if (i == pathSegments.Length - 1)
                 {
                     // Last path segment (representing the Page itself)
                     // Convert dashes to spaces and capitalize each name segment.
@@ -689,7 +689,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
                 Id = GetDxaIdentifier(ct),
                 Namespace = GetNamespace(ct)
             };
-           
+
             if (ct.Metadata == null || ct.MetadataSchema == null) return componentTemplateData;
             componentTemplateData.Title = ct.Title;
             componentTemplateData.RevisionDate = ct.RevisionDate;
@@ -700,7 +700,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
 
         private FolderData GetFolderData(Component component)
         {
-            Folder folder = (Folder) component.OrganizationalItem;
+            Folder folder = (Folder)component.OrganizationalItem;
             return new FolderData
             {
                 Id = folder.Id?.ItemId.ToString(),

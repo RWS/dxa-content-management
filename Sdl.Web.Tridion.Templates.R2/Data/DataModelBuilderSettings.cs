@@ -32,5 +32,10 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         ///         E.g: http://www.sdl.com/web/schemas/core:Article
         /// </summary>
         public List<string> SchemasForRichTextEmbed { get; set; }
+
+        /// <summary>
+        /// Gets or sets the a list of schema names used to determine if multimedia link should use the url as is from the binary filename (no tcm-id)
+        /// </summary>
+        public List<string> SchemasForAsIsMultimediaUrls { get; set; }
     }
 }

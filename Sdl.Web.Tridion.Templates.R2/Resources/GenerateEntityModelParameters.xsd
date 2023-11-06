@@ -1,36 +1,38 @@
 ﻿<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"  targetNamespace="http://www.sdl.com/web/schemas/dynamiccomponent" xmlns="http://www.sdl.com/web/schemas/dynamiccomponent" xmlns:tcmi="http://www.tridion.com/ContentManager/5.0/Instance" xmlns:xlink="http://www.w3.org/1999/xlink" elementFormDefault="qualified">
-    <xsd:import namespace="http://www.tridion.com/ContentManager/5.0/Instance" schemaLocation="cm_xml_inst.xsd"></xsd:import>
-    <xsd:annotation>
-        <xsd:appinfo>
-            <tcm:Labels xmlns:tcm="http://www.tridion.com/ContentManager/5.0">
-                <tcm:Label ElementName="includeComponentTemplateData" Metadata="false">Include Component Template related data</tcm:Label>
-                <tcm:Label ElementName="expandLinkDepth" Metadata="false">Depth to expand Component/Keyword links</tcm:Label>
-                <tcm:Label ElementName="modelBuilderTypeNames" Metadata="false">Type names of Model Builders to use (separated by semicolons)</tcm:Label>
-                <tcm:Label ElementName="schemasToEmbedInRichText" Metadata="false">List of schema identifiers (use either schema title or a namespace Uri with optional root element name (NamespaceUri:RootElementName) which will result in embedded items in Rich text fields (separated by semicolons)</tcm:Label>
-            </tcm:Labels>
-        </xsd:appinfo>
-    </xsd:annotation>
-    <xsd:element name="Parameters">
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element name="includeComponentTemplateData" minOccurs="0" maxOccurs="1">
-                  <xsd:annotation>
-                    <xsd:appinfo>
-                      <tcm:Size xmlns:tcm="http://www.tridion.com/ContentManager/5.0">1</tcm:Size>
-                      <tcm:listtype xmlns:tcm="http://www.tridion.com/ContentManager/5.0">select</tcm:listtype>
-                    </xsd:appinfo>
-                  </xsd:annotation>
-                  <xsd:simpleType>
-                    <xsd:restriction base="xsd:normalizedString">
-                      <xsd:enumeration value="true"></xsd:enumeration>
-                      <xsd:enumeration value="false"></xsd:enumeration>
-                    </xsd:restriction>
-                  </xsd:simpleType>
-                </xsd:element>
-                <xsd:element name="expandLinkDepth" minOccurs="0" maxOccurs="1" type="xsd:integer" />
-                <xsd:element name="modelBuilderTypeNames" minOccurs="0" maxOccurs="1" type="xsd:normalizedString" />
-                <xsd:element name="schemaToEmbedInRichText" minOccurs="0" maxOccurs="1" type="xsd:normalizedString" />
-            </xsd:sequence>
-        </xsd:complexType>
-    </xsd:element>
+  <xsd:import namespace="http://www.tridion.com/ContentManager/5.0/Instance" schemaLocation="cm_xml_inst.xsd"></xsd:import>
+  <xsd:annotation>
+    <xsd:appinfo>
+      <tcm:Labels xmlns:tcm="http://www.tridion.com/ContentManager/5.0">
+        <tcm:Label ElementName="includeComponentTemplateData" Metadata="false">Include Component Template related data</tcm:Label>
+        <tcm:Label ElementName="expandLinkDepth" Metadata="false">Depth to expand Component/Keyword links</tcm:Label>
+        <tcm:Label ElementName="modelBuilderTypeNames" Metadata="false">Type names of Model Builders to use (separated by semicolons)</tcm:Label>
+        <tcm:Label ElementName="schemasToEmbedInRichText" Metadata="false">List of schema identifiers (use either schema title or a namespace Uri with optional root element name (NamespaceUri:RootElementName) which will result in embedded items in Rich text fields (separated by semicolons)</tcm:Label>
+        <tcm:Label ElementName="schemasForAsIsMultimediaUrls" Metadata="false">List of schema names which will result in multimedia links that should use the url as is from the binary filename without tcm-id</tcm:Label>
+      </tcm:Labels>
+    </xsd:appinfo>
+  </xsd:annotation>
+  <xsd:element name="Parameters">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="includeComponentTemplateData" minOccurs="0" maxOccurs="1">
+          <xsd:annotation>
+            <xsd:appinfo>
+              <tcm:Size xmlns:tcm="http://www.tridion.com/ContentManager/5.0">1</tcm:Size>
+              <tcm:listtype xmlns:tcm="http://www.tridion.com/ContentManager/5.0">select</tcm:listtype>
+            </xsd:appinfo>
+          </xsd:annotation>
+          <xsd:simpleType>
+            <xsd:restriction base="xsd:normalizedString">
+              <xsd:enumeration value="true"></xsd:enumeration>
+              <xsd:enumeration value="false"></xsd:enumeration>
+            </xsd:restriction>
+          </xsd:simpleType>
+        </xsd:element>
+        <xsd:element name="expandLinkDepth" minOccurs="0" maxOccurs="1" type="xsd:integer" />
+        <xsd:element name="modelBuilderTypeNames" minOccurs="0" maxOccurs="1" type="xsd:normalizedString" />
+        <xsd:element name="schemaToEmbedInRichText" minOccurs="0" maxOccurs="1" type="xsd:normalizedString" />
+        <xsd:element name="schemasForAsIsMultimediaUrls" minOccurs="0" maxOccurs="1" type="xsd:normalizedString" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
 </xsd:schema>
