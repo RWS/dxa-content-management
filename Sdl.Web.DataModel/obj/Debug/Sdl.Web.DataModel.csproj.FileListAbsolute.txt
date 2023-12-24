@@ -1,0 +1,9 @@
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DataModel\bin\Debug\Sdl.Web.DataModel.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DataModel\bin\Debug\Sdl.Web.DataModel.pdb
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DataModel\bin\Debug\Newtonsoft.Json.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DataModel\bin\Debug\Newtonsoft.Json.xml
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DataModel\obj\Debug\Sdl.Web.DataModel.csproj.AssemblyReference.cache
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DataModel\obj\Debug\Sdl.Web.DataModel.csproj.CoreCompileInputs.cache
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DataModel\obj\Debug\Sdl.Web.DataModel.csproj.CopyComplete
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DataModel\obj\Debug\Sdl.Web.DataModel.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DataModel\obj\Debug\Sdl.Web.DataModel.pdb

@@ -1,0 +1,16 @@
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\bin\Debug\Sdl.Web.DXAResolver.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\bin\Debug\Sdl.Web.DXAResolver.pdb
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\bin\Debug\Tridion.Common.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\bin\Debug\Tridion.ContentManager.Common.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\bin\Debug\Tridion.ContentManager.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\bin\Debug\Tridion.ContentManager.Publishing.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\bin\Debug\Tridion.ContentManager.Templating.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\bin\Debug\Tridion.Logging.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\bin\Debug\Tridion.TopologyManager.Client.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\bin\Debug\Microsoft.OData.Client.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\bin\Debug\Newtonsoft.Json.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\obj\Debug\Sdl.Web.DXAResolver.csproj.AssemblyReference.cache
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\obj\Debug\Sdl.Web.DXAResolver.csproj.CoreCompileInputs.cache
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\obj\Debug\Sdl.Web.DXAResolver.csproj.CopyComplete
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\obj\Debug\Sdl.Web.DXAResolver.dll
+C:\Workspace\DXA-Stuff\DXA-Github-Repo\dxa-content-management\Sdl.Web.DXAResolver\obj\Debug\Sdl.Web.DXAResolver.pdb
