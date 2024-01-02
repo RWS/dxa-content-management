@@ -1,25 +1,25 @@
-RWSDigital Experience Accelerator CM-side framework
+RWS Digital Experience Accelerator CM-side framework
 ===
 Build status
 ------------
-- Develop: ![Build Status](https://github.com/sdl/dxa-content-management/workflows/Build/badge.svg?branch=develop)
-- 1.8: ![Build Status](https://github.com/sdl/dxa-content-management/workflows/Build/badge.svg?branch=release/1.8)
+- Develop: ![Build Status](https://github.com/rws/dxa-content-management/workflows/Build/badge.svg?branch=develop)
+- 1.8: ![Build Status](https://github.com/rws/dxa-content-management/workflows/Build/badge.svg?branch=release/1.8)
 
 Prerequisites
 -------------
 For building .NET repositories you must have the following installed:
 - Visual Studio 2019
-- .NET Framework 4.6.2
+- .NET Framework 4.8
 
 About
 -----
-The SDL Digital Experience Accelerator (DXA) is a reference implementation of SDL Tridion Sites 9 and SDL Web 8 intended to help you create, design and publish an SDL Tridion/Web-based website quickly.
+The RWS Digital Experience Accelerator (DXA) is a reference implementation of RWS Tridion Sites 9 and SDL Web 8 intended to help you create, design and publish an RWS Tridion/Web-based website quickly.
 
-DXA is available for both .NET and Java web applications. Its modular architecture consists of a framework and example web application, which includes all core SDL Tridion/Web functionality as well as separate Modules for additional, optional functionality.
+DXA is available for both .NET and Java web applications. Its modular architecture consists of a framework and example web application, which includes all core rws Tridion/Web functionality as well as separate Modules for additional, optional functionality.
 
 This repository contains the source code of the DXA Core Template Building Blocks used on the Content Manager side. 
 The full DXA distribution (including CM-side items and installation support) is downloadable from the [SDL AppStore](https://appstore.sdl.com/list/?search=dxa) 
-or the GitHub Releases of the [dxa-web-application-dotnet](https://github.com/sdl/dxa-web-application-dotnet/releases) or [dxa-web-application-java](https://github.com/sdl/dxa-web-application-java/releases) repositories.
+or the GitHub Releases of the [dxa-web-application-dotnet](https://github.com/rws/dxa-web-application-dotnet/releases) or [dxa-web-application-java](https://github.com/rws/dxa-web-application-java/releases) repositories.
 
 To facilitate upgrades, it is highly recommended to use an official, compiled version of the DXA Core TBBs (part of the DXA distribution) instead of a custom build.
 If you really have to modify the DXA Core TBBs, we kindly request you to submit your changes as a Contribution; see below. 
@@ -36,7 +36,7 @@ At RWS we take your investment in Digital Experience very seriously, if you enco
 
 Documentation
 -------------
-Documentation can be found online in the SDL documentation portal: https://docs.sdl.com/sdldxa
+Documentation can be found online in the RWS documentation portal: https://docs.rws.com/sdldxa
 
 Building
 ---------
@@ -81,7 +81,7 @@ To publish to NuGet.org you must have the correct API key registered.
 
 Repositories
 ------------
-You can find all the DXA related repositories [here](https://github.com/sdl/?q=dxa&type=source&language=)
+You can find all the DXA related repositories [here](https://github.com/rws/?q=dxa&type=source&language=)
 
 Branches and Contributions
 --------------------------
@@ -104,7 +104,7 @@ Of course, it's also possible (and appreciated) to report an Issue without assoc
 
 License
 -------
-Copyright (c) 2014-2021 SDL Group.
+Copyright (c) 2014-2024 RWS Group.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
