@@ -10,7 +10,7 @@
     &lt;TemplateParameters&gt;
       &lt;Parameters xmlns="http://www.sdl.com/web/schemas/dynamicpage"&gt;
         &lt;expandLinkDepth xmlns="http://www.sdl.com/web/schemas/dynamicpage"&gt;2&lt;/expandLinkDepth&gt;
-        &lt;modelBuilderTypeNames&gt;DefaultModelBuilder;DefaultPageMetaModelBuilder;EclModelBuilder;ContextExpressionsModelBuilder&lt;/modelBuilderTypeNames&gt;
+        &lt;modelBuilderTypeNames&gt;DefaultModelBuilder;DefaultPageMetaModelBuilder;EclModelBuilder&lt;/modelBuilderTypeNames&gt;
       &lt;/Parameters&gt;
     &lt;/TemplateParameters&gt;
   &lt;/TemplateInvocation&gt;

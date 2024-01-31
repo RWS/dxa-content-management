@@ -12,9 +12,6 @@
     &lt;Template xlink:href="/webdav/000%20Empty/Building%20Blocks/Default%20Templates/Link%20Resolver.tbbcs" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:title="Link Resolver" /&gt;
   &lt;/TemplateInvocation&gt;
   &lt;TemplateInvocation&gt;
-    &lt;Template xlink:href="/webdav/000%20Empty/Building%20Blocks/Default%20Templates/Target%20Group%20Personalization.tbbcs" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:title="Target Group Personalization" /&gt;
-  &lt;/TemplateInvocation&gt;
-  &lt;TemplateInvocation&gt;
     &lt;Template xlink:href="/webdav/000%20Empty/Building%20Blocks/Default%20Templates/Cleanup%20Template.tbbcs" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:title="Cleanup Template" /&gt;
   &lt;/TemplateInvocation&gt;
   &lt;TemplateInvocation&gt;
@@ -35,6 +32,5 @@
     <Dependency dependencyType="TemplateLinkedItem" itemUrl="/webdav/000%20Empty/Building%20Blocks/Default%20Templates/Convert%20Xml%20to%20Html.tbbcs" linkName="ExtractedReferences[1]" />
     <Dependency dependencyType="TemplateLinkedItem" itemUrl="/webdav/000%20Empty/Building%20Blocks/Default%20Templates/Link%20Resolver.tbbcs" linkName="ExtractedReferences[2]" />
     <Dependency dependencyType="TemplateLinkedItem" itemUrl="/webdav/000%20Empty/Building%20Blocks/Default%20Templates/Publish%20Binaries%20in%20Package.tbbcs" linkName="ExtractedReferences[3]" />
-    <Dependency dependencyType="TemplateLinkedItem" itemUrl="/webdav/000%20Empty/Building%20Blocks/Default%20Templates/Target%20Group%20Personalization.tbbcs" linkName="ExtractedReferences[4]" />
   </Dependencies>
 </PackageItem>

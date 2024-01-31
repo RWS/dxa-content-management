@@ -1,4 +1,4 @@
-SDL Digital Experience Accelerator CM-side framework
+RWSDigital Experience Accelerator CM-side framework
 ===
 Build status
 ------------
@@ -27,7 +27,7 @@ If you really have to modify the DXA Core TBBs, we kindly request you to submit 
  
 Support
 ---------------
-At SDL we take your investment in Digital Experience very seriously, if you encounter any issues with the Digital Experience Accelerator, please use one of the following channels:
+At RWS we take your investment in Digital Experience very seriously, if you encounter any issues with the Digital Experience Accelerator, please use one of the following channels:
 
 - Report issues directly in [this repository](https://github.com/sdl/dxa-content-management/issues)
 - Ask questions 24/7 on the SDL Tridion Community at https://tridion.stackexchange.com
