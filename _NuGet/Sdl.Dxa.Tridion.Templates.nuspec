@@ -9,7 +9,7 @@
         <authors>RWS Group</authors>
         <projectUrl>https://github.com/rws/dxa-content-management</projectUrl>
         <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
-        <icon>content\images\rws-logo-128.png</icon>
+        <icon>images\rws-logo-128.png</icon>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>RWS Digital eXperience Accelerator Tridion Templates</description>
         <copyright>Copyright 2015-2024 RWS Group</copyright>
@@ -18,6 +18,6 @@
     <files>
         <file src="..\Sdl.Web.Tridion.Templates.Legacy\bin\Release\Sdl.Web.Tridion.Templates.Legacy.merged.dll" target="lib\net48" />
 		<file src="..\Sdl.Web.Tridion.Templates.R2\bin\Release\Sdl.Web.Tridion.Templates.R2.merged.dll" target="lib\net48" />
-		<file src="rws-logo-128.png" target="content\images" />
+		<file src="..\rws-logo-128.png" target="images\" />
     </files>
 </package>
