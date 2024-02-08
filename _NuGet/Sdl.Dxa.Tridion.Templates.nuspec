@@ -13,7 +13,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>RWS Digital eXperience Accelerator Tridion Templates</description>
         <copyright>Copyright 2015-2024 RWS Group</copyright>
-        <tags>RWS DXA Tridion Templates</tags>
+        <tags>SDL RWS DXA Tridion Templates</tags>
     </metadata>
     <files>
         <file src="..\Sdl.Web.Tridion.Templates.Legacy\bin\Release\Sdl.Web.Tridion.Templates.Legacy.merged.dll" target="lib\net48" />
