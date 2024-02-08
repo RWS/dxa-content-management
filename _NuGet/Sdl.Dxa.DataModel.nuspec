@@ -13,7 +13,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>RWS Digital eXperience Accelerator R2 Data Model.</description>
         <copyright>Copyright 2015-2024 RWS Group</copyright>
-        <tags>RWS DXA DataModel</tags>
+        <tags>SDL RWS DXA DataModel</tags>
         <references>
             <reference file="Sdl.Web.DataModel.dll" />
         </references>
