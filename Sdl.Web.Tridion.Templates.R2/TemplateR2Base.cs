@@ -64,16 +64,29 @@ namespace Sdl.Web.Tridion.Templates.R2
         /// <returns>List of schema identifiers</returns>
         protected List<string> GetSchemasForRichTextEmbed()
         {
-            Logger.Info("Checking 'schemasToEmbedInRichText' template parameter for list of schema identifiers to determine what entities to embed in Rich Text fields.");
-            string schemasForEmbed;
-            List<string> schemasForEmbedList = new List<string>();
-            TryGetParameter("schemasToEmbedInRichText", out schemasForEmbed);
-            if (!string.IsNullOrEmpty(schemasForEmbed))
+            return GetListFromStringParameter("schemasToEmbedInRichText");
+        }
+        /// <summary>
+        /// Gets a list of schema identifiers to determine what binaries can be published with 'as is' Urls (without tcmUri being appended).
+        /// </summary>
+        /// <returns>List of schema identifiers</returns>
+
+        protected List<string> GetSchemasForAsIsMultimediaUrls()
+        {
+            return GetListFromStringParameter("schemasForAsIsMultimediaUrls");
+        }
+        protected List<string> GetListFromStringParameter(string parameterName)
+        {
+            Logger.Info($"Checking '{parameterName}' template parameter");
+            string parameterValue;
+            List<string> parameterList = new List<string>();
+            TryGetParameter(parameterName, out parameterValue);
+            if (!string.IsNullOrEmpty(parameterValue))
             {
-                Logger.Info($"schemasToEmbedInRichText set to '{schemasForEmbed}'.");
-                schemasForEmbedList = schemasForEmbed.Split(';').Select(s => s.Trim()).ToList();
+                Logger.Info($"parameter value set to '{parameterValue}'.");
+                parameterList = parameterValue.Split(';').Select(s => s.Trim().ToLower()).ToList();
             }
-            return schemasForEmbedList;
+            return parameterList;
         }
     }
 }

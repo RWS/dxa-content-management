@@ -8,7 +8,7 @@ using Tridion.ContentManager.Templating;
 using Tridion.ContentManager.Templating.Assembly;
 
 namespace Sdl.Web.Tridion.Templates.R2.Templates
-{   
+{
     /// <summary>
     /// Generates a DXA R2 Data Model based on the current Page
     /// </summary>
@@ -40,7 +40,8 @@ namespace Sdl.Web.Tridion.Templates.R2.Templates
                     ExpandLinkDepth = expandLinkDepth,
                     GenerateXpmMetadata = IsXpmEnabled || IsPreview,
                     Locale = GetLocale(),
-                    SchemasForRichTextEmbed = GetSchemasForRichTextEmbed()
+                    SchemasForRichTextEmbed = GetSchemasForRichTextEmbed(),
+                    SchemasForAsIsMultimediaUrls = GetSchemasForAsIsMultimediaUrls()
                 };
 
                 DataModelBuilderPipeline modelBuilderPipeline = new DataModelBuilderPipeline(renderedItem, settings, modelBuilderTypeNames);
