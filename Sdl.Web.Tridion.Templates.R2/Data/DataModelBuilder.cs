@@ -22,7 +22,7 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         private const string EclMimeType = "application/externalcontentlibrary";
 
         private static readonly Regex _embeddedEntityRegex = new Regex(@"<\?EmbeddedEntity\s\?>", RegexOptions.Compiled);
-        private static readonly Regex _cmTitleRegex = new Regex(@"(?<sequence>\d\d\d)?\s*(?<title>.*)", RegexOptions.Compiled);
+        private static readonly Regex _cmTitleRegex = new Regex(@"^(?:(?<sequence>\d{3})\s+)?\s*(?<title>.*)$", RegexOptions.Compiled);
 
         /// <summary>
         /// Gets the context <see cref="DataModelBuilderPipeline"/>.
@@ -102,6 +102,10 @@ namespace Sdl.Web.Tridion.Templates.R2.Data
         /// <summary>
         /// Strips off the "sequence prefix" (3 digits used for ordering purposes) from the title of a CM Item.
         /// </summary>
+        /// <remarks>
+        /// The sequence prefix is only stripped when the 3 digits are followed by whitespace, e.g. "202 609" => "609".
+        /// A title which merely starts with digits, e.g. "202609", is returned unchanged.
+        /// </remarks>
         /// <param name="title">The title which may contain a sequence prefix.</param>
         /// <param name="sequencePrefix">The sequence prefix (if any).</param>
         /// <returns>The title without sequence prefix.</returns>
